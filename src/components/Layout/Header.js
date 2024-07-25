@@ -9,7 +9,6 @@ const Header = () => {
         <div className="flex">
           <Topmenu />
         </div>
-
         <div className="top-20">
           <Sidemenu />
         </div>

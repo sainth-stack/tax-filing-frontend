@@ -6,6 +6,8 @@ import CompanyTable from "./CompanyTable";
 import Layout from "./../../components/Layout/Layout";
 import ServiceTable from "../../components/services/Servicetable";
 import CompanyForm from "./Companyform";
+import CustomInput from "../../components/input";
+import SelectInput from "../../components/select";
 
 const Company = () => {
   const [showForm, setShowForm] = useState(false);
@@ -15,58 +17,80 @@ const Company = () => {
   return (
     <>
       <Layout>
-        <div className="p-4">
-          <div className="flex flex-row justify-evenly my-3">
+        <div className="">
+          <div className="flex flex-row my-3 gap-4">
             <div className="flex items-center">
-              <label
-                htmlFor="company"
-                className="mr-2 text-sm  font-medium text-gray-900"
-              >
-                Company
-              </label>
-              <input
-                placeholder="Company Name"
-                type="text"
+              <CustomInput
                 id="company"
-                className="mx-4 rounded-lg outline outline-blue-100 border-gray-300 p-1.5 text-gray-700 sm:text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                label="Company"
+                type="text"
+                // value={formData.company || ''}
+                // onChange={handleInputChange}
+                placeholder="Company Name"
+                labelStyles={{
+                  fontWeight:500
+                }}
               />
             </div>
             <div className="flex items-center">
-              <label
-                htmlFor="status"
-                className="mr-2 text-sm font-medium text-gray-900"
-              >
-                Status
-              </label>
-              <select
+              <SelectInput
                 id="status"
-                className="mx-4 rounded-lg outline outline-blue-100   border-gray-300 p-1.5 text-gray-700 sm:text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-              >
-                <option value="">Select Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
+                label="Status"
+                // value={formData.status || ''}
+                // onChange={handleInputChange}
+                options={[
+                  { value: '', label: 'Select Status' },
+                  { value: 'active', label: 'Active' },
+                  { value: 'inactive', label: 'Inactive' },
+                ]}
+                labelStyles={{
+                  fontWeight:500
+                }}
+              />
             </div>
           </div>
 
-          <div className="flex btn  justify-center my-4">
-            <Link
-              className="inline-block rounded border border-indigo-600 bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
-              to="#"
-            >
-              Search
-            </Link>
-          </div>
-
-          <div className="mt-6 p-4 bg-white rounded-lg shadow-md">
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <label
               htmlFor="Table"
-              className="block mb-2 text-sm font-medium text-gray-900"
+              className="block mb-2 text-xl font-medium text-gray-900 ps-2 pt-4"
             >
               Company
             </label>
+            <div>
+              <Button
+                variant="text"
+                sx={{
+                  margin: ".7em",
+                  bgcolor: "teal",
+                  color: "white",
+                  "&:hover": {
+                    bgcolor: "teal",
+                    color: "white",
+                  },
+                }}
+                onClick={handleShowForm}
+              >
+                Add New Company
+              </Button>
+            </div>
+          </div>
+          {showForm && showForm ? (
+            <div className="justify-center">{<CompanyForm />}</div>
+          ) : (
+            ""
+          )}
+          <div className="bg-white rounded-lg shadow-md">
             <CompanyTable />
           </div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <label
+            htmlFor="Table"
+            className="block mb-2 text-xl font-medium text-gray-900 ps-2 pt-4"
+          >
+            Services
+          </label>
           <div>
             <Button
               variant="text"
@@ -79,25 +103,12 @@ const Company = () => {
                   color: "white",
                 },
               }}
-              onClick={handleShowForm}
             >
-              ADD NEW COMPANY
+              Add Service
             </Button>
           </div>
-
-          {showForm && showForm ? (
-            <div className="justify-center">{<CompanyForm />}</div>
-          ) : (
-            ""
-          )}
         </div>
-        <div className="mt-6 p-4 bg-white rounded-lg shadow-md">
-          <label
-            htmlFor="Table"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            Services
-          </label>
+        <div className="mt-6 bg-white rounded-lg shadow-md">
           <ServiceTable />
         </div>
       </Layout>

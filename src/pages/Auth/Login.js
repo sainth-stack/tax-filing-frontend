@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
 
 const Login = () => {
+  const navigate = useNavigate()
+
+  const [email, setEmail] = useState("admin@gmail.com")
+  const [password, setPassword] = useState("Test@123")
+  const [showPassword, setShowPassword] = useState(false)
   return (
     <>
       <div className="mx-auto max-w-screen-xl px-4 py-5 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-lg">
           <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
-            Get started today
+            Tax Filing
           </h1>
 
           <form
@@ -24,12 +30,13 @@ const Login = () => {
 
               <div className="relative">
                 <input
-                  type="email"
+                  value={email}
+                  type={"email"}
                   className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                   placeholder="Enter email"
                 />
 
-                <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
+                <span className="absolute inset-y-0 end-0 grid place-content-center px-4 cursor-pointer">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="size-4 text-gray-400"
@@ -55,12 +62,13 @@ const Login = () => {
 
               <div className="relative">
                 <input
-                  type="password"
+                  value={password}
+                  type={showPassword ? "text" :"password"}
                   className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                   placeholder="Enter password"
                 />
 
-                <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
+                <span className="absolute inset-y-0 end-0 grid place-content-center px-4 cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="size-4 text-gray-400"
@@ -87,7 +95,7 @@ const Login = () => {
 
             <div className="flex gap-5">
               <button
-                type="submit"
+                onClick={() => navigate('/company')}
                 className="block w-full rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white"
               >
                 Sign in

@@ -1,5 +1,4 @@
-/* 
-import * as React from "react";
+import React, { useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,507 +7,152 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
+import TablePagination from "@mui/material/TablePagination";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import TextField from "@mui/material/TextField";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 
-const serviceOptions = ["All", "GSTN", "MSME"];
-const statusOptions = ["All", "Active", "Inactive"];
-
-function createData(
-  sno,
-  ServiceName,
-  status,
-  EffectiveFrom,
-  EffectiveTo,
-  Actions
-) {
-  return { sno, ServiceName, status, EffectiveFrom, EffectiveTo, Actions };
+function createData(sno, companyName,effectiveFrom,effectiveTo, status) {
+  return { sno, companyName,effectiveFrom,effectiveTo, status };
 }
 
+const rows = [
+  createData(1, "GSTIN", "14-12-2023","16-12-2024","Active"),
+  createData(2, "GSTIN", "14-12-2023","16-12-2024","Active"),
+  createData(3, "GSTIN", "14-12-2023","16-12-2024","Active"),
+];
+
+const theme = createTheme({
+  typography: {
+    fontFamily: "Work Sans, Arial",
+  },
+  components: {
+    MuiTable: {
+      styleOverrides: {
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          borderBottom: "none",
+          padding: "12px 24px",
+          backgroundColor: "#fff",
+          "&:first-of-type": {
+            borderTopLeftRadius: "8px",
+            borderBottomLeftRadius: "0px",
+          },
+          "&:last-of-type": {
+            borderTopRightRadius: "8px",
+            borderBottomRightRadius: "0px",
+          },
+        },
+        head: {
+          backgroundColor: "#f5f5f5",
+          fontWeight: 700,
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          "&:hover": {
+            backgroundColor: "#f5f5f5",
+          },
+        },
+      },
+    },
+  },
+});
+
 export default function ServiceTable() {
-  const [rows, setRows] = useState([
-    createData(1, "GSTN", "Active", "01-jan-2024", "", ""),
-    createData(2, "Example Company B", "Inactive", "01-Feb-2024", "", ""),
-    createData(3, "Example Company C", "Active", "01-Mar-2024", "", ""),
-  ]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [newServiceName, setNewServiceName] = useState("");
-  const [newStatus, setNewStatus] = useState("");
-  const [newEffectiveFrom, setNewEffectiveFrom] = useState(null);
-  const [newEffectiveTo, setNewEffectiveTo] = useState(null);
-
-  const [filterServiceName, setFilterServiceName] = useState("All");
-  const [filterStatus, setFilterStatus] = useState("All");
-  const [filterEffectiveFrom, setFilterEffectiveFrom] = useState(null);
-  const [filterEffectiveTo, setFilterEffectiveTo] = useState(null);
-
-  const handleChange = (event) => {
-    setNewServiceName(event.target.value);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
   };
 
-  const handleStatusChange = (event) => {
-    setNewStatus(event.target.value);
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
-
-  const handleFilterServiceChange = (event) => {
-    setFilterServiceName(event.target.value);
-  };
-
-  const handleFilterStatusChange = (event) => {
-    setFilterStatus(event.target.value);
-  };
-
-  const handleFilterEffectiveFromChange = (event) => {
-    setFilterEffectiveFrom(event.target.value);
-  };
-
-  const handleFilterEffectiveToChange = (event) => {
-    setFilterEffectiveTo(event.target.value);
-  };
-
-  const handleAddRow = () => {
-    setRows([
-      ...rows,
-      createData(
-        rows.length + 1,
-        newServiceName,
-        newStatus,
-        newEffectiveFrom,
-        newEffectiveTo,
-        ""
-      ),
-    ]);
-    setNewServiceName("");
-    setNewStatus("");
-    setNewEffectiveFrom(null);
-    setNewEffectiveTo(null);
-  };
-
-  const handleDeleteRow = (index) => {
-    setRows(rows.filter((_, i) => i !== index));
-  };
-
-  // Filter rows based on selected filters
-  const filteredRows = rows.filter((row) => {
-    return (
-      (filterServiceName === "All" || row.ServiceName === filterServiceName) &&
-      (filterStatus === "All" || row.status === filterStatus) &&
-      (filterEffectiveFrom
-        ? new Date(row.EffectiveFrom) >= new Date(filterEffectiveFrom)
-        : true) &&
-      (filterEffectiveTo
-        ? new Date(row.EffectiveTo) <= new Date(filterEffectiveTo)
-        : true)
-    );
-  });
 
   return (
-    <div>
-      <TableContainer component={Paper}>
-        <Table size="small" sx={{ minWidth: 650 }} aria-label="simple table">
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <TableContainer component={Paper} className="container my-4 shadow-md rounded-lg" sx={{ boxShadow: 'none' }}>
+        <Table className="table-auto" sx={{ minWidth: 650 }} aria-label="company table">
           <TableHead>
             <TableRow>
-              <TableCell align="right" padding="normal">
+              <TableCell align="center" padding="normal">
                 S.No
               </TableCell>
-              <TableCell align="right" padding="normal">
-                <FormControl
-                  variant="outlined"
-                  size="small"
-                  style={{ minWidth: "120px" }} // Adjust width to fit content
-                >
-                  <InputLabel id="filter-service-name-label">
-                    Service Name
-                  </InputLabel>
-                  <Select
-                    labelId="filter-service-name-label"
-                    id="filter-service-name"
-                    value={filterServiceName}
-                    label="Service Name"
-                    onChange={handleFilterServiceChange}
-                  >
-                    {serviceOptions.map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+              <TableCell align="center" padding="normal">
+                Service Name
               </TableCell>
-              <TableCell align="right" padding="normal">
-                <FormControl
-                  variant="outlined"
-                  size="small"
-                  style={{ minWidth: "100px" }} // Adjust width to fit content
-                >
-                  <InputLabel id="filter-status-label">Status</InputLabel>
-                  <Select
-                    labelId="filter-status-label"
-                    id="filter-status"
-                    value={filterStatus}
-                    label="Status"
-                    onChange={handleFilterStatusChange}
-                  >
-                    {statusOptions.map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+              <TableCell align="center" padding="normal">
+                Status
               </TableCell>
-              <TableCell align="right" padding="normal">
-                <TextField
-                  type="date"
-                  variant="outlined"
-                  size="small"
-                  InputLabelProps={{ shrink: true }}
-                  value={filterEffectiveFrom || ""}
-                  onChange={handleFilterEffectiveFromChange}
-                  style={{ minWidth: "120px" }}
-                />
+              <TableCell align="center" padding="normal">
+                Effective From
               </TableCell>
-              <TableCell align="right" padding="normal">
-                <TextField
-                  type="date"
-                  variant="outlined"
-                  size="small"
-                  InputLabelProps={{ shrink: true }}
-                  value={filterEffectiveTo || ""}
-                  onChange={handleFilterEffectiveToChange}
-                  style={{ minWidth: "120px" }}
-                />
+              <TableCell align="center" padding="normal">
+                Effective To
               </TableCell>
-              <TableCell align="right" padding="normal">
+              <TableCell align="center" padding="normal">
                 Actions
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredRows.map((row, index) => (
+            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
               <TableRow
                 key={row.sno}
                 sx={{
-                  "&:last-child td, &:last-child th": { border: 0 },
-                  height: "36px", // Adjust the height as needed
+                  height: "48px",
                 }}
               >
-                <TableCell align="right" padding="normal">
+                <TableCell align="center" padding="normal">
                   {row.sno}
                 </TableCell>
-                <TableCell align="right" padding="normal">
-                  {row.ServiceName}
+                <TableCell align="center" padding="normal">
+                  {row.companyName}
                 </TableCell>
-                <TableCell align="right" padding="normal">
+                <TableCell align="center" padding="normal">
                   {row.status}
                 </TableCell>
-                <TableCell align="right" padding="normal">
-                  {row.EffectiveFrom}
+                <TableCell align="center" padding="normal">
+                  {row.effectiveFrom}
                 </TableCell>
-                <TableCell align="right" padding="normal">
-                  {row.EffectiveTo}
+                <TableCell align="center" padding="normal">
+                  {row.effectiveTo}
                 </TableCell>
-                <TableCell align="right" padding="normal">
+                <TableCell align="center" padding="normal">
                   <IconButton aria-label="edit" size="small">
-                    <EditOutlined
-                      fontSize="inherit"
-                      className="text-green-400 bg-gray-50 rounded"
-                    />
+                    <EditOutlined fontSize="inherit" className="text-green-400 bg-gray-50 rounded" />
                   </IconButton>
-                  <IconButton
-                    aria-label="delete"
-                    size="small"
-                    onClick={() => handleDeleteRow(index)}
-                  >
-                    <DeleteOutline
-                      fontSize="inherit"
-                      className="text-red-400 bg-gray-100 rounded"
-                    />
+                  <IconButton aria-label="delete" size="small">
+                    <DeleteOutline fontSize="inherit" className="text-red-400 bg-gray-100 rounded" />
                   </IconButton>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
-      <div className="mt-4">
-        <input
-          type="date"
-          onChange={(e) => setNewEffectiveFrom(e.target.value)}
-          placeholder="Effective From"
-          style={{ marginBottom: "1rem", width: "100%" }}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 15]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          className="border-t border-gray-200"
+          sx={{
+            boxShadow: 'none', border: "none"
+          }}
         />
-        <input
-          type="date"
-          onChange={(e) => setNewEffectiveTo(e.target.value)}
-          placeholder="Effective To"
-          style={{ marginBottom: "1rem", width: "100%" }}
-        />
-        <button onClick={handleAddRow} style={{ width: "100%" }}>
-          Add Service
-        </button>
-      </div>
-    </div>
-  );
-} */
-
-import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import IconButton from "@mui/material/IconButton";
-import { DeleteOutline, EditOutlined } from "@mui/icons-material";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import TextField from "@mui/material/TextField";
-import { useState } from "react";
-
-const serviceOptions = ["All", "GSTN", "MSME"];
-const statusOptions = ["All", "Active", "Inactive"];
-
-function createData(
-  sno,
-  ServiceName,
-  status,
-  EffectiveFrom,
-  EffectiveTo,
-  Actions
-) {
-  return { sno, ServiceName, status, EffectiveFrom, EffectiveTo, Actions };
-}
-
-export default function ServiceTable() {
-  const [rows, setRows] = useState([
-    createData(1, "GSTN", "Active", "2024-01-01", "2024-12-31", ""),
-    createData(
-      2,
-      "Example Company B",
-      "Inactive",
-      "2024-02-01",
-      "2024-11-30",
-      ""
-    ),
-    createData(
-      3,
-      "Example Company C",
-      "Active",
-      "2024-03-01",
-      "2024-10-31",
-      ""
-    ),
-  ]);
-
-  const [newServiceName, setNewServiceName] = useState("");
-  const [newStatus, setNewStatus] = useState("");
-  const [newEffectiveFrom, setNewEffectiveFrom] = useState(null);
-  const [newEffectiveTo, setNewEffectiveTo] = useState(null);
-
-  const [filterServiceName, setFilterServiceName] = useState("All");
-  const [filterStatus, setFilterStatus] = useState("All");
-  const [filterEffectiveFrom, setFilterEffectiveFrom] = useState(null);
-  const [filterEffectiveTo, setFilterEffectiveTo] = useState(null);
-
-  const handleChange = (event) => {
-    setNewServiceName(event.target.value);
-  };
-
-  const handleStatusChange = (event) => {
-    setNewStatus(event.target.value);
-  };
-
-  const handleFilterServiceChange = (event) => {
-    setFilterServiceName(event.target.value);
-  };
-
-  const handleFilterStatusChange = (event) => {
-    setFilterStatus(event.target.value);
-  };
-
-  const handleFilterEffectiveFromChange = (event) => {
-    setFilterEffectiveFrom(event.target.value);
-  };
-
-  const handleFilterEffectiveToChange = (event) => {
-    setFilterEffectiveTo(event.target.value);
-  };
-
-  const handleAddRow = () => {
-    setRows([
-      ...rows,
-      createData(
-        rows.length + 1,
-        newServiceName,
-        newStatus,
-        newEffectiveFrom,
-        newEffectiveTo,
-        ""
-      ),
-    ]);
-    setNewServiceName("");
-    setNewStatus("");
-    setNewEffectiveFrom(null);
-    setNewEffectiveTo(null);
-  };
-
-  const handleDeleteRow = (index) => {
-    setRows(rows.filter((_, i) => i !== index));
-  };
-
-  // Filter rows based on selected filters
-  const filteredRows = rows.filter((row) => {
-    return (
-      (filterServiceName === "All" || row.ServiceName === filterServiceName) &&
-      (filterStatus === "All" || row.status === filterStatus) &&
-      (filterEffectiveFrom
-        ? new Date(row.EffectiveFrom) >= new Date(filterEffectiveFrom)
-        : true) &&
-      (filterEffectiveTo
-        ? new Date(row.EffectiveTo) <= new Date(filterEffectiveTo)
-        : true)
-    );
-  });
-
-  return (
-    <div>
-      <TableContainer component={Paper}>
-        <Table size="small" sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="right" padding="normal">
-                S.No
-              </TableCell>
-              <TableCell align="right" padding="normal">
-                <FormControl
-                  variant="outlined"
-                  size="small"
-                  style={{ minWidth: "120px" }} // Adjust width to fit content
-                >
-                  <InputLabel id="filter-service-name-label">
-                    Service Name
-                  </InputLabel>
-                  <Select
-                    labelId="filter-service-name-label"
-                    id="filter-service-name"
-                    value={filterServiceName}
-                    label="Service Name"
-                    onChange={handleFilterServiceChange}
-                  >
-                    {serviceOptions.map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </TableCell>
-              <TableCell align="right" padding="normal">
-                <FormControl
-                  variant="outlined"
-                  size="small"
-                  style={{ minWidth: "100px" }} // Adjust width to fit content
-                >
-                  <InputLabel id="filter-status-label">Status</InputLabel>
-                  <Select
-                    labelId="filter-status-label"
-                    id="filter-status"
-                    value={filterStatus}
-                    label="Status"
-                    onChange={handleFilterStatusChange}
-                  >
-                    {statusOptions.map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </TableCell>
-              <TableCell align="right" padding="normal">
-                <TextField
-                  type="date"
-                  variant="outlined"
-                  size="small"
-                  InputLabelProps={{ shrink: true }}
-                  value={filterEffectiveFrom || ""}
-                  onChange={handleFilterEffectiveFromChange}
-                  style={{ minWidth: "120px" }}
-                  label="From"
-                />
-              </TableCell>
-              <TableCell align="right" padding="normal">
-                <TextField
-                  type="date"
-                  variant="outlined"
-                  size="small"
-                  InputLabelProps={{ shrink: true }}
-                  value={filterEffectiveTo || ""}
-                  onChange={handleFilterEffectiveToChange}
-                  style={{ minWidth: "120px" }}
-                  label="To"
-                />
-              </TableCell>
-              <TableCell align="right" padding="normal">
-                Actions
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredRows.map((row, index) => (
-              <TableRow
-                key={row.sno}
-                sx={{
-                  "&:last-child td, &:last-child th": { border: 0 },
-                  height: "36px", // Adjust the height as needed
-                }}
-              >
-                <TableCell align="right" padding="normal">
-                  {row.sno}
-                </TableCell>
-                <TableCell align="right" padding="normal">
-                  {row.ServiceName}
-                </TableCell>
-                <TableCell align="right" padding="normal">
-                  {row.status}
-                </TableCell>
-                <TableCell align="right" padding="normal">
-                  {row.EffectiveFrom}
-                </TableCell>
-                <TableCell align="right" padding="normal">
-                  {row.EffectiveTo}
-                </TableCell>
-                <TableCell align="right" padding="normal">
-                  <IconButton aria-label="edit" size="small">
-                    <EditOutlined
-                      fontSize="inherit"
-                      className="text-green-400 bg-gray-50 rounded"
-                    />
-                  </IconButton>
-                  <IconButton
-                    aria-label="delete"
-                    size="small"
-                    onClick={() => handleDeleteRow(index)}
-                  >
-                    <DeleteOutline
-                      fontSize="inherit"
-                      className="text-red-400 bg-gray-100 rounded"
-                    />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
       </TableContainer>
-    </div>
+    </ThemeProvider>
   );
 }

@@ -1,0 +1,24 @@
+/* Layout.css */
+
+body, html, #root {
+    height: 100%;
+    margin: 0;
+  }
+  
+  .header {
+    background-color: #fff;
+  }
+  
+  .sidemenu {
+    background-color: #fff;
+    transition: width 0.3s ease;
+  }
+  
+  main {
+    padding-top: 16px; /* Ensure content starts below the header */
+  }
+  
+  footer {
+    background-color: #fff;
+  }
+  
