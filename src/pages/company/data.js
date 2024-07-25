@@ -471,3 +471,51 @@ export const sections = [
     ],
   },
 ];
+
+export const services = [
+  {
+    title: "Service Form",
+    fields: [
+      {
+        type: "number",
+        id: "serial-no",
+        label: "S.No",
+        required: true,
+      },
+      {
+        type: "text",
+        id: "service-name",
+        label: "Service Name",
+        required: true,
+      },
+      {
+        type: "select",
+        id: "status",
+        label: "Status",
+        options: [
+          { value: "active", label: "Active" },
+          { value: "inactive", label: "Inactive" },
+        ],
+        required: true,
+      },
+      {
+        type: "date",
+        id: "effective-from",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "effective-to",
+        label: "Effective To",
+        required: true,
+      },
+      {
+        type: "actions",
+        id: "actions",
+        label: "Actions",
+        required: false,
+      },
+    ],
+  },
+];
