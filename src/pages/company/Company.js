@@ -8,9 +8,14 @@ import ServiceTable from "../../components/services/Servicetable";
 import CompanyForm from "./Companyform";
 import CustomInput from "../../components/input";
 import SelectInput from "../../components/select";
+import Serviceform from "./Serviceform";
 
 const Company = () => {
-  const [showForm, setShowForm] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [serviceForm, setServiceForm] = useState(false);
+  const handleServiceForm = () => {
+    setServiceForm(!serviceForm);
+  };
   const handleShowForm = () => {
     setShowForm(!showForm);
   };
@@ -93,6 +98,7 @@ const Company = () => {
           </label>
           <div>
             <Button
+              onClick={handleServiceForm}
               variant="text"
               sx={{
                 margin: ".7em",
@@ -108,6 +114,11 @@ const Company = () => {
             </Button>
           </div>
         </div>
+        {serviceForm && serviceForm ? (
+          <div className="justify-center">{<Serviceform />}</div>
+        ) : (
+          ""
+        )}
         <div className="mt-6 bg-white rounded-lg shadow-md">
           <ServiceTable />
         </div>
