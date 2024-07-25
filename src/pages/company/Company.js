@@ -10,7 +10,7 @@ import CustomInput from "../../components/input";
 import SelectInput from "../../components/select";
 
 const Company = () => {
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(true);
   const handleShowForm = () => {
     setShowForm(!showForm);
   };
@@ -28,7 +28,7 @@ const Company = () => {
                 // onChange={handleInputChange}
                 placeholder="Company Name"
                 labelStyles={{
-                  fontWeight:500
+                  fontWeight: 500,
                 }}
               />
             </div>
@@ -39,18 +39,18 @@ const Company = () => {
                 // value={formData.status || ''}
                 // onChange={handleInputChange}
                 options={[
-                  { value: '', label: 'Select Status' },
-                  { value: 'active', label: 'Active' },
-                  { value: 'inactive', label: 'Inactive' },
+                  { value: "", label: "Select Status" },
+                  { value: "active", label: "Active" },
+                  { value: "inactive", label: "Inactive" },
                 ]}
                 labelStyles={{
-                  fontWeight:500
+                  fontWeight: 500,
                 }}
               />
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
             <label
               htmlFor="Table"
               className="block mb-2 text-xl font-medium text-gray-900 ps-2 pt-4"
@@ -84,7 +84,7 @@ const Company = () => {
             <CompanyTable />
           </div>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <label
             htmlFor="Table"
             className="block mb-2 text-xl font-medium text-gray-900 ps-2 pt-4"

@@ -33,8 +33,7 @@ const theme = createTheme({
   },
   components: {
     MuiTable: {
-      styleOverrides: {
-      },
+      styleOverrides: {},
     },
     MuiTableCell: {
       styleOverrides: {
@@ -85,8 +84,16 @@ export default function CompanyTable() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <TableContainer component={Paper} className="container my-4 shadow-md rounded-lg" sx={{ boxShadow: 'none' }}>
-        <Table className="table-auto" sx={{ minWidth: 650 }} aria-label="company table">
+      <TableContainer
+        component={Paper}
+        className="container my-4 shadow-md rounded-lg"
+        sx={{ boxShadow: "none" }}
+      >
+        <Table
+          className="table-auto"
+          sx={{ minWidth: 650 }}
+          aria-label="company table"
+        >
           <TableHead>
             <TableRow>
               <TableCell align="center" padding="normal">
@@ -104,32 +111,40 @@ export default function CompanyTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-              <TableRow
-                key={row.sno}
-                sx={{
-                  height: "48px",
-                }}
-              >
-                <TableCell align="center" padding="normal">
-                  {row.sno}
-                </TableCell>
-                <TableCell align="center" padding="normal">
-                  {row.companyName}
-                </TableCell>
-                <TableCell align="center" padding="normal">
-                  {row.status}
-                </TableCell>
-                <TableCell align="center" padding="normal">
-                  <IconButton aria-label="edit" size="small">
-                    <EditOutlined fontSize="inherit" className="text-green-400 bg-gray-50 rounded" />
-                  </IconButton>
-                  <IconButton aria-label="delete" size="small">
-                    <DeleteOutline fontSize="inherit" className="text-red-400 bg-gray-100 rounded" />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {rows
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row) => (
+                <TableRow
+                  key={row.sno}
+                  sx={{
+                    height: "48px",
+                  }}
+                >
+                  <TableCell align="center" padding="normal">
+                    {row.sno}
+                  </TableCell>
+                  <TableCell align="center" padding="normal">
+                    {row.companyName}
+                  </TableCell>
+                  <TableCell align="center" padding="normal">
+                    {row.status}
+                  </TableCell>
+                  <TableCell align="center" padding="normal">
+                    <IconButton aria-label="edit" size="small">
+                      <EditOutlined
+                        fontSize="inherit"
+                        className="text-green-400 z-0  bg-gray-50 rounded"
+                      />
+                    </IconButton>
+                    <IconButton aria-label="delete" size="small">
+                      <DeleteOutline
+                        fontSize="inherit"
+                        className="text-red-400 bg-gray-100 rounded"
+                      />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
         <TablePagination
@@ -142,7 +157,8 @@ export default function CompanyTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
           className="border-t border-gray-200"
           sx={{
-            boxShadow: 'none', border: "none"
+            boxShadow: "none",
+            border: "none",
           }}
         />
       </TableContainer>

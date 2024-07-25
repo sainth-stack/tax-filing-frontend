@@ -12,14 +12,14 @@ import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
-function createData(sno, companyName,effectiveFrom,effectiveTo, status) {
-  return { sno, companyName,effectiveFrom,effectiveTo, status };
+function createData(sno, companyName, effectiveFrom, effectiveTo, status) {
+  return { sno, companyName, effectiveFrom, effectiveTo, status };
 }
 
 const rows = [
-  createData(1, "GSTIN", "14-12-2023","16-12-2024","Active"),
-  createData(2, "GSTIN", "14-12-2023","16-12-2024","Active"),
-  createData(3, "GSTIN", "14-12-2023","16-12-2024","Active"),
+  createData(1, "GSTIN", "14-12-2023", "16-12-2024", "Active"),
+  createData(2, "GSTIN", "14-12-2023", "16-12-2024", "Active"),
+  createData(3, "GSTIN", "14-12-2023", "16-12-2024", "Active"),
 ];
 
 const theme = createTheme({
@@ -28,8 +28,7 @@ const theme = createTheme({
   },
   components: {
     MuiTable: {
-      styleOverrides: {
-      },
+      styleOverrides: {},
     },
     MuiTableCell: {
       styleOverrides: {
@@ -80,8 +79,16 @@ export default function ServiceTable() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <TableContainer component={Paper} className="container my-4 shadow-md rounded-lg" sx={{ boxShadow: 'none' }}>
-        <Table className="table-auto" sx={{ minWidth: 650 }} aria-label="company table">
+      <TableContainer
+        component={Paper}
+        className="container my-4 shadow-md rounded-lg"
+        sx={{ boxShadow: "none" }}
+      >
+        <Table
+          className="table-auto"
+          sx={{ minWidth: 650 }}
+          aria-label="company table"
+        >
           <TableHead>
             <TableRow>
               <TableCell align="center" padding="normal">
@@ -105,38 +112,46 @@ export default function ServiceTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-              <TableRow
-                key={row.sno}
-                sx={{
-                  height: "48px",
-                }}
-              >
-                <TableCell align="center" padding="normal">
-                  {row.sno}
-                </TableCell>
-                <TableCell align="center" padding="normal">
-                  {row.companyName}
-                </TableCell>
-                <TableCell align="center" padding="normal">
-                  {row.status}
-                </TableCell>
-                <TableCell align="center" padding="normal">
-                  {row.effectiveFrom}
-                </TableCell>
-                <TableCell align="center" padding="normal">
-                  {row.effectiveTo}
-                </TableCell>
-                <TableCell align="center" padding="normal">
-                  <IconButton aria-label="edit" size="small">
-                    <EditOutlined fontSize="inherit" className="text-green-400 bg-gray-50 rounded" />
-                  </IconButton>
-                  <IconButton aria-label="delete" size="small">
-                    <DeleteOutline fontSize="inherit" className="text-red-400 bg-gray-100 rounded" />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {rows
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row) => (
+                <TableRow
+                  key={row.sno}
+                  sx={{
+                    height: "48px",
+                  }}
+                >
+                  <TableCell align="center" padding="normal">
+                    {row.sno}
+                  </TableCell>
+                  <TableCell align="center" padding="normal">
+                    {row.companyName}
+                  </TableCell>
+                  <TableCell align="center" padding="normal">
+                    {row.status}
+                  </TableCell>
+                  <TableCell align="center" padding="normal">
+                    {row.effectiveFrom}
+                  </TableCell>
+                  <TableCell align="center" padding="normal">
+                    {row.effectiveTo}
+                  </TableCell>
+                  <TableCell align="center" padding="normal">
+                    <IconButton aria-label="edit" size="small">
+                      <EditOutlined
+                        fontSize="inherit"
+                        className="text-green-400 z-0 bg-gray-50 rounded"
+                      />
+                    </IconButton>
+                    <IconButton aria-label="delete" size="small">
+                      <DeleteOutline
+                        fontSize="inherit"
+                        className="text-red-400 bg-gray-100 rounded"
+                      />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
         <TablePagination
@@ -149,7 +164,8 @@ export default function ServiceTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
           className="border-t border-gray-200"
           sx={{
-            boxShadow: 'none', border: "none"
+            boxShadow: "none",
+            border: "none",
           }}
         />
       </TableContainer>
