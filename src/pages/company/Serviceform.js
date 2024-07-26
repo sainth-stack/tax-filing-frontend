@@ -4,13 +4,14 @@ import CustomInput from "../../components/input";
 import SelectInput from "../../components/select";
 import { services } from "./data";
 
-const Serviceform = () => {
-  const [formData, setFormData] = useState({
+const Serviceform = ({ setRefresh, refresh }) => {
+  const defaultData = {
     serviceName: "",
     status: "",
     effectiveFrom: "",
     effectiveTo: "",
-  });
+  }
+  const [formData, setFormData] = useState(defaultData);
 
   const [error, seterror] = useState();
   const handleInputChange = (e) => {
@@ -30,7 +31,8 @@ const Serviceform = () => {
         "http://localhost:4000/api/services",
         formData
       );
-
+      setRefresh(!refresh)
+      setFormData(defaultData)
       console.log("Form submitted:", response.data);
     } catch (error) {
       seterror(error.message);

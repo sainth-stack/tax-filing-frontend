@@ -19,6 +19,8 @@ const Company = () => {
     setShowForm(!showForm);
   };
 
+  const [refresh, setRefresh] = useState(false)
+
   return (
     <>
       <Layout>
@@ -115,12 +117,12 @@ const Company = () => {
           </div>
         </div>
         {serviceForm && serviceForm ? (
-          <div className="justify-center">{<Serviceform />}</div>
+          <div className="justify-center">{<Serviceform {...{ setRefresh, refresh }} />}</div>
         ) : (
           ""
         )}
         <div className="mt-6 bg-white rounded-lg shadow-md">
-          <ServiceTable />
+          <ServiceTable {...{refresh}}/>
         </div>
         <div className="mx-auto shadow-lg rounded-md p-3"></div>
       </Layout>

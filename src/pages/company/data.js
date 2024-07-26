@@ -478,7 +478,7 @@ export const services = [
     fields: [
       {
         type: "text",
-        id: "service-name",
+        id: "serviceName",
         label: "Service Name",
         required: true,
       },
@@ -494,13 +494,13 @@ export const services = [
       },
       {
         type: "date",
-        id: "effective-from",
+        id: "effectiveFrom",
         label: "Effective From",
         required: true,
       },
       {
         type: "date",
-        id: "effective-to",
+        id: "effectiveTo",
         label: "Effective To",
         required: true,
       },

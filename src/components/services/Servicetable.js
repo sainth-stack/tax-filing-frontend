@@ -55,7 +55,7 @@ const theme = createTheme({
   },
 });
 
-export default function ServiceTable() {
+export default function ServiceTable({refresh}) {
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
   const [editModal, setEditModal] = useState(false);
@@ -73,7 +73,7 @@ export default function ServiceTable() {
     };
 
     fetchData();
-  }, []);
+  }, [refresh]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
