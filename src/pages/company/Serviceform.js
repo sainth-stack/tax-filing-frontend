@@ -1,10 +1,16 @@
 import React, { useState } from "react";
+import axios from "axios";
 import CustomInput from "../../components/input";
 import SelectInput from "../../components/select";
 import { services } from "./data";
 
 const Serviceform = () => {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    serviceName: "",
+    status: "",
+    effectiveFrom: "",
+    effectiveTo: "",
+  });
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -14,14 +20,23 @@ const Serviceform = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("Form submitted:", formData);
+    console.log("Form Data:", formData);
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/services",
+        formData
+      );
+
+      console.log("Form submitted:", response.data);
+    } catch (error) {
+      console.error("There was an error submitting the form:", error);
+    }
   };
 
   return (
-    <div className="container mx-auto  bg-white rounded-lg shadow-md">
+    <div className="container mx-auto bg-white rounded-lg shadow-md">
       <header
         className="text-black p-2 rounded-t-lg"
         style={{ background: "#f5f5f5" }}

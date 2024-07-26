@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 import CompanyTable from "./CompanyTable";
 import Layout from "./../../components/Layout/Layout";
@@ -12,7 +11,7 @@ import Serviceform from "./Serviceform";
 
 const Company = () => {
   const [showForm, setShowForm] = useState(false);
-  const [serviceForm, setServiceForm] = useState(false);
+  const [serviceForm, setServiceForm] = useState(true);
   const handleServiceForm = () => {
     setServiceForm(!serviceForm);
   };

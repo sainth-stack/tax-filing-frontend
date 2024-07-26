@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,16 +12,7 @@ import TablePagination from "@mui/material/TablePagination";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-
-function createData(sno, companyName, effectiveFrom, effectiveTo, status) {
-  return { sno, companyName, effectiveFrom, effectiveTo, status };
-}
-
-const rows = [
-  createData(1, "GSTIN", "14-12-2023", "16-12-2024", "Active"),
-  createData(2, "GSTIN", "14-12-2023", "16-12-2024", "Active"),
-  createData(3, "GSTIN", "14-12-2023", "16-12-2024", "Active"),
-];
+import ServiceModal from "./models/ServiceModal";
 
 const theme = createTheme({
   typography: {
@@ -64,8 +56,23 @@ const theme = createTheme({
 });
 
 export default function ServiceTable() {
+  const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
+  const [editModel, setEditModel] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/api/services");
+        setRows(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -76,6 +83,9 @@ export default function ServiceTable() {
     setPage(0);
   };
 
+  const handleEdit = () => {
+    setEditModel(!editModel);
+  };
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -114,15 +124,15 @@ export default function ServiceTable() {
           <TableBody>
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
+              .map((row, index) => (
                 <TableRow
-                  key={row.sno}
+                  key={row.sno || index}
                   sx={{
                     height: "48px",
                   }}
                 >
                   <TableCell align="center" padding="normal">
-                    {row.sno}
+                    {row.sno || index + 1}
                   </TableCell>
                   <TableCell align="center" padding="normal">
                     {row.companyName}
@@ -137,7 +147,11 @@ export default function ServiceTable() {
                     {row.effectiveTo}
                   </TableCell>
                   <TableCell align="center" padding="normal">
-                    <IconButton aria-label="edit" size="small">
+                    <IconButton
+                      aria-label="edit"
+                      size="small"
+                      onClick={handleEdit}
+                    >
                       <EditOutlined
                         fontSize="inherit"
                         className="text-green-400 z-0 bg-gray-50 rounded"
@@ -169,6 +183,8 @@ export default function ServiceTable() {
           }}
         />
       </TableContainer>
+
+      <ServiceModal />
     </ThemeProvider>
   );
 }

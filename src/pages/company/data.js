@@ -477,12 +477,6 @@ export const services = [
     title: "Service Form",
     fields: [
       {
-        type: "number",
-        id: "serial-no",
-        label: "S.No",
-        required: true,
-      },
-      {
         type: "text",
         id: "service-name",
         label: "Service Name",
@@ -509,12 +503,6 @@ export const services = [
         id: "effective-to",
         label: "Effective To",
         required: true,
-      },
-      {
-        type: "actions",
-        id: "actions",
-        label: "Actions",
-        required: false,
       },
     ],
   },
