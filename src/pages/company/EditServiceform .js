@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CustomInput from "../../components/input";
 import SelectInput from "../../components/select";
 import { services } from "./data";
 
-const Serviceform = () => {
+const EditServiceform = ({ serviceId }) => {
   const [formData, setFormData] = useState({
     serviceName: "",
     status: "",
@@ -12,7 +12,30 @@ const Serviceform = () => {
     effectiveTo: "",
   });
 
-  const [error, seterror] = useState();
+  const [error, setError] = useState();
+
+  useEffect(() => {
+    // Fetch existing service data if `serviceId` is provided
+    const fetchServiceData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/api/services/${serviceId}`
+        );
+        setFormData(response.data);
+      } catch (error) {
+        setError(error.message);
+        console.error(
+          "ERROR",
+          error.response ? error.response.data : error.message
+        );
+      }
+    };
+
+    if (serviceId) {
+      fetchServiceData();
+    }
+  }, [serviceId]);
+
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({
@@ -23,17 +46,15 @@ const Serviceform = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(process.env.API_URL);
-    console.log("Form Data:", formData);
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/services",
+      const response = await axios.put(
+        `http://localhost:4000/api/services/${serviceId}`,
         formData
       );
 
-      console.log("Form submitted:", response.data);
+      console.log("Form updated:", response.data);
     } catch (error) {
-      seterror(error.message);
+      setError(error.message);
       console.error(
         "ERROR",
         error.response ? error.response.data : error.message
@@ -47,7 +68,7 @@ const Serviceform = () => {
         className="text-black p-2 rounded-t-lg"
         style={{ background: "#f5f5f5" }}
       >
-        <h1 className="text-2xl font-bold">Create New Service</h1>
+        <h1 className="text-2xl font-bold">Edit Service</h1>
       </header>
       <form onSubmit={handleSubmit} className="p-2">
         {services.map((service, serviceIndex) => (
@@ -103,4 +124,4 @@ const Serviceform = () => {
   );
 };
 
-export default Serviceform;
+export default EditServiceform;

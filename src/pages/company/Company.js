@@ -11,13 +11,14 @@ import Serviceform from "./Serviceform";
 
 const Company = () => {
   const [showForm, setShowForm] = useState(false);
-  const [serviceForm, setServiceForm] = useState(true);
+  const [serviceForm, setServiceForm] = useState(false);
   const handleServiceForm = () => {
     setServiceForm(!serviceForm);
   };
   const handleShowForm = () => {
     setShowForm(!showForm);
   };
+
   return (
     <>
       <Layout>
@@ -121,6 +122,7 @@ const Company = () => {
         <div className="mt-6 bg-white rounded-lg shadow-md">
           <ServiceTable />
         </div>
+        <div className="mx-auto shadow-lg rounded-md p-3"></div>
       </Layout>
     </>
   );

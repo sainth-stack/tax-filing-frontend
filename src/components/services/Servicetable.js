@@ -12,7 +12,7 @@ import TablePagination from "@mui/material/TablePagination";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import ServiceModal from "./models/ServiceModal";
+import EditServiceform from "../../pages/company/EditServiceform ";
 
 const theme = createTheme({
   typography: {
@@ -58,7 +58,8 @@ const theme = createTheme({
 export default function ServiceTable() {
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
-  const [editModel, setEditModel] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [editServiceId, setEditServiceId] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
@@ -83,12 +84,31 @@ export default function ServiceTable() {
     setPage(0);
   };
 
-  const handleEdit = () => {
-    setEditModel(!editModel);
+  const handleEditForm = (id) => {
+    setEditServiceId(id);
+    setEditModal(true);
   };
+
+  const handleCloseModal = () => {
+    setEditModal(false);
+    setEditServiceId(null);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:4000/api/services/${id}`);
+      setRows(rows.filter((row) => row._id !== id));
+    } catch (error) {
+      console.error("Error deleting service:", error);
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <div className="mx-auto">
+        {editModal && <EditServiceform serviceId={editServiceId} />}
+      </div>
       <TableContainer
         component={Paper}
         className="container my-4 shadow-md rounded-lg"
@@ -126,38 +146,42 @@ export default function ServiceTable() {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => (
                 <TableRow
-                  key={row.sno || index}
+                  key={row._id || index}
                   sx={{
                     height: "48px",
                   }}
                 >
                   <TableCell align="center" padding="normal">
-                    {row.sno || index + 1}
+                    {index + 1}
                   </TableCell>
                   <TableCell align="center" padding="normal">
-                    {row.companyName}
+                    {row.serviceName}
                   </TableCell>
                   <TableCell align="center" padding="normal">
                     {row.status}
                   </TableCell>
                   <TableCell align="center" padding="normal">
-                    {row.effectiveFrom}
+                    {new Date(row.effectiveFrom).toLocaleDateString()}
                   </TableCell>
                   <TableCell align="center" padding="normal">
-                    {row.effectiveTo}
+                    {new Date(row.effectiveTo).toLocaleDateString()}
                   </TableCell>
                   <TableCell align="center" padding="normal">
                     <IconButton
                       aria-label="edit"
                       size="small"
-                      onClick={handleEdit}
+                      onClick={() => handleEditForm(row._id)}
                     >
                       <EditOutlined
                         fontSize="inherit"
                         className="text-green-400 z-0 bg-gray-50 rounded"
                       />
                     </IconButton>
-                    <IconButton aria-label="delete" size="small">
+                    <IconButton
+                      aria-label="delete"
+                      size="small"
+                      onClick={() => handleDelete(row._id)}
+                    >
                       <DeleteOutline
                         fontSize="inherit"
                         className="text-red-400 bg-gray-100 rounded"
@@ -183,8 +207,6 @@ export default function ServiceTable() {
           }}
         />
       </TableContainer>
-
-      <ServiceModal />
     </ThemeProvider>
   );
 }
