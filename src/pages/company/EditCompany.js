@@ -2,39 +2,39 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CustomInput from "../../components/input";
 import SelectInput from "../../components/select";
-import { services } from "./data";
+import { sections } from "./data";
 
-const EditServiceform = ({ serviceId }) => {
-  const [formData, setFormData] = useState({
-    serviceName: "",
-    status: "",
-    effectiveFrom: "",
-    effectiveTo: "",
-  });
-
-  const [error, setError] = useState();
+const EditCompanyForm = ({ companyId, onClose }) => {
+  const [formData, setFormData] = useState({});
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    // Fetch existing service data if `serviceId` is provided
-    const fetchServiceData = async () => {
+    const fetchCompanyData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/services/${serviceId}`
+          `http://localhost:4000/api/companies/${companyId}`
         );
-        setFormData(response.data);
+        const companyDetails = response.data.companyDetails;
+        console.log("Fetched company details:", companyDetails); // Log response data
+
+        // Populate the form fields with fetched data
+        const initialData = sections.reduce((acc, section) => {
+          section.fields.forEach((field) => {
+            acc[field.id] = companyDetails[field.id] || "";
+          });
+          return acc;
+        }, {});
+        setFormData(initialData);
       } catch (error) {
-        setError(error.message);
-        console.error(
-          "ERROR",
-          error.response ? error.response.data : error.message
-        );
+        console.error("Error fetching company data:", error);
+        setError("Error fetching company data.");
       }
     };
 
-    if (serviceId) {
-      fetchServiceData();
+    if (companyId) {
+      fetchCompanyData();
     }
-  }, [serviceId]);
+  }, [companyId]);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -47,40 +47,37 @@ const EditServiceform = ({ serviceId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(
-        `http://localhost:4000/api/services/${serviceId}`,
+      await axios.put(
+        `http://localhost:4000/api/companies/${companyId}`,
         formData
       );
-
-      console.log("Form updated:", response.data);
+      console.log("Form submitted");
+      onClose(); // Close the modal after successful submission
     } catch (error) {
-      setError(error.message);
-      console.error(
-        "ERROR",
-        error.response ? error.response.data : error.message
-      );
+      setError("Error updating company data.");
+      console.error("Error submitting form:", error);
     }
   };
 
   return (
-    <div className="container mx-auto  bg-white rounded-lg shadow-md">
+    <div className="container mx-auto bg-white rounded-lg shadow-md max-h-screen overflow-auto">
       <header
         className="text-black p-2 rounded-t-lg"
         style={{ background: "#f5f5f5" }}
       >
-        <h1 className="text-2xl font-bold">Edit Service</h1>
+        <h1 className="text-2xl font-bold">Edit Company</h1>
       </header>
       <form onSubmit={handleSubmit} className="p-2 max-w-full">
-        {services.map((service, serviceIndex) => (
+        {sections.map((section, sectionIndex) => (
           <div
-            key={serviceIndex}
+            key={sectionIndex}
             className="mb-1 p-2 border border-gray-300 rounded-lg bg-gray-50 shadow-sm"
           >
             <h2 className="text-xl font-semibold mb-2 border-b border-gray-200 pb-2">
-              {service.title}
+              {section.title}
             </h2>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
-              {service.fields.map((field, index) => {
+              {section.fields.map((field, index) => {
                 if (field.type === "select") {
                   return (
                     <SelectInput
@@ -88,7 +85,7 @@ const EditServiceform = ({ serviceId }) => {
                       id={field.id}
                       label={field.label}
                       options={field.options}
-                      value={formData[field.id]}
+                      value={formData[field.id] || ""}
                       onChange={handleInputChange}
                       required={field.required}
                     />
@@ -102,7 +99,7 @@ const EditServiceform = ({ serviceId }) => {
                     label={field.label}
                     required={field.required}
                     onChange={handleInputChange}
-                    value={formData[field.id]}
+                    value={formData[field.id] || ""}
                     placeholder={field.placeholder || ""}
                   />
                 );
@@ -110,6 +107,7 @@ const EditServiceform = ({ serviceId }) => {
             </div>
           </div>
         ))}
+        {error && <div className="text-red-500">{error}</div>}
         <div className="flex justify-end">
           <button
             type="submit"
@@ -119,9 +117,8 @@ const EditServiceform = ({ serviceId }) => {
           </button>
         </div>
       </form>
-      <h3>{error}</h3>
     </div>
   );
 };
 
-export default EditServiceform;
+export default EditCompanyForm;

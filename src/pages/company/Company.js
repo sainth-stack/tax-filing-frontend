@@ -19,7 +19,7 @@ const Company = () => {
     setShowForm(!showForm);
   };
 
-  const [refresh, setRefresh] = useState(false)
+  const [refresh, setRefresh] = useState(false);
 
   return (
     <>
@@ -30,6 +30,7 @@ const Company = () => {
               <CustomInput
                 id="company"
                 label="Company"
+                className="shadow-sm"
                 type="text"
                 // value={formData.company || ''}
                 // onChange={handleInputChange}
@@ -42,6 +43,7 @@ const Company = () => {
             <div className="flex items-center">
               <SelectInput
                 id="status"
+                className="shadow-sm"
                 label="Status"
                 // value={formData.status || ''}
                 // onChange={handleInputChange}
@@ -117,12 +119,14 @@ const Company = () => {
           </div>
         </div>
         {serviceForm && serviceForm ? (
-          <div className="justify-center">{<Serviceform {...{ setRefresh, refresh }} />}</div>
+          <div className="justify-center">
+            {<Serviceform {...{ setRefresh, refresh }} />}
+          </div>
         ) : (
           ""
         )}
         <div className="mt-6 bg-white rounded-lg shadow-md">
-          <ServiceTable {...{refresh}}/>
+          <ServiceTable {...{ refresh }} />
         </div>
         <div className="mx-auto shadow-lg rounded-md p-3"></div>
       </Layout>

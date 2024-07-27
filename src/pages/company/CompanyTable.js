@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,21 +12,8 @@ import TablePagination from "@mui/material/TablePagination";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-
-function createData(sno, companyName, status) {
-  return { sno, companyName, status };
-}
-
-const rows = [
-  createData(1, "Example Company A", "Active"),
-  createData(2, "Example Company B", "Inactive"),
-  createData(3, "Example Company C", "Active"),
-  createData(4, "Example Company D", "Inactive"),
-  createData(5, "Example Company E", "Active"),
-  createData(6, "Example Company F", "Inactive"),
-  createData(7, "Example Company G", "Active"),
-  createData(8, "Example Company H", "Inactive"),
-];
+import ServiceModal from "../../components/services/models/ServiceModal";
+import EditCompanyForm from "./EditCompany";
 
 const theme = createTheme({
   typography: {
@@ -71,6 +59,27 @@ const theme = createTheme({
 export default function CompanyTable() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [companies, setCompanies] = useState([]);
+  const [editModal, setEditModal] = useState(false);
+  const [editCompanyId, setEditCompanyId] = useState(null);
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/api/companies");
+        const { data } = response;
+        const companyDetailsArray = data.map((item) => ({
+          ...item.companyDetails,
+          _id: item._id,
+        }));
+        setCompanies(companyDetailsArray);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchCompanies();
+  }, []);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -81,9 +90,38 @@ export default function CompanyTable() {
     setPage(0);
   };
 
+  const handleEditForm = (id) => {
+    setEditCompanyId(id);
+    setEditModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setEditModal(false);
+    setEditCompanyId(null);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:4000/api/companies/${id}`);
+      setCompanies(companies.filter((company) => company._id !== id));
+    } catch (error) {
+      console.error("Error deleting company:", error);
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <div className="mx-auto">
+        {editModal && (
+          <ServiceModal open={editModal} handleClose={handleCloseModal}>
+            <EditCompanyForm
+              companyId={editCompanyId}
+              onClose={handleCloseModal}
+            />
+          </ServiceModal>
+        )}
+      </div>
       <TableContainer
         component={Paper}
         className="container my-4 shadow-md rounded-lg"
@@ -111,35 +149,43 @@ export default function CompanyTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
+            {companies
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
+              .map((company, index) => (
                 <TableRow
-                  key={row.sno}
+                  key={company._id || index}
                   sx={{
                     height: "48px",
                   }}
                 >
                   <TableCell align="center" padding="normal">
-                    {row.sno}
+                    {page * rowsPerPage + index + 1}
                   </TableCell>
                   <TableCell align="center" padding="normal">
-                    {row.companyName}
+                    {company.companyName || "N/A"}
                   </TableCell>
                   <TableCell align="center" padding="normal">
-                    {row.status}
+                    {company.clientStatus || "N/A"}
                   </TableCell>
                   <TableCell align="center" padding="normal">
-                    <IconButton aria-label="edit" size="small">
+                    <IconButton
+                      aria-label="edit"
+                      size="small"
+                      onClick={() => handleEditForm(company._id)}
+                    >
                       <EditOutlined
                         fontSize="inherit"
-                        className="text-green-400 z-0  bg-gray-50 rounded"
+                        className="text-green-400 animate-bounce z-0 bg-gray-50 rounded"
                       />
                     </IconButton>
-                    <IconButton aria-label="delete" size="small">
+                    <IconButton
+                      aria-label="delete"
+                      size="small"
+                      onClick={() => handleDelete(company._id)}
+                    >
                       <DeleteOutline
                         fontSize="inherit"
-                        className="text-red-400 bg-gray-100 rounded"
+                        className="text-red-400 animate-bounce bg-gray-100 rounded"
                       />
                     </IconButton>
                   </TableCell>
@@ -150,7 +196,7 @@ export default function CompanyTable() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 15]}
           component="div"
-          count={rows.length}
+          count={companies.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

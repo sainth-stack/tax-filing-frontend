@@ -12,7 +12,8 @@ import TablePagination from "@mui/material/TablePagination";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import EditServiceform from "../../pages/company/EditServiceform ";
+import ServiceModal from "./models/ServiceModal";
+import EditServiceform from "./../../pages/company/EditServiceform ";
 
 const theme = createTheme({
   typography: {
@@ -55,7 +56,7 @@ const theme = createTheme({
   },
 });
 
-export default function ServiceTable({refresh}) {
+export default function ServiceTable({ refresh }) {
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
   const [editModal, setEditModal] = useState(false);
@@ -106,8 +107,13 @@ export default function ServiceTable({refresh}) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+
       <div className="mx-auto">
-        {editModal && <EditServiceform serviceId={editServiceId} />}
+        {editModal && (
+          <ServiceModal open={editModal} handleClose={handleCloseModal}>
+            <EditServiceform serviceId={editServiceId} />
+          </ServiceModal>
+        )}
       </div>
       <TableContainer
         component={Paper}
@@ -169,12 +175,13 @@ export default function ServiceTable({refresh}) {
                   <TableCell align="center" padding="normal">
                     <IconButton
                       aria-label="edit"
+                      className="-z-0"
                       size="small"
                       onClick={() => handleEditForm(row._id)}
                     >
                       <EditOutlined
                         fontSize="inherit"
-                        className="text-green-400 z-0 bg-gray-50 rounded"
+                        className="text-green-400 animate-bounce  z-0 bg-gray-50 rounded"
                       />
                     </IconButton>
                     <IconButton
@@ -184,7 +191,7 @@ export default function ServiceTable({refresh}) {
                     >
                       <DeleteOutline
                         fontSize="inherit"
-                        className="text-red-400 bg-gray-100 rounded"
+                        className="text-red-400 animate-bounce bg-gray-100 rounded"
                       />
                     </IconButton>
                   </TableCell>

@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
-import CustomInput from '../../components/input';
-import SelectInput from '../../components/select';
-import { sections } from './data';
+import React, { useState } from "react";
+import axios from "axios";
+import CustomInput from "../../components/input";
+import SelectInput from "../../components/select";
+import { sections } from "./data";
 
 const CompanyForm = () => {
-  const [formData, setFormData] = useState({});
+  /* i made mapping here instead of putting all names of fileds ok ! */
+  const initialFormData = sections.reduce((acc, section) => {
+    section.fields.forEach((field) => {
+      acc[field.id] = "";
+    });
+    return acc;
+  }, {});
+
+  const [formData, setFormData] = useState(initialFormData);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -14,15 +23,27 @@ const CompanyForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Form submitted:', formData);
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/companies",
+        formData
+      );
+      console.log("Form submitted:", response.data);
+      // Optionally, reset the form after successful submission
+      setFormData(initialFormData);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   return (
     <div className="container mx-auto p-4 bg-white rounded-lg shadow-md">
-      <header className="text-black p-4 rounded-t-lg" style={{background:"#f5f5f5"}}>
+      <header
+        className="text-black p-4 rounded-t-lg"
+        style={{ background: "#f5f5f5" }}
+      >
         <h1 className="text-2xl font-bold">Create New Company</h1>
       </header>
       <form onSubmit={handleSubmit} className="p-6">
@@ -36,14 +57,14 @@ const CompanyForm = () => {
             </h2>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
               {section.fields.map((field, index) => {
-                if (field.type === 'select') {
+                if (field.type === "select") {
                   return (
                     <SelectInput
                       key={index}
                       id={field.id}
                       label={field.label}
                       options={field.options}
-                      value={formData[field.id]}
+                      value={formData[field.id] || ""}
                       onChange={handleInputChange}
                       required={field.required}
                     />
@@ -57,8 +78,8 @@ const CompanyForm = () => {
                     label={field.label}
                     required={field.required}
                     onChange={handleInputChange}
-                    value={formData[field.id]}
-                    placeholder={field.placeholder || ''}
+                    value={formData[field.id] || ""}
+                    placeholder={field.placeholder || ""}
                   />
                 );
               })}

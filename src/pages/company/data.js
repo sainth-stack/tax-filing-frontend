@@ -4,17 +4,16 @@ export const sections = [
     fields: [
       {
         type: "text",
-        id: "Company",
+        id: "companyDetails.companyName",
         label: "Company",
         required: true,
       },
       {
         type: "select",
-        id: "constitution",
+        id: "companyDetails.constitution",
         label: "Constitution",
         options: [
           { value: "Partnership", label: "Partnership" },
-
           { value: "Proprietorship", label: "Proprietorship" },
           { value: "Private Limited", label: "Private Limited" },
           { value: "LLP", label: "LLP" },
@@ -23,7 +22,7 @@ export const sections = [
       },
       {
         type: "select",
-        id: "client-status",
+        id: "companyDetails.clientStatus",
         label: "Client Status",
         options: [
           { value: "active", label: "Active" },
@@ -33,25 +32,153 @@ export const sections = [
       },
       {
         type: "text",
-        id: "authorised-person",
+        id: "companyDetails.authorisedPerson",
         label: "Authorised Person",
         required: true,
       },
-      { type: "text", id: "phone", label: "Phone", required: true },
-      { type: "text", id: "mail-id", label: "Mail ID", required: true },
+      {
+        type: "text",
+        id: "companyDetails.phone",
+        label: "Phone",
+        required: true,
+      },
+      {
+        type: "text",
+        id: "companyDetails.mailId",
+        label: "Mail ID",
+        required: true,
+      },
+    ],
+  },
+  {
+    title: "Income Tax",
+    fields: [
+      {
+        type: "select",
+        id: "incomeTax.incomeTax",
+        label: "Income Tax",
+        options: [
+          { value: "YES", label: "yes" },
+          { value: "NO", label: "no" },
+        ],
+        required: true,
+      },
+      { type: "text", id: "incomeTax.pan", label: "PAN", required: true },
+      {
+        type: "password",
+        id: "incomeTax.incomeTaxPassword",
+        label: "Income Tax Password",
+        required: true,
+      },
+    ],
+  },
+  {
+    title: "GST",
+    fields: [
+      { type: "text", id: "gst.gstin", label: "GSTIN", required: true },
+      {
+        type: "text",
+        id: "gst.gstUserName",
+        label: "GST User Name",
+        required: true,
+      },
+      {
+        type: "password",
+        id: "gst.gstPassword",
+        label: "GST Password",
+        required: true,
+      },
+      {
+        type: "text",
+        id: "gst.gstStatus",
+        label: "GST Status",
+        required: true,
+      },
+      {
+        type: "text",
+        id: "gst.eWayBillUsername",
+        label: "E-WayBill Username",
+        required: true,
+      },
+      {
+        type: "password",
+        id: "gst.eWayBillPassword",
+        label: "E-WayBill Password",
+        required: true,
+      },
     ],
   },
   {
     title: "Employer State Insurance",
     fields: [
-      { type: "text", id: "esi", label: "ESI", required: true },
-
-      { type: "text", id: "esi-number", label: "ESI Number", required: true },
-      { type: "text", id: "esi-user-id", label: "ESI User ID", required: true },
+      {
+        type: "text",
+        id: "esi.esiNumber",
+        label: "ESI Number",
+        required: true,
+      },
+      {
+        type: "text",
+        id: "esi.esiUserId",
+        label: "ESI User ID",
+        required: true,
+      },
       {
         type: "password",
-        id: "esi-password",
+        id: "esi.esiPassword",
         label: "ESI Password",
+        required: true,
+      },
+    ],
+  },
+  {
+    title: "Provident Fund",
+    fields: [
+      {
+        type: "text",
+        id: "providentFund.pfNumber",
+        label: "PF Number",
+        required: true,
+      },
+      {
+        type: "text",
+        id: "providentFund.pfUserId",
+        label: "PF User ID",
+        required: true,
+      },
+      {
+        type: "password",
+        id: "providentFund.pfPassword",
+        label: "PF Password",
+        required: true,
+      },
+    ],
+  },
+  {
+    title: "Professional Tax",
+    fields: [
+      {
+        type: "text",
+        id: "professionalTax.ptEcNumber",
+        label: "PT EC Number",
+        required: true,
+      },
+      {
+        type: "text",
+        id: "professionalTax.ptUsername",
+        label: "PT Username",
+        required: true,
+      },
+      {
+        type: "password",
+        id: "professionalTax.ptPassword",
+        label: "PT Password",
+        required: true,
+      },
+      {
+        type: "text",
+        id: "professionalTax.ptNumber",
+        label: "PT Number",
         required: true,
       },
     ],
@@ -59,23 +186,22 @@ export const sections = [
   {
     title: "TDS",
     fields: [
-      { type: "text", id: "TDS", label: "TDS", required: true },
-      { type: "text", id: "tan", label: "TAN", required: true },
+      { type: "text", id: "tds.tan", label: "TAN", required: true },
       {
         type: "password",
-        id: "tan-password",
+        id: "tds.tanPassword",
         label: "TAN Password",
         required: true,
       },
       {
         type: "text",
-        id: "traces-username",
+        id: "tds.tracesUsername",
         label: "Traces Username",
         required: true,
       },
       {
         type: "password",
-        id: "traces-password",
+        id: "tds.tracesPassword",
         label: "Traces Password",
         required: true,
       },
@@ -86,22 +212,25 @@ export const sections = [
     fields: [
       {
         type: "text",
-        id: "Shop and Commercial Establishment",
-        label: "S & C  Establishment",
+        id: "shopCommercialEstablishment.seNumber",
+        label: "SE Number",
         required: true,
       },
-      { type: "text", id: "se-number", label: "SE Number", required: true },
-
-      { type: "text", id: "se-username", label: "SE Username", required: true },
+      {
+        type: "text",
+        id: "shopCommercialEstablishment.seUsername",
+        label: "SE Username",
+        required: true,
+      },
       {
         type: "password",
-        id: "se-password",
+        id: "shopCommercialEstablishment.sePassword",
         label: "SE Password",
         required: true,
       },
       {
         type: "date",
-        id: "se-renewal-date",
+        id: "shopCommercialEstablishment.seRenewalDate",
         label: "SE Renewal Date",
         required: true,
       },
@@ -110,231 +239,10 @@ export const sections = [
   {
     title: "MSME/Udyam",
     fields: [
-      { type: "text", id: "msme-udyam", label: "MSME/Udyam", required: true },
-      { type: "text", id: "msme-number", label: "MSME Number", required: true },
-    ],
-  },
-  {
-    title: "Import Export Code",
-    fields: [
-      { type: "text", id: "iec-code", label: "IEC Code", required: true },
-
-      { type: "text", id: "iec-number", label: "IEC Number", required: true },
       {
         type: "text",
-        id: "dgft-username",
-        label: "DGFT Username",
-        required: true,
-      },
-      {
-        type: "password",
-        id: "dgft-password",
-        label: "DGFT Password",
-        required: true,
-      },
-      {
-        type: "text",
-        id: "icegate-username",
-        label: "ICEGATE Username",
-        required: true,
-      },
-      {
-        type: "password",
-        id: "icegate-password",
-        label: "ICEGATE Password",
-        required: true,
-      },
-    ],
-  },
-  {
-    title: "MCA",
-    fields: [
-      { type: "text", id: "MCA", label: "MCA", required: true },
-      { type: "text", id: "cin-llp", label: "CIN/LLP", required: true },
-      {
-        type: "text",
-        id: "mca-username",
-        label: "MCA Username",
-        required: true,
-      },
-      {
-        type: "password",
-        id: "mca-password",
-        label: "MCA Password",
-        required: true,
-      },
-      {
-        type: "text",
-        id: "bank-overdraft",
-        label: "Bank Overdraft/ Cash Credit",
-      },
-      { type: "date", id: "renewal-date", label: "Renewal Date" },
-    ],
-  },
-  {
-    title: "Income Tax",
-    fields: [
-      {
-        type: "select",
-        id: "income-tax",
-        label: "Income Tax",
-        options: [
-          { value: "YES", label: "yes" },
-
-          { value: "NO", label: "no" },
-        ],
-        required: true,
-      },
-      { type: "text", id: "pan", label: "PAN", required: true },
-      {
-        type: "password",
-        id: "income-tax-password",
-        label: "Income Tax Password",
-        required: true,
-      },
-    ],
-  },
-  {
-    title: "Provident Fund",
-    fields: [
-      {
-        type: "text",
-        id: "pf-fund",
-        label: "Provident Fund",
-        required: true,
-      },
-      { type: "text", id: "pf-number", label: "PF Number", required: true },
-      { type: "text", id: "pf-user-id", label: "PF User ID", required: true },
-      {
-        type: "password",
-        id: "pf-password",
-        label: "PF Password",
-        required: true,
-      },
-    ],
-  },
-  /* {
-    title: "ESI Number",
-    fields: [
-      { type: "text", id: "esi-number", label: "ESI Number", required: true },
-      { type: "text", id: "esi-user-id", label: "ESI User ID", required: true },
-      {
-        type: "password",
-        id: "esi-password",
-        label: "ESI Password",
-        required: true,
-      },
-    ],
-  }, */
-  {
-    title: "GST",
-    fields: [
-      { type: "text", id: "gstin", label: "GSTIN", required: true },
-      {
-        type: "text",
-        id: "gst-username",
-        label: "GST User Name",
-        required: true,
-      },
-      {
-        type: "password",
-        id: "gst-password",
-        label: "GST Password",
-        required: true,
-      },
-      { type: "text", id: "gst-status", label: "GST Status", required: true },
-      {
-        type: "text",
-        id: "ewaybill-username",
-        label: "E-WayBill Username",
-        required: true,
-      },
-      {
-        type: "password",
-        id: "ewaybill-password",
-        label: "E-WayBill Password",
-        required: true,
-      },
-    ],
-  },
-  {
-    title: "Professional Tax For Institution",
-    fields: [
-      {
-        type: "text",
-        id: "pt-ec-number",
-        label: "PT EC Number",
-        required: true,
-      },
-      {
-        type: "text",
-        id: "ec-user-name",
-        label: "EC User Name",
-        required: true,
-      },
-      {
-        type: "password",
-        id: "ec-password",
-        label: "EC Password",
-        required: true,
-      },
-      {
-        type: "text",
-        id: "professional-tax-employees",
-        label: "PT Employees",
-        required: true,
-      },
-      {
-        type: "text",
-        id: "pt-number",
-        label: "PT Number",
-        required: true,
-      },
-      {
-        type: "text",
-        id: "pt-username",
-        label: "PT Username",
-        required: true,
-      },
-      {
-        type: "password",
-        id: "pt-password",
-        label: "PT Password",
-        required: true,
-      },
-    ],
-  },
-  {
-    title: "Factory Licence",
-    fields: [
-      {
-        type: "text",
-        id: "factory-licence-yes",
-        label: "Factory Licence",
-        required: true,
-      },
-      {
-        type: "text",
-        id: "factory-licence-number",
-        label: "FL Number",
-        required: true,
-      },
-      {
-        type: "text",
-        id: "fl-username",
-        label: "FL User Name",
-        required: true,
-      },
-      {
-        type: "password",
-        id: "fl-password",
-        label: "FL Password",
-        required: true,
-      },
-      {
-        type: "date",
-        id: "fl-renewal-date",
-        label: "FL Renewal Date",
+        id: "msme.msmeNumber",
+        label: "MSME Number",
         required: true,
       },
     ],
@@ -344,56 +252,90 @@ export const sections = [
     fields: [
       {
         type: "text",
-        id: "fssai",
-        label: "FSSAI",
-        required: true,
-      },
-      {
-        type: "text",
-        id: "fssai-number",
+        id: "fssai.fssaiNumber",
         label: "FSSAI Number",
         required: true,
       },
       {
         type: "text",
-        id: "fssai-username",
+        id: "fssai.fssaiUsername",
         label: "FSSAI Username",
         required: true,
       },
       {
         type: "password",
-        id: "fssai-password",
+        id: "fssai.fssaiPassword",
         label: "FSSAI Password",
         required: true,
       },
       {
         type: "date",
-        id: "fssai-renewal-date",
+        id: "fssai.fssaiRenewalDate",
         label: "FSSAI Renewal Date",
         required: true,
       },
     ],
   },
   {
-    title: "Shram Suvidha Portal",
+    title: "Factory Licence",
     fields: [
       {
         type: "text",
-        id: "lin",
-        label: "Shram Suvidha Portal",
+        id: "factoryLicense.flNumber",
+        label: "FL Number",
         required: true,
       },
-      { type: "text", id: "lin", label: "LIN", required: true },
       {
         type: "text",
-        id: "ss-username",
-        label: "S S Username",
+        id: "factoryLicense.flUsername",
+        label: "FL User Name",
         required: true,
       },
       {
         type: "password",
-        id: "ss-password",
-        label: "S S Password",
+        id: "factoryLicense.flPassword",
+        label: "FL Password",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "factoryLicense.flRenewalDate",
+        label: "FL Renewal Date",
+        required: true,
+      },
+    ],
+  },
+  {
+    title: "Import Export Code",
+    fields: [
+      {
+        type: "text",
+        id: "importExport.iecNumber",
+        label: "IEC Number",
+        required: true,
+      },
+      {
+        type: "text",
+        id: "importExport.dgftUsername",
+        label: "DGFT Username",
+        required: true,
+      },
+      {
+        type: "password",
+        id: "importExport.dgftPassword",
+        label: "DGFT Password",
+        required: true,
+      },
+      {
+        type: "text",
+        id: "importExport.icegateUsername",
+        label: "ICEGATE Username",
+        required: true,
+      },
+      {
+        type: "password",
+        id: "importExport.icegatePassword",
+        label: "ICEGATE Password",
         required: true,
       },
     ],
@@ -403,71 +345,56 @@ export const sections = [
     fields: [
       {
         type: "text",
-        id: "Partnership Firm Form C",
-        label: "PF  Form C",
-        required: true,
-      },
-      {
-        type: "text",
-        id: "form-c-number",
+        id: "partnershipFirmFormC.formCNumber",
         label: "Form C Number",
         required: true,
       },
     ],
   },
   {
-    title: "Attachments",
+    title: "Shram Suvidha Portal",
     fields: [
-      { type: "file", id: "pan-file", label: "PAN ", required: true },
-      { type: "file", id: "gst-file", label: "GST ", required: true },
-      { type: "file", id: "esi-file", label: "ESI ", required: true },
-      { type: "file", id: "pf-file", label: "Provident Fund ", required: true },
       {
-        type: "file",
-        id: "pt-file",
-        label: "Professional Tax ",
-        required: true,
-      },
-      { type: "file", id: "tan-file", label: "TAN ", required: true },
-      {
-        type: "file",
-        id: "shop-establishment-file",
-        label: "Shop and Commercial Establishment ",
-        required: true,
-      },
-      { type: "file", id: "msme-file", label: "MSME ", required: true },
-      {
-        type: "file",
-        id: "fssai-file",
-        label: "FSSAI ",
+        type: "text",
+        id: "shramSuvidhaPortal.lin",
+        label: "LIN",
         required: true,
       },
       {
-        type: "file",
-        id: "factory-license-file",
-        label: "Factory License ",
+        type: "text",
+        id: "shramSuvidhaPortal.ssUsername",
+        label: "S S Username",
         required: true,
       },
       {
-        type: "file",
-        id: "import-export-file",
-        label: "Import and Export ",
+        type: "password",
+        id: "shramSuvidhaPortal.ssPassword",
+        label: "S S Password",
+        required: true,
+      },
+    ],
+  },
+  {
+    title: "MCA",
+    fields: [
+      { type: "text", id: "mca.cin", label: "CIN/LLP", required: true },
+      {
+        type: "text",
+        id: "mca.mcaUsername",
+        label: "MCA Username",
         required: true,
       },
       {
-        type: "file",
-        id: "partnership-formc-file",
-        label: "Partnership Firm Form C ",
+        type: "password",
+        id: "mca.mcaPassword",
+        label: "MCA Password",
         required: true,
       },
       {
-        type: "file",
-        id: "shram-suvidha-file",
-        label: "Shram Suvidha Portal ",
-        required: true,
+        type: "text",
+        id: "mca.bankOverdraftCashCreditRenewalDate",
+        label: "Bank Overdraft/ Cash Credit Renewal Date",
       },
-      { type: "file", id: "mca-file", label: "MCA ", required: true },
-      { type: "file", id: "cin-file", label: "CIN ", required: true },
     ],
   },
 ];
