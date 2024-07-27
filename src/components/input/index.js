@@ -11,7 +11,7 @@ const CustomInput = ({ type, id, label, required, onChange, value, placeholder, 
       </label>
       <div className="relative">
         <input
-          type={type === 'password' && !showPassword ? 'password' : 'text'}
+          type={type === 'password' && !showPassword ? 'password' : type}
           id={id}
           value={value || ''}
           onChange={onChange}

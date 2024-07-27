@@ -397,6 +397,27 @@ export const sections = [
       },
     ],
   },
+  {
+    title: "Attachments",
+    fields: [
+      { type: "file", id: "attachments.panFile", label: "PAN", required: true },
+      { type: "file", id: "attachments.gstFile", label: "GST", required: true },
+      { type: "file", id: "attachments.esiFile", label: "ESI", required: true },
+      { type: "file", id: "attachments.pfFile", label: "Provident Fund", required: true },
+      { type: "file", id: "attachments.ptFile", label: "Professional Tax", required: true },
+      { type: "file", id: "attachments.tanFile", label: "TAN", required: true },
+      { type: "file", id: "attachments.shopEstablishmentFile", label: "Shop and Commercial Establishment", required: true },
+      { type: "file", id: "attachments.msmeFile", label: "MSME", required: true },
+      { type: "file", id: "attachments.fssaiFile", label: "FSSAI", required: true },
+      { type: "file", id: "attachments.factoryLicenseFile", label: "Factory License", required: true },
+      { type: "file", id: "attachments.importExportFile", label: "Import and Export", required: true },
+      { type: "file", id: "attachments.partnershipFormcFile", label: "Partnership Firm Form C", required: true },
+      { type: "file", id: "attachments.shramSuvidhaFile", label: "Shram Suvidha Portal", required: true },
+      { type: "file", id: "attachments.mcaFile", label: "MCA", required: true },
+      { type: "file", id: "attachments.cinFile", label: "CIN", required: true }
+    ]
+  }
+  
 ];
 
 export const services = [
