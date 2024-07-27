@@ -56,7 +56,7 @@ const theme = createTheme({
   },
 });
 
-export default function CompanyTable() {
+export default function CompanyTable({setCompanyId,companyRefresh}) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [companies, setCompanies] = useState([]);
@@ -79,7 +79,7 @@ export default function CompanyTable() {
     };
 
     fetchCompanies();
-  }, []);
+  }, [companyRefresh]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -171,7 +171,7 @@ export default function CompanyTable() {
                     <IconButton
                       aria-label="edit"
                       size="small"
-                      onClick={() => handleEditForm(company._id)}
+                      onClick={() => setCompanyId(company._id)}
                     >
                       <EditOutlined
                         fontSize="inherit"

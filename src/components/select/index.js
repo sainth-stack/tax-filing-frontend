@@ -13,7 +13,7 @@ const SelectInput = ({ id, label, options, value, onChange, required, className,
         value={value || ''}
         onChange={onChange}
         className="border rounded p-[7px] focus:outline-none focus:ring-2 focus:ring-blue-500"
-        required={required}
+        // required={required}
       >
         <option value="" disabled>Select an option</option>
         {options.map((option, index) => (

@@ -10,8 +10,9 @@ import SelectInput from "../../components/select";
 import Serviceform from "./Serviceform";
 
 const Company = () => {
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState("");
   const [serviceForm, setServiceForm] = useState(false);
+  const [companyId, setCompanyId] = useState("")
   const handleServiceForm = () => {
     setServiceForm(!serviceForm);
   };
@@ -20,7 +21,7 @@ const Company = () => {
   };
 
   const [refresh, setRefresh] = useState(false);
-
+  const [companyRefresh, setCompanyRefresh] = useState(false)
   return (
     <>
       <Layout>
@@ -82,15 +83,30 @@ const Company = () => {
               >
                 Add New Company
               </Button>
+              {(showForm || companyId) && <Button
+                variant="text"
+                sx={{
+                  margin: ".7em",
+                  bgcolor: "red",
+                  color: "white",
+                  "&:hover": {
+                    bgcolor: "red",
+                    color: "white",
+                  },
+                }}
+                onClick={() => { setCompanyId(""); setShowForm(false) }}
+              >
+                cancel
+              </Button>}
             </div>
           </div>
-          {showForm && showForm ? (
-            <div className="justify-center">{<CompanyForm />}</div>
+          {(showForm || companyId) ? (
+            <div className="justify-center">{<CompanyForm {...{ companyId, setCompanyId, setShowForm,setCompanyRefresh ,companyRefresh}} />}</div>
           ) : (
             ""
           )}
           <div className="bg-white rounded-lg shadow-md">
-            <CompanyTable />
+            <CompanyTable {...{ setCompanyId,companyRefresh }} />
           </div>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
