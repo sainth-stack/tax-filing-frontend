@@ -12,7 +12,7 @@ const EditCompanyForm = ({ companyId, onClose }) => {
     const fetchCompanyData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/companies/${companyId}`
+          `${process.env.BASE_URL}/companies/${companyId}`
         );
         const companyDetails = response.data.companyDetails;
         console.log("Fetched company details:", companyDetails); // Log response data
@@ -48,7 +48,7 @@ const EditCompanyForm = ({ companyId, onClose }) => {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:4000/api/companies/${companyId}`,
+        `${process.env.BASE_URL}/companies/${companyId}`,
         formData
       );
       console.log("Form submitted");
