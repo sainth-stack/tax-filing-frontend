@@ -14,16 +14,16 @@ const Topmenu = () => {
 
   return (
     <>
-      <div className="sticky-top-container w-full">
+      <div className="w-full">
         <div className="flex items-center justify-between p-3 border-b border-gray-200" style={{ height: '80px' }}>
           <h2></h2>
           <div className="flex items-center space-x-4">
-            <div className="relative">
+            <div>
               <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-md">
                 <NotificationsSharp className="w-6 h-6 text-gray-500 hover:text-gray-700" />
               </div>
             </div>
-            <div className="relative">
+            <div>
               <button
                 onClick={toggleProfileDropdown}
                 className="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-md"
