@@ -32,7 +32,7 @@ const Login = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_REACT_APP_BASE_URL}/users/login`,
+        `${process.env.REACT_APP_BASE_URL}/users/login`,
         {
           email: formData.email,
           password: formData.password,
@@ -54,6 +54,9 @@ const Login = () => {
     }
   };
 
+  useState(() => {
+    console.log(process.env.REACT_APP_BASE_URL);
+  }, []);
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-5 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-lg">
