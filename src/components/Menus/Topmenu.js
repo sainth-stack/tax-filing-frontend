@@ -14,9 +14,9 @@ const Topmenu = () => {
 
   return (
     <>
-      <div className="z-50 w-full">
-        <div className="flex items-center justify-between p-3 border-b border-gray-200" style={{height:'80px'}}>
-         <h2></h2>
+      <div className="sticky-top-container w-full">
+        <div className="flex items-center justify-between p-3 border-b border-gray-200" style={{ height: '80px' }}>
+          <h2></h2>
           <div className="flex items-center space-x-4">
             <div className="relative">
               <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-md">

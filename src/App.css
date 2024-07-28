@@ -1,0 +1,6 @@
+.sticky-top-container {
+    position: sticky;
+    top: 0;
+    z-index: 99999;
+    background-color: white; /* or any background color to cover elements below */
+  }

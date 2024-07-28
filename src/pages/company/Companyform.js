@@ -12,7 +12,18 @@ const CompanyForm = ({
   companyRefresh,
 }) => {
   const [error, setError] = useState("");
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(sections ? sections.map(section => section.title) : []);
+
+  const replaceEmptyObjectsWithEmptyStrings = (data) => {
+    const updatedData = { ...data };
+    Object.keys(updatedData).forEach((key) => {
+      if (typeof updatedData[key] === 'object' && Object.keys(updatedData[key]).length === 0) {
+        updatedData[key] = '';
+      }
+    });
+    return updatedData;
+  };
+
 
   const initialFormData = sections.reduce((acc, section) => {
     section.fields.forEach((field) => {
@@ -59,7 +70,7 @@ const CompanyForm = ({
         formData
       );
       console.log("Form submitted:", response.data);
-      handleFiles(response.data)
+      handleFiles(response.data);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -75,7 +86,7 @@ const CompanyForm = ({
         }
       }
 
-      form.append("companyId",data?._id)
+      form.append("companyId", data?._id);
 
       const response = await axios.post(
         "http://localhost:4000/api/files",
@@ -88,18 +99,24 @@ const CompanyForm = ({
     } catch (error) {
       console.error("Error submitting form:", error);
     }
-  }
+  };
 
   const handleUpdate = async () => {
     try {
-      await axios.put(
+      const cleanedFormData = { ...formData };
+
+      // Replace empty objects with empty strings in each section
+      Object.keys(cleanedFormData).forEach((sectionKey) => {
+        if (sectionKey === "attachments") {
+          cleanedFormData[sectionKey] = replaceEmptyObjectsWithEmptyStrings(cleanedFormData[sectionKey]);
+        }
+      });
+
+      const response = await axios.put(
         `http://localhost:4000/api/companies/${companyId}`,
-        formData
+        cleanedFormData
       );
-      console.log("Form updated");
-      setCompanyId("");
-      setShowForm(false);
-      setCompanyRefresh(!companyRefresh);
+      handleFiles(response.data);
     } catch (error) {
       setError("Error updating company data.");
       console.error("Error updating form:", error);
@@ -115,7 +132,6 @@ const CompanyForm = ({
           );
           const companyDetails = response.data;
           console.log("Fetched company details:", companyDetails);
-
           const initialData = sections.reduce((acc, section) => {
             section.fields.forEach((field) => {
               const [sectionKey, fieldKey] = field.id.split(".");
@@ -127,7 +143,7 @@ const CompanyForm = ({
             });
             return acc;
           }, {});
-
+          console.log(initialData)
           setFormData(initialData);
         }
       } catch (error) {
@@ -142,7 +158,11 @@ const CompanyForm = ({
   }, [companyId]);
 
   const handleAccordian = (title) => {
-    setExpanded(expanded === title ? false : title);
+    setExpanded((prevExpanded) =>
+      prevExpanded.includes(title)
+        ? prevExpanded.filter((t) => t !== title)
+        : [...prevExpanded, title]
+    );
   };
 
   return (
@@ -160,11 +180,11 @@ const CompanyForm = ({
           sections={
             sections
               ? sections.map((section) => ({
-                  ...section,
-                  formData,
-                  handleInputChange,
-                  handleFileChange,
-                }))
+                ...section,
+                formData,
+                handleInputChange,
+                handleFileChange,
+              }))
               : []
           }
           expanded={expanded}

@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 
 const CustomInput = ({ type, id, label, required, onChange, value, placeholder, className, style, labelStyles }) => {
   const [showPassword, setShowPassword] = useState(false);
-
   return (
     <div className={`flex flex-col relative ${className}`}>
       <label htmlFor={id} className="mb-1" style={{ ...labelStyles }}>
         {label}
         {/* {required && <span className="text-red-500">*</span>} */}
       </label>
-      <div className="relative">
+      <div className={type === 'password' && "relative"} style={{ zIndex: 20 }}>
         <input
           type={type === 'password' && !showPassword ? 'password' : type}
           id={id}
@@ -23,7 +22,7 @@ const CustomInput = ({ type, id, label, required, onChange, value, placeholder, 
           }}
         />
         {type === 'password' && (
-          <span 
+          <span
             className="absolute inset-y-0 right-0 flex items-center pr-4 cursor-pointer"
             onClick={() => setShowPassword(!showPassword)}
           >
