@@ -57,7 +57,7 @@ const theme = createTheme({
   },
 });
 
-export default function CompanyTable({ setCompanyId, companyRefresh }) {
+export default function CompanyTable({ setCompanyId, companyRefresh, name, status }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [companies, setCompanies] = useState([]);
@@ -67,7 +67,7 @@ export default function CompanyTable({ setCompanyId, companyRefresh }) {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/companies");
+        const response = await axios.post("http://localhost:4000/api/companies/filter", { name, status });
         const { data } = response;
         const companyDetailsArray = data.map((item) => ({
           ...item.companyDetails,
@@ -80,7 +80,7 @@ export default function CompanyTable({ setCompanyId, companyRefresh }) {
     };
 
     fetchCompanies();
-  }, [companyRefresh]);
+  }, [companyRefresh,name,status]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

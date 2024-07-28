@@ -1,7 +1,7 @@
 import { BuildOutlined, Dashboard, Home } from "@mui/icons-material";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
+import BusinessIcon from '@mui/icons-material/Business';
 const Sidemenu = () => {
   const [activeItem, setActiveItem] = useState("dashboard");
   const [isOpen, setIsOpen] = useState(true); // Sidebar starts open
@@ -44,7 +44,7 @@ const Sidemenu = () => {
                 : "border-transparent"
                 } border-l-4 transition-colors duration-200`}
             >
-              <Home />
+              <BusinessIcon />
               {isOpen && <span className="text-sm font-medium">Company</span>}
             </Link>
           </li>

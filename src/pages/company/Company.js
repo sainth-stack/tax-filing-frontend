@@ -13,6 +13,8 @@ const Company = () => {
   const [showForm, setShowForm] = useState("");
   const [serviceForm, setServiceForm] = useState(false);
   const [companyId, setCompanyId] = useState("");
+  const [name, setName] = useState("")
+  const [status, setStatus] = useState("")
   const handleServiceForm = () => {
     setServiceForm(!serviceForm);
   };
@@ -32,8 +34,10 @@ const Company = () => {
                 id="company"
                 label="Company"
                 className="shadow-sm"
+                value={name}
                 type="text"
                 placeholder="Company Name"
+                onChange={(e) => setName(e.target.value)}
                 labelStyles={{
                   fontWeight: 500,
                 }}
@@ -44,10 +48,9 @@ const Company = () => {
                 id="status"
                 className="shadow-sm"
                 label="Status"
-                // value={formData.status || ''}
-                // onChange={handleInputChange}
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
                 options={[
-                  { value: "", label: "Select Status" },
                   { value: "active", label: "Active" },
                   { value: "inactive", label: "Inactive" },
                 ]}
@@ -123,7 +126,7 @@ const Company = () => {
             ""
           )}
           <div className="bg-white rounded-lg shadow-md">
-            <CompanyTable {...{ setCompanyId, companyRefresh }} />
+            <CompanyTable {...{ setCompanyId, companyRefresh, name, status }} />
           </div>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
