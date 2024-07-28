@@ -59,6 +59,28 @@ const CompanyForm = ({
         formData
       );
       console.log("Form submitted:", response.data);
+      handleFiles(response.data)
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
+
+  const handleFiles = async (data) => {
+    try {
+      const form = new FormData();
+      // Append files
+      for (const [key, file] of Object.entries(formData.attachments)) {
+        if (file) {
+          form.append(key, file);
+        }
+      }
+
+      form.append("companyId",data?._id)
+
+      const response = await axios.post(
+        "http://localhost:4000/api/files",
+        form
+      );
       setFormData(initialFormData);
       setCompanyId("");
       setShowForm(false);
@@ -66,7 +88,7 @@ const CompanyForm = ({
     } catch (error) {
       console.error("Error submitting form:", error);
     }
-  };
+  }
 
   const handleUpdate = async () => {
     try {
