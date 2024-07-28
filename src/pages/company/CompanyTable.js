@@ -14,6 +14,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import ServiceModal from "../../components/services/models/ServiceModal";
 import EditCompanyForm from "./EditCompany";
+import Accordian from "../../components/Accordian";
 
 const theme = createTheme({
   typography: {
@@ -56,7 +57,7 @@ const theme = createTheme({
   },
 });
 
-export default function CompanyTable({setCompanyId,companyRefresh}) {
+export default function CompanyTable({ setCompanyId, companyRefresh }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [companies, setCompanies] = useState([]);
@@ -208,6 +209,7 @@ export default function CompanyTable({setCompanyId,companyRefresh}) {
           }}
         />
       </TableContainer>
+      <Accordian />
     </ThemeProvider>
   );
 }

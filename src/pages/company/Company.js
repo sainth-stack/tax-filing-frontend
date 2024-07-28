@@ -12,7 +12,7 @@ import Serviceform from "./Serviceform";
 const Company = () => {
   const [showForm, setShowForm] = useState("");
   const [serviceForm, setServiceForm] = useState(false);
-  const [companyId, setCompanyId] = useState("")
+  const [companyId, setCompanyId] = useState("");
   const handleServiceForm = () => {
     setServiceForm(!serviceForm);
   };
@@ -21,7 +21,7 @@ const Company = () => {
   };
 
   const [refresh, setRefresh] = useState(false);
-  const [companyRefresh, setCompanyRefresh] = useState(false)
+  const [companyRefresh, setCompanyRefresh] = useState(false);
   return (
     <>
       <Layout>
@@ -33,8 +33,6 @@ const Company = () => {
                 label="Company"
                 className="shadow-sm"
                 type="text"
-                // value={formData.company || ''}
-                // onChange={handleInputChange}
                 placeholder="Company Name"
                 labelStyles={{
                   fontWeight: 500,
@@ -77,36 +75,55 @@ const Company = () => {
                   "&:hover": {
                     bgcolor: "teal",
                     color: "white",
+                    boxShadow: "1px 2px 3px gray",
                   },
                 }}
                 onClick={handleShowForm}
               >
                 Add New Company
               </Button>
-              {(showForm || companyId) && <Button
-                variant="text"
-                sx={{
-                  margin: ".7em",
-                  bgcolor: "red",
-                  color: "white",
-                  "&:hover": {
+              {(showForm || companyId) && (
+                <Button
+                  variant="text"
+                  sx={{
+                    margin: ".7em",
                     bgcolor: "red",
                     color: "white",
-                  },
-                }}
-                onClick={() => { setCompanyId(""); setShowForm(false) }}
-              >
-                cancel
-              </Button>}
+                    "&:hover": {
+                      bgcolor: "white",
+                      boxShadow: "1px 2px 3px gray",
+                      color: "red",
+                    },
+                  }}
+                  onClick={() => {
+                    setCompanyId("");
+                    setShowForm(false);
+                  }}
+                >
+                  cancel
+                </Button>
+              )}
             </div>
           </div>
-          {(showForm || companyId) ? (
-            <div className="justify-center">{<CompanyForm {...{ companyId, setCompanyId, setShowForm,setCompanyRefresh ,companyRefresh}} />}</div>
+          {showForm || companyId ? (
+            <div className="justify-center">
+              {
+                <CompanyForm
+                  {...{
+                    companyId,
+                    setCompanyId,
+                    setShowForm,
+                    setCompanyRefresh,
+                    companyRefresh,
+                  }}
+                />
+              }
+            </div>
           ) : (
             ""
           )}
           <div className="bg-white rounded-lg shadow-md">
-            <CompanyTable {...{ setCompanyId,companyRefresh }} />
+            <CompanyTable {...{ setCompanyId, companyRefresh }} />
           </div>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
