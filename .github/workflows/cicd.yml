@@ -3,7 +3,7 @@ name: CICD
 on:
   push:
     branches:
-      - master
+      - development
 
 jobs:
   build:
@@ -35,7 +35,7 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@43.205.144.227 << 'EOF'
+          ssh -o StrictHostKeyChecking=no ubuntu@13.229.92.87 << 'EOF'
             sudo bash -c "
               # Pull the latest Docker image
               docker pull sainath521/reactjs-app:latest
