@@ -19,7 +19,7 @@ const EditServiceform = ({ serviceId }) => {
     const fetchServiceData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.BASE_URL}/services/${serviceId}`
+          `${process.env.REACT_APP_BASE_URL}/services/${serviceId}`
         );
         setFormData(response.data);
       } catch (error) {
@@ -48,7 +48,7 @@ const EditServiceform = ({ serviceId }) => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `${process.env.BASE_URL}/services/${serviceId}`,
+        `${process.env.REACT_APP_BASE_URL}/services/${serviceId}`,
         formData
       );
 

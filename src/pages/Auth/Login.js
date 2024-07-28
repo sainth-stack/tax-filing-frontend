@@ -31,10 +31,13 @@ const Login = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post(`${process.env.BASE_URL}/users/login`, {
-        email: formData.email,
-        password: formData.password,
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_REACT_APP_BASE_URL}/users/login`,
+        {
+          email: formData.email,
+          password: formData.password,
+        }
+      );
       const { data } = response;
       console.log(data);
       const { token } = response.data;

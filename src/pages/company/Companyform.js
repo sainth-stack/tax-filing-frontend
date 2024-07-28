@@ -12,18 +12,22 @@ const CompanyForm = ({
   companyRefresh,
 }) => {
   const [error, setError] = useState("");
-  const [expanded, setExpanded] = useState(sections ? sections.map(section => section.title) : []);
+  const [expanded, setExpanded] = useState(
+    sections ? sections.map((section) => section.title) : []
+  );
 
   const replaceEmptyObjectsWithEmptyStrings = (data) => {
     const updatedData = { ...data };
     Object.keys(updatedData).forEach((key) => {
-      if (typeof updatedData[key] === 'object' && Object.keys(updatedData[key]).length === 0) {
-        updatedData[key] = '';
+      if (
+        typeof updatedData[key] === "object" &&
+        Object.keys(updatedData[key]).length === 0
+      ) {
+        updatedData[key] = "";
       }
     });
     return updatedData;
   };
-
 
   const initialFormData = sections.reduce((acc, section) => {
     section.fields.forEach((field) => {
@@ -66,7 +70,7 @@ const CompanyForm = ({
     e.preventDefault();
     try {
       const response = await axios.post(
-        ` ${process.env.BASE_URL}/companies`  ,
+        ` ${process.env.REACT_APP_BASE_URL}/companies`,
         formData
       );
       console.log("Form submitted:", response.data);
@@ -88,7 +92,10 @@ const CompanyForm = ({
 
       form.append("companyId", data?._id);
 
-      const response = await axios.post(`${process.env.BASE_URL}/files`, form);
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/files`,
+        form
+      );
       setFormData(initialFormData);
       setCompanyId("");
       setShowForm(false);
@@ -105,12 +112,14 @@ const CompanyForm = ({
       // Replace empty objects with empty strings in each section
       Object.keys(cleanedFormData).forEach((sectionKey) => {
         if (sectionKey === "attachments") {
-          cleanedFormData[sectionKey] = replaceEmptyObjectsWithEmptyStrings(cleanedFormData[sectionKey]);
+          cleanedFormData[sectionKey] = replaceEmptyObjectsWithEmptyStrings(
+            cleanedFormData[sectionKey]
+          );
         }
       });
 
       const response = await axios.put(
-        `${process.env.BASE_URL}/companies/${companyId}`,
+        `${process.env.REACT_APP_BASE_URL}/companies/${companyId}`,
         cleanedFormData
       );
       handleFiles(response.data);
@@ -125,7 +134,7 @@ const CompanyForm = ({
       try {
         if (companyId) {
           const response = await axios.get(
-            `${process.env.BASE_URL}/companies/${companyId}`
+            `${process.env.REACT_APP_BASE_URL}/companies/${companyId}`
           );
           const companyDetails = response.data;
           console.log("Fetched company details:", companyDetails);
@@ -140,7 +149,7 @@ const CompanyForm = ({
             });
             return acc;
           }, {});
-          console.log(initialData)
+          console.log(initialData);
           setFormData(initialData);
         }
       } catch (error) {
@@ -177,11 +186,11 @@ const CompanyForm = ({
           sections={
             sections
               ? sections.map((section) => ({
-                ...section,
-                formData,
-                handleInputChange,
-                handleFileChange,
-              }))
+                  ...section,
+                  formData,
+                  handleInputChange,
+                  handleFileChange,
+                }))
               : []
           }
           expanded={expanded}

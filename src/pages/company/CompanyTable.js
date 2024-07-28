@@ -57,7 +57,12 @@ const theme = createTheme({
   },
 });
 
-export default function CompanyTable({ setCompanyId, companyRefresh, name, status }) {
+export default function CompanyTable({
+  setCompanyId,
+  companyRefresh,
+  name,
+  status,
+}) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [companies, setCompanies] = useState([]);
@@ -68,7 +73,7 @@ export default function CompanyTable({ setCompanyId, companyRefresh, name, statu
     const fetchCompanies = async () => {
       try {
         const response = await axios.post(
-          `${process.env.BASE_URL}/companies/filter`,
+          `${process.env.REACT_APP_BASE_URL}/companies/filter`,
           { name, status }
         );
         const { data } = response;
@@ -83,7 +88,7 @@ export default function CompanyTable({ setCompanyId, companyRefresh, name, statu
     };
 
     fetchCompanies();
-  }, [companyRefresh,name,status]);
+  }, [companyRefresh, name, status]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -106,7 +111,7 @@ export default function CompanyTable({ setCompanyId, companyRefresh, name, statu
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${process.env.BASE_URL}/companies/${id}`);
+      await axios.delete(`${process.env.REACT_APP_BASE_URL}/companies/${id}`);
       setCompanies(companies.filter((company) => company._id !== id));
     } catch (error) {
       console.error("Error deleting company:", error);

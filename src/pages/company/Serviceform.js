@@ -28,7 +28,7 @@ const Serviceform = ({ setRefresh, refresh }) => {
     console.log("Form Data:", formData);
     try {
       const response = await axios.post(
-        `${process.env.BASE_URL}/services`,
+        `${process.env.REACT_APP_BASE_URL}/services`,
         formData
       );
       setRefresh(!refresh);
