@@ -10,7 +10,7 @@ const Serviceform = ({ setRefresh, refresh }) => {
     status: "",
     effectiveFrom: "",
     effectiveTo: "",
-  }
+  };
   const [formData, setFormData] = useState(defaultData);
 
   const [error, seterror] = useState();
@@ -28,11 +28,11 @@ const Serviceform = ({ setRefresh, refresh }) => {
     console.log("Form Data:", formData);
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/services",
+        `${process.env.BASE_URL}/services`,
         formData
       );
-      setRefresh(!refresh)
-      setFormData(defaultData)
+      setRefresh(!refresh);
+      setFormData(defaultData);
       console.log("Form submitted:", response.data);
     } catch (error) {
       seterror(error.message);

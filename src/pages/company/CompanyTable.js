@@ -67,7 +67,10 @@ export default function CompanyTable({ setCompanyId, companyRefresh, name, statu
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await axios.post("http://localhost:4000/api/companies/filter", { name, status });
+        const response = await axios.post(
+          `${process.env.BASE_URL}/companies/filter`,
+          { name, status }
+        );
         const { data } = response;
         const companyDetailsArray = data.map((item) => ({
           ...item.companyDetails,
@@ -103,7 +106,7 @@ export default function CompanyTable({ setCompanyId, companyRefresh, name, statu
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/api/companies/${id}`);
+      await axios.delete(`${process.env.BASE_URL}/companies/${id}`);
       setCompanies(companies.filter((company) => company._id !== id));
     } catch (error) {
       console.error("Error deleting company:", error);

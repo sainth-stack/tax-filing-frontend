@@ -66,7 +66,7 @@ const CompanyForm = ({
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/companies",
+        ` ${process.env.BASE_URL}/companies`  ,
         formData
       );
       console.log("Form submitted:", response.data);
@@ -88,10 +88,7 @@ const CompanyForm = ({
 
       form.append("companyId", data?._id);
 
-      const response = await axios.post(
-        "http://localhost:4000/api/files",
-        form
-      );
+      const response = await axios.post(`${process.env.BASE_URL}/files`, form);
       setFormData(initialFormData);
       setCompanyId("");
       setShowForm(false);
@@ -113,7 +110,7 @@ const CompanyForm = ({
       });
 
       const response = await axios.put(
-        `http://localhost:4000/api/companies/${companyId}`,
+        `${process.env.BASE_URL}/companies/${companyId}`,
         cleanedFormData
       );
       handleFiles(response.data);
@@ -128,7 +125,7 @@ const CompanyForm = ({
       try {
         if (companyId) {
           const response = await axios.get(
-            `http://localhost:4000/api/companies/${companyId}`
+            `${process.env.BASE_URL}/companies/${companyId}`
           );
           const companyDetails = response.data;
           console.log("Fetched company details:", companyDetails);
