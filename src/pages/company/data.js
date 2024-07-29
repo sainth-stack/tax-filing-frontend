@@ -403,23 +403,207 @@ export const sections = [
       { type: "file", id: "attachments.panFile", label: "PAN", required: true },
       { type: "file", id: "attachments.gstFile", label: "GST", required: true },
       { type: "file", id: "attachments.esiFile", label: "ESI", required: true },
-      { type: "file", id: "attachments.pfFile", label: "Provident Fund", required: true },
-      { type: "file", id: "attachments.ptFile", label: "Professional Tax", required: true },
+      {
+        type: "file",
+        id: "attachments.pfFile",
+        label: "Provident Fund",
+        required: true,
+      },
+      {
+        type: "file",
+        id: "attachments.ptFile",
+        label: "Professional Tax",
+        required: true,
+      },
       { type: "file", id: "attachments.tanFile", label: "TAN", required: true },
-      { type: "file", id: "attachments.shopEstablishmentFile", label: "Shop and Commercial Establishment", required: true },
-      { type: "file", id: "attachments.msmeFile", label: "MSME", required: true },
-      { type: "file", id: "attachments.fssaiFile", label: "FSSAI", required: true },
-      { type: "file", id: "attachments.factoryLicenseFile", label: "Factory License", required: true },
-      { type: "file", id: "attachments.importExportFile", label: "Import and Export", required: true },
-      { type: "file", id: "attachments.partnershipFormcFile", label: "Partnership Firm Form C", required: true },
-      { type: "file", id: "attachments.shramSuvidhaFile", label: "Shram Suvidha Portal", required: true },
+      {
+        type: "file",
+        id: "attachments.shopEstablishmentFile",
+        label: "Shop and Commercial Establishment",
+        required: true,
+      },
+      {
+        type: "file",
+        id: "attachments.msmeFile",
+        label: "MSME",
+        required: true,
+      },
+      {
+        type: "file",
+        id: "attachments.fssaiFile",
+        label: "FSSAI",
+        required: true,
+      },
+      {
+        type: "file",
+        id: "attachments.factoryLicenseFile",
+        label: "Factory License",
+        required: true,
+      },
+      {
+        type: "file",
+        id: "attachments.importExportFile",
+        label: "Import and Export",
+        required: true,
+      },
+      {
+        type: "file",
+        id: "attachments.partnershipFormcFile",
+        label: "Partnership Firm Form C",
+        required: true,
+      },
+      {
+        type: "file",
+        id: "attachments.shramSuvidhaFile",
+        label: "Shram Suvidha Portal",
+        required: true,
+      },
       { type: "file", id: "attachments.mcaFile", label: "MCA", required: true },
-      { type: "file", id: "attachments.cinFile", label: "CIN", required: true }
-    ]
-  }
-  
+      { type: "file", id: "attachments.cinFile", label: "CIN", required: true },
+    ],
+  },
 ];
 
+export const Dates = [
+  {
+    fields: [
+      {
+        type: "date",
+        id: "effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "effectiveTo",
+        label: "Effective To",
+        required: true,
+      },
+    ],
+  },
+];
+
+export const tasks = [
+  {
+    title: "Task Form",
+    fields: [
+      {
+        type: "select",
+        id: "company",
+        label: "Company",
+        options: [
+          { value: "company1", label: "Company 1" },
+          { value: "company2", label: "Company 2" },
+        ],
+        required: true,
+      },
+      {
+        type: "select",
+        id: "assignedTo",
+        label: "Assigned To",
+        options: [
+          { value: "user1", label: "User 1" },
+          { value: "user2", label: "User 2" },
+        ],
+        required: true,
+      },
+      {
+        type: "select",
+        id: "priority",
+        label: "Priority",
+        options: [
+          { value: "high", label: "High" },
+          { value: "medium", label: "Medium" },
+          { value: "low", label: "Low" },
+        ],
+        required: true,
+      },
+      {
+        type: "date",
+        id: "startDate",
+        label: "Start Date",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "dueDate",
+        label: "Due Date",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "actualCompletionDate",
+        label: "Actual Completion Date",
+        required: false,
+      },
+      {
+        type: "select",
+        id: "taskType",
+        label: "Task Type",
+        options: [
+          { value: "gst", label: "GST" },
+          { value: "providentFund", label: "Provident Fund" },
+        ],
+        required: true,
+      },
+      {
+        type: "select",
+        id: "taskName",
+        label: "Task Name",
+        options: [
+          { value: "gstNewRegistration", label: "GST New Registration" },
+          {
+            value: "providentFundNewRegistration",
+            label: "Provident Fund New Registration",
+          },
+        ],
+        required: true,
+      },
+      {
+        type: "select",
+        id: "applicationStatus",
+        label: "Application Status",
+        options: [
+          { value: "pendingForApply", label: "Pending for Apply" },
+          { value: "applied", label: "Applied" },
+        ],
+        required: true,
+      },
+      {
+        type: "select",
+        id: "arn",
+        label: "ARN",
+        options: [
+          { value: "approved", label: "Approved" },
+          { value: "rejected", label: "Rejected" },
+        ],
+        required: false,
+      },
+      {
+        type: "date",
+        id: "arnDate",
+        label: "ARN Date",
+        required: false,
+      },
+      {
+        type: "select",
+        id: "applicationSubStatus",
+        label: "Application Sub Status",
+        options: [
+          { value: "approved", label: "Approved" },
+          { value: "rejected", label: "Rejected" },
+        ],
+        required: false,
+      },
+      {
+        type: "date",
+        id: "dateOfApproval",
+        label: "Date Of Approval",
+        required: false,
+      },
+    ],
+  },
+];
 export const services = [
   {
     title: "Service Form",

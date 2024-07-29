@@ -12,10 +12,10 @@ import TablePagination from "@mui/material/TablePagination";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import ServiceModal from "../../components/services/models/ServiceModal";
-import EditCompanyForm from "./EditCompany";
-import Accordian from "../../components/Accordian";
-import { useParams, useResolvedPath } from "react-router-dom";
+
+import ServiceModal from "../../../components/services/models/ServiceModal";
+import EditCompanyForm from "../EditCompany";
+import Accordian from "../../../components/Accordian";
 
 const theme = createTheme({
   typography: {
@@ -58,7 +58,7 @@ const theme = createTheme({
   },
 });
 
-export default function CompanyTable({
+export default function TasksTable({
   setCompanyId,
   companyRefresh,
   name,
@@ -151,10 +151,19 @@ export default function CompanyTable({
                 Company Name
               </TableCell>
               <TableCell align="center" padding="normal">
+                Task Description
+              </TableCell>
+              <TableCell align="center" padding="normal">
+                Due Date
+              </TableCell>
+              <TableCell align="center" padding="normal">
                 Status
               </TableCell>
               <TableCell align="center" padding="normal">
-                Actions
+                Assigned To
+              </TableCell>
+              <TableCell align="center" padding="normal">
+                View
               </TableCell>
             </TableRow>
           </TableHead>
