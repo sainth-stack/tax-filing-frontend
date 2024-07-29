@@ -3,6 +3,7 @@ import axios from "axios";
 import CustomInput from "../../components/input";
 import SelectInput from "../../components/select";
 import { services } from "./data";
+import { base_url } from "../../const";
 
 const EditServiceform = ({ serviceId }) => {
   const [formData, setFormData] = useState({
@@ -19,7 +20,7 @@ const EditServiceform = ({ serviceId }) => {
     const fetchServiceData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/services/${serviceId}`
+          `${base_url}/services/${serviceId}`
         );
         setFormData(response.data);
       } catch (error) {
@@ -48,7 +49,7 @@ const EditServiceform = ({ serviceId }) => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/services/${serviceId}`,
+        `${base_url}/services/${serviceId}`,
         formData
       );
 

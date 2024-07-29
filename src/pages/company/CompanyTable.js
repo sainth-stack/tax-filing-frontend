@@ -15,6 +15,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import ServiceModal from "../../components/services/models/ServiceModal";
 import EditCompanyForm from "./EditCompany";
 import Accordian from "../../components/Accordian";
+import { base_url } from "../../const";
 
 const theme = createTheme({
   typography: {
@@ -73,7 +74,7 @@ export default function CompanyTable({
     const fetchCompanies = async () => {
       try {
         const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/companies/filter`,
+          `${base_url}/companies/filter`,
           { name, status }
         );
         const { data } = response;
@@ -111,7 +112,7 @@ export default function CompanyTable({
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${process.env.REACT_APP_BASE_URL}/companies/${id}`);
+      await axios.delete(`${base_url}/companies/${id}`);
       setCompanies(companies.filter((company) => company._id !== id));
     } catch (error) {
       console.error("Error deleting company:", error);

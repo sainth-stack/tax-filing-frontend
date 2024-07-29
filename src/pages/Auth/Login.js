@@ -1,6 +1,7 @@
     import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import { base_url } from "../../const";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,12 +30,12 @@ const Login = () => {
   };
 
   const handleLogin = async (event) => {
-    console.log(process.env.REACT_APP_BASE_URL)
+    console.log(base_url)
     event.preventDefault();
     navigate("/company");
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/users/login`,
+        `${base_url}/users/login`,
         {
           email: formData.email,
           password: formData.password,
@@ -58,7 +59,7 @@ const Login = () => {
   };
 
   useState(() => {
-    console.log(process.env.REACT_APP_BASE_URL);
+    console.log(base_url);
   }, []);
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-5 sm:px-6 lg:px-8">

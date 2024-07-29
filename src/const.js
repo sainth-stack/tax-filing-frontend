@@ -1,0 +1,1 @@
+export const base_url="http://13.229.92.87:4500/api"
