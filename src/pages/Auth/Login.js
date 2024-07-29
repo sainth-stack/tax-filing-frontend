@@ -31,6 +31,7 @@ const Login = () => {
   const handleLogin = async (event) => {
     console.log(process.env.REACT_APP_BASE_URL)
     event.preventDefault();
+    navigate("/company");
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/users/login`,
