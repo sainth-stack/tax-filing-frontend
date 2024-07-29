@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+    import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
 
@@ -29,6 +29,7 @@ const Login = () => {
   };
 
   const handleLogin = async (event) => {
+    console.log(process.env.REACT_APP_BASE_URL)
     event.preventDefault();
     try {
       const response = await axios.post(
@@ -38,6 +39,7 @@ const Login = () => {
           password: formData.password,
         }
       );
+      navigate("/company");
       const { data } = response;
       console.log(data);
       const { token } = response.data;
@@ -166,7 +168,7 @@ const Login = () => {
             </button>
           </div>
 
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-gray-500 ms-2">
             No account?
             <a className="underline" href="#">
               Sign up
