@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { sections } from "./data";
 import Accordian from "../../components/Accordian";
+import { base_url } from "../../const";
 
 const CompanyForm = ({
   companyId,
@@ -70,7 +71,7 @@ const CompanyForm = ({
     e.preventDefault();
     try {
       const response = await axios.post(
-        ` ${process.env.REACT_APP_BASE_URL}/companies`,
+        ` ${base_url}/companies`,
         formData
       );
       console.log("Form submitted:", response.data);
@@ -93,7 +94,7 @@ const CompanyForm = ({
       form.append("companyId", data?._id);
 
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/files`,
+        `${base_url}/files`,
         form
       );
       setFormData(initialFormData);
@@ -119,7 +120,7 @@ const CompanyForm = ({
       });
 
       const response = await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/companies/${companyId}`,
+        `${base_url}/companies/${companyId}`,
         cleanedFormData
       );
       handleFiles(response.data);
@@ -134,7 +135,7 @@ const CompanyForm = ({
       try {
         if (companyId) {
           const response = await axios.get(
-            `${process.env.REACT_APP_BASE_URL}/companies/${companyId}`
+            `${base_url}/companies/${companyId}`
           );
           const companyDetails = response.data;
           console.log("Fetched company details:", companyDetails);

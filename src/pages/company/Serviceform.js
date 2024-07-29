@@ -3,6 +3,7 @@ import axios from "axios";
 import CustomInput from "../../components/input";
 import SelectInput from "../../components/select";
 import { services } from "./data";
+import { base_url } from "../../const";
 
 const Serviceform = ({ setRefresh, refresh }) => {
   const defaultData = {
@@ -28,7 +29,7 @@ const Serviceform = ({ setRefresh, refresh }) => {
     console.log("Form Data:", formData);
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/services`,
+        `${base_url}/services`,
         formData
       );
       setRefresh(!refresh);

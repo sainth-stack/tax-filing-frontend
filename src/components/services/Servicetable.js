@@ -66,7 +66,7 @@ export default function ServiceTable({ refresh }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/services");
+        const response = await axios.get("http://13.229.92.87:4500/api/services");
         setRows(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -97,7 +97,7 @@ export default function ServiceTable({ refresh }) {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/api/services/${id}`);
+      await axios.delete(`http://13.229.92.87:4500/api/services/${id}`);
       setRows(rows.filter((row) => row._id !== id));
     } catch (error) {
       console.error("Error deleting service:", error);
