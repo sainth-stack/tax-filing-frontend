@@ -74,10 +74,10 @@ export default function CompanyTable({
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await axios.post(`${base_url}/companies/filter`, {
-          name,
-          status,
-        });
+        const response = await axios.post(
+          `${base_url}/companies/filter`,
+          { status:status ==="all" ? "" :status, name }
+        );
         const { data } = response;
         const companyDetailsArray = data.map((item) => ({
           ...item.companyDetails,

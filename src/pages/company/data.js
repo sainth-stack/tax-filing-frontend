@@ -55,8 +55,8 @@ export const sections = [
     fields: [
       {
         type: "select",
-        id: "incomeTax.incomeTax",
-        label: "Income Tax",
+        id: "incomeTax.status",
+        label: "Status",
         options: [
           { value: "YES", label: "yes" },
           { value: "NO", label: "no" },
@@ -70,11 +70,33 @@ export const sections = [
         label: "Income Tax Password",
         required: true,
       },
+      {
+        type: "date",
+        id: "incomeTax.effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "incomeTax.effectiveTo",
+        label: "Effective To",
+        required: true,
+      },
     ],
   },
   {
     title: "GST",
     fields: [
+      {
+        type: "select",
+        id: "gst.status",
+        label: "Status",
+        options: [
+          { value: "YES", label: "yes" },
+          { value: "NO", label: "no" },
+        ],
+        required: true,
+      },
       { type: "text", id: "gst.gstin", label: "GSTIN", required: true },
       {
         type: "text",
@@ -88,12 +110,12 @@ export const sections = [
         label: "GST Password",
         required: true,
       },
-      {
-        type: "text",
-        id: "gst.gstStatus",
-        label: "GST Status",
-        required: true,
-      },
+      // {
+      //   type: "text",
+      //   id: "gst.gstStatus",
+      //   label: "GST Status",
+      //   required: true,
+      // },
       {
         type: "text",
         id: "gst.eWayBillUsername",
@@ -106,11 +128,33 @@ export const sections = [
         label: "E-WayBill Password",
         required: true,
       },
+      {
+        type: "date",
+        id: "gst.effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "gst.effectiveTo",
+        label: "Effective To",
+        required: true,
+      },
     ],
   },
   {
     title: "Employer State Insurance",
     fields: [
+      {
+        type: "select",
+        id: "esi.status",
+        label: "Status",
+        options: [
+          { value: "YES", label: "yes" },
+          { value: "NO", label: "no" },
+        ],
+        required: true,
+      },
       {
         type: "text",
         id: "esi.esiNumber",
@@ -129,11 +173,33 @@ export const sections = [
         label: "ESI Password",
         required: true,
       },
+      {
+        type: "date",
+        id: "esi.effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "esi.effectiveTo",
+        label: "Effective To",
+        required: true,
+      },
     ],
   },
   {
     title: "Provident Fund",
     fields: [
+      {
+        type: "select",
+        id: "providentFund.status",
+        label: "Status",
+        options: [
+          { value: "YES", label: "yes" },
+          { value: "NO", label: "no" },
+        ],
+        required: true,
+      },
       {
         type: "text",
         id: "providentFund.pfNumber",
@@ -152,11 +218,34 @@ export const sections = [
         label: "PF Password",
         required: true,
       },
+      {
+        type: "date",
+        id: "providentFund.effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "providentFund.effectiveTo",
+        label: "Effective To",
+        required: true,
+      },
     ],
+    
   },
   {
     title: "Professional Tax",
     fields: [
+      {
+        type: "select",
+        id: "professionalTax.status",
+        label: "Status",
+        options: [
+          { value: "YES", label: "yes" },
+          { value: "NO", label: "no" },
+        ],
+        required: true,
+      },
       {
         type: "text",
         id: "professionalTax.ptEcNumber",
@@ -181,11 +270,33 @@ export const sections = [
         label: "PT Number",
         required: true,
       },
+      {
+        type: "date",
+        id: "professionalTax.effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "professionalTax.effectiveTo",
+        label: "Effective To",
+        required: true,
+      },
     ],
   },
   {
     title: "TDS",
     fields: [
+      {
+        type: "select",
+        id: "tds.status",
+        label: "Status",
+        options: [
+          { value: "YES", label: "yes" },
+          { value: "NO", label: "no" },
+        ],
+        required: true,
+      },
       { type: "text", id: "tds.tan", label: "TAN", required: true },
       {
         type: "password",
@@ -205,11 +316,33 @@ export const sections = [
         label: "Traces Password",
         required: true,
       },
+      {
+        type: "date",
+        id: "tds.effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "tds.effectiveTo",
+        label: "Effective To",
+        required: true,
+      },
     ],
   },
   {
     title: "Shop and Commercial Establishment",
     fields: [
+      {
+        type: "select",
+        id: "shopCommercialEstablishment.status",
+        label: "Status",
+        options: [
+          { value: "YES", label: "yes" },
+          { value: "NO", label: "no" },
+        ],
+        required: true,
+      },
       {
         type: "text",
         id: "shopCommercialEstablishment.seNumber",
@@ -234,15 +367,49 @@ export const sections = [
         label: "SE Renewal Date",
         required: true,
       },
+      {
+        type: "date",
+        id: "shopCommercialEstablishment.effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "shopCommercialEstablishment.effectiveTo",
+        label: "Effective To",
+        required: true,
+      },
     ],
   },
   {
     title: "MSME/Udyam",
     fields: [
       {
+        type: "select",
+        id: "msme.status",
+        label: "Status",
+        options: [
+          { value: "YES", label: "yes" },
+          { value: "NO", label: "no" },
+        ],
+        required: true,
+      },
+      {
         type: "text",
         id: "msme.msmeNumber",
         label: "MSME Number",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "msme.effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "msme.effectiveTo",
+        label: "Effective To",
         required: true,
       },
     ],
@@ -250,6 +417,16 @@ export const sections = [
   {
     title: "FSSAI",
     fields: [
+      {
+        type: "select",
+        id: "fssai.status",
+        label: "Status",
+        options: [
+          { value: "YES", label: "yes" },
+          { value: "NO", label: "no" },
+        ],
+        required: true,
+      },
       {
         type: "text",
         id: "fssai.fssaiNumber",
@@ -274,11 +451,33 @@ export const sections = [
         label: "FSSAI Renewal Date",
         required: true,
       },
+      {
+        type: "date",
+        id: "fssai.effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "fssai.effectiveTo",
+        label: "Effective To",
+        required: true,
+      },
     ],
   },
   {
     title: "Factory Licence",
     fields: [
+      {
+        type: "select",
+        id: "factoryLicense.status",
+        label: "Status",
+        options: [
+          { value: "YES", label: "yes" },
+          { value: "NO", label: "no" },
+        ],
+        required: true,
+      },
       {
         type: "text",
         id: "factoryLicense.flNumber",
@@ -303,11 +502,33 @@ export const sections = [
         label: "FL Renewal Date",
         required: true,
       },
+      {
+        type: "date",
+        id: "factoryLicense.effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "factoryLicense.effectiveTo",
+        label: "Effective To",
+        required: true,
+      },
     ],
   },
   {
     title: "Import Export Code",
     fields: [
+      {
+        type: "select",
+        id: "importExport.status",
+        label: "Status",
+        options: [
+          { value: "YES", label: "yes" },
+          { value: "NO", label: "no" },
+        ],
+        required: true,
+      },
       {
         type: "text",
         id: "importExport.iecNumber",
@@ -338,15 +559,49 @@ export const sections = [
         label: "ICEGATE Password",
         required: true,
       },
+      {
+        type: "date",
+        id: "importExport.effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "importExport.effectiveTo",
+        label: "Effective To",
+        required: true,
+      },
     ],
   },
   {
     title: "Partnership Firm Form C",
     fields: [
       {
+        type: "select",
+        id: "partnershipFirmFormC.status",
+        label: "Status",
+        options: [
+          { value: "YES", label: "yes" },
+          { value: "NO", label: "no" },
+        ],
+        required: true,
+      },
+      {
         type: "text",
         id: "partnershipFirmFormC.formCNumber",
         label: "Form C Number",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "partnershipFirmFormC.effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "partnershipFirmFormC.effectiveTo",
+        label: "Effective To",
         required: true,
       },
     ],
@@ -354,6 +609,16 @@ export const sections = [
   {
     title: "Shram Suvidha Portal",
     fields: [
+      {
+        type: "select",
+        id: "shramSuvidhaPortal.status",
+        label: "Status",
+        options: [
+          { value: "YES", label: "yes" },
+          { value: "NO", label: "no" },
+        ],
+        required: true,
+      },
       {
         type: "text",
         id: "shramSuvidhaPortal.lin",
@@ -372,11 +637,33 @@ export const sections = [
         label: "S S Password",
         required: true,
       },
+      {
+        type: "date",
+        id: "shramSuvidhaPortal.effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "shramSuvidhaPortal.effectiveTo",
+        label: "Effective To",
+        required: true,
+      },
     ],
   },
   {
     title: "MCA",
     fields: [
+      {
+        type: "select",
+        id: "mca.status",
+        label: "Status",
+        options: [
+          { value: "YES", label: "yes" },
+          { value: "NO", label: "no" },
+        ],
+        required: true,
+      },
       { type: "text", id: "mca.cin", label: "CIN/LLP", required: true },
       {
         type: "text",
@@ -394,6 +681,18 @@ export const sections = [
         type: "text",
         id: "mca.bankOverdraftCashCreditRenewalDate",
         label: "Bank Overdraft/ Cash Credit Renewal Date",
+      },
+      {
+        type: "date",
+        id: "mca.effectiveFrom",
+        label: "Effective From",
+        required: true,
+      },
+      {
+        type: "date",
+        id: "mca.effectiveTo",
+        label: "Effective To",
+        required: true,
       },
     ],
   },
@@ -459,9 +758,9 @@ export const sections = [
         required: true,
       },
       { type: "file", id: "attachments.mcaFile", label: "MCA", required: true },
-      { type: "file", id: "attachments.cinFile", label: "CIN", required: true },
-    ],
-  },
+      { type: "file", id: "attachments.cinFile", label: "CIN", required: true }
+    ]
+  }
 ];
 
 export const Dates = [

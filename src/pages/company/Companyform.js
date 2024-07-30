@@ -14,7 +14,7 @@ const CompanyForm = ({
 }) => {
   const [error, setError] = useState("");
   const [expanded, setExpanded] = useState(
-    sections ? sections.map((section) => section.title) : []
+    sections ? ["Company Details"] : []
   );
 
   const replaceEmptyObjectsWithEmptyStrings = (data) => {
@@ -171,6 +171,7 @@ const CompanyForm = ({
         : [...prevExpanded, title]
     );
   };
+  console.log(expanded)
 
   return (
     <div className="container mx-auto p-4 bg-gray rounded-lg shadow-md">

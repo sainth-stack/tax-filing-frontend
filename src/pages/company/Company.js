@@ -51,6 +51,7 @@ const Company = () => {
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
                 options={[
+                  { value: "all", label: "All" },
                   { value: "active", label: "Active" },
                   { value: "inactive", label: "Inactive" },
                 ]}
@@ -129,7 +130,7 @@ const Company = () => {
             <CompanyTable {...{ setCompanyId, companyRefresh, name, status }} />
           </div>
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
           <label
             htmlFor="Table"
             className="block mb-2 text-xl font-medium text-gray-900 ps-2 pt-4"
@@ -164,7 +165,7 @@ const Company = () => {
         <div className="mt-6 bg-white rounded-lg shadow-md">
           <ServiceTable {...{ refresh }} />
         </div>
-        <div className="mx-auto shadow-lg rounded-md p-3"></div>
+        <div className="mx-auto shadow-lg rounded-md p-3"></div> */}
       </Layout>
     </>
   );
