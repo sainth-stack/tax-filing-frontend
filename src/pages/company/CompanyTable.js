@@ -15,11 +15,8 @@ import CssBaseline from "@mui/material/CssBaseline";
 import ServiceModal from "../../components/services/models/ServiceModal";
 import EditCompanyForm from "./EditCompany";
 import Accordian from "../../components/Accordian";
-<<<<<<< HEAD
-import { useParams, useResolvedPath } from "react-router-dom";
-=======
+/* import { useParams, useResolvedPath } from "react-router-dom"; */
 import { base_url } from "../../const";
->>>>>>> 2980907fd7180d3a8ace6d3d566877f4b6d4e92d
 
 const theme = createTheme({
   typography: {
@@ -77,10 +74,10 @@ export default function CompanyTable({
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await axios.post(
-          `${base_url}/companies/filter`,
-          { name, status }
-        );
+        const response = await axios.post(`${base_url}/companies/filter`, {
+          name,
+          status,
+        });
         const { data } = response;
         const companyDetailsArray = data.map((item) => ({
           ...item.companyDetails,
@@ -104,10 +101,10 @@ export default function CompanyTable({
     setPage(0);
   };
 
-  const handleEditForm = (id) => {
+  /* const handleEditForm = (id) => {
     setEditCompanyId(id);
     setEditModal(true);
-  };
+  }; */
 
   const handleCloseModal = () => {
     setEditModal(false);

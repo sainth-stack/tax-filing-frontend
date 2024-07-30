@@ -14,8 +14,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
 import ServiceModal from "../../../components/services/models/ServiceModal";
-import EditCompanyForm from "../EditCompany";
 import Accordian from "../../../components/Accordian";
+import EditTaskForm from "./EditTaskForm";
 
 const theme = createTheme({
   typography: {
@@ -58,38 +58,25 @@ const theme = createTheme({
   },
 });
 
-export default function TasksTable({
-  setCompanyId,
-  companyRefresh,
-  name,
-  status,
-}) {
+export default function TasksTable() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [companies, setCompanies] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [editModal, setEditModal] = useState(false);
-  const [editCompanyId, setEditCompanyId] = useState(null);
+  const [editTaskId, setEditTaskId] = useState(null);
 
   useEffect(() => {
-    const fetchCompanies = async () => {
+    const fetchTasks = async () => {
       try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/companies/filter`,
-          { name, status }
-        );
-        const { data } = response;
-        const companyDetailsArray = data.map((item) => ({
-          ...item.companyDetails,
-          _id: item._id,
-        }));
-        setCompanies(companyDetailsArray);
+        const response = await axios.get("http://localhost:4000/api/tasks");
+        setTasks(response.data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching tasks:", error);
       }
     };
 
-    fetchCompanies();
-  }, [companyRefresh, name, status]);
+    fetchTasks();
+  }, []);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -101,21 +88,21 @@ export default function TasksTable({
   };
 
   const handleEditForm = (id) => {
-    setEditCompanyId(id);
+    setEditTaskId(id);
     setEditModal(true);
   };
 
   const handleCloseModal = () => {
     setEditModal(false);
-    setEditCompanyId(null);
+    setEditTaskId(null);
   };
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${process.env.REACT_APP_BASE_URL}/companies/${id}`);
-      setCompanies(companies.filter((company) => company._id !== id));
+      await axios.delete(`http://localhost:4000/api/tasks/${id}`);
+      setTasks(tasks.filter((task) => task._id !== id));
     } catch (error) {
-      console.error("Error deleting company:", error);
+      console.error("Error deleting task:", error);
     }
   };
 
@@ -125,10 +112,7 @@ export default function TasksTable({
       <div className="mx-auto">
         {editModal && (
           <ServiceModal open={editModal} handleClose={handleCloseModal}>
-            <EditCompanyForm
-              companyId={editCompanyId}
-              onClose={handleCloseModal}
-            />
+            <EditTaskForm taskId={editTaskId} onClose={handleCloseModal} />
           </ServiceModal>
         )}
       </div>
@@ -140,7 +124,7 @@ export default function TasksTable({
         <Table
           className="table-auto"
           sx={{ minWidth: 650 }}
-          aria-label="company table"
+          aria-label="tasks table"
         >
           <TableHead>
             <TableRow>
@@ -148,10 +132,10 @@ export default function TasksTable({
                 S.No
               </TableCell>
               <TableCell align="center" padding="normal">
-                Company Name
+                Company
               </TableCell>
               <TableCell align="center" padding="normal">
-                Task Description
+                Task Name
               </TableCell>
               <TableCell align="center" padding="normal">
                 Due Date
@@ -163,34 +147,38 @@ export default function TasksTable({
                 Assigned To
               </TableCell>
               <TableCell align="center" padding="normal">
-                View
+                Actions
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {companies
+            {tasks
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((company, index) => (
-                <TableRow
-                  key={company._id || index}
-                  sx={{
-                    height: "48px",
-                  }}
-                >
+              .map((task, index) => (
+                <TableRow key={task._id || index} sx={{ height: "48px" }}>
                   <TableCell align="center" padding="normal">
                     {page * rowsPerPage + index + 1}
                   </TableCell>
                   <TableCell align="center" padding="normal">
-                    {company.companyName || "N/A"}
+                    {task.company || "N/A"}
                   </TableCell>
                   <TableCell align="center" padding="normal">
-                    {company.clientStatus || "N/A"}
+                    {task.taskName || "N/A"}
+                  </TableCell>
+                  <TableCell align="center" padding="normal">
+                    {new Date(task.dueDate).toLocaleDateString() || "N/A"}
+                  </TableCell>
+                  <TableCell align="center" padding="normal">
+                    {task.applicationStatus || "N/A"}
+                  </TableCell>
+                  <TableCell align="center" padding="normal">
+                    {task.assignedTo || "N/A"}
                   </TableCell>
                   <TableCell align="center" padding="normal">
                     <IconButton
                       aria-label="edit"
                       size="small"
-                      onClick={() => setCompanyId(company._id)}
+                      onClick={() => handleEditForm(task._id)}
                     >
                       <EditOutlined
                         fontSize="inherit"
@@ -200,7 +188,7 @@ export default function TasksTable({
                     <IconButton
                       aria-label="delete"
                       size="small"
-                      onClick={() => handleDelete(company._id)}
+                      onClick={() => handleDelete(task._id)}
                     >
                       <DeleteOutline
                         fontSize="inherit"
@@ -215,7 +203,7 @@ export default function TasksTable({
         <TablePagination
           rowsPerPageOptions={[5, 10, 15]}
           component="div"
-          count={companies.length}
+          count={tasks.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

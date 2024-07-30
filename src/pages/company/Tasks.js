@@ -32,8 +32,8 @@ const Tasks = () => {
   return (
     <Layout>
       <div className="container mx-auto my-6">
-        <div className="flex flex-row my-3 justify-evenly ">
-          <div className="flex items-center">
+        <div className="flex flex-row my-3 gap-4 ">
+          <div className="flex items-center ">
             <CustomInput
               id="company"
               label="Company"

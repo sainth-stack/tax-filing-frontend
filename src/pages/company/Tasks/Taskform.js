@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-
 import SelectInput from "../../../components/select";
 import CustomInput from "../../../components/input";
 import { tasks } from "../data";
@@ -27,14 +26,12 @@ const Taskform = ({ setRefresh, refresh }) => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(process.env.REACT_APP_BASE_URL);
-    console.log("Form Data:", formData);
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/tasks`, // Adjust endpoint if needed
         formData
       );
-      setRefresh(!refresh);
+
       setFormData(defaultData);
       console.log("Form submitted:", response.data);
     } catch (error) {
@@ -54,7 +51,7 @@ const Taskform = ({ setRefresh, refresh }) => {
       >
         <h1 className="text-2xl font-bold">Create New Task</h1>
       </header>
-      {showform && showform ? (
+      {showform && (
         <form onSubmit={handleSubmit} className="p-3">
           {tasks.map((task, taskIndex) => (
             <div
@@ -112,8 +109,6 @@ const Taskform = ({ setRefresh, refresh }) => {
             </button>
           </div>
         </form>
-      ) : (
-        ""
       )}
 
       {error && <h3 className="text-red-500">{error}</h3>}
