@@ -64,15 +64,13 @@ const CompanyForm = ({
       },
     }));
   };
-
+console.log(formData)
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(`${base_url}/companies`, formData);
-      console.log("Form submitted:", response.data);
       handleFiles(response.data);
     } catch (error) {
-      console.error("Error submitting form:", error);
     }
   };
 
@@ -150,10 +148,8 @@ const CompanyForm = ({
           const status = companyDetails.companyDetails.clientStatus || "";
           setClientStatus(status);
 
-          console.log("Client status:", status);
         }
       } catch (error) {
-        console.error("Error fetching company data:", error);
         setError("Error fetching company data.");
       }
     };
@@ -177,7 +173,7 @@ const CompanyForm = ({
       <header
         className="text-black p-4 rounded-t-lg"
         style={{
-          background: "gray",
+          background: "lightgrey",
         }}
       >
         <h1 className="text-2xl font-bold">

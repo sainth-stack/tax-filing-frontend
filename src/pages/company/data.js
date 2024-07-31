@@ -49,6 +49,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:"companyDetails"
   },
   {
     title: "Income Tax",
@@ -83,6 +84,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:'incomeTax'
   },
   {
     title: "GST",
@@ -141,6 +143,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:'gst'
   },
   {
     title: "Employer State Insurance",
@@ -186,6 +189,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:'esi'
   },
   {
     title: "Provident Fund",
@@ -231,6 +235,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:'providentFund'
     
   },
   {
@@ -283,6 +288,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:'professionalTax'
   },
   {
     title: "TDS",
@@ -329,6 +335,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:'tds'
   },
   {
     title: "Shop and Commercial Establishment",
@@ -380,6 +387,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:"shopCommercialEstablishment"
   },
   {
     title: "MSME/Udyam",
@@ -413,6 +421,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:"msme"
   },
   {
     title: "FSSAI",
@@ -464,6 +473,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:"fssai"
   },
   {
     title: "Factory Licence",
@@ -515,6 +525,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:'factoryLicense'
   },
   {
     title: "Import Export Code",
@@ -572,6 +583,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:"importExport"
   },
   {
     title: "Partnership Firm Form C",
@@ -605,6 +617,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:"partnershipFirmFormC"
   },
   {
     title: "Shram Suvidha Portal",
@@ -650,6 +663,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:"shramSuvidhaPortal"
   },
   {
     title: "MCA",
@@ -695,6 +709,7 @@ export const sections = [
         required: true,
       },
     ],
+    id:'mca'
   },
   {
     title: "Attachments",

@@ -17,7 +17,6 @@ const EditCompanyForm = ({ companyId, onClose }) => {
           `${process.env.REACT_APP_BASE_URL}/companies/${companyId}`
         );
         const companyDetails = response.data.companyDetails;
-        console.log("Fetched company details:", companyDetails); // Log response data
 
         // Populate the form fields with fetched data
         const initialData = sections.reduce((acc, section) => {
@@ -32,10 +31,8 @@ const EditCompanyForm = ({ companyId, onClose }) => {
           ({ clientStatus }) => clientStatus
         );
 
-        console.log("stsus vishnu", statusesArray);
         // Update state with company details and client statuses
       } catch (error) {
-        console.error("Error fetching company data:", error);
         setError("Error fetching company data.");
       }
     };
@@ -57,11 +54,9 @@ const EditCompanyForm = ({ companyId, onClose }) => {
     e.preventDefault();
     try {
       await axios.put(`${base_url}/companies/${companyId}`, formData);
-      console.log("Form submitted");
       onClose(); // Close the modal after successful submission
     } catch (error) {
       setError("Error updating company data.");
-      console.error("Error submitting form:", error);
     }
   };
 

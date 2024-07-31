@@ -16,12 +16,19 @@ export default function Accordian({
   handleAccordian,
   clientStatus,
 }) {
-  if (!sections) return null;
+  const getActive = (section, index) => {
+    if (section.title == "Company Details") {
+      return section.formData[section.id]?.clientStatus === "active"
+    } else {
+      return section.formData[section.id]?.status === "YES"
+    }
 
+  }
+  if (!sections) return null;
   return (
     <div className="p-2 ">
       {sections.map((section, index) => {
-        // console.log(section)
+        console.log(section)
         return (
           <Accordion
             key={index}
@@ -31,7 +38,8 @@ export default function Accordian({
           >
             <div style={section.sectionStyle}>
               <AccordionSummary
-                className="shadow-md rounded-t-lg "
+                className={`shadow-md rounded-t-lg`}
+                style={{ background: getActive(section, index) ? "green" : "" }}
                 expandIcon={
                   expanded.includes(section.title) ? (
                     <Remove />
@@ -43,7 +51,7 @@ export default function Accordian({
                 id={`panel${index}-header`}
               >
                 <div className=" ">
-                  <Typography component="div" className="font-bold text-2xl ">
+                  <Typography component="div" className="font-bold text-2xl" style={{color:getActive(section, index) ?'white':'black'}}>
                     {section.title}
                   </Typography>
                 </div>
@@ -51,9 +59,7 @@ export default function Accordian({
             </div>
             {/* //bg */}
             <AccordionDetails
-              className={`grid grid-cols-1 gap-4 ${
-                clientStatus === "active" ? "bg-green-500" : "bg-red-500"
-              } md:grid-cols-2 lg:grid-cols-4`}
+              className={`grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4`}
             >
               {section.fields.map((field, fieldIndex) => {
                 const fieldId = field.id;

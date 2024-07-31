@@ -53,13 +53,8 @@ const EditServiceform = ({ serviceId }) => {
         formData
       );
 
-      console.log("Form updated:", response.data);
     } catch (error) {
       setError(error.message);
-      console.error(
-        "ERROR",
-        error.response ? error.response.data : error.message
-      );
     }
   };
 
