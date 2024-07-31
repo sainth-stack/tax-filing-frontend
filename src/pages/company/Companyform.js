@@ -147,7 +147,7 @@ const CompanyForm = ({
           setFormData(initialData);
 
           // Set client status
-          const status = companyDetails.companyDetails.clientStatus;
+          const status = companyDetails.companyDetails.clientStatus || "";
           setClientStatus(status);
 
           console.log("Client status:", status);
