@@ -1,4 +1,3 @@
-// CompanyForm Component
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { sections } from "./data";
@@ -6,6 +5,7 @@ import Accordian from "../../components/Accordian";
 import { base_url } from "../../const";
 
 const CompanyForm = ({
+  clientStatuses,
   companyId,
   setCompanyId,
   setShowForm,
@@ -13,9 +13,9 @@ const CompanyForm = ({
   companyRefresh,
 }) => {
   const [error, setError] = useState("");
-  const [expanded, setExpanded] = useState(
-    sections ? ["Company Details"] : []
-  );
+  const [clientStatus, setClientStatus] = useState("");
+  const [expanded, setExpanded] = useState(sections ? ["Company Details"] : []);
+  const [formData, setFormData] = useState({});
 
   const replaceEmptyObjectsWithEmptyStrings = (data) => {
     const updatedData = { ...data };
@@ -40,8 +40,6 @@ const CompanyForm = ({
     });
     return acc;
   }, {});
-
-  const [formData, setFormData] = useState(initialFormData);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -70,10 +68,7 @@ const CompanyForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        ` ${base_url}/companies`,
-        formData
-      );
+      const response = await axios.post(`${base_url}/companies`, formData);
       console.log("Form submitted:", response.data);
       handleFiles(response.data);
     } catch (error) {
@@ -85,7 +80,7 @@ const CompanyForm = ({
     try {
       const form = new FormData();
       // Append files
-      for (const [key, file] of Object.entries(formData.attachments)) {
+      for (const [key, file] of Object.entries(formData.attachments || {})) {
         if (file) {
           form.append(key, file);
         }
@@ -93,10 +88,7 @@ const CompanyForm = ({
 
       form.append("companyId", data?._id);
 
-      const response = await axios.post(
-        `${base_url}/files`,
-        form
-      );
+      const response = await axios.post(`${base_url}/files`, form);
       setFormData(initialFormData);
       setCompanyId("");
       setShowForm(false);
@@ -135,10 +127,11 @@ const CompanyForm = ({
       try {
         if (companyId) {
           const response = await axios.get(
-            `${base_url}/companies/${companyId}`
+            `${process.env.REACT_APP_BASE_URL}/companies/${companyId}`
           );
           const companyDetails = response.data;
           console.log("Fetched company details:", companyDetails);
+
           const initialData = sections.reduce((acc, section) => {
             section.fields.forEach((field) => {
               const [sectionKey, fieldKey] = field.id.split(".");
@@ -150,8 +143,14 @@ const CompanyForm = ({
             });
             return acc;
           }, {});
-          console.log(initialData);
+
           setFormData(initialData);
+
+          // Set client status
+          const status = companyDetails.companyDetails.clientStatus;
+          setClientStatus(status);
+
+          console.log("Client status:", status);
         }
       } catch (error) {
         console.error("Error fetching company data:", error);
@@ -163,7 +162,6 @@ const CompanyForm = ({
       fetchCompanyData();
     }
   }, [companyId]);
-
   const handleAccordian = (title) => {
     setExpanded((prevExpanded) =>
       prevExpanded.includes(title)
@@ -171,20 +169,24 @@ const CompanyForm = ({
         : [...prevExpanded, title]
     );
   };
-  console.log(expanded)
+
+  //const sectionBackgroundColor = clientStatus === "active" ? "blue" : "red";
 
   return (
     <div className="container mx-auto p-4 bg-gray rounded-lg shadow-md">
       <header
         className="text-black p-4 rounded-t-lg"
-        style={{ background: "#f5f5f5" }}
+        style={{
+          background: "gray",
+        }}
       >
         <h1 className="text-2xl font-bold">
           {companyId ? "Edit Company" : "Create New Company"}
         </h1>
       </header>
-      <div className="p-6">
+      <div className="p-6 ">
         <Accordian
+          clientStatus={clientStatus}
           sections={
             sections
               ? sections.map((section) => ({

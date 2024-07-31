@@ -63,7 +63,7 @@ const Sidemenu = () => {
                   : "border-transparent"
               } border-l-4 transition-colors duration-200`}
             >
-              <TaskOutlinedIcon/>
+              <TaskOutlinedIcon />
               {isOpen && <span className="text-sm font-medium">Tasks</span>}
             </Link>
           </li>

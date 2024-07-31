@@ -67,23 +67,37 @@ export default function CompanyTable({
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [companies, setCompanies] = useState([]);
   const [editModal, setEditModal] = useState(false);
   const [editCompanyId, setEditCompanyId] = useState(null);
+  const [companies, setCompanies] = useState([]);
+  const [clientStatuses, setClientStatuses] = useState([]);
 
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await axios.post(
-          `${base_url}/companies/filter`,
-          { status:status ==="all" ? "" :status, name }
-        );
+        const response = await axios.post(`${base_url}/companies/filter`, {
+          status: status === "all" ? "" : status,
+          name,
+        });
         const { data } = response;
+
+        // Extract company details and client statuses
         const companyDetailsArray = data.map((item) => ({
           ...item.companyDetails,
           _id: item._id,
         }));
+
+        console.log(data);
+        // Extract client statuses into a separate array
+        const statusesArray = companyDetailsArray.map(
+          ({ clientStatus }) => clientStatus
+        );
+
+        // Update state with company details and client statuses
         setCompanies(companyDetailsArray);
+        setClientStatuses(statusesArray);
+
+        // Log client statuses
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -127,6 +141,7 @@ export default function CompanyTable({
         {editModal && (
           <ServiceModal open={editModal} handleClose={handleCloseModal}>
             <EditCompanyForm
+              clientStatuses={clientStatuses}
               companyId={editCompanyId}
               onClose={handleCloseModal}
             />

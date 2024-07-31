@@ -13,8 +13,8 @@ const Company = () => {
   const [showForm, setShowForm] = useState("");
   const [serviceForm, setServiceForm] = useState(false);
   const [companyId, setCompanyId] = useState("");
-  const [name, setName] = useState("")
-  const [status, setStatus] = useState("")
+  const [name, setName] = useState("");
+  const [status, setStatus] = useState("");
   const handleServiceForm = () => {
     setServiceForm(!serviceForm);
   };

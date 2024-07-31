@@ -10,7 +10,12 @@ import CustomInput from "./input";
 import CustomFileInput from "./customFile";
 import SelectInput from "./select";
 
-export default function Accordian({ sections, expanded, handleAccordian }) {
+export default function Accordian({
+  sections,
+  expanded,
+  handleAccordian,
+  clientStatus,
+}) {
   if (!sections) return null;
 
   return (
@@ -24,9 +29,9 @@ export default function Accordian({ sections, expanded, handleAccordian }) {
             expanded={expanded.includes(section.title)}
             onChange={() => handleAccordian(section.title)}
           >
-            <div className="bg-[#F5F5F5]">
+            <div style={section.sectionStyle}>
               <AccordionSummary
-                className="shadow-md rounded-t-lg"
+                className="shadow-md rounded-t-lg "
                 expandIcon={
                   expanded.includes(section.title) ? (
                     <Remove />
@@ -44,7 +49,12 @@ export default function Accordian({ sections, expanded, handleAccordian }) {
                 </div>
               </AccordionSummary>
             </div>
-            <AccordionDetails className="grid grid-cols-1 gap-4 bg-[#fbfbfb] md:grid-cols-2 lg:grid-cols-4">
+            {/* //bg */}
+            <AccordionDetails
+              className={`grid grid-cols-1 gap-4 ${
+                clientStatus === "active" ? "bg-green-500" : "bg-red-500"
+              } md:grid-cols-2 lg:grid-cols-4`}
+            >
               {section.fields.map((field, fieldIndex) => {
                 const fieldId = field.id;
                 const [sectionKey, fieldKey] = fieldId.split(".");
@@ -87,7 +97,7 @@ export default function Accordian({ sections, expanded, handleAccordian }) {
               })}
             </AccordionDetails>
           </Accordion>
-        )
+        );
       })}
     </div>
   );
