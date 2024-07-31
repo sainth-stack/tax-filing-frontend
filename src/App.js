@@ -3,7 +3,7 @@ import Login from "./pages/Auth/Login";
 import { Route, Routes } from "react-router";
 import Pagenotfound from "./pages/Auth/Pagenotfound";
 import Company from "./pages/company/Company";
-import Tasks from "./pages/company/Tasks";
+import Tasks from "./pages/Tasks/Tasks";
 
 function App() {
   return (

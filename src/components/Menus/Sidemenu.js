@@ -1,11 +1,18 @@
 import { BuildOutlined, Dashboard, Home } from "@mui/icons-material";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import BusinessIcon from "@mui/icons-material/Business";
 import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
+
 const Sidemenu = () => {
-  const [activeItem, setActiveItem] = useState("dashboard");
+  const location = useLocation();
+  const [activeItem, setActiveItem] = useState("");
   const [isOpen, setIsOpen] = useState(true); // Sidebar starts open
+
+  useEffect(() => {
+    const path = location.pathname.split('/')[1];
+    setActiveItem(path || "company");
+  }, [location]);
 
   const handleMenuClick = (item) => {
     setActiveItem(item);
