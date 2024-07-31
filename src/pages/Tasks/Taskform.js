@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import SelectInput from "../../../components/select";
-import CustomInput from "../../../components/input";
-import { tasks } from "../data";
+import SelectInput from "../../components/select";
+import CustomInput from "../../components/input";
+import moment from 'moment';
+import { tasks } from "./data";
 
-const Taskform = ({ setRefresh, refresh }) => {
-  // Define default data based on the structure of tasks
+const Taskform = ({ setRefresh, refresh, showForm, setShowForm, fetchTasks, companyId }) => {
   const defaultData = tasks[0].fields.reduce((acc, field) => {
     acc[field.id] = "";
     return acc;
   }, {});
-  const [showform, setShowForm] = useState(true);
+
   const [formData, setFormData] = useState(defaultData);
   const [error, setError] = useState(null);
 
@@ -27,21 +27,61 @@ const Taskform = ({ setRefresh, refresh }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_BASE_URL}/tasks`, // Adjust endpoint if needed
         formData
       );
-
+      fetchTasks();
       setFormData(defaultData);
-      console.log("Form submitted:", response.data);
     } catch (error) {
       setError(error.message);
-      console.error(
-        "ERROR",
-        error.response ? error.response.data : error.message
-      );
+      console.error("ERROR", error.response ? error.response.data : error.message);
     }
   };
+
+  useEffect(() => {
+    // Fetch existing task data if `companyId` is provided
+    const fetchTaskData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/tasks/${companyId}`
+        );
+        const formattedData = mapDates(response.data);
+        setFormData(formattedData);
+      } catch (error) {
+        setError(error.message);
+        console.error("ERROR", error.response ? error.response.data : error.message);
+      }
+    };
+
+    if (companyId) {
+      setShowForm(true);
+      fetchTaskData();
+    }
+  }, [companyId, setShowForm]);
+
+  const mapDates = (data) => {
+    if (Array.isArray(data)) {
+      return data.map(item => mapDates(item));
+    } else if (data && typeof data === 'object') {
+      return Object.keys(data).reduce((acc, key) => {
+        if (isDate(data[key])) {
+          acc[key] = moment(data[key]).format('YYYY-MM-DD');
+        } else {
+          acc[key] = mapDates(data[key]);
+        }
+        return acc;
+      }, {});
+    }
+    return data;
+  };
+
+  const isDate = (value) => {
+    return moment(value, moment.ISO_8601, true).isValid();
+  };
+
+  const shouldDisplayConditionalFields = formData.applicationStatus === "applied";
+  const shouldDisplayDateOfApproval = formData.applicationSubStatus === "approved";
 
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
@@ -51,7 +91,7 @@ const Taskform = ({ setRefresh, refresh }) => {
       >
         <h1 className="text-2xl font-bold">Create New Task</h1>
       </header>
-      {showform && (
+      {showForm && (
         <form onSubmit={handleSubmit} className="p-3">
           {tasks.map((task, taskIndex) => (
             <div
@@ -61,8 +101,20 @@ const Taskform = ({ setRefresh, refresh }) => {
               <h2 className="text-xl font-semibold mb-2 border-b border-gray-200 pb-2">
                 {task.title}
               </h2>
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 mx-3 lg:grid-cols-6">
+              <div className="grid grid-cols-4 gap-5 ">
                 {task.fields.map((field, index) => {
+                  if (
+                    (field.id === "arn" || field.id === "arnDate" || field.id === "applicationSubStatus") &&
+                    !shouldDisplayConditionalFields
+                  ) {
+                    return null;
+                  }
+                  if (
+                    field.id === "dateOfApproval" &&
+                    !shouldDisplayDateOfApproval
+                  ) {
+                    return null;
+                  }
                   if (field.type === "select") {
                     return (
                       <SelectInput

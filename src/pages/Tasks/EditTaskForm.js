@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import SelectInput from "../../../components/select";
-import CustomInput from "../../../components/input";
-import { tasks } from "../data";
+import SelectInput from "../../components/select";
+import CustomInput from "../../components/input";
+import { tasks } from "./data";
 
 const EditTaskForm = ({ taskId }) => {
   const [formData, setFormData] = useState({

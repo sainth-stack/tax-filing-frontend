@@ -14,7 +14,7 @@ const DateInput = ({
     <div className={`flex flex-col ${className}`}>
       <label htmlFor={id} className="mb-1" style={labelStyles}>
         {label}
-        {required && <span className="text-red-500">*</span>}
+        {/* {required && <span className="text-red-500">*</span>} */}
       </label>
       {type && type === "date" ? (
         <input

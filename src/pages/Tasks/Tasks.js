@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
-import Layout from "./../../components/Layout/Layout";
+import Layout from "../../components/Layout/Layout";
 import CustomInput from "../../components/input";
-import TasksTable from "./Tasks/TaskTable";
+import TasksTable from "./TaskTable";
 import DateInput from "../../components/Date/DateInput";
-import { Dates } from "../../pages/company/data";
-import Taskform from "./Tasks/Taskform";
+import { Dates } from "../company/data";
+import Taskform from "./Taskform";
+import axios from "axios";
 
 const Tasks = () => {
   const [showForm, setShowForm] = useState(false);
   const [companyId, setCompanyId] = useState("");
   const [name, setName] = useState("");
+  const [tasks, setTasks] = useState([]);
   const [formValues, setFormValues] = useState({
     effectiveFrom: "",
     effectiveTo: "",
@@ -28,6 +30,33 @@ const Tasks = () => {
       [id]: value,
     }));
   };
+
+  const fetchTasks = async () => {
+    try {
+      const response = await axios.post("http://localhost:4000/api/tasks/filter", {
+        company: name, ...formValues
+      });
+      setTasks(response.data);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
+
+  useEffect(() => {
+
+    fetchTasks();
+  }, [name,formValues]);
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:4000/api/tasks/${id}`);
+      setTasks(tasks.filter((task) => task._id !== id));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
+
 
   return (
     <Layout>
@@ -49,7 +78,7 @@ const Tasks = () => {
           </div>
 
           {Dates[0].fields.map((field) => (
-            <div key={field.id} className="flex items-center ">
+            <div key={field.id} className="flex items-center">
               <DateInput
                 type={field.type}
                 id={field.id}
@@ -120,8 +149,10 @@ const Tasks = () => {
                 companyId,
                 setCompanyId,
                 setShowForm,
+                showForm,
                 setCompanyRefresh,
                 companyRefresh,
+                fetchTasks
               }}
             />
           </div>
@@ -134,6 +165,8 @@ const Tasks = () => {
               setCompanyId,
               companyRefresh,
               name,
+              handleDelete,
+              tasks,
               ...formValues,
             }}
           />

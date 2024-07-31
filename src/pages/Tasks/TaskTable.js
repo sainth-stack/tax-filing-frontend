@@ -13,8 +13,8 @@ import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
-import ServiceModal from "../../../components/services/models/ServiceModal";
-import Accordian from "../../../components/Accordian";
+import ServiceModal from "../../components/services/models/ServiceModal";
+import Accordian from "../../components/Accordian";
 import EditTaskForm from "./EditTaskForm";
 
 const theme = createTheme({
@@ -58,25 +58,9 @@ const theme = createTheme({
   },
 });
 
-export default function TasksTable() {
+export default function TasksTable({tasks,handleDelete,setCompanyId}) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [tasks, setTasks] = useState([]);
-  const [editModal, setEditModal] = useState(false);
-  const [editTaskId, setEditTaskId] = useState(null);
-
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await axios.get("http://localhost:4000/api/tasks");
-        setTasks(response.data);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    };
-
-    fetchTasks();
-  }, []);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -88,33 +72,14 @@ export default function TasksTable() {
   };
 
   const handleEditForm = (id) => {
-    setEditTaskId(id);
-    setEditModal(true);
+    setCompanyId(id);
   };
 
-  const handleCloseModal = () => {
-    setEditModal(false);
-    setEditTaskId(null);
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:4000/api/tasks/${id}`);
-      setTasks(tasks.filter((task) => task._id !== id));
-    } catch (error) {
-      console.error("Error deleting task:", error);
-    }
-  };
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div className="mx-auto">
-        {editModal && (
-          <ServiceModal open={editModal} handleClose={handleCloseModal}>
-            <EditTaskForm taskId={editTaskId} onClose={handleCloseModal} />
-          </ServiceModal>
-        )}
       </div>
       <TableContainer
         component={Paper}
