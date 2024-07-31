@@ -7,6 +7,7 @@ import DateInput from "../../components/Date/DateInput";
 import { Dates } from "../company/data";
 import Taskform from "./Taskform";
 import axios from "axios";
+import { base_url } from "../../const";
 
 const Tasks = () => {
   const [showForm, setShowForm] = useState(false);
@@ -33,7 +34,7 @@ const Tasks = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.post("http://localhost:4000/api/tasks/filter", {
+      const response = await axios.post(`${base_url}/tasks/filter`, {
         company: name, ...formValues
       });
       setTasks(response.data);
@@ -49,7 +50,7 @@ const Tasks = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/api/tasks/${id}`);
+      await axios.delete(`${base_url}/tasks/${id}`);
       setTasks(tasks.filter((task) => task._id !== id));
     } catch (error) {
       console.error("Error deleting task:", error);
