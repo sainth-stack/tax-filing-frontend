@@ -1,4 +1,4 @@
-    import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { base_url } from "../../const";
@@ -31,6 +31,7 @@ const Login = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
+    navigate("/company");
     try {
       const response = await axios.post(
         `${base_url}/users/login`,
