@@ -91,7 +91,7 @@ export default function UsersTable({ users, handleDelete, setCompanyId }) {
                 S.No
               </TableCell>
               <TableCell align="center" padding="normal">
-                User Name
+                Name
               </TableCell>
               <TableCell align="center" padding="normal">
                 Email
@@ -113,13 +113,13 @@ export default function UsersTable({ users, handleDelete, setCompanyId }) {
                     {page * rowsPerPage + index + 1}
                   </TableCell>
                   <TableCell align="center" padding="normal">
-                    {user.name || "N/A"}
+                    {user.firstName + " "+ user.lastName || "N/A"}
                   </TableCell>
                   <TableCell align="center" padding="normal">
                     {user.email || "N/A"}
                   </TableCell>
                   <TableCell align="center" padding="normal">
-                    {user.companyName || "N/A"}
+                    {user.company || "N/A"}
                   </TableCell>
                   <TableCell align="center" padding="normal">
                     <IconButton

@@ -4,8 +4,6 @@ import Layout from "../../components/Layout/Layout";
 import axios from "axios";
 import { base_url } from "../../const";
 import CustomInput from "../../components/input";
-import DateInput from "../../components/Date/DateInput";
-import { Dates } from "../company/data";
 import UserFrom from "./Usersform";
 import UsersTable from "./UsersTable";
 
@@ -14,29 +12,17 @@ const Users = () => {
   const [companyId, setCompanyId] = useState("");
   const [name, setName] = useState("");
   const [users, setUsers] = useState([]);
-  const [formValues, setFormValues] = useState({
-    effectiveFrom: "",
-    effectiveTo: "",
-  });
   const [companyRefresh, setCompanyRefresh] = useState(false);
 
   const handleShowForm = () => {
     setShowForm(!showForm);
   };
 
-  const handleDateChange = (e) => {
-    const { id, value } = e.target;
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [id]: value,
-    }));
-  };
 
   const fetchUsers = async () => {
     try {
       const response = await axios.post(`${base_url}/users/filter`, {
-        company: name,
-        ...formValues,
+        name: name,
       });
       setUsers(response.data);
     } catch (error) {
@@ -46,7 +32,7 @@ const Users = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [name, formValues]);
+  }, [name]);
 
   const handleDelete = async (id) => {
     try {
@@ -64,11 +50,11 @@ const Users = () => {
           <div className="flex items-center ">
             <CustomInput
               id="company"
-              label="Company"
+              label="Name"
               className="shadow-sm"
               value={name}
               type="text"
-              placeholder="Company Name"
+              placeholder="Name"
               onChange={(e) => setName(e.target.value)}
               labelStyles={{
                 fontWeight: 500,
@@ -76,22 +62,6 @@ const Users = () => {
             />
           </div>
 
-          {Dates[0].fields.map((field) => (
-            <div key={field.id} className="flex items-center">
-              <DateInput
-                type={field.type}
-                id={field.id}
-                className="shadow-sm"
-                label={field.label}
-                value={formValues[field.id]}
-                onChange={handleDateChange}
-                required={field.required}
-                labelStyles={{
-                  fontWeight: 500,
-                }}
-              />
-            </div>
-          ))}
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -167,7 +137,6 @@ const Users = () => {
               name,
               handleDelete,
               users,
-              ...formValues,
             }}
           />
         </div>

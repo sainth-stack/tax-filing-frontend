@@ -5,6 +5,7 @@ import { Users } from "./data";
 import SelectInput from "../../components/select";
 import CustomInput from "../../components/input";
 import CustomCheckbox from "../../components/Checkbox/Checkbox";
+import { base_url } from "../../const";
 
 const UserForm = ({
   setRefresh,
@@ -35,11 +36,20 @@ const UserForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/users`, // Adjust endpoint if needed
-        formData
-      );
+      if(companyId){
+        await axios.put(
+          `${base_url}/users/${companyId}`, // Adjust endpoint if needed
+          formData
+        );
+      } else {
+        await axios.post(
+          `${base_url}/users`, // Adjust endpoint if needed
+          formData
+        );
+      }
+
       fetchUsers();
+      setShowForm(false)
       setFormData(defaultData);
     } catch (error) {
       setError(error.message);
@@ -55,7 +65,7 @@ const UserForm = ({
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/users/`
+          `${base_url}/users/${companyId}`
         );
         const formattedData = mapDates(response.data);
         setFormData(formattedData);

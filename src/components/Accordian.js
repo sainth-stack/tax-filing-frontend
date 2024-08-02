@@ -3,13 +3,11 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import AddIcon from "@mui/icons-material/Add";
-import { Remove } from "@mui/icons-material";
 import CustomInput from "./input";
 import CustomFileInput from "./customFile";
 import SelectInput from "./select";
-
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 export default function Accordian({
   sections,
   expanded,
@@ -20,7 +18,7 @@ export default function Accordian({
     if (section.title == "Company Details") {
       return section.formData[section.id]?.clientStatus === "active"
     } else {
-      return section.formData[section.id]?.status === "YES"
+      return section.formData[section.id]?.status === "active"
     }
 
   }
@@ -28,7 +26,6 @@ export default function Accordian({
   return (
     <div className="p-2 ">
       {sections.map((section, index) => {
-        console.log(section)
         return (
           <Accordion
             key={index}
@@ -39,20 +36,16 @@ export default function Accordian({
             <div style={section.sectionStyle}>
               <AccordionSummary
                 className={`shadow-md rounded-t-lg`}
-                style={{ background: getActive(section, index) ? "green" : "" }}
+                // style={{ background: getActive(section, index) ? "green" : "" }}
                 expandIcon={
-                  expanded.includes(section.title) ? (
-                    <Remove />
-                  ) : (
-                    <AddIcon className="shadow-md rounded-lg" />
-                  )
+                  <KeyboardArrowDownIcon />
                 }
                 aria-controls={`panel${index}-content`}
                 id={`panel${index}-header`}
               >
                 <div className=" ">
-                  <Typography component="div" className="font-bold text-2xl" style={{color:getActive(section, index) ?'white':'black'}}>
-                    {section.title}
+                  <Typography component="div" className="font-bold text-2xl gap-[10px]">
+                    {section.title} {getActive(section, index) &&<CheckCircleOutlineIcon sx={{background:'#25D366',color:'white',borderRadius:'50%'}}/>}
                   </Typography>
                 </div>
               </AccordionSummary>

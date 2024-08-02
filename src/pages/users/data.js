@@ -46,7 +46,7 @@ export const Users = [
       },
       {
         type: "email",
-        id: "emailAddress",
+        id: "email",
         label: "Email Address",
         required: true,
       },
