@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router";
 import Pagenotfound from "./pages/Auth/Pagenotfound";
 import Company from "./pages/company/Company";
 import Tasks from "./pages/Tasks/Tasks";
+import Users from "./pages/users/Users";
 
 function App() {
   return (
@@ -11,9 +12,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/tasks" element={<Tasks />} />
-        <Route path="*" element={<Pagenotfound />} />
+        <Route path="/users" element={<Users />} />
 
         <Route path="/company" element={<Company />} />
+        <Route path="*" element={<Pagenotfound />} />
       </Routes>
     </>
   );

@@ -1,4 +1,9 @@
-import { BuildOutlined, Dashboard, Home } from "@mui/icons-material";
+import {
+  BuildOutlined,
+  Dashboard,
+  Home,
+  PeopleAltOutlined,
+} from "@mui/icons-material";
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import BusinessIcon from "@mui/icons-material/Business";
@@ -10,7 +15,7 @@ const Sidemenu = () => {
   const [isOpen, setIsOpen] = useState(true); // Sidebar starts open
 
   useEffect(() => {
-    const path = location.pathname.split('/')[1];
+    const path = location.pathname.split("/")[1];
     setActiveItem(path || "company");
   }, [location]);
 
@@ -72,6 +77,21 @@ const Sidemenu = () => {
             >
               <TaskOutlinedIcon />
               {isOpen && <span className="text-sm font-medium">Tasks</span>}
+            </Link>
+          </li>
+          {/* for users */}
+          <li>
+            <Link
+              to="/users"
+              onClick={() => handleMenuClick("users")}
+              className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${
+                activeItem === "users"
+                  ? "border-blue-500 bg-blue-50 text-blue-700"
+                  : "border-transparent"
+              } border-l-4 transition-colors duration-200`}
+            >
+              <PeopleAltOutlined />
+              {isOpen && <span className="text-sm font-medium">Users</span>}
             </Link>
           </li>
         </ul>

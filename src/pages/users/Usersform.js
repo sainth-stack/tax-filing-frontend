@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import moment from "moment";
+import { Users } from "./data";
 import SelectInput from "../../components/select";
 import CustomInput from "../../components/input";
-import moment from "moment";
-import { tasks } from "./data";
+import CustomCheckbox from "../../components/Checkbox/Checkbox";
 
-const Taskform = ({
+const UserForm = ({
   setRefresh,
   refresh,
   showForm,
   setShowForm,
-  fetchTasks,
+  fetchUsers,
   companyId,
 }) => {
-  const defaultData = tasks[0].fields.reduce((acc, field) => {
+  const defaultData = Users[0].fields.reduce((acc, field) => {
     acc[field.id] = "";
     return acc;
   }, {});
@@ -23,10 +24,10 @@ const Taskform = ({
 
   // Handle input change
   const handleInputChange = (e) => {
-    const { id, value } = e.target;
+    const { id, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [id]: value,
+      [id]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -35,10 +36,10 @@ const Taskform = ({
     e.preventDefault();
     try {
       await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/tasks`, // Adjust endpoint if needed
+        `${process.env.REACT_APP_BASE_URL}/users`, // Adjust endpoint if needed
         formData
       );
-      fetchTasks();
+      fetchUsers();
       setFormData(defaultData);
     } catch (error) {
       setError(error.message);
@@ -51,10 +52,10 @@ const Taskform = ({
 
   useEffect(() => {
     // Fetch existing task data if `companyId` is provided
-    const fetchTaskData = async () => {
+    const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/tasks/${companyId}`
+          `${process.env.REACT_APP_BASE_URL}/users/`
         );
         const formattedData = mapDates(response.data);
         setFormData(formattedData);
@@ -69,7 +70,7 @@ const Taskform = ({
 
     if (companyId) {
       setShowForm(true);
-      fetchTaskData();
+      fetchUserData();
     }
   }, [companyId, setShowForm]);
 
@@ -93,45 +94,26 @@ const Taskform = ({
     return moment(value, moment.ISO_8601, true).isValid();
   };
 
-  const shouldDisplayConditionalFields =
-    formData.applicationStatus === "applied";
-  const shouldDisplayDateOfApproval =
-    formData.applicationSubStatus === "approved";
-
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
       <header
         className="text-black p-2 rounded-t-lg"
         style={{ background: "#f5f5f5" }}
       >
-        <h1 className="text-2xl font-bold">Create New Task</h1>
+        <h1 className="text-2xl font-bold">Create New User</h1>
       </header>
       {showForm && (
         <form onSubmit={handleSubmit} className="p-3">
-          {tasks.map((task, taskIndex) => (
+          {Users.map((user, userIndex) => (
             <div
-              key={taskIndex}
+              key={userIndex}
               className="mb-2 p-2 border border-gray-300 rounded-lg bg-gray-50 shadow-sm"
             >
               <h2 className="text-xl font-semibold mb-2 border-b border-gray-200 pb-2">
-                {task.title}
+                {user.title}
               </h2>
-              <div className="grid grid-cols-4 gap-5 ">
-                {task.fields.map((field, index) => {
-                  if (
-                    (field.id === "arn" ||
-                      field.id === "arnDate" ||
-                      field.id === "applicationSubStatus") &&
-                    !shouldDisplayConditionalFields
-                  ) {
-                    return null;
-                  }
-                  if (
-                    field.id === "dateOfApproval" &&
-                    !shouldDisplayDateOfApproval
-                  ) {
-                    return null;
-                  }
+              <div className="grid grid-cols-4 gap-5">
+                {user.fields.map((field, index) => {
                   if (field.type === "select") {
                     return (
                       <SelectInput
@@ -145,6 +127,24 @@ const Taskform = ({
                       />
                     );
                   }
+                  if (field.type === "checkbox") {
+                    return (
+                      <>
+                        <div className="grid ">
+                          <label htmlFor="">{field.text}</label>
+                          <CustomCheckbox
+                            key={index}
+                            id={field.id}
+                            label={field.label}
+                            checked={formData[field.id]}
+                            onChange={handleInputChange}
+                            required={field.required}
+                          />
+                        </div>
+                      </>
+                    );
+                  }
+
                   return (
                     <CustomInput
                       key={index}
@@ -179,10 +179,9 @@ const Taskform = ({
           </div>
         </form>
       )}
-
       {error && <h3 className="text-red-500">{error}</h3>}
     </div>
   );
 };
 
-export default Taskform;
+export default UserForm;
