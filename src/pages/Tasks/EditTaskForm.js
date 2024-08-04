@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SelectInput from "../../components/select";
 import CustomInput from "../../components/input";
-import { tasks } from "./data";
+import {  tasks } from "./data";
 
 const EditTaskForm = ({ taskId }) => {
   const [formData, setFormData] = useState({
@@ -14,7 +14,6 @@ const EditTaskForm = ({ taskId }) => {
   });
 
   const [error, setError] = useState(null);
-
   useEffect(() => {
     // Fetch existing task data if `taskId` is provided
     const fetchTaskData = async () => {
@@ -39,6 +38,7 @@ const EditTaskForm = ({ taskId }) => {
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [id]: value,
@@ -81,7 +81,7 @@ const EditTaskForm = ({ taskId }) => {
               {task.title}
             </h2>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
-              {task.fields.map((field, index) => {
+              {tasks.fields.map((field, index) => {
                 if (field.type === "select") {
                   return (
                     <SelectInput

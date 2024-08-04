@@ -3,7 +3,7 @@ import axios from "axios";
 import SelectInput from "../../components/select";
 import CustomInput from "../../components/input";
 import moment from "moment";
-import { tasks } from "./data";
+import { getGstData, getGstMonthlyData, gst, tasks } from "./data";
 
 const Taskform = ({
   setRefresh,
@@ -13,14 +13,14 @@ const Taskform = ({
   fetchTasks,
   companyId,
 }) => {
-  const defaultData = tasks[0].fields.reduce((acc, field) => {
+  const defaultData = tasks.reduce((acc, field) => {
     acc[field.id] = "";
     return acc;
   }, {});
 
   const [formData, setFormData] = useState(defaultData);
   const [error, setError] = useState(null);
-
+  const [taskData, setTasks] = useState(tasks)
   // Handle input change
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -93,10 +93,15 @@ const Taskform = ({
     return moment(value, moment.ISO_8601, true).isValid();
   };
 
-  const shouldDisplayConditionalFields =
-    formData.applicationStatus === "applied";
-  const shouldDisplayDateOfApproval =
-    formData.applicationSubStatus === "approved";
+  useEffect(() => {
+    if (formData?.taskType === "gst") {
+      const gstData = getGstData(formData)
+      const data = [...tasks, ...gstData]
+      setTasks(data)
+    } else if (formData?.taskType === "providentFund") {
+      setTasks(tasks)
+    }
+  }, [formData])
 
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
@@ -108,59 +113,44 @@ const Taskform = ({
       </header>
       {showForm && (
         <form onSubmit={handleSubmit} className="p-3">
-          {tasks.map((task, taskIndex) => (
-            <div
-              key={taskIndex}
-              className="mb-2 p-2 border border-gray-300 rounded-lg bg-gray-50 shadow-sm"
-            >
-              <h2 className="text-xl font-semibold mb-2 border-b border-gray-200 pb-2">
-                {task.title}
-              </h2>
-              <div className="grid grid-cols-4 gap-5 ">
-                {task.fields.map((field, index) => {
-                  if (
-                    (field.id === "arn" ||
-                      field.id === "arnDate" ||
-                      field.id === "applicationSubStatus") &&
-                    !shouldDisplayConditionalFields
-                  ) {
-                    return null;
-                  }
-                  if (
-                    field.id === "dateOfApproval" &&
-                    !shouldDisplayDateOfApproval
-                  ) {
-                    return null;
-                  }
-                  if (field.type === "select") {
-                    return (
-                      <SelectInput
-                        key={index}
-                        id={field.id}
-                        label={field.label}
-                        options={field.options}
-                        value={formData[field.id]}
-                        onChange={handleInputChange}
-                        required={field.required}
-                      />
-                    );
-                  }
+          <div
+            key={""}
+            className="mb-2 p-2 border border-gray-300 rounded-lg bg-gray-50 shadow-sm"
+          >
+            <h2 className="text-xl font-semibold mb-2 border-b border-gray-200 pb-2">
+              {"Task Form"}
+            </h2>
+            <div className="grid grid-cols-4 gap-5 ">
+              {taskData?.map((field, index) => {
+                if (field.type === "select") {
                   return (
-                    <CustomInput
+                    <SelectInput
                       key={index}
-                      type={field.type}
                       id={field.id}
                       label={field.label}
-                      required={field.required}
-                      onChange={handleInputChange}
+                      options={field.options}
                       value={formData[field.id]}
-                      placeholder={field.placeholder || ""}
+                      onChange={handleInputChange}
+                      required={field.required}
                     />
                   );
-                })}
-              </div>
+                }
+                return (
+                  <CustomInput
+                    key={index}
+                    type={field.type}
+                    id={field.id}
+                    label={field.label}
+                    required={field.required}
+                    onChange={handleInputChange}
+                    value={formData[field.id]}
+                    placeholder={field.placeholder || ""}
+                  />
+                );
+              })}
             </div>
-          ))}
+          </div>
+
           <div className="flex justify-end">
             <button
               type="submit"
