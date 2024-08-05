@@ -36,7 +36,7 @@ const UserForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if(companyId){
+      if (companyId) {
         await axios.put(
           `${base_url}/users/${companyId}`, // Adjust endpoint if needed
           formData
@@ -104,6 +104,24 @@ const UserForm = ({
     return moment(value, moment.ISO_8601, true).isValid();
   };
 
+  const handleWatsappInputChange = (e) => {
+    const { id, value, type, checked } = e.target;
+    if (checked) {
+      setFormData((prev) => ({
+        ...prev,
+        "whatsappNumber": prev["mobileNumber"],
+        [id]: type === "checkbox" ? checked : value,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        "whatsappNumber": "",
+        [id]: type === "checkbox" ? checked : value,
+      }));
+    }
+  }
+
+
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
       <header
@@ -147,7 +165,7 @@ const UserForm = ({
                             id={field.id}
                             label={field.label}
                             checked={formData[field.id]}
-                            onChange={handleInputChange}
+                            onChange={field.id == "sameAsWhatsappNumber" ? handleWatsappInputChange : handleInputChange}
                             required={field.required}
                           />
                         </div>

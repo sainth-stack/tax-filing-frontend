@@ -241,7 +241,17 @@ export const getInactiveData = (data) => {
       ],
       required: true,
     },
-    ...(data.typeOfInactive
+    ...(data.typeOfInactive ==="suspended" ?[{
+      type: "select",
+      id: "cancellationStatus",
+      label: "Cancellation Status",
+      options: [
+        { value: "voluntarily", label: "Voluntarily" },
+        { value: "suoMotu", label: "Suo moto" },
+      ],
+      required: true,
+    }] : []),
+    ...(data.typeOfInactive ==="cancelled"
       ? [
         {
           type: "select",
