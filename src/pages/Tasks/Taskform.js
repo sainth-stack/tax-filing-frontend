@@ -24,12 +24,83 @@ const Taskform = ({
   // Handle input change
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
+  
+    setFormData((prev) => {
+      const newData = { ...prev, [id]: value };
+  
+      // Reset fields based on the updated value
+      if (id === 'typeOfInactive') {
+        // Reset fields related to typeOfInactive
+        newData.cancellationStatus = '';
+        newData.volApplicationStatus = '';
+        newData.arn = '';
+        newData.arnDate = '';
+        newData.applicationSubStatus = '';
+        newData.dateOfApproval = '';
+        newData.finalReturnStatus = '';
+        newData.needToRevokeCancellation = '';
+        newData.applicationStatus = '';
+        newData.appealArn = '';
+        newData.appealArnDate = '';
+        newData.appealApplicationSubStatus = '';
+        newData.goingForAppeal = '';
+        newData.appealFileReturnStatus = '';
+      }
+  
+      if (id === 'cancellationStatus') {
+        // Reset fields related to cancellationStatus
+        if (value !== 'voluntarily') {
+          newData.volApplicationStatus = '';
+          newData.arn = '';
+          newData.arnDate = '';
+          newData.applicationSubStatus = '';
+          newData.dateOfApproval = '';
+          newData.finalReturnStatus = '';
+          newData.appealArn = '';
+          newData.appealArnDate = '';
+          newData.appealApplicationSubStatus = '';
+          newData.goingForAppeal = '';
+          newData.appealFileReturnStatus = '';
+        }
+        if (value !== 'suoMotu') {
+          newData.needToRevokeCancellation = '';
+          newData.applicationStatus = '';
+          newData.arn = '';
+          newData.arnDate = '';
+          newData.applicationSubStatus = '';
+          newData.dateOfApproval = '';
+          newData.finalReturnStatus = '';
+          newData.appealArn = '';
+          newData.appealArnDate = '';
+          newData.appealApplicationSubStatus = '';
+          newData.goingForAppeal = '';
+          newData.appealFileReturnStatus = '';
+        }
+      }
+  
+      if (id === 'applicationSubStatus') {
+        // Reset fields related to applicationSubStatus
+        if (value !== 'approved') {
+          newData.dateOfApproval = '';
+          newData.finalReturnStatus = '';
+        }
+      }
+  
+      if (id === 'goingForAppeal') {
+        // Reset fields related to goingForAppeal
+        if (value !== 'yes') {
+          newData.rejectState = '';
+          newData.appealArn = '';
+          newData.appealArnDate = '';
+          newData.appealApplicationSubStatus = '';
+          newData.dateOfApproval = '';
+          newData.appealFileReturnStatus = '';
+        }
+      }
+  
+      return newData;
+    });
   };
-
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
