@@ -380,7 +380,7 @@ export const getInactiveData = (data) => {
         ] : [])
       ]
       : []),
-    ...(data?.applicationSubStatus === "rejected" ? [
+    ...(data?.applicationSubStatus === "rejected" && ((data?.cancellationStatus === "suoMotu" && data?.needToRevoceCancellation === "yes") || data?.cancellationStatus === "voluntarily") ? [
       {
         type: "select",
         id: "goingForAppeal",
