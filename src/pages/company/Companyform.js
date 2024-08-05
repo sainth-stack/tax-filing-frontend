@@ -64,11 +64,21 @@ const CompanyForm = ({
       },
     }));
   };
-console.log(formData)
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${base_url}/companies`, formData);
+      const cleanedFormData = { ...formData };
+
+      // Replace empty objects with empty strings in each section
+      Object.keys(cleanedFormData).forEach((sectionKey) => {
+        if (sectionKey === "attachments") {
+          cleanedFormData[sectionKey] = replaceEmptyObjectsWithEmptyStrings(
+            cleanedFormData[sectionKey]
+          );
+        }
+      });
+
+      const response = await axios.post(`${base_url}/companies`, cleanedFormData);
       handleFiles(response.data);
     } catch (error) {
     }

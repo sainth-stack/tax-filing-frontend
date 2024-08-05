@@ -1,14 +1,13 @@
 import React from "react";
 
 const CustomFileInput = ({ id, label, required, onChange, link }) => {
-  console.log(typeof(link))
   return (
     <div className="mb-4">
       <label
         className="block text-gray-700 text-sm font-bold mb-2"
         htmlFor={id}
       >
-        {label} {required && <span className="text-red-500">*</span>}
+        {label} 
       </label>
       <input
         type="file"
