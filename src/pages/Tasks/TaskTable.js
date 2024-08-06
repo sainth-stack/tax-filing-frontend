@@ -58,7 +58,7 @@ const theme = createTheme({
   },
 });
 
-export default function TasksTable({tasks,handleDelete,setCompanyId}) {
+export default function TasksTable({ tasks, handleDelete, setCompanyId }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -75,12 +75,10 @@ export default function TasksTable({tasks,handleDelete,setCompanyId}) {
     setCompanyId(id);
   };
 
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <div className="mx-auto">
-      </div>
+      <div className="mx-auto"></div>
       <TableContainer
         component={Paper}
         className="container my-4 shadow-md rounded-lg"

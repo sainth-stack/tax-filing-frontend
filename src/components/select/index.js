@@ -1,4 +1,3 @@
-// components/SelectInput.js
 import React from "react";
 
 const SelectInput = ({
@@ -16,7 +15,6 @@ const SelectInput = ({
     <div className={`flex flex-col ${className}`}>
       <label htmlFor={id} className="mb-1" style={{ ...labelStyles }}>
         {label}
-        {/* {required && <span className="text-red-500">*</span>} */}
       </label>
       <select
         id={id}
@@ -29,9 +27,7 @@ const SelectInput = ({
           Select an option
         </option>
         {options.map((option, index) => (
-          <option key={index} value={option.value}>
-            {option.label}
-          </option>
+          <option key={index}>{option.label}</option>
         ))}
       </select>
     </div>

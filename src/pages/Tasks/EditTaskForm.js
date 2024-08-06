@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SelectInput from "../../components/select";
 import CustomInput from "../../components/input";
-import {  tasks } from "./data";
+import { base_url, local_port } from "../../const";
+import { tasks } from "./data";
+import { useOption } from "@mui/base";
 
 const EditTaskForm = ({ taskId }) => {
   const [formData, setFormData] = useState({
@@ -13,28 +15,62 @@ const EditTaskForm = ({ taskId }) => {
     company: "",
   });
 
+  const [userOptions, setUserOptions] = useState([]);
+  const [companyOptions, setCompanyOptions] = useState([]);
   const [error, setError] = useState(null);
+  const [options, setOptions] = useState();
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(`${local_port}/api/users/all`);
+      const options = response.data.data.map((user) => ({
+        value: user._id,
+        label: user.firstName,
+      }));
+      setUserOptions(options);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  // Fetch company data for the company field
+  const fetchCompanies = async () => {
+    try {
+      const response = await axios.get(`${base_url}/api/companies/all`);
+      const options = response.data.data.map((company) => ({
+        value: company._id,
+        label: company.companyDetails.companyName,
+      }));
+      setCompanyOptions(options);
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+    }
+  };
+
+  // Fetch existing task data if `taskId` is provided
   useEffect(() => {
-    // Fetch existing task data if `taskId` is provided
     const fetchTaskData = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/tasks/${taskId}`
-        );
-        setFormData(response.data);
-      } catch (error) {
-        setError(error.message);
-        console.error(
-          "ERROR",
-          error.response ? error.response.data : error.message
-        );
+      if (taskId) {
+        try {
+          const response = await axios.get(
+            `${process.env.REACT_APP_BASE_URL}/tasks/${taskId}`
+          );
+          setFormData(response.data);
+        } catch (error) {
+          setError(error.message);
+          console.error(
+            "ERROR",
+            error.response ? error.response.data : error.message
+          );
+        }
       }
     };
+    fetchUsers();
+    fetchCompanies();
+    fetchTaskData();
 
-    if (taskId) {
-      fetchTaskData();
-    }
-  }, [taskId]);
+    console.log("hi from ");
+  }, []);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -64,7 +100,7 @@ const EditTaskForm = ({ taskId }) => {
   };
 
   return (
-    <div className="container mx-auto  bg-white rounded-lg shadow-md">
+    <div className="container mx-auto bg-white rounded-lg shadow-md">
       <header
         className="text-black p-2 rounded-t-lg"
         style={{ background: "#f5f5f5" }}
@@ -81,18 +117,26 @@ const EditTaskForm = ({ taskId }) => {
               {task.title}
             </h2>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
-              {tasks.fields.map((field, index) => {
-                if (field.type === "select") {
+              {tasks?.map((field, index) => {
+                if (field?.type === "select") {
+                  if (field?.id === "assignedTo") {
+                    setOptions(userOptions);
+                  } else if (field?.id === "company") {
+                    setOptions(companyOptions);
+                  }
                   return (
-                    <SelectInput
-                      key={index}
-                      id={field.id}
-                      label={field.label}
-                      options={field.options}
-                      value={formData[field.id]}
-                      onChange={handleInputChange}
-                      required={field.required}
-                    />
+                    <>
+                      <h6>{field.type}</h6>
+                      <SelectInput
+                        key={index}
+                        id={field.id}
+                        label={field.label}
+                        options={options}
+                        value={formData[field.id]}
+                        onChange={handleInputChange}
+                        required={field.required}
+                      />
+                    </>
                   );
                 }
                 return (

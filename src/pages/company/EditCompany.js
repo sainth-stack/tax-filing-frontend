@@ -8,6 +8,7 @@ import { base_url } from "../../const";
 const EditCompanyForm = ({ companyId, onClose }) => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState("");
+  const [users, setUsers] = useState([]);
   const [clientStatuses, setClientStatuses] = useState([]);
 
   useEffect(() => {
@@ -89,7 +90,7 @@ const EditCompanyForm = ({ companyId, onClose }) => {
                       id={field.id}
                       label={field.label}
                       options={field.options}
-                      value={formData[field.id] || "vishnu"}
+                      value={formData[field.id] || ""}
                       onChange={handleInputChange}
                       required={field.required}
                     />
