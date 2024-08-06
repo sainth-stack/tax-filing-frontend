@@ -13,9 +13,7 @@ import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
-import ServiceModal from "../../components/services/models/ServiceModal";
 import Accordian from "../../components/Accordian";
-import EditTaskForm from "./EditTaskForm";
 
 const theme = createTheme({
   typography: {
