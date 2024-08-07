@@ -1,5 +1,5 @@
-export const getTasks = ({companies=[],users=[]}) => {
-  console.log(companies)
+export const getTasks = ({ companies = [], users = [] }) => {
+  console.log(companies);
   return [
     {
       type: "select",
@@ -59,7 +59,7 @@ export const getTasks = ({companies=[],users=[]}) => {
       required: true,
     },
   ];
-}
+};
 
 export const getGstData = (data) => {
   const type = data?.taskType;
@@ -111,40 +111,40 @@ const GetCommonFields = (data) => {
     },
     ...(data.applicationStatus === "applied"
       ? [
-        {
-          type: "number",
-          id: "arn",
-          label: "ARN",
-          placeholder: "ARN",
-          required: false,
-        },
-        {
-          type: "date",
-          id: "arnDate",
-          label: "ARN Date",
-          required: false,
-        },
-        {
-          type: "select",
-          id: "applicationSubStatus",
-          label: "Application Sub Status",
-          options: [
-            { value: "approved", label: "Approved" },
-            { value: "rejected", label: "Rejected" },
-          ],
-          required: false,
-        },
-      ]
+          {
+            type: "number",
+            id: "arn",
+            label: "ARN",
+            placeholder: "ARN",
+            required: false,
+          },
+          {
+            type: "date",
+            id: "arnDate",
+            label: "ARN Date",
+            required: false,
+          },
+          {
+            type: "select",
+            id: "applicationSubStatus",
+            label: "Application Sub Status",
+            options: [
+              { value: "approved", label: "Approved" },
+              { value: "rejected", label: "Rejected" },
+            ],
+            required: false,
+          },
+        ]
       : []),
     ...(data?.applicationSubStatus === "approved"
       ? [
-        {
-          type: "date",
-          id: "dateOfApproval",
-          label: "Date Of Approval",
-          required: false,
-        },
-      ]
+          {
+            type: "date",
+            id: "dateOfApproval",
+            label: "Date Of Approval",
+            required: false,
+          },
+        ]
       : []),
   ];
   return Commondfields;
@@ -156,81 +156,81 @@ export const getGstMonthlyData = (data) => {
   const fields = [
     ...(data.taskName === "gstMonthly"
       ? [
-        {
-          type: "select",
-          id: "gstType",
-          label: "Type of GST Form",
-          options: [
-            { value: "gstr1", label: "GSTR1" },
-            { value: "gstr3b", label: "GSTR3B" },
-          ],
-          required: true,
-        },
-      ]
+          {
+            type: "select",
+            id: "gstType",
+            label: "Type of GST Form",
+            options: [
+              { value: "gstr1", label: "GSTR1" },
+              { value: "gstr3b", label: "GSTR3B" },
+            ],
+            required: true,
+          },
+        ]
       : []),
     ...(data.gstType
       ? [
-        {
-          type: "select",
-          id: "filingStatus",
-          label: "Filing Status",
-          options: [
-            { value: "filled", label: "Filled" },
-            { value: "notFilled", label: "Not Filled" },
-          ],
-          required: true,
-        },
-      ]
+          {
+            type: "select",
+            id: "filingStatus",
+            label: "Filing Status",
+            options: [
+              { value: "filled", label: "Filled" },
+              { value: "notFilled", label: "Not Filled" },
+            ],
+            required: true,
+          },
+        ]
       : []),
     ...(data.filingStatus === "notFilled"
       ? [
-        {
-          type: "select",
-          id: "previousMonth",
-          label: "Previous Month Not Filed",
-          options: [
-            { value: "yes", label: "Yes" },
-            { value: "no", label: "No" },
-          ],
-          required: true,
-        },
-        {
-          type: "select",
-          id: "currentStatus",
-          label: "Current Status",
-          options: [
-            { value: "pending", label: "Documents Pending" },
-            {
-              value: "waitingForClarification",
-              label: "Waiting For Clarification",
-            },
-            { value: "progress", label: "Work In Progress" },
-            { value: "paymentPending", label: "Tax Payment Pending" },
-          ],
-          required: true,
-        },
-      ]
+          {
+            type: "select",
+            id: "previousMonth",
+            label: "Previous Month Not Filed",
+            options: [
+              { value: "yes", label: "Yes" },
+              { value: "no", label: "No" },
+            ],
+            required: true,
+          },
+          {
+            type: "select",
+            id: "currentStatus",
+            label: "Current Status",
+            options: [
+              { value: "pending", label: "Documents Pending" },
+              {
+                value: "waitingForClarification",
+                label: "Waiting For Clarification",
+              },
+              { value: "progress", label: "Work In Progress" },
+              { value: "paymentPending", label: "Tax Payment Pending" },
+            ],
+            required: true,
+          },
+        ]
       : []),
     ...(data.currentStatus === "paymentPending" && data.gstType === "gstr3b"
       ? [
-        {
-          type: "number",
-          id: "taxAmount",
-          label: "Tax Amount",
-          placeholder: "Tax Amount",
-          required: true,
-        },
-      ]
+          {
+            type: "number",
+            id: "taxAmount",
+            label: "Tax Amount",
+            placeholder: "Tax Amount",
+            required: true,
+          },
+        ]
       : []),
     ...(data.filingStatus === "filled"
       ? [
-        {
-          type: "date",
-          id: "fileDate",
-          label: "File Date",
-          required: true,
-        },
-      ]
+          {
+            type: "date",
+            id: "fileDate",
+            label: "File Date",
+            required: true,
+          },
+        ]
       : []),
   ];
   return fields;
@@ -250,259 +250,259 @@ export const getInactiveData = (data) => {
     },
     ...(data.typeOfInactive === "cancelled"
       ? [
-        {
-          type: "select",
-          id: "cancellationStatus",
-          label: "Cancellation Status",
-          options: [
-            { value: "voluntarily", label: "Voluntarily" },
-            { value: "suoMotu", label: "Suo moto" },
-          ],
-          required: true,
-        },
-        ...(data?.cancellationStatus === "voluntarily"
-          ? [
-            {
-              type: "select",
-              id: "volApplicationStatus",
-              label: "Application Status",
-              options: [
-                { value: "pendingForApply", label: "Pending for Apply" },
-                { value: "applied", label: "Applied" },
-              ],
-              required: true,
-            },
-            ...(data?.volApplicationStatus === "applied"
-              ? [
-                {
-                  type: "text",
-                  id: "arn",
-                  label: "ARN",
-                  required: true,
-                },
-                {
-                  type: "date",
-                  id: "arnDate",
-                  label: "ARN Date",
-                  required: true,
-                },
+          {
+            type: "select",
+            id: "cancellationStatus",
+            label: "Cancellation Status",
+            options: [
+              { value: "voluntarily", label: "Voluntarily" },
+              { value: "suoMotu", label: "Suo moto" },
+            ],
+            required: true,
+          },
+          ...(data?.cancellationStatus === "voluntarily"
+            ? [
                 {
                   type: "select",
-                  id: "applicationSubStatus",
-                  label: "Application Sub Status",
-                  options: [
-                    {
-                      value: "pendingForApproval",
-                      label: "Pending for Approval",
-                    },
-                    {
-                      value: "pendingForClarification",
-                      label: "Pending for Clarification",
-                    },
-                    { value: "rejected", label: "Rejected" },
-                    { value: "approved", label: "Approved" },
-                  ],
-                  required: true,
-                },
-                ...(data?.applicationSubStatus === "approved"
-                  ? [
-                    {
-                      type: "date",
-                      id: "dateOfApproval",
-                      label: "Date of Approval",
-                      required: true,
-                    },
-                    {
-                      type: "select",
-                      id: "finalReturnStatus",
-                      label: "Final Return Status",
-                      options: [
-                        { value: "filed", label: "Filed" },
-                        { value: "notFiled", label: "Not Filed" },
-                      ],
-                      required: true,
-                    },
-                  ]
-                  : []),
-              ]
-              : []),
-          ]
-          : []),
-        ...(data?.cancellationStatus === "suoMotu"
-          ? [
-            {
-              type: "select",
-              id: "needToRevoceCancellation",
-              label: "Need to Revoc Cancellation",
-              options: [
-                { value: "yes", label: "Yes" },
-                { value: "no", label: "No" },
-              ],
-              required: true,
-            },
-            ...(data?.needToRevoceCancellation === "yes"
-              ? [
-                {
-                  type: "select",
-                  id: "applicationStatus",
+                  id: "volApplicationStatus",
                   label: "Application Status",
                   options: [
-                    {
-                      value: "pendingForApply",
-                      label: "Pending for Apply",
-                    },
+                    { value: "pendingForApply", label: "Pending for Apply" },
                     { value: "applied", label: "Applied" },
                   ],
                   required: true,
                 },
-                ...(data?.applicationStatus === "applied"
+                ...(data?.volApplicationStatus === "applied"
                   ? [
-                    {
-                      type: "text",
-                      id: "arn",
-                      label: "ARN",
-                      required: true,
-                    },
-                    {
-                      type: "date",
-                      id: "arnDate",
-                      label: "ARN Date",
-                      required: true,
-                    },
-                    {
-                      type: "select",
-                      id: "applicationSubStatus",
-                      label: "Application Sub Status",
-                      options: [
-                        {
-                          value: "pendingForApproval",
-                          label: "Pending for Approval",
-                        },
-                        {
-                          value: "pendingForClarification",
-                          label: "Pending for Clarification",
-                        },
-                        { value: "rejected", label: "Rejected" },
-                        { value: "approved", label: "Approved" },
-                      ],
-                      required: true,
-                    },
-                  ]
-                  : []),
-                ...(data.applicationSubStatus === "approved"
-                  ? [
-                    {
-                      type: "date",
-                      id: "dateOfApproval",
-                      label: "Date of Approval",
-                      required: true,
-                    },
-                    {
-                      type: "select",
-                      id: "finalReturnStatus",
-                      label: "Final Return Status",
-                      options: [
-                        { value: "filed", label: "Filed" },
-                        { value: "notFiled", label: "Not Filed" },
-                      ],
-                      required: true,
-                    },
-                  ]
+                      {
+                        type: "text",
+                        id: "arn",
+                        label: "ARN",
+                        required: true,
+                      },
+                      {
+                        type: "date",
+                        id: "arnDate",
+                        label: "ARN Date",
+                        required: true,
+                      },
+                      {
+                        type: "select",
+                        id: "applicationSubStatus",
+                        label: "Application Sub Status",
+                        options: [
+                          {
+                            value: "pendingForApproval",
+                            label: "Pending for Approval",
+                          },
+                          {
+                            value: "pendingForClarification",
+                            label: "Pending for Clarification",
+                          },
+                          { value: "rejected", label: "Rejected" },
+                          { value: "approved", label: "Approved" },
+                        ],
+                        required: true,
+                      },
+                      ...(data?.applicationSubStatus === "approved"
+                        ? [
+                            {
+                              type: "date",
+                              id: "dateOfApproval",
+                              label: "Date of Approval",
+                              required: true,
+                            },
+                            {
+                              type: "select",
+                              id: "finalReturnStatus",
+                              label: "Final Return Status",
+                              options: [
+                                { value: "filed", label: "Filed" },
+                                { value: "notFiled", label: "Not Filed" },
+                              ],
+                              required: true,
+                            },
+                          ]
+                        : []),
+                    ]
                   : []),
               ]
-              : []),
-          ]
-          : []),
-      ]
-      : []),
-    ...(data?.applicationSubStatus === "rejected" &&
-      ((data?.cancellationStatus === "suoMotu" &&
-        data?.needToRevoceCancellation === "yes") ||
-        data?.cancellationStatus === "voluntarily")
-      ? [
-        {
-          type: "select",
-          id: "goingForAppeal",
-          label: "Going For Appeal",
-          options: [
-            { value: "yes", label: "Yes" },
-            { value: "no", label: "No" },
-          ],
-          required: true,
-        },
-        ...(data.goingForAppeal === "yes"
-          ? [
-            {
-              type: "select",
-              id: "rejectState",
-              label: "Application Status",
-              options: [
-                { value: "pendingForApply", label: "Pending for Apply" },
-                { value: "applied", label: "Applied" },
-              ],
-              required: true,
-            },
-            ...(data?.rejectState === "applied"
-              ? [
-                {
-                  type: "text",
-                  id: "appealArn",
-                  label: "ARN",
-                  required: true,
-                },
-                {
-                  type: "date",
-                  id: "appealArnDate",
-                  label: "ARN Date",
-                  required: true,
-                },
+            : []),
+          ...(data?.cancellationStatus === "suoMotu"
+            ? [
                 {
                   type: "select",
-                  id: "appealApplicationSubStatus",
-                  label: "Application Sub Status",
+                  id: "needToRevoceCancellation",
+                  label: "Need to Revoc Cancellation",
                   options: [
-                    {
-                      value: "pendingForApproval",
-                      label: "Pending for Approval",
-                    },
-                    {
-                      value: "pendingForClarification",
-                      label: "Pending for Clarification",
-                    },
-                    { value: "rejected", label: "Rejected" },
-                    { value: "approved", label: "Approved" },
+                    { value: "yes", label: "Yes" },
+                    { value: "no", label: "No" },
                   ],
                   required: true,
                 },
-                ...(data?.appealApplicationSubStatus === "approved"
+                ...(data?.needToRevoceCancellation === "yes"
                   ? [
-                    {
-                      type: "date",
-                      id: "dateOfApproval",
-                      label: "Date of Approval",
-                      required: true,
-                    },
-                  ]
+                      {
+                        type: "select",
+                        id: "applicationStatus",
+                        label: "Application Status",
+                        options: [
+                          {
+                            value: "pendingForApply",
+                            label: "Pending for Apply",
+                          },
+                          { value: "applied", label: "Applied" },
+                        ],
+                        required: true,
+                      },
+                      ...(data?.applicationStatus === "applied"
+                        ? [
+                            {
+                              type: "text",
+                              id: "arn",
+                              label: "ARN",
+                              required: true,
+                            },
+                            {
+                              type: "date",
+                              id: "arnDate",
+                              label: "ARN Date",
+                              required: true,
+                            },
+                            {
+                              type: "select",
+                              id: "applicationSubStatus",
+                              label: "Application Sub Status",
+                              options: [
+                                {
+                                  value: "pendingForApproval",
+                                  label: "Pending for Approval",
+                                },
+                                {
+                                  value: "pendingForClarification",
+                                  label: "Pending for Clarification",
+                                },
+                                { value: "rejected", label: "Rejected" },
+                                { value: "approved", label: "Approved" },
+                              ],
+                              required: true,
+                            },
+                          ]
+                        : []),
+                      ...(data.applicationSubStatus === "approved"
+                        ? [
+                            {
+                              type: "date",
+                              id: "dateOfApproval",
+                              label: "Date of Approval",
+                              required: true,
+                            },
+                            {
+                              type: "select",
+                              id: "finalReturnStatus",
+                              label: "Final Return Status",
+                              options: [
+                                { value: "filed", label: "Filed" },
+                                { value: "notFiled", label: "Not Filed" },
+                              ],
+                              required: true,
+                            },
+                          ]
+                        : []),
+                    ]
                   : []),
               ]
-              : []),
-          ]
-          : []),
-        ...(data.goingForAppeal === "no"
-          ? [
-            {
-              type: "select",
-              id: "appealFileReturnStatus",
-              label: "Final Return Status",
-              options: [
-                { value: "filed", label: "Filed" },
-                { value: "notFiled", label: "Not Filed" },
-              ],
-              required: true,
-            },
-          ]
-          : []),
-      ]
+            : []),
+        ]
+      : []),
+    ...(data?.applicationSubStatus === "rejected" &&
+    ((data?.cancellationStatus === "suoMotu" &&
+      data?.needToRevoceCancellation === "yes") ||
+      data?.cancellationStatus === "voluntarily")
+      ? [
+          {
+            type: "select",
+            id: "goingForAppeal",
+            label: "Going For Appeal",
+            options: [
+              { value: "yes", label: "Yes" },
+              { value: "no", label: "No" },
+            ],
+            required: true,
+          },
+          ...(data.goingForAppeal === "yes"
+            ? [
+                {
+                  type: "select",
+                  id: "rejectState",
+                  label: "Application Status",
+                  options: [
+                    { value: "pendingForApply", label: "Pending for Apply" },
+                    { value: "applied", label: "Applied" },
+                  ],
+                  required: true,
+                },
+                ...(data?.rejectState === "applied"
+                  ? [
+                      {
+                        type: "text",
+                        id: "appealArn",
+                        label: "ARN",
+                        required: true,
+                      },
+                      {
+                        type: "date",
+                        id: "appealArnDate",
+                        label: "ARN Date",
+                        required: true,
+                      },
+                      {
+                        type: "select",
+                        id: "appealApplicationSubStatus",
+                        label: "Application Sub Status",
+                        options: [
+                          {
+                            value: "pendingForApproval",
+                            label: "Pending for Approval",
+                          },
+                          {
+                            value: "pendingForClarification",
+                            label: "Pending for Clarification",
+                          },
+                          { value: "rejected", label: "Rejected" },
+                          { value: "approved", label: "Approved" },
+                        ],
+                        required: true,
+                      },
+                      ...(data?.appealApplicationSubStatus === "approved"
+                        ? [
+                            {
+                              type: "date",
+                              id: "dateOfApproval",
+                              label: "Date of Approval",
+                              required: true,
+                            },
+                          ]
+                        : []),
+                    ]
+                  : []),
+              ]
+            : []),
+          ...(data.goingForAppeal === "no"
+            ? [
+                {
+                  type: "select",
+                  id: "appealFileReturnStatus",
+                  label: "Final Return Status",
+                  options: [
+                    { value: "filed", label: "Filed" },
+                    { value: "notFiled", label: "Not Filed" },
+                  ],
+                  required: true,
+                },
+              ]
+            : []),
+        ]
       : []),
   ];
   return fields;
@@ -593,5 +593,33 @@ export const providentFund = {
     },
   ],
 };
+
+const statusOptions = [
+  { value: "applied", label: "Applied" },
+  { value: "rejected", label: "Rejected" },
+  { value: "pending", label: "Pending" },
+];
+
+export const taskSearch = [
+  {
+    type: "text",
+    id: "company",
+    label: "Company",
+    required: true,
+  },
+  {
+    type: "text",
+    id: "assignedTo",
+    label: "Assigned To",
+    required: false,
+  },
+  {
+    type: "select",
+    id: "status",
+    label: "Status",
+    options: statusOptions,
+    required: false,
+  },
+];
 
 // Add other task types in a similar manner

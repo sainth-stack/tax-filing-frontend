@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -56,7 +56,12 @@ const theme = createTheme({
   },
 });
 
-export default function TasksTable({ tasks, handleDelete, setCompanyId }) {
+export default function TasksTable({
+  tasks,
+  handleDelete,
+  setCompanyId,
+  formData,
+}) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -76,7 +81,6 @@ export default function TasksTable({ tasks, handleDelete, setCompanyId }) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <div className="mx-auto"></div>
       <TableContainer
         component={Paper}
         className="container my-4 shadow-md rounded-lg"

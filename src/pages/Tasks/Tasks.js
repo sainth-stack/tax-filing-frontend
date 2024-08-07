@@ -1,32 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import Layout from "../../components/Layout/Layout";
-import CustomInput from "../../components/input";
 import TasksTable from "./TaskTable";
 import DateInput from "../../components/Date/DateInput";
 import { Dates } from "../company/data";
 import Taskform from "./Taskform";
 import axios from "axios";
 import { base_url } from "../../const";
+import CustomInput from "../../components/input";
+import { taskSearch } from "./data";
+import SelectInput from "../../components/select";
 
 const Tasks = () => {
   const [showForm, setShowForm] = useState(false);
   const [companyId, setCompanyId] = useState("");
-  const [name, setName] = useState("");
-  const [tasks, setTasks] = useState([]);
-  const [formValues, setFormValues] = useState({
+  const [formData, setFormData] = useState({
+    company: "",
+    assignedTo: "",
+    status: "",
     effectiveFrom: "",
     effectiveTo: "",
   });
+  const [tasks, setTasks] = useState([]);
   const [companyRefresh, setCompanyRefresh] = useState(false);
 
   const handleShowForm = () => {
     setShowForm(!showForm);
   };
 
-  const handleDateChange = (e) => {
+  const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setFormValues((prevValues) => ({
+    setFormData((prevValues) => ({
       ...prevValues,
       [id]: value,
     }));
@@ -34,19 +38,24 @@ const Tasks = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.post(`${base_url}/tasks/filter`, {
-        company: name, ...formValues
+      const { data } = await axios.post(`${base_url}/tasks/filter`, {
+        company: formData?.company,
+        assignedTo: formData?.assignedTo,
+        status: formData?.status,
+        effectiveFrom: formData?.effectiveFrom,
+        effectiveTo: formData?.effectiveTo,
       });
-      setTasks(response.data);
+
+      console.log("Fetched tasks:", data);
+      setTasks(data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
   };
 
   useEffect(() => {
-
     fetchTasks();
-  }, [name,formValues]);
+  }, [formData]);
 
   const handleDelete = async (id) => {
     try {
@@ -57,25 +66,40 @@ const Tasks = () => {
     }
   };
 
-
-
   return (
     <Layout>
       <div className="container mx-auto my-6">
-        <div className="flex flex-row my-3 gap-4 ">
-          <div className="flex items-center ">
-            <CustomInput
-              id="company"
-              label="Company"
-              className="shadow-sm"
-              value={name}
-              type="text"
-              placeholder="Company Name"
-              onChange={(e) => setName(e.target.value)}
-              labelStyles={{
-                fontWeight: 500,
-              }}
-            />
+        <div className="flex flex-row my-3 gap-4">
+          <div className="flex items-center gap-4">
+            {taskSearch?.map((field, index) => {
+              if (field?.type === "select") {
+                return (
+                  <SelectInput
+                    key={index}
+                    id={field?.id}
+                    label={field?.label}
+                    options={field?.options || []}
+                    value={formData[field?.id] || ""}
+                    onChange={handleInputChange}
+                    required={field?.required}
+                  />
+                );
+              }
+              return (
+                <CustomInput
+                  key={index}
+                  type={field.type}
+                  id={field.id}
+                  label={field.label}
+                  required={field.required}
+                  onChange={handleInputChange}
+                  value={formData[field.id]}
+                  placeholder={field.placeholder}
+                  className="shadow-sm"
+                  labelStyles={{ fontWeight: 500 }}
+                />
+              );
+            })}
           </div>
 
           {Dates[0].fields.map((field) => (
@@ -85,12 +109,10 @@ const Tasks = () => {
                 id={field.id}
                 className="shadow-sm"
                 label={field.label}
-                value={formValues[field.id]}
-                onChange={handleDateChange}
+                value={formData[field.id]}
+                onChange={handleInputChange}
                 required={field.required}
-                labelStyles={{
-                  fontWeight: 500,
-                }}
+                labelStyles={{ fontWeight: 500 }}
               />
             </div>
           ))}
@@ -143,6 +165,7 @@ const Tasks = () => {
             )}
           </div>
         </div>
+
         {showForm || companyId ? (
           <div className="justify-center">
             <Taskform
@@ -153,22 +176,22 @@ const Tasks = () => {
                 showForm,
                 setCompanyRefresh,
                 companyRefresh,
-                fetchTasks
+                fetchTasks,
               }}
             />
           </div>
         ) : (
           ""
         )}
+
         <div className="bg-white rounded-lg shadow-md">
           <TasksTable
             {...{
               setCompanyId,
               companyRefresh,
-              name,
               handleDelete,
               tasks,
-              ...formValues,
+              formData,
             }}
           />
         </div>
