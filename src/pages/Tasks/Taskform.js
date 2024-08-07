@@ -147,7 +147,6 @@ const Taskform = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(formData)
       if (formData._id) {
         await axios.put(
           `${base_url}/tasks/${formData._id}`, // Adjust endpoint if needed
