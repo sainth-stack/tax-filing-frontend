@@ -14,10 +14,10 @@ const Taskform = ({
   fetchTasks,
   companyId,
 }) => {
-  const [companies, setCompanies] = useState([])
-  const [users, setUsers] = useState([])
+  const [companies, setCompanies] = useState([]);
+  const [users, setUsers] = useState([]);
 
-  const tasks = getTasks([], [])
+  const tasks = getTasks([], []);
 
   const defaultData = tasks.reduce((acc, field) => {
     acc[field.id] = "";
@@ -25,7 +25,7 @@ const Taskform = ({
   }, {});
   const [formData, setFormData] = useState(defaultData);
   const [error, setError] = useState(null);
-  const [taskData, setTasks] = useState(tasks)
+  const [taskData, setTasks] = useState(tasks);
   // Handle input change
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -34,72 +34,72 @@ const Taskform = ({
       const newData = { ...prev, [id]: value };
 
       // Reset fields based on the updated value
-      if (id === 'typeOfInactive') {
+      if (id === "typeOfInactive") {
         // Reset fields related to typeOfInactive
-        newData.cancellationStatus = '';
-        newData.volApplicationStatus = '';
-        newData.arn = '';
-        newData.arnDate = '';
-        newData.applicationSubStatus = '';
-        newData.dateOfApproval = '';
-        newData.finalReturnStatus = '';
-        newData.needToRevokeCancellation = '';
-        newData.applicationStatus = '';
-        newData.appealArn = '';
-        newData.appealArnDate = '';
-        newData.appealApplicationSubStatus = '';
-        newData.goingForAppeal = '';
-        newData.appealFileReturnStatus = '';
+        newData.cancellationStatus = "";
+        newData.volApplicationStatus = "";
+        newData.arn = "";
+        newData.arnDate = "";
+        newData.applicationSubStatus = "";
+        newData.dateOfApproval = "";
+        newData.finalReturnStatus = "";
+        newData.needToRevokeCancellation = "";
+        newData.applicationStatus = "";
+        newData.appealArn = "";
+        newData.appealArnDate = "";
+        newData.appealApplicationSubStatus = "";
+        newData.goingForAppeal = "";
+        newData.appealFileReturnStatus = "";
       }
 
-      if (id === 'cancellationStatus') {
+      if (id === "cancellationStatus") {
         // Reset fields related to cancellationStatus
-        if (value !== 'voluntarily') {
-          newData.volApplicationStatus = '';
-          newData.arn = '';
-          newData.arnDate = '';
-          newData.applicationSubStatus = '';
-          newData.dateOfApproval = '';
-          newData.finalReturnStatus = '';
-          newData.appealArn = '';
-          newData.appealArnDate = '';
-          newData.appealApplicationSubStatus = '';
-          newData.goingForAppeal = '';
-          newData.appealFileReturnStatus = '';
+        if (value !== "voluntarily") {
+          newData.volApplicationStatus = "";
+          newData.arn = "";
+          newData.arnDate = "";
+          newData.applicationSubStatus = "";
+          newData.dateOfApproval = "";
+          newData.finalReturnStatus = "";
+          newData.appealArn = "";
+          newData.appealArnDate = "";
+          newData.appealApplicationSubStatus = "";
+          newData.goingForAppeal = "";
+          newData.appealFileReturnStatus = "";
         }
-        if (value !== 'suoMotu') {
-          newData.needToRevokeCancellation = '';
-          newData.applicationStatus = '';
-          newData.arn = '';
-          newData.arnDate = '';
-          newData.applicationSubStatus = '';
-          newData.dateOfApproval = '';
-          newData.finalReturnStatus = '';
-          newData.appealArn = '';
-          newData.appealArnDate = '';
-          newData.appealApplicationSubStatus = '';
-          newData.goingForAppeal = '';
-          newData.appealFileReturnStatus = '';
+        if (value !== "suoMotu") {
+          newData.needToRevokeCancellation = "";
+          newData.applicationStatus = "";
+          newData.arn = "";
+          newData.arnDate = "";
+          newData.applicationSubStatus = "";
+          newData.dateOfApproval = "";
+          newData.finalReturnStatus = "";
+          newData.appealArn = "";
+          newData.appealArnDate = "";
+          newData.appealApplicationSubStatus = "";
+          newData.goingForAppeal = "";
+          newData.appealFileReturnStatus = "";
         }
       }
 
-      if (id === 'applicationSubStatus') {
+      if (id === "applicationSubStatus") {
         // Reset fields related to applicationSubStatus
-        if (value !== 'approved') {
-          newData.dateOfApproval = '';
-          newData.finalReturnStatus = '';
+        if (value !== "approved") {
+          newData.dateOfApproval = "";
+          newData.finalReturnStatus = "";
         }
       }
 
-      if (id === 'goingForAppeal') {
+      if (id === "goingForAppeal") {
         // Reset fields related to goingForAppeal
-        if (value !== 'yes') {
-          newData.rejectState = '';
-          newData.appealArn = '';
-          newData.appealArnDate = '';
-          newData.appealApplicationSubStatus = '';
-          newData.dateOfApproval = '';
-          newData.appealFileReturnStatus = '';
+        if (value !== "yes") {
+          newData.rejectState = "";
+          newData.appealArn = "";
+          newData.appealArnDate = "";
+          newData.appealApplicationSubStatus = "";
+          newData.dateOfApproval = "";
+          newData.appealFileReturnStatus = "";
         }
       }
 
@@ -107,16 +107,16 @@ const Taskform = ({
     });
   };
 
-
   const fetchCompanies = async () => {
     try {
       const response = await axios.get(`${base_url}/companies/all`);
       const data = response.data?.data.map((item) => {
         return {
-          value: item?.companyDetails?.companyName, label: item?.companyDetails?.companyName
-        }
-      })
-      setCompanies(data)
+          value: item?.companyDetails?.companyName,
+          label: item?.companyDetails?.companyName,
+        };
+      });
+      setCompanies(data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
@@ -124,24 +124,23 @@ const Taskform = ({
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${base_url}//users/all`);
+      const response = await axios.get(`${base_url}/users/all`);
       const data = response.data?.data.map((item) => {
         return {
-          value: item?._id, label: item?.firstName + " " + item?.lastName
-        }
-      })
-      setUsers(data)
+          value: item?._id,
+          label: item?.firstName + " " + item?.lastName,
+        };
+      });
+      setUsers(data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
   };
 
-
   useEffect(() => {
-    fetchCompanies()
-    fetchUsers()
-  }, [])
-
+    fetchCompanies();
+    fetchUsers();
+  }, []);
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -152,8 +151,7 @@ const Taskform = ({
           `${base_url}/tasks/${formData._id}`, // Adjust endpoint if needed
           formData
         );
-      }
-      else {
+      } else {
         await axios.post(
           `${base_url}/tasks`, // Adjust endpoint if needed
           formData
@@ -169,8 +167,6 @@ const Taskform = ({
       );
     }
   };
-
-
 
   useEffect(() => {
     // Fetch existing task data if `companyId` is provided
@@ -217,23 +213,23 @@ const Taskform = ({
   };
 
   useEffect(() => {
-    console.log(formData)
+    console.log(formData);
     if (formData?.taskType === "gst") {
-      const gstData = getGstData(formData)
-      const data = [...tasks, ...gstData]
-      setTasks(data)
+      const gstData = getGstData(formData);
+      const data = [...tasks, ...gstData];
+      setTasks(data);
     } else if (formData?.taskType === "providentFund") {
-      setTasks(tasks)
+      setTasks(tasks);
     }
-  }, [formData])
+  }, [formData]);
 
   const getFields = (field) => {
     if (field.id === "company") {
-      return companies
+      return companies;
     } else if (field.id === "assignedTo") {
-      return users
-    } else return field?.options
-  }
+      return users;
+    } else return field?.options;
+  };
 
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
