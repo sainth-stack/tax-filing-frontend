@@ -72,6 +72,7 @@ export default function CompanyTable({
   const [companies, setCompanies] = useState([]);
   const [clientStatuses, setClientStatuses] = useState([]);
 
+  const [mode, setMode] = useState(0);
   useEffect(() => {
     const fetchCompanies = async () => {
       try {

@@ -193,6 +193,7 @@ const CompanyForm = ({
       </header>
       <div className="p-6 ">
         <Accordian
+          companyId={companyId}
           clientStatus={clientStatus}
           sections={
             sections
