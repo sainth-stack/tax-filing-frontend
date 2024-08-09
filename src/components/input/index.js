@@ -58,6 +58,7 @@ const CustomInput = ({
   className,
   style,
   labelStyles,
+  disabled,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
@@ -82,6 +83,7 @@ const CustomInput = ({
           className="border rounded p-[6px] focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
           // required={required}
           style={{ ...style }}
+          disabled={disabled}
         />
         {type === "password" && (
           <span

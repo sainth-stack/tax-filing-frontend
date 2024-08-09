@@ -14,6 +14,7 @@ export default function Accordian({
   handleAccordian,
   clientStatus,
   companyId,
+  disabled,
 }) {
   const getActive = (section, index) => {
     if (section.title == "Company Details") {
@@ -84,6 +85,7 @@ export default function Accordian({
                               }
                               onChange={section.handleInputChange}
                               required={field.required}
+                              disabled="true"
                             />
                           );
                         } else if (field.type === "file") {
@@ -112,6 +114,7 @@ export default function Accordian({
                               section.formData[sectionKey]?.[fieldKey] || ""
                             }
                             placeholder={field.placeholder || ""}
+                            disabled="true"
                           />
                         );
                       })}

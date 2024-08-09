@@ -50,6 +50,7 @@ const SelectInput = ({
   className,
   style,
   labelStyles,
+  disabled,
 }) => {
   return (
     <div className={`flex flex-col ${className}`}>
@@ -62,6 +63,7 @@ const SelectInput = ({
         onChange={onChange}
         className="border rounded p-[9px] focus:outline-none focus:ring-2 focus:ring-blue-500"
         // required={required}
+        disabled={disabled}
       >
         <option value="" disabled>
           Select an option
