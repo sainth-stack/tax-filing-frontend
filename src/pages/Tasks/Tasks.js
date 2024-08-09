@@ -78,8 +78,8 @@ const Tasks = () => {
                     key={index}
                     id={field?.id}
                     label={field?.label}
-                    options={field?.options || []}
-                    value={formData[field?.id] || ""}
+                    options={field?.options}
+                    value={formData[field?.id]}
                     onChange={handleInputChange}
                     required={field?.required}
                   />

@@ -78,10 +78,12 @@ const CompanyForm = ({
         }
       });
 
-      const response = await axios.post(`${base_url}/companies`, cleanedFormData);
+      const response = await axios.post(
+        `${base_url}/companies`,
+        cleanedFormData
+      );
       handleFiles(response.data);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const handleFiles = async (data) => {
@@ -157,7 +159,6 @@ const CompanyForm = ({
           // Set client status
           const status = companyDetails.companyDetails.clientStatus || "";
           setClientStatus(status);
-
         }
       } catch (error) {
         setError("Error fetching company data.");
