@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import SelectInput from "../../components/select";
 import CustomInput from "../../components/input";
+import CustomFileInput from "../../components/customFile";
 import moment from "moment";
-import { getGstData, getGstMonthlyData, getTasks, gst } from "./data";
+import { getGstData, getTasks } from "./data";
 import { base_url } from "../../const";
 
 const Taskform = ({
@@ -16,9 +17,7 @@ const Taskform = ({
 }) => {
   const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
-
   const tasks = getTasks([], []);
-
   const defaultData = tasks.reduce((acc, field) => {
     acc[field.id] = "";
     return acc;
@@ -26,16 +25,12 @@ const Taskform = ({
   const [formData, setFormData] = useState(defaultData);
   const [error, setError] = useState(null);
   const [taskData, setTasks] = useState(tasks);
-  // Handle input change
+
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-
     setFormData((prev) => {
       const newData = { ...prev, [id]: value };
-
-      // Reset fields based on the updated value
       if (id === "typeOfInactive") {
-        // Reset fields related to typeOfInactive
         newData.cancellationStatus = "";
         newData.volApplicationStatus = "";
         newData.arn = "";
@@ -53,7 +48,6 @@ const Taskform = ({
       }
 
       if (id === "cancellationStatus") {
-        // Reset fields related to cancellationStatus
         if (value !== "voluntarily") {
           newData.volApplicationStatus = "";
           newData.arn = "";
@@ -84,7 +78,6 @@ const Taskform = ({
       }
 
       if (id === "applicationSubStatus") {
-        // Reset fields related to applicationSubStatus
         if (value !== "approved") {
           newData.dateOfApproval = "";
           newData.finalReturnStatus = "";
@@ -92,7 +85,6 @@ const Taskform = ({
       }
 
       if (id === "goingForAppeal") {
-        // Reset fields related to goingForAppeal
         if (value !== "yes") {
           newData.rejectState = "";
           newData.appealArn = "";
@@ -110,30 +102,26 @@ const Taskform = ({
   const fetchCompanies = async () => {
     try {
       const response = await axios.get(`${base_url}/companies/all`);
-      const data = response.data?.data.map((item) => {
-        return {
-          value: item?.companyDetails?.companyName,
-          label: item?.companyDetails?.companyName,
-        };
-      });
+      const data = response.data?.data.map((item) => ({
+        value: item?.companyDetails?.companyName,
+        label: item?.companyDetails?.companyName,
+      }));
       setCompanies(data);
     } catch (error) {
-      console.error("Error fetching tasks:", error);
+      console.error("Error fetching companies:", error);
     }
   };
 
   const fetchUsers = async () => {
     try {
       const response = await axios.get(`${base_url}/users/all`);
-      const data = response.data?.data.map((item) => {
-        return {
-          value: item?._id,
-          label: item?.firstName + " " + item?.lastName,
-        };
-      });
+      const data = response.data?.data.map((item) => ({
+        value: item?._id,
+        label: item?.firstName + " " + item?.lastName,
+      }));
       setUsers(data);
     } catch (error) {
-      console.error("Error fetching tasks:", error);
+      console.error("Error fetching users:", error);
     }
   };
 
@@ -142,25 +130,43 @@ const Taskform = ({
     fetchUsers();
   }, []);
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (formData._id) {
-        await axios.put(
-          `${base_url}/tasks/${formData._id}`, // Adjust endpoint if needed
-          formData
-        );
-      } else {
-        await axios.post(
-          `${base_url}/tasks`, // Adjust endpoint if needed
-          formData
-        );
+
+    // Check for required fields
+    const requiredFields = ["startDate", "priority", "assignedTo", "company"];
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        setError(`Field ${field} is required.`);
+        return;
       }
+    }
+
+    try {
+      // Prepare form data for API
+      const formDataToSubmit = new FormData();
+      Object.keys(formData).forEach((key) => {
+        if (formData[key] instanceof File) {
+          formDataToSubmit.append(key, formData[key]);
+        } else {
+          formDataToSubmit.append(key, formData[key]);
+        }
+      });
+
+      // Submit form data
+      if (formData._id) {
+        await axios.put(`${base_url}/tasks/${formData._id}`, formDataToSubmit);
+      } else {
+        await axios.post(`${base_url}/tasks`, formDataToSubmit);
+      }
+
+      // Fetch tasks and reset form data
       fetchTasks();
       setFormData(defaultData);
+      setError(null); // Clear error if submission is successful
     } catch (error) {
       setError(error.message);
+
       console.error(
         "ERROR",
         error.response ? error.response.data : error.message
@@ -169,25 +175,22 @@ const Taskform = ({
   };
 
   useEffect(() => {
-    // Fetch existing task data if `companyId` is provided
-    const fetchTaskData = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/tasks/${companyId}`
-        );
-        const formattedData = mapDates(response.data);
-        setFormData(formattedData);
-      } catch (error) {
-        setError(error.message);
-        console.error(
-          "ERROR",
-          error.response ? error.response.data : error.message
-        );
-      }
-    };
-
     if (companyId) {
       setShowForm(true);
+      const fetchTaskData = async () => {
+        try {
+          const response = await axios.get(`${base_url}/tasks/${companyId}`);
+          const formattedData = mapDates(response.data);
+          setFormData(formattedData);
+        } catch (error) {
+          setError(error.message);
+          console.error(
+            "ERROR",
+            error.response ? error.response.data : error.message
+          );
+        }
+      };
+
       fetchTaskData();
     }
   }, [companyId, setShowForm]);
@@ -208,12 +211,9 @@ const Taskform = ({
     return data;
   };
 
-  const isDate = (value) => {
-    return moment(value, moment.ISO_8601, true).isValid();
-  };
+  const isDate = (value) => moment(value, moment.ISO_8601, true).isValid();
 
   useEffect(() => {
-    console.log(formData);
     if (formData?.taskType === "gst") {
       const gstData = getGstData(formData);
       const data = [...tasks, ...gstData];
@@ -229,6 +229,14 @@ const Taskform = ({
     } else if (field.id === "assignedTo") {
       return users;
     } else return field?.options;
+  };
+
+  const handleFileChange = (e) => {
+    const { id, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: files[0],
+    }));
   };
 
   return (
@@ -248,7 +256,7 @@ const Taskform = ({
             <h2 className="text-xl font-semibold mb-2 border-b border-gray-200 pb-2">
               {"Task Form"}
             </h2>
-            <div className="grid grid-cols-4 gap-5 ">
+            <div className="grid grid-cols-4 gap-5">
               {taskData?.map((field, index) => {
                 if (field.type === "select") {
                   return (
@@ -257,48 +265,52 @@ const Taskform = ({
                       id={field.id}
                       label={field.label}
                       options={getFields(field)}
-                      value={formData[field.id]}
+                      value={formData[field.id] || ""}
                       onChange={handleInputChange}
                       required={field.required}
                     />
                   );
+                } else if (
+                  field.type === "text" ||
+                  field.type === "number" ||
+                  field.type === "date"
+                ) {
+                  return (
+                    <CustomInput
+                      key={index}
+                      id={field.id}
+                      type={field.type}
+                      label={field.label}
+                      value={formData[field.id] || ""}
+                      onChange={handleInputChange}
+                      required={field.required}
+                    />
+                  );
+                } else if (field.type === "file") {
+                  return (
+                    <CustomFileInput
+                      key={index}
+                      id={field.id}
+                      label={field.label}
+                      onChange={handleFileChange}
+                    />
+                  );
                 }
-                return (
-                  <CustomInput
-                    key={index}
-                    type={field.type}
-                    id={field.id}
-                    label={field.label}
-                    required={field.required}
-                    onChange={handleInputChange}
-                    value={formData[field.id]}
-                    placeholder={field.placeholder || ""}
-                  />
-                );
+                return null;
               })}
+              <div className="col-span-4 flex justify-end mt-4">
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+                >
+                  Save
+                </button>
+              </div>
             </div>
-          </div>
-
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="px-4 p-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => {
-                setShowForm(false);
-              }}
-              className="px-4 ms-2 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-white hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            >
-              Cancel
-            </button>
+            {error && <div className="text-red-500 mt-2">{error}</div>}
           </div>
         </form>
       )}
-
-      {error && <h3 className="text-red-500">{error}</h3>}
     </div>
   );
 };

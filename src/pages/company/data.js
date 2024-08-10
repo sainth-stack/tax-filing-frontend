@@ -16,7 +16,19 @@ export const sections = [
           { value: "Partnership", label: "Partnership" },
           { value: "Proprietorship", label: "Proprietorship" },
           { value: "Private Limited", label: "Private Limited" },
-          { value: "LLP", label: "LLP" },
+          /*  { value: "LLP", label: "LLP" }, */
+        ],
+        required: true,
+      },
+      {
+        type: "select",
+        id: "companyDetails.constitution",
+        label: "Constitution",
+        options: [
+          { value: "Partnership", label: "Partnership" },
+          { value: "Proprietorship", label: "Proprietorship" },
+          { value: "Private Limited", label: "Private Limited" },
+          /*  { value: "LLP", label: "LLP" }, */
         ],
         required: true,
       },
@@ -49,7 +61,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:"companyDetails"
+    id: "companyDetails",
   },
   {
     title: "Income Tax",
@@ -84,7 +96,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:'incomeTax'
+    id: "incomeTax",
   },
   {
     title: "GST",
@@ -143,7 +155,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:'gst'
+    id: "gst",
   },
   {
     title: "Employer State Insurance",
@@ -189,7 +201,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:'esi'
+    id: "esi",
   },
   {
     title: "Provident Fund",
@@ -235,8 +247,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:'providentFund'
-    
+    id: "providentFund",
   },
   {
     title: "Professional Tax",
@@ -288,7 +299,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:'professionalTax'
+    id: "professionalTax",
   },
   {
     title: "TDS",
@@ -335,7 +346,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:'tds'
+    id: "tds",
   },
   {
     title: "Shop and Commercial Establishment",
@@ -387,7 +398,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:"shopCommercialEstablishment"
+    id: "shopCommercialEstablishment",
   },
   {
     title: "MSME/Udyam",
@@ -421,7 +432,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:"msme"
+    id: "msme",
   },
   {
     title: "FSSAI",
@@ -473,7 +484,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:"fssai"
+    id: "fssai",
   },
   {
     title: "Factory Licence",
@@ -525,7 +536,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:'factoryLicense'
+    id: "factoryLicense",
   },
   {
     title: "Import Export Code",
@@ -583,7 +594,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:"importExport"
+    id: "importExport",
   },
   {
     title: "Partnership Firm Form C",
@@ -617,7 +628,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:"partnershipFirmFormC"
+    id: "partnershipFirmFormC",
   },
   {
     title: "Shram Suvidha Portal",
@@ -663,7 +674,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:"shramSuvidhaPortal"
+    id: "shramSuvidhaPortal",
   },
   {
     title: "MCA",
@@ -709,7 +720,7 @@ export const sections = [
         required: true,
       },
     ],
-    id:'mca'
+    id: "mca",
   },
   {
     title: "Attachments",
@@ -773,9 +784,9 @@ export const sections = [
         required: true,
       },
       { type: "file", id: "attachments.mcaFile", label: "MCA", required: true },
-      { type: "file", id: "attachments.cinFile", label: "CIN", required: true }
-    ]
-  }
+      { type: "file", id: "attachments.cinFile", label: "CIN", required: true },
+    ],
+  },
 ];
 
 export const Dates = [
@@ -796,7 +807,6 @@ export const Dates = [
     ],
   },
 ];
-
 
 export const services = [
   {

@@ -58,6 +58,12 @@ export const getTasks = ({ companies = [], users = [] }) => {
       ],
       required: true,
     },
+    {
+      type: "file",
+      id: "Attachment",
+      label: "Attachment",
+      required: true,
+    },
   ];
 };
 
@@ -131,6 +137,11 @@ const GetCommonFields = (data) => {
             options: [
               { value: "approved", label: "Approved" },
               { value: "rejected", label: "Rejected" },
+              { value: "Pending for Approval", label: "Pending for Approval" },
+              {
+                value: "Pending for Clarification",
+                label: "Pending for Clarification",
+              },
             ],
             required: false,
           },
