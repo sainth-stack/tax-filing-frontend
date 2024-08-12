@@ -292,6 +292,7 @@ const Taskform = ({
                       key={index}
                       id={field.id}
                       label={field.label}
+                      link={formData[field.id] }
                       onChange={handleFileChange}
                     />
                   );

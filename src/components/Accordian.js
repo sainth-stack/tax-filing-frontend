@@ -12,10 +12,13 @@ export default function Accordian({
   sections,
   expanded,
   handleAccordian,
+  formData,
   clientStatus,
   companyId,
   disabled,
+  view
 }) {
+  const [accData, setAccData] = React.useState([])
   const getActive = (section, index) => {
     if (section.title == "Company Details") {
       return section.formData[section.id]?.clientStatus === "active";
@@ -24,13 +27,29 @@ export default function Accordian({
     }
   };
 
-  if (!sections) return null;
+  React.useEffect(() => {
+    if (sections) {
+      const companDetails = sections.filter((item) => item.title === "Company Details")[0]?.formData?.companyDetails
+      const data = sections.filter((item) => {
+        if (item.title === "Partnership Firm Form C") {
+          return (companDetails?.constitution === "Partnership" && companDetails?.subConstitution === "registered") ? true : false
+        }
+        else if (item.title === "MCA") {
+          return (companDetails?.constitution === "PrivateLimited" || companDetails?.subConstitution === "llp") ? true : false
+        }
+        else return true
+      })
+      setAccData(data)
+    }
+  }, [sections])
+
+  if (!accData) return null;
   return (
     <div className="p-2 ">
-      {sections.map((section, index) => {
+      {accData.map((section, index) => {
         return (
           <>
-            {companyId && companyId ? (
+            {companyId && companyId && view ? (
               <>
                 {getActive(section, index) && (
                   <Accordion

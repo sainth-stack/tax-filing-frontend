@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { sections } from "./data";
+import { sectionsData } from "./data";
 import Accordian from "../../components/Accordian";
 import { base_url } from "../../const";
 
@@ -11,11 +11,14 @@ const CompanyForm = ({
   setShowForm,
   setCompanyRefresh,
   companyRefresh,
+  view,
+  setView
 }) => {
+  const [formData, setFormData] = useState({});
+  const sections = sectionsData(formData)
   const [error, setError] = useState("");
   const [clientStatus, setClientStatus] = useState("");
   const [expanded, setExpanded] = useState(sections ? ["Company Details"] : []);
-  const [formData, setFormData] = useState({});
 
   const replaceEmptyObjectsWithEmptyStrings = (data) => {
     const updatedData = { ...data };
@@ -83,7 +86,7 @@ const CompanyForm = ({
         cleanedFormData
       );
       handleFiles(response.data);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleFiles = async (data) => {
@@ -101,6 +104,7 @@ const CompanyForm = ({
       const response = await axios.post(`${base_url}/files`, form);
       setFormData(initialFormData);
       setCompanyId("");
+      setView(false)
       setShowForm(false);
       setCompanyRefresh(!companyRefresh);
     } catch (error) {
@@ -195,14 +199,15 @@ const CompanyForm = ({
         <Accordian
           companyId={companyId}
           clientStatus={clientStatus}
+          view={view}
           sections={
             sections
               ? sections.map((section) => ({
-                  ...section,
-                  formData,
-                  handleInputChange,
-                  handleFileChange,
-                }))
+                ...section,
+                formData,
+                handleInputChange,
+                handleFileChange,
+              }))
               : []
           }
           expanded={expanded}
@@ -218,6 +223,7 @@ const CompanyForm = ({
           <button
             onClick={() => {
               setCompanyId("");
+              setView(false)
               setShowForm(false);
             }}
             className="px-4 ms-2 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"

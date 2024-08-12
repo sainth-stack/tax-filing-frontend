@@ -9,7 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import TablePagination from "@mui/material/TablePagination";
-import { DeleteOutline, EditOutlined } from "@mui/icons-material";
+import { DeleteOutline, EditOutlined, Visibility } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import ServiceModal from "../../components/services/models/ServiceModal";
@@ -64,6 +64,7 @@ export default function CompanyTable({
   companyRefresh,
   name,
   status,
+  setView
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -71,7 +72,6 @@ export default function CompanyTable({
   const [editCompanyId, setEditCompanyId] = useState(null);
   const [companies, setCompanies] = useState([]);
   const [clientStatuses, setClientStatuses] = useState([]);
-
   const [mode, setMode] = useState(0);
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -198,11 +198,21 @@ export default function CompanyTable({
                     <IconButton
                       aria-label="edit"
                       size="small"
+                      onClick={() => { setCompanyId(company._id); setView(true) }}
+                    >
+                      <Visibility
+                        fontSize="inherit"
+                        className="text-green-400 z-0 bg-gray-50 rounded"
+                      />
+                    </IconButton>
+                    <IconButton
+                      aria-label="edit"
+                      size="small"
                       onClick={() => setCompanyId(company._id)}
                     >
                       <EditOutlined
                         fontSize="inherit"
-                        className="text-green-400 animate-bounce z-0 bg-gray-50 rounded"
+                        className="text-green-400 z-0 bg-gray-50 rounded"
                       />
                     </IconButton>
                     <IconButton
@@ -212,7 +222,7 @@ export default function CompanyTable({
                     >
                       <DeleteOutline
                         fontSize="inherit"
-                        className="text-red-400 animate-bounce bg-gray-100 rounded"
+                        className="text-red-400 bg-gray-100 rounded"
                       />
                     </IconButton>
                   </TableCell>

@@ -12,6 +12,7 @@ import Serviceform from "./Serviceform";
 const Company = () => {
   const [showForm, setShowForm] = useState("");
   const [serviceForm, setServiceForm] = useState(false);
+  const [view, setView] = useState(false)
   const [companyId, setCompanyId] = useState("");
   const [name, setName] = useState("");
   const [status, setStatus] = useState("");
@@ -119,6 +120,8 @@ const Company = () => {
                     setShowForm,
                     setCompanyRefresh,
                     companyRefresh,
+                    view,
+                    setView
                   }}
                 />
               }
@@ -127,7 +130,7 @@ const Company = () => {
             ""
           )}
           <div className="bg-white rounded-lg shadow-md">
-            <CompanyTable {...{ setCompanyId, companyRefresh, name, status }} />
+            <CompanyTable {...{ setCompanyId, companyRefresh, name, status,setView }} />
           </div>
         </div>
         {/* <div style={{ display: "flex", justifyContent: "space-between" }}>

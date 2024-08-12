@@ -129,7 +129,7 @@ export default function UsersTable({ users, handleDelete, setCompanyId }) {
                     >
                       <EditOutlined
                         fontSize="inherit"
-                        className="text-green-400 animate-bounce z-0 bg-gray-50 rounded"
+                        className="text-green-400 z-0 bg-gray-50 rounded"
                       />
                     </IconButton>
                     <IconButton
@@ -139,7 +139,7 @@ export default function UsersTable({ users, handleDelete, setCompanyId }) {
                     >
                       <DeleteOutline
                         fontSize="inherit"
-                        className="text-red-400 animate-bounce bg-gray-100 rounded"
+                        className="text-red-400 bg-gray-100 rounded"
                       />
                     </IconButton>
                   </TableCell>
