@@ -165,7 +165,14 @@ const GetCommonFields = (data) => {
 };
 
 export const getGstMonthlyData = (data) => {
-  const type = data?.taskType;
+  const currentYear = new Date().getFullYear();
+  const startYear = currentYear - 5;
+  const endYear = currentYear + 5;
+
+  const yearOptions = [];
+  for (let year = startYear; year <= endYear; year++) {
+    yearOptions.push({ value: year, label: year.toString() });
+  }
   console.log(data?.applicationStatus);
   const fields = [
     ...(data.taskName === "gstMonthly"
@@ -208,21 +215,6 @@ export const getGstMonthlyData = (data) => {
           ],
           required: true,
         },
-        {
-          type: "select",
-          id: "currentStatus",
-          label: "Current Status",
-          options: [
-            { value: "pending", label: "Documents Pending" },
-            {
-              value: "waitingForClarification",
-              label: "Waiting For Clarification",
-            },
-            { value: "progress", label: "Work In Progress" },
-            { value: "paymentPending", label: "Tax Payment Pending" },
-          ],
-          required: true,
-        },
       ]
       : []),
     ...(data.currentStatus === "paymentPending" && data.gstType === "gstr3b"
@@ -242,6 +234,39 @@ export const getGstMonthlyData = (data) => {
           type: "date",
           id: "fileDate",
           label: "File Date",
+          required: true,
+        },
+        {
+          type: "text",
+          id: "monthlyarn",
+          label: "ARN Number",
+          required: true,
+        },
+        {
+          type: "select",
+          id: "monthlyMonth",
+          label: "Month",
+          options: [
+            { value: "jan", label: "January" },
+            { value: "feb", label: "February" },
+            { value: "mar", label: "March" },
+            { value: "apr", label: "April" },
+            { value: "may", label: "May" },
+            { value: "jun", label: "June" },
+            { value: "jul", label: "July" },
+            { value: "aug", label: "August" },
+            { value: "sep", label: "September" },
+            { value: "oct", label: "October" },
+            { value: "nov", label: "November" },
+            { value: "dec", label: "December" },
+          ],
+          required: true,
+        },
+        {
+          type: "select",
+          id: "monthlyYear",
+          label: "Year",
+          options: yearOptions,
           required: true,
         },
       ]
@@ -335,7 +360,7 @@ export const getInactiveData = (data) => {
                         { value: "notFiled", label: "Not Filed" },
                       ],
                       required: true,
-                    },
+                    }
                   ]
                   : []),
               ]
@@ -524,6 +549,14 @@ export const getInactiveData = (data) => {
 
 
 export const getMonthlyPamnetData = (data) => {
+  const currentYear = new Date().getFullYear();
+  const startYear = currentYear - 5;
+  const endYear = currentYear + 5;
+
+  const yearOptions = [];
+  for (let year = startYear; year <= endYear; year++) {
+    yearOptions.push({ value: year, label: year.toString() });
+  }
   const fields = [
     ...(data.taskName === "gstMonthlyPayment"
       ? [
@@ -550,15 +583,30 @@ export const getMonthlyPamnetData = (data) => {
           required: true,
         },
         {
-          type: "text",
-          id: "monthDate",
+          type: "select",
+          id: "monthlyMonth",
           label: "Month",
+          options: [
+            { value: "jan", label: "January" },
+            { value: "feb", label: "February" },
+            { value: "mar", label: "March" },
+            { value: "apr", label: "April" },
+            { value: "may", label: "May" },
+            { value: "jun", label: "June" },
+            { value: "jul", label: "July" },
+            { value: "aug", label: "August" },
+            { value: "sep", label: "September" },
+            { value: "oct", label: "October" },
+            { value: "nov", label: "November" },
+            { value: "dec", label: "December" },
+          ],
           required: true,
         },
         {
-          type: "text",
-          id: "year",
+          type: "select",
+          id: "monthlyYear",
           label: "Year",
+          options: yearOptions,
           required: true,
         },
         {

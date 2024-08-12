@@ -162,9 +162,9 @@ export const sectionsData = (data) => {
           id: "gst.typeOfGstFiling",
           label: "Type Of GST Filing",
           options: [
-            { value: "composition", label: "Quarterly Returns" },
-            { value: "QRMP", label: "Monthly Payment Quarterly Return" },
-            { value: "Regular", label: "Monthly Payment Monthly Return" },
+            { value: "composition", label: "Composition" },
+            { value: "QRMP", label: "QRMP" },
+            { value: "Regular", label: "Regular" },
             /*  { value: "LLP", label: "LLP" }, */
           ],
           required: true,
