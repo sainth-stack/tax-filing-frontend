@@ -61,11 +61,11 @@ const SelectInput = ({
       </label>
       <select
         id={id}
-        value={value || defaultValue}
+        value={value || defaultValue ||''}
         onChange={onChange}
         className="border rounded p-[9px] focus:outline-none focus:ring-2 focus:ring-blue-500"
         // required={required}
-        defaultValue={defaultValue}
+        // defaultValue={defaultValue}
       >
         <option value="" disabled>
           Select an option
