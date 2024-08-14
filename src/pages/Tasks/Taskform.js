@@ -26,6 +26,9 @@ const Taskform = ({
   const [error, setError] = useState(null);
   const [taskData, setTasks] = useState(tasks);
 
+  const currentYear = moment().year();
+  const currentMonth = moment().format("MMMM");
+
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => {
@@ -228,6 +231,10 @@ const Taskform = ({
       return companies;
     } else if (field.id === "assignedTo") {
       return users;
+    } else if (field.id === "monthlyMonth") {
+      return [{ value: currentMonth, label: currentMonth }, ...field?.options];
+    } else if (field.id === "year") {
+      return [{ value: currentYear, label: currentYear }, ...field?.options];
     } else return field?.options;
   };
 
@@ -292,7 +299,7 @@ const Taskform = ({
                       key={index}
                       id={field.id}
                       label={field.label}
-                      link={formData[field.id] }
+                      link={formData[field.id]}
                       onChange={handleFileChange}
                     />
                   );

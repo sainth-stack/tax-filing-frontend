@@ -17,6 +17,7 @@ const Tasks = () => {
   const [formData, setFormData] = useState({
     company: "",
     assignedTo: "",
+    applicationSubstatus: "",
     status: "",
     effectiveFrom: "",
     effectiveTo: "",
@@ -42,6 +43,7 @@ const Tasks = () => {
         company: formData?.company,
         assignedTo: formData?.assignedTo,
         status: formData?.status,
+        applicationSubstatus: formData?.applicationSubstatus,
         effectiveFrom: formData?.effectiveFrom,
         effectiveTo: formData?.effectiveTo,
       });

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -78,6 +78,7 @@ export default function TasksTable({
     setCompanyId(id);
   };
 
+  console.log("vishnu ", tasks);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
