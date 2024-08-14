@@ -14,6 +14,7 @@ import SelectInput from "../../components/select";
 const Tasks = () => {
   const [showForm, setShowForm] = useState(false);
   const [companyId, setCompanyId] = useState("");
+  const [users,setUsers]= useState([])
   const [formData, setFormData] = useState({
     company: "",
     assignedTo: "",
@@ -55,8 +56,24 @@ const Tasks = () => {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(`${base_url}/users/all`);
+      const data = response.data?.data.map((item) => ({
+        value: item?._id,
+        label: item?.firstName + " " + item?.lastName,
+      }));
+      console.log(data)
+      setUsers(data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+
   useEffect(() => {
     fetchTasks();
+    fetchUsers()
   }, [formData]);
 
   const handleDelete = async (id) => {
@@ -67,6 +84,15 @@ const Tasks = () => {
       console.error("Error deleting task:", error);
     }
   };
+
+
+  const getFields = (field) => {
+    if (field.id === "assignedTo") {
+      console.log(users)
+      return users;
+    } else return field?.options;
+  };
+
 
   return (
     <Layout>
@@ -80,8 +106,9 @@ const Tasks = () => {
                     key={index}
                     id={field?.id}
                     label={field?.label}
-                    options={field?.options}
+                    options={getFields(field)}
                     value={formData[field?.id]}
+                    defaultValue={field?.defaultValue}
                     onChange={handleInputChange}
                     required={field?.required}
                   />

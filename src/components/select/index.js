@@ -45,6 +45,7 @@ const SelectInput = ({
   label,
   options,
   value,
+  defaultValue,
   onChange,
   required,
   className,
@@ -52,6 +53,7 @@ const SelectInput = ({
   labelStyles,
   disabled,
 }) => {
+  console.log(defaultValue)
   return (
     <div className={`flex flex-col ${className}`}>
       <label htmlFor={id} className="mb-1" style={{ ...labelStyles }}>
@@ -59,18 +61,18 @@ const SelectInput = ({
       </label>
       <select
         id={id}
-        value={value || ""}
+        value={value || defaultValue}
         onChange={onChange}
         className="border rounded p-[9px] focus:outline-none focus:ring-2 focus:ring-blue-500"
         // required={required}
-        disabled={disabled}
+        defaultValue={defaultValue}
       >
         <option value="" disabled>
           Select an option
         </option>
-        {options.map((option, index) => (
-          <option key={index} value={option.value}>
-            {option.label}
+        {options?.map((option, index) => (
+          <option key={index} value={option?.value}>
+            {option?.label}
           </option>
         ))}
       </select>
