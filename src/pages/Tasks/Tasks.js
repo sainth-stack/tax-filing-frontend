@@ -48,7 +48,7 @@ const Tasks = () => {
           formData?.assignedTo !== "all" ? formData?.assignedTo : undefined,
         status: formData?.status !== "all" ? formData?.status : undefined,
 
-        applicationSubstatus: formData?.applicationSubstatus,
+        applicationSubStatus: formData?.applicationSubStatus,
         effectiveFrom: formData?.effectiveFrom,
         effectiveTo: formData?.effectiveTo,
       });

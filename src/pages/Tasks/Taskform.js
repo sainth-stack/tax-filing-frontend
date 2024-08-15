@@ -275,6 +275,7 @@ const Taskform = ({
                       value={formData[field.id] || ""}
                       onChange={handleInputChange}
                       required={field.required}
+                      defaultValue={field?.defaultValue}
                     />
                   );
                 } else if (
