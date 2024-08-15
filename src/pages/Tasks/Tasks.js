@@ -14,7 +14,7 @@ import SelectInput from "../../components/select";
 const Tasks = () => {
   const [showForm, setShowForm] = useState(false);
   const [companyId, setCompanyId] = useState("");
-  const [users,setUsers]= useState([])
+  const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     company: "",
     assignedTo: "",
@@ -22,6 +22,7 @@ const Tasks = () => {
     status: "",
     effectiveFrom: "",
     effectiveTo: "",
+    defaultValue: "",
   });
   const [tasks, setTasks] = useState([]);
   const [companyRefresh, setCompanyRefresh] = useState(false);
@@ -42,8 +43,11 @@ const Tasks = () => {
     try {
       const { data } = await axios.post(`${base_url}/tasks/filter`, {
         company: formData?.company,
-        assignedTo: formData?.assignedTo,
-        status: formData?.status,
+
+        assignedTo:
+          formData?.assignedTo !== "all" ? formData?.assignedTo : undefined,
+        status: formData?.status !== "all" ? formData?.status : undefined,
+
         applicationSubstatus: formData?.applicationSubstatus,
         effectiveFrom: formData?.effectiveFrom,
         effectiveTo: formData?.effectiveTo,
@@ -63,17 +67,16 @@ const Tasks = () => {
         value: item?._id,
         label: item?.firstName + " " + item?.lastName,
       }));
-      console.log(data)
+      console.log("check all ", data);
       setUsers(data);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
 
-
   useEffect(() => {
     fetchTasks();
-    fetchUsers()
+    fetchUsers();
   }, [formData]);
 
   const handleDelete = async (id) => {
@@ -85,14 +88,13 @@ const Tasks = () => {
     }
   };
 
-
   const getFields = (field) => {
     if (field.id === "assignedTo") {
-      console.log(users)
-      return users;
-    } else return field?.options;
+      return [{ label: "All", value: "all" }, ...users];
+    } else {
+      return field?.options;
+    }
   };
-
 
   return (
     <Layout>
@@ -108,9 +110,9 @@ const Tasks = () => {
                     label={field?.label}
                     options={getFields(field)}
                     value={formData[field?.id]}
-                    defaultValue={field?.defaultValue}
                     onChange={handleInputChange}
                     required={field?.required}
+                    defaultValue={field.defaultValue}
                   />
                 );
               }

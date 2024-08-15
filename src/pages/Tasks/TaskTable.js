@@ -78,7 +78,7 @@ export default function TasksTable({
     setCompanyId(id);
   };
 
-  console.log("vishnu ", tasks);
+  console.log("tasks checking ", tasks);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -113,6 +113,9 @@ export default function TasksTable({
                 Assigned To
               </TableCell>
               <TableCell align="center" padding="normal">
+                Application Sub Status
+              </TableCell>
+              <TableCell align="center" padding="normal">
                 Actions
               </TableCell>
             </TableRow>
@@ -139,6 +142,10 @@ export default function TasksTable({
                   </TableCell>
                   <TableCell align="center" padding="normal">
                     {task.assignedTo || "N/A"}
+                  </TableCell>
+
+                  <TableCell align="center" padding="normal">
+                    {task.applicationStatus}
                   </TableCell>
                   <TableCell align="center" padding="normal">
                     <IconButton
