@@ -752,27 +752,57 @@ export const pfAnnual = (data) => {
 
 /* for TDS and TCS */
 
+export const TDSTCS = (data) => {
+  const defaultTdsTcsData = [
+    {
+      type: "select",
+      id: "taskName",
+      label: "Task Name",
+      options: [
+        { value: "tdsTcs", label: "TDS/TCS" },
+        { value: "tdsTcsMonthly", label: "TDS/TCS - Monthly Filing" },
+      ],
+      required: true,
+    },
+  ];
+
+  let fields = [...defaultTdsTcsData];
+
+  if (["tdsTcs"].includes(data?.taskName)) {
+    fields = [...fields, ...tdsTcsForm(data)];
+  } else if (["tdsTcsMonthly"].includes(data?.taskName)) {
+    fields = [...fields, ...TdsMonthly(data)];
+  }
+
+  return fields;
+};
+
 export const tdsTcsForm = (data) => {
   const fields = [
     {
-      type: "dropdown",
+      type: "select",
       id: "company",
       label: "Company",
       options: data.companies,
       required: true,
     },
     {
-      type: "dropdown",
+      type: "select",
       id: "assignedTo",
       label: "Assigned To",
       options: data.users,
       required: true,
     },
     {
-      type: "dropdown",
+      type: "select",
       id: "priority",
       label: "Priority",
-      options: ["High", "Medium", "Low"],
+
+      options: [
+        { value: "high", label: "High" },
+        { value: "medium", label: "Medium" },
+        { value: "low", label: "Low" },
+      ],
       required: true,
     },
     {
@@ -792,53 +822,61 @@ export const tdsTcsForm = (data) => {
       id: "actualCompletionDate",
       label: "Actual Completion Date",
     },
+
     {
-      type: "dropdown",
-      id: "taskType",
-      label: "Task Type",
+      type: "select",
+      id: "taskName",
+      label: "Task Name",
       options: [
-        "GST",
-        "Provident Fund",
-        "Income Tax",
-        "TDS and TCS",
-        "ESI",
-        "Professional Tax",
+        { value: "all", label: "All" },
+
+        { value: "tds24Q", label: "TDS-24Q" },
+        { value: "tds26Q", label: "TDS-26Q" },
+        { value: "tds27Q", label: "TDS-27Q" },
+        { value: "tcs27EQ", label: "TCS-27EQ" },
       ],
       required: true,
     },
     {
-      type: "dropdown",
-      id: "taskName",
-      label: "Task Name",
-      options: ["TDS-24Q", "TDS-26Q", "TDS-27Q", "TCS-27EQ"],
-      required: true,
-    },
-    {
-      type: "dropdown",
+      type: "select",
       id: "quarter",
       label: "Quarter",
-      options: ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"],
+      options: [
+        { value: "quarter1", label: "Quarter 1" },
+        { value: "quarter2", label: "Quarter 2" },
+        { value: "quarter3", label: "Quarter 3" },
+        { value: "quarter4", label: "Quarter 4" },
+      ],
       required: true,
     },
     {
-      type: "dropdown",
+      type: "select",
       id: "filingStatus",
       label: "Filing Status",
-      options: ["Filed", "Not Filed"],
+      options: [
+        { value: "filed", label: "Filed" },
+        { value: "notFiled", label: "Not Filed" },
+      ],
       visible: data.quarterSelected,
     },
     {
-      type: "dropdown",
+      type: "select",
       id: "processingStatus",
       label: "Processing Status",
-      options: ["Processed", "Processed with Error"],
+      options: [
+        { value: "processed", label: "Processed" },
+        { value: "processedWithError", label: "Processed with Error" },
+      ],
       visible: data.filingStatus === "Filed",
     },
     {
-      type: "dropdown",
+      type: "select",
       id: "form16Generated",
       label: "Form 16 Generated",
-      options: ["Yes", "No"],
+      options: [
+        { value: "yes", label: "Yes" },
+        { value: "no", label: "No" },
+      ],
       visible: data.processingStatus === "Processed",
     },
   ];
@@ -847,26 +885,41 @@ export const tdsTcsForm = (data) => {
 };
 
 export const TdsMonthly = (data) => {
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date()
+    .toLocaleString("default", { month: "short" })
+    .toLowerCase();
+  const startYear = currentYear - 5;
+  const endYear = currentYear + 5;
+
+  const yearOptions = [];
+  for (let year = startYear; year <= endYear; year++) {
+    yearOptions.push({ value: year, label: year.toString() });
+  }
   const fields = [
     {
-      type: "dropdown",
+      type: "select",
       id: "company",
       label: "Company",
       options: data.companies,
       required: true,
     },
     {
-      type: "dropdown",
+      type: "select",
       id: "assignedTo",
       label: "Assigned To",
       options: data.users,
       required: true,
     },
     {
-      type: "dropdown",
+      type: "select",
       id: "priority",
       label: "Priority",
-      options: ["High", "Medium", "Low"],
+      options: [
+        { value: "high", label: "High" },
+        { value: "medium", label: "Medium" },
+        { value: "low", label: "Low" },
+      ],
       required: true,
     },
     {
@@ -887,54 +940,67 @@ export const TdsMonthly = (data) => {
       label: "Actual Completion Date",
     },
     {
-      type: "dropdown",
+      type: "select",
       id: "taskName",
       label: "Task Name",
-      options: ["TDS", "TCS"],
+      options: [
+        { value: "tds", label: "TDS" },
+        { value: "tcs", label: "TCS" },
+      ],
       required: true,
     },
+
     {
-      type: "dropdown",
-      id: "taskType",
-      label: "Task Type",
+      type: "select",
+      id: "quarter",
+      label: "Quarter",
       options: [
-        "GST",
-        "Provident Fund",
-        "Income Tax",
-        "TDS and TCS",
-        "ESI",
-        "Professional Tax",
+        { value: "quarter1", label: "Quarter 1" },
+        { value: "quarter2", label: "Quarter 2" },
+        { value: "quarter3", label: "Quarter 3" },
+        { value: "quarter4", label: "Quarter 4" },
       ],
       required: true,
     },
     {
-      type: "dropdown",
-      id: "quarter",
-      label: "Quarter",
-      options: ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"],
-      required: true,
-    },
-    {
-      type: "dropdown",
+      type: "select",
       id: "paymentStatus",
       label: "Payment Status",
-      options: ["Paid", "Not Paid"],
+      options: [
+        { value: "paid", label: "Paid" },
+        { value: "notPaid", label: "Not Paid" },
+      ],
       required: true,
     },
     {
-      type: "dropdown",
+      type: "select",
       id: "paymentMonth",
       label: "Payment Month",
-      options: data.months, // Dynamic list of months with the current month as default
-      defaultValue: data.currentMonth, // Set the default to the current month
+      options: [
+        { value: "jan", label: "January" },
+        { value: "feb", label: "February" },
+        { value: "mar", label: "March" },
+        { value: "apr", label: "April" },
+        { value: "may", label: "May" },
+        { value: "jun", label: "June" },
+        { value: "jul", label: "July" },
+        { value: "aug", label: "August" },
+        { value: "sep", label: "September" },
+        { value: "oct", label: "October" },
+        { value: "nov", label: "November" },
+        { value: "dec", label: "December" },
+      ],
+      defaultValue: currentMonth, // Dynamic list of months with the current month as default
+      // Set the default to the current month
       required: true,
     },
+
     {
-      type: "dropdown",
-      id: "paymentYear",
-      label: "Payment Year",
-      options: data.years, // Dynamic list of years with the current year as default
-      defaultValue: data.currentYear, // Set the default to the current year
+      type: "select",
+      id: "gstMonthly_monthlyYear",
+      label: "Year",
+      options: yearOptions,
+      defaultValue: currentYear,
       required: true,
     },
     {

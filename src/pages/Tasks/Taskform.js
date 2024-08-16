@@ -4,7 +4,7 @@ import SelectInput from "../../components/select";
 import CustomInput from "../../components/input";
 import CustomFileInput from "../../components/customFile";
 import moment from "moment";
-import { getGstData, getTasks, providentFund } from "./data";
+import { getGstData, getTasks, providentFund, TDSTCS } from "./data";
 import { base_url } from "../../const";
 
 const Taskform = ({
@@ -224,8 +224,13 @@ const Taskform = ({
     } else if (formData?.taskType === "providentFund") {
       /* for PF */
       const pfData = providentFund(formData);
-      const pfdata = [...tasks, ...pfData];
-      setTasks(pfdata);
+      const finalpfdata = [...tasks, ...pfData];
+      setTasks(finalpfdata);
+    } else if (formData?.taskType === "tds") {
+      /* for PF */
+      const TdsTcsData = TDSTCS(formData);
+      const finalpfdata = [...tasks, ...TdsTcsData];
+      setTasks(finalpfdata);
     }
   }, [formData]);
 
