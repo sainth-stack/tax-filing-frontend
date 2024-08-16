@@ -65,9 +65,9 @@ const Tasks = () => {
       const response = await axios.get(`${base_url}/users/all`);
       const data = response.data?.data.map((item) => ({
         value: item?._id,
-        label: item?.firstName + " " + item?.lastName,
+        label: item?.firstName,
       }));
-      console.log("check all ", data);
+      console.log("check all users  ", data);
       setUsers(data);
     } catch (error) {
       console.error("Error fetching users:", error);

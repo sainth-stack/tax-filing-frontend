@@ -120,7 +120,7 @@ const Taskform = ({
       const response = await axios.get(`${base_url}/users/all`);
       const data = response.data?.data.map((item) => ({
         value: item?._id,
-        label: item?.firstName + " " + item?.lastName,
+        label: item?.firstName,
       }));
       setUsers(data);
     } catch (error) {
@@ -230,7 +230,7 @@ const Taskform = ({
     if (field.id === "company") {
       return companies;
     } else if (field.id === "assignedTo") {
-      return users;
+      return [{ label: "All", value: "all" }, ...users];
     } else if (field.id === "monthlyMonth") {
       return [{ value: currentMonth, label: currentMonth }, ...field?.options];
     } else if (field.id === "year") {

@@ -222,7 +222,8 @@ export const getGstMonthlyData = (data) => {
           },
         ]
       : []),
-    ...(data.currentStatus === "paymentPending" && data.gstMonthly_gstType === "gstr3b"
+    ...(data.currentStatus === "paymentPending" &&
+    data.gstMonthly_gstType === "gstr3b"
       ? [
           {
             type: "number",
@@ -521,7 +522,8 @@ export const getInactiveData = (data) => {
                         ],
                         required: true,
                       },
-                      ...(data?.gstInactive_appealApplicationSubStatus === "approved"
+                      ...(data?.gstInactive_appealApplicationSubStatus ===
+                      "approved"
                         ? [
                             {
                               type: "date",
@@ -746,6 +748,7 @@ export const taskSearch = [
     type: "text",
     id: "company",
     label: "Company",
+    placeholder: "Search Company",
     required: true,
   },
   {
@@ -753,6 +756,7 @@ export const taskSearch = [
     id: "assignedTo",
     label: "Assigned To",
     options: { value: "All", label: "All" },
+    defaultValue: "All",
     required: false,
   },
   {
@@ -760,12 +764,16 @@ export const taskSearch = [
     id: "status",
     label: "Status",
     options: statusOptions,
+    defaultValue: "All",
+
     required: false,
   },
   {
     type: "select",
     id: "applicationSubStatus",
     label: "Application Substatus",
+    defaultValue: "All",
+
     options: applicationSubstatusOptions, // Add the options here
     required: false,
   },
