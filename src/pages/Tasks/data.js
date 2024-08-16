@@ -750,7 +750,7 @@ export const pfAnnual = (data) => {
   return fields;
 };
 
-/* for tds and tcs */
+/* for TDS and TCS */
 
 export const tdsTcsForm = (data) => {
   const fields = [
@@ -758,14 +758,14 @@ export const tdsTcsForm = (data) => {
       type: "dropdown",
       id: "company",
       label: "Company",
-      options: data.companies, // Dynamic list of companies
+      options: data.companies,
       required: true,
     },
     {
       type: "dropdown",
       id: "assignedTo",
       label: "Assigned To",
-      options: data.users, // Dynamic list of users
+      options: data.users,
       required: true,
     },
     {
@@ -825,21 +825,21 @@ export const tdsTcsForm = (data) => {
       id: "filingStatus",
       label: "Filing Status",
       options: ["Filed", "Not Filed"],
-      visible: data.quarterSelected, // Conditional visibility based on quarter selection
+      visible: data.quarterSelected,
     },
     {
       type: "dropdown",
       id: "processingStatus",
       label: "Processing Status",
       options: ["Processed", "Processed with Error"],
-      visible: data.filingStatus === "Filed", // Conditional visibility based on filing status
+      visible: data.filingStatus === "Filed",
     },
     {
       type: "dropdown",
       id: "form16Generated",
       label: "Form 16 Generated",
       options: ["Yes", "No"],
-      visible: data.processingStatus === "Processed", // Conditional visibility based on processing status
+      visible: data.processingStatus === "Processed",
     },
   ];
 
@@ -852,14 +852,14 @@ export const TdsMonthly = (data) => {
       type: "dropdown",
       id: "company",
       label: "Company",
-      options: data.companies, // Dynamic list of companies
+      options: data.companies,
       required: true,
     },
     {
       type: "dropdown",
       id: "assignedTo",
       label: "Assigned To",
-      options: data.users, // Dynamic list of users
+      options: data.users,
       required: true,
     },
     {
