@@ -4,7 +4,7 @@ import SelectInput from "../../components/select";
 import CustomInput from "../../components/input";
 import CustomFileInput from "../../components/customFile";
 import moment from "moment";
-import { getGstData, getTasks } from "./data";
+import { getGstData, getTasks, providentFund } from "./data";
 import { base_url } from "../../const";
 
 const Taskform = ({
@@ -219,10 +219,13 @@ const Taskform = ({
   useEffect(() => {
     if (formData?.taskType === "gst") {
       const gstData = getGstData(formData);
-      const data = [...tasks, ...gstData];
-      setTasks(data);
+      const gstdata = [...tasks, ...gstData];
+      setTasks(gstdata);
     } else if (formData?.taskType === "providentFund") {
-      setTasks(tasks);
+      /* for PF */
+      const pfData = providentFund(formData);
+      const pfdata = [...tasks, ...pfData];
+      setTasks(pfdata);
     }
   }, [formData]);
 

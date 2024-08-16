@@ -636,8 +636,8 @@ export const getMonthlyPamnetData = (data) => {
   return fields;
 };
 
-export const providentFund = {
-  default: [
+export const providentFund = (data) => {
+  const defaultPfData = [
     {
       type: "select",
       id: "taskName",
@@ -649,8 +649,23 @@ export const providentFund = {
       ],
       required: true,
     },
-  ],
-  pfRegistration: [
+  ];
+
+  let fields = [...defaultPfData];
+
+  if (["pfRegistration"].includes(data?.taskName)) {
+    fields = [...fields, ...pfRegistration(data)];
+  } else if (["pfMonthly"].includes(data?.taskName)) {
+    fields = [...fields, ...pfMonthly(data)];
+  } else if (["pfAnnual"].includes(data?.taskName)) {
+    fields = [...fields, ...pfAnnual(data)];
+  }
+
+  return fields;
+};
+
+export const pfRegistration = (data) => {
+  const fields = [
     {
       type: "select",
       id: "applicationStatus",
@@ -661,20 +676,28 @@ export const providentFund = {
       ],
       required: true,
     },
-    {
-      type: "date",
-      id: "submissionDate",
-      label: "Submission Date",
-      required: false,
-    },
-    {
-      type: "text",
-      id: "registrationNumber",
-      label: "Registration Number",
-      required: false,
-    },
-  ],
-  pfMonthly: [
+    ...(data?.applicationStatus === "submitted"
+      ? [
+          {
+            type: "date",
+            id: "submissionDate",
+            label: "Submission Date",
+            required: false,
+          },
+          {
+            type: "text",
+            id: "registrationNumber",
+            label: "Registration Number",
+            required: false,
+          },
+        ]
+      : []),
+  ];
+  return fields;
+};
+
+export const pfMonthly = (data) => {
+  const fields = [
     {
       type: "date",
       id: "filingDate",
@@ -693,8 +716,12 @@ export const providentFund = {
       label: "Total Amount",
       required: true,
     },
-  ],
-  pfAnnual: [
+  ];
+
+  return fields;
+};
+export const pfAnnual = (data) => {
+  const fields = [
     {
       type: "date",
       id: "filingDate",
@@ -719,7 +746,205 @@ export const providentFund = {
       label: "Annual Return Number",
       required: false,
     },
-  ],
+  ];
+  return fields;
+};
+
+/* for tds and tcs */
+
+export const tdsTcsForm = (data) => {
+  const fields = [
+    {
+      type: "dropdown",
+      id: "company",
+      label: "Company",
+      options: data.companies, // Dynamic list of companies
+      required: true,
+    },
+    {
+      type: "dropdown",
+      id: "assignedTo",
+      label: "Assigned To",
+      options: data.users, // Dynamic list of users
+      required: true,
+    },
+    {
+      type: "dropdown",
+      id: "priority",
+      label: "Priority",
+      options: ["High", "Medium", "Low"],
+      required: true,
+    },
+    {
+      type: "date",
+      id: "startDate",
+      label: "Start Date",
+      required: true,
+    },
+    {
+      type: "date",
+      id: "dueDate",
+      label: "Due Date",
+      required: true,
+    },
+    {
+      type: "date",
+      id: "actualCompletionDate",
+      label: "Actual Completion Date",
+    },
+    {
+      type: "dropdown",
+      id: "taskType",
+      label: "Task Type",
+      options: [
+        "GST",
+        "Provident Fund",
+        "Income Tax",
+        "TDS and TCS",
+        "ESI",
+        "Professional Tax",
+      ],
+      required: true,
+    },
+    {
+      type: "dropdown",
+      id: "taskName",
+      label: "Task Name",
+      options: ["TDS-24Q", "TDS-26Q", "TDS-27Q", "TCS-27EQ"],
+      required: true,
+    },
+    {
+      type: "dropdown",
+      id: "quarter",
+      label: "Quarter",
+      options: ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"],
+      required: true,
+    },
+    {
+      type: "dropdown",
+      id: "filingStatus",
+      label: "Filing Status",
+      options: ["Filed", "Not Filed"],
+      visible: data.quarterSelected, // Conditional visibility based on quarter selection
+    },
+    {
+      type: "dropdown",
+      id: "processingStatus",
+      label: "Processing Status",
+      options: ["Processed", "Processed with Error"],
+      visible: data.filingStatus === "Filed", // Conditional visibility based on filing status
+    },
+    {
+      type: "dropdown",
+      id: "form16Generated",
+      label: "Form 16 Generated",
+      options: ["Yes", "No"],
+      visible: data.processingStatus === "Processed", // Conditional visibility based on processing status
+    },
+  ];
+
+  return fields;
+};
+
+export const TdsMonthly = (data) => {
+  const fields = [
+    {
+      type: "dropdown",
+      id: "company",
+      label: "Company",
+      options: data.companies, // Dynamic list of companies
+      required: true,
+    },
+    {
+      type: "dropdown",
+      id: "assignedTo",
+      label: "Assigned To",
+      options: data.users, // Dynamic list of users
+      required: true,
+    },
+    {
+      type: "dropdown",
+      id: "priority",
+      label: "Priority",
+      options: ["High", "Medium", "Low"],
+      required: true,
+    },
+    {
+      type: "date",
+      id: "startDate",
+      label: "Start Date",
+      required: true,
+    },
+    {
+      type: "date",
+      id: "dueDate",
+      label: "Due Date",
+      required: true,
+    },
+    {
+      type: "date",
+      id: "actualCompletionDate",
+      label: "Actual Completion Date",
+    },
+    {
+      type: "dropdown",
+      id: "taskName",
+      label: "Task Name",
+      options: ["TDS", "TCS"],
+      required: true,
+    },
+    {
+      type: "dropdown",
+      id: "taskType",
+      label: "Task Type",
+      options: [
+        "GST",
+        "Provident Fund",
+        "Income Tax",
+        "TDS and TCS",
+        "ESI",
+        "Professional Tax",
+      ],
+      required: true,
+    },
+    {
+      type: "dropdown",
+      id: "quarter",
+      label: "Quarter",
+      options: ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"],
+      required: true,
+    },
+    {
+      type: "dropdown",
+      id: "paymentStatus",
+      label: "Payment Status",
+      options: ["Paid", "Not Paid"],
+      required: true,
+    },
+    {
+      type: "dropdown",
+      id: "paymentMonth",
+      label: "Payment Month",
+      options: data.months, // Dynamic list of months with the current month as default
+      defaultValue: data.currentMonth, // Set the default to the current month
+      required: true,
+    },
+    {
+      type: "dropdown",
+      id: "paymentYear",
+      label: "Payment Year",
+      options: data.years, // Dynamic list of years with the current year as default
+      defaultValue: data.currentYear, // Set the default to the current year
+      required: true,
+    },
+    {
+      type: "date",
+      id: "paidDate",
+      label: "Paid Date",
+    },
+  ];
+
+  return fields;
 };
 
 const statusOptions = [
