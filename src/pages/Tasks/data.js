@@ -962,6 +962,8 @@ export const TdsMonthly = (data) => {
       ],
       required: true,
     },
+    //payment
+
     {
       type: "select",
       id: "paymentStatus",
@@ -972,42 +974,47 @@ export const TdsMonthly = (data) => {
       ],
       required: true,
     },
-    {
-      type: "select",
-      id: "paymentMonth",
-      label: "Payment Month",
-      options: [
-        { value: "jan", label: "January" },
-        { value: "feb", label: "February" },
-        { value: "mar", label: "March" },
-        { value: "apr", label: "April" },
-        { value: "may", label: "May" },
-        { value: "jun", label: "June" },
-        { value: "jul", label: "July" },
-        { value: "aug", label: "August" },
-        { value: "sep", label: "September" },
-        { value: "oct", label: "October" },
-        { value: "nov", label: "November" },
-        { value: "dec", label: "December" },
-      ],
-      defaultValue: currentMonth, // Dynamic list of months with the current month as default
-      // Set the default to the current month
-      required: true,
-    },
 
-    {
-      type: "select",
-      id: "gstMonthly_monthlyYear",
-      label: "Year",
-      options: yearOptions,
-      defaultValue: currentYear,
-      required: true,
-    },
-    {
-      type: "date",
-      id: "paidDate",
-      label: "Paid Date",
-    },
+    ...(data.paymentStatus === "paid"
+      ? [
+          {
+            type: "select",
+            id: "paymentMonth",
+            label: "Payment Month",
+            options: [
+              { value: "jan", label: "January" },
+              { value: "feb", label: "February" },
+              { value: "mar", label: "March" },
+              { value: "apr", label: "April" },
+              { value: "may", label: "May" },
+              { value: "jun", label: "June" },
+              { value: "jul", label: "July" },
+              { value: "aug", label: "August" },
+              { value: "sep", label: "September" },
+              { value: "oct", label: "October" },
+              { value: "nov", label: "November" },
+              { value: "dec", label: "December" },
+            ],
+            defaultValue: currentMonth, // Dynamic list of months with the current month as default
+            // Set the default to the current month
+            required: true,
+          },
+
+          {
+            type: "select",
+            id: "gstMonthly_monthlyYear",
+            label: "Year",
+            options: yearOptions,
+            defaultValue: currentYear,
+            required: true,
+          },
+          {
+            type: "date",
+            id: "paidDate",
+            label: "Paid Date",
+          },
+        ]
+      : []),
   ];
 
   return fields;
