@@ -122,45 +122,45 @@ const GetCommonFields = (data) => {
     },
     ...(data.applicationStatus === "Applied"
       ? [
-          {
-            type: "number",
-            id: "arn",
-            label: "ARN",
-            placeholder: "ARN",
-            required: false,
-          },
-          {
-            type: "date",
-            id: "arnDate",
-            label: "ARN Date",
-            required: false,
-          },
-          {
-            type: "select",
-            id: "applicationSubStatus",
-            label: "Application Sub Status",
-            options: [
-              { value: "approved", label: "Approved" },
-              { value: "rejected", label: "Rejected" },
-              { value: "Pending for Approval", label: "Pending for Approval" },
-              {
-                value: "Pending for Clarification",
-                label: "Pending for Clarification",
-              },
-            ],
-            required: false,
-          },
-        ]
+        {
+          type: "number",
+          id: "arn",
+          label: "ARN",
+          placeholder: "ARN",
+          required: false,
+        },
+        {
+          type: "date",
+          id: "arnDate",
+          label: "ARN Date",
+          required: false,
+        },
+        {
+          type: "select",
+          id: "applicationSubStatus",
+          label: "Application Sub Status",
+          options: [
+            { value: "approved", label: "Approved" },
+            { value: "rejected", label: "Rejected" },
+            { value: "Pending for Approval", label: "Pending for Approval" },
+            {
+              value: "Pending for Clarification",
+              label: "Pending for Clarification",
+            },
+          ],
+          required: false,
+        },
+      ]
       : []),
     ...(data?.applicationSubStatus === "approved"
       ? [
-          {
-            type: "date",
-            id: "dateOfApproval",
-            label: "Date Of Approval",
-            required: false,
-          },
-        ]
+        {
+          type: "date",
+          id: "dateOfApproval",
+          label: "Date Of Approval",
+          required: false,
+        },
+      ]
       : []),
   ];
   return Commondfields;
@@ -182,102 +182,102 @@ export const getGstMonthlyData = (data) => {
   const fields = [
     ...(data.taskName === "gstMonthly"
       ? [
-          {
-            type: "select",
-            id: "gstMonthly_gstType",
-            label: "Type of GST Form",
-            options: [
-              { value: "gstr1", label: "GSTR1" },
-              { value: "gstr3b", label: "GSTR3B" },
-            ],
-            required: true,
-          },
-        ]
+        {
+          type: "select",
+          id: "gstMonthly_gstType",
+          label: "Type of GST Form",
+          options: [
+            { value: "gstr1", label: "GSTR1" },
+            { value: "gstr3b", label: "GSTR3B" },
+          ],
+          required: true,
+        },
+      ]
       : []),
     ...(data.gstMonthly_gstType
       ? [
-          {
-            type: "select",
-            id: "gstMonthly_filingStatus",
-            label: "Filing Status",
-            options: [
-              { value: "filled", label: "Filled" },
-              { value: "notFilled", label: "Not Filled" },
-            ],
-            required: true,
-          },
-        ]
+        {
+          type: "select",
+          id: "gstMonthly_filingStatus",
+          label: "Filing Status",
+          options: [
+            { value: "filled", label: "Filled" },
+            { value: "notFilled", label: "Not Filled" },
+          ],
+          required: true,
+        },
+      ]
       : []),
     ...(data.gstMonthly_filingStatus === "notFilled"
       ? [
-          {
-            type: "select",
-            id: "gstMonthly_previousMonth",
-            label: "Previous Month Not Filed",
-            options: [
-              { value: "yes", label: "Yes" },
-              { value: "no", label: "No" },
-            ],
-            required: true,
-          },
-        ]
+        {
+          type: "select",
+          id: "gstMonthly_previousMonth",
+          label: "Previous Month Not Filed",
+          options: [
+            { value: "yes", label: "Yes" },
+            { value: "no", label: "No" },
+          ],
+          required: true,
+        },
+      ]
       : []),
     ...(data.currentStatus === "paymentPending" &&
-    data.gstMonthly_gstType === "gstr3b"
+      data.gstMonthly_gstType === "gstr3b"
       ? [
-          {
-            type: "number",
-            id: "gstMonthly_taxAmount",
-            label: "Tax Amount",
-            placeholder: "Tax Amount",
-            required: true,
-          },
-        ]
+        {
+          type: "number",
+          id: "gstMonthly_taxAmount",
+          label: "Tax Amount",
+          placeholder: "Tax Amount",
+          required: true,
+        },
+      ]
       : []),
     ...(data.gstMonthly_filingStatus === "filled"
       ? [
-          {
-            type: "date",
-            id: "gstMonthly_fileDate",
-            label: "File Date",
-            required: true,
-          },
-          {
-            type: "text",
-            id: "gstMonthly_monthlyarn",
-            label: "ARN Number",
-            required: true,
-          },
-          {
-            type: "select",
-            id: "gstMonthly_monthlyMonth",
-            label: "Month",
-            options: [
-              { value: "jan", label: "January" },
-              { value: "feb", label: "February" },
-              { value: "mar", label: "March" },
-              { value: "apr", label: "April" },
-              { value: "may", label: "May" },
-              { value: "jun", label: "June" },
-              { value: "jul", label: "July" },
-              { value: "aug", label: "August" },
-              { value: "sep", label: "September" },
-              { value: "oct", label: "October" },
-              { value: "nov", label: "November" },
-              { value: "dec", label: "December" },
-            ],
-            defaultValue: currentMonth,
-            required: true,
-          },
-          {
-            type: "select",
-            id: "gstMonthly_monthlyYear",
-            label: "Year",
-            options: yearOptions,
-            defaultValue: currentYear,
-            required: true,
-          },
-        ]
+        {
+          type: "date",
+          id: "gstMonthly_fileDate",
+          label: "File Date",
+          required: true,
+        },
+        {
+          type: "text",
+          id: "gstMonthly_monthlyarn",
+          label: "ARN Number",
+          required: true,
+        },
+        {
+          type: "select",
+          id: "gstMonthly_monthlyMonth",
+          label: "Month",
+          options: [
+            { value: "jan", label: "January" },
+            { value: "feb", label: "February" },
+            { value: "mar", label: "March" },
+            { value: "apr", label: "April" },
+            { value: "may", label: "May" },
+            { value: "jun", label: "June" },
+            { value: "jul", label: "July" },
+            { value: "aug", label: "August" },
+            { value: "sep", label: "September" },
+            { value: "oct", label: "October" },
+            { value: "nov", label: "November" },
+            { value: "dec", label: "December" },
+          ],
+          defaultValue: currentMonth,
+          required: true,
+        },
+        {
+          type: "select",
+          id: "gstMonthly_monthlyYear",
+          label: "Year",
+          options: yearOptions,
+          defaultValue: currentYear,
+          required: true,
+        },
+      ]
       : []),
   ];
 
@@ -298,260 +298,260 @@ export const getInactiveData = (data) => {
     },
     ...(data.gstInactive_typeOfInactive === "cancelled"
       ? [
-          {
-            type: "select",
-            id: "gstInactive_cancellationStatus",
-            label: "Cancellation Status",
-            options: [
-              { value: "voluntarily", label: "Voluntarily" },
-              { value: "suoMotu", label: "Suo moto" },
-            ],
-            required: true,
-          },
-          ...(data?.gstInactive_cancellationStatus === "voluntarily"
-            ? [
+        {
+          type: "select",
+          id: "gstInactive_cancellationStatus",
+          label: "Cancellation Status",
+          options: [
+            { value: "voluntarily", label: "Voluntarily" },
+            { value: "suoMotu", label: "Suo moto" },
+          ],
+          required: true,
+        },
+        ...(data?.gstInactive_cancellationStatus === "voluntarily"
+          ? [
+            {
+              type: "select",
+              id: "gstInactive_volApplicationStatus",
+              label: "Application Status",
+              options: [
+                { value: "pendingForApply", label: "Pending for Apply" },
+                { value: "applied", label: "Applied" },
+              ],
+              required: true,
+            },
+            ...(data?.gstInactive_volApplicationStatus === "applied"
+              ? [
+                {
+                  type: "text",
+                  id: "gstInactive_arn",
+                  label: "ARN",
+                  required: true,
+                },
+                {
+                  type: "date",
+                  id: "gstInactive_arnDate",
+                  label: "ARN Date",
+                  required: true,
+                },
                 {
                   type: "select",
-                  id: "gstInactive_volApplicationStatus",
+                  id: "gstInactive_applicationSubStatus",
+                  label: "Application Sub Status",
+                  options: [
+                    {
+                      value: "pendingForApproval",
+                      label: "Pending for Approval",
+                    },
+                    {
+                      value: "pendingForClarification",
+                      label: "Pending for Clarification",
+                    },
+                    { value: "rejected", label: "Rejected" },
+                    { value: "approved", label: "Approved" },
+                  ],
+                  required: true,
+                },
+                ...(data?.gstInactive_applicationSubStatus === "approved"
+                  ? [
+                    {
+                      type: "date",
+                      id: "gstInactive_dateOfApproval",
+                      label: "Date of Approval",
+                      required: true,
+                    },
+                    {
+                      type: "select",
+                      id: "gstInactive_finalReturnStatus",
+                      label: "Final Return Status",
+                      options: [
+                        { value: "filed", label: "Filed" },
+                        { value: "notFiled", label: "Not Filed" },
+                      ],
+                      required: true,
+                    },
+                  ]
+                  : []),
+              ]
+              : []),
+          ]
+          : []),
+        ...(data?.gstInactive_cancellationStatus === "suoMotu"
+          ? [
+            {
+              type: "select",
+              id: "gstInactive_needToRevoceCancellation",
+              label: "Need to Revoc Cancellation",
+              options: [
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
+              ],
+              required: true,
+            },
+            ...(data?.gstInactive_needToRevoceCancellation === "yes"
+              ? [
+                {
+                  type: "select",
+                  id: "gstInactive_applicationStatus",
                   label: "Application Status",
                   options: [
-                    { value: "pendingForApply", label: "Pending for Apply" },
+                    {
+                      value: "pendingForApply",
+                      label: "Pending for Apply",
+                    },
                     { value: "applied", label: "Applied" },
                   ],
                   required: true,
                 },
-                ...(data?.gstInactive_volApplicationStatus === "applied"
+                ...(data?.gstInactive_applicationStatus === "applied"
                   ? [
-                      {
-                        type: "text",
-                        id: "gstInactive_arn",
-                        label: "ARN",
-                        required: true,
-                      },
-                      {
-                        type: "date",
-                        id: "gstInactive_arnDate",
-                        label: "ARN Date",
-                        required: true,
-                      },
-                      {
-                        type: "select",
-                        id: "gstInactive_applicationSubStatus",
-                        label: "Application Sub Status",
-                        options: [
-                          {
-                            value: "pendingForApproval",
-                            label: "Pending for Approval",
-                          },
-                          {
-                            value: "pendingForClarification",
-                            label: "Pending for Clarification",
-                          },
-                          { value: "rejected", label: "Rejected" },
-                          { value: "approved", label: "Approved" },
-                        ],
-                        required: true,
-                      },
-                      ...(data?.gstInactive_applicationSubStatus === "approved"
-                        ? [
-                            {
-                              type: "date",
-                              id: "gstInactive_dateOfApproval",
-                              label: "Date of Approval",
-                              required: true,
-                            },
-                            {
-                              type: "select",
-                              id: "gstInactive_finalReturnStatus",
-                              label: "Final Return Status",
-                              options: [
-                                { value: "filed", label: "Filed" },
-                                { value: "notFiled", label: "Not Filed" },
-                              ],
-                              required: true,
-                            },
-                          ]
-                        : []),
-                    ]
+                    {
+                      type: "text",
+                      id: "gstInactive_arn",
+                      label: "ARN",
+                      required: true,
+                    },
+                    {
+                      type: "date",
+                      id: "gstInactive_arnDate",
+                      label: "ARN Date",
+                      required: true,
+                    },
+                    {
+                      type: "select",
+                      id: "gstInactive_applicationSubStatus",
+                      label: "Application Sub Status",
+                      options: [
+                        {
+                          value: "pendingForApproval",
+                          label: "Pending for Approval",
+                        },
+                        {
+                          value: "pendingForClarification",
+                          label: "Pending for Clarification",
+                        },
+                        { value: "rejected", label: "Rejected" },
+                        { value: "approved", label: "Approved" },
+                      ],
+                      required: true,
+                    },
+                  ]
+                  : []),
+                ...(data.gstInactive_applicationSubStatus === "approved"
+                  ? [
+                    {
+                      type: "date",
+                      id: "gstInactive_dateOfApproval",
+                      label: "Date of Approval",
+                      required: true,
+                    },
+                    {
+                      type: "select",
+                      id: "gstInactive_finalReturnStatus",
+                      label: "Final Return Status",
+                      options: [
+                        { value: "filed", label: "Filed" },
+                        { value: "notFiled", label: "Not Filed" },
+                      ],
+                      required: true,
+                    },
+                  ]
                   : []),
               ]
-            : []),
-          ...(data?.gstInactive_cancellationStatus === "suoMotu"
-            ? [
-                {
-                  type: "select",
-                  id: "gstInactive_needToRevoceCancellation",
-                  label: "Need to Revoc Cancellation",
-                  options: [
-                    { value: "yes", label: "Yes" },
-                    { value: "no", label: "No" },
-                  ],
-                  required: true,
-                },
-                ...(data?.gstInactive_needToRevoceCancellation === "yes"
-                  ? [
-                      {
-                        type: "select",
-                        id: "gstInactive_applicationStatus",
-                        label: "Application Status",
-                        options: [
-                          {
-                            value: "pendingForApply",
-                            label: "Pending for Apply",
-                          },
-                          { value: "applied", label: "Applied" },
-                        ],
-                        required: true,
-                      },
-                      ...(data?.gstInactive_applicationStatus === "applied"
-                        ? [
-                            {
-                              type: "text",
-                              id: "gstInactive_arn",
-                              label: "ARN",
-                              required: true,
-                            },
-                            {
-                              type: "date",
-                              id: "gstInactive_arnDate",
-                              label: "ARN Date",
-                              required: true,
-                            },
-                            {
-                              type: "select",
-                              id: "gstInactive_applicationSubStatus",
-                              label: "Application Sub Status",
-                              options: [
-                                {
-                                  value: "pendingForApproval",
-                                  label: "Pending for Approval",
-                                },
-                                {
-                                  value: "pendingForClarification",
-                                  label: "Pending for Clarification",
-                                },
-                                { value: "rejected", label: "Rejected" },
-                                { value: "approved", label: "Approved" },
-                              ],
-                              required: true,
-                            },
-                          ]
-                        : []),
-                      ...(data.gstInactive_applicationSubStatus === "approved"
-                        ? [
-                            {
-                              type: "date",
-                              id: "gstInactive_dateOfApproval",
-                              label: "Date of Approval",
-                              required: true,
-                            },
-                            {
-                              type: "select",
-                              id: "gstInactive_finalReturnStatus",
-                              label: "Final Return Status",
-                              options: [
-                                { value: "filed", label: "Filed" },
-                                { value: "notFiled", label: "Not Filed" },
-                              ],
-                              required: true,
-                            },
-                          ]
-                        : []),
-                    ]
-                  : []),
-              ]
-            : []),
-        ]
+              : []),
+          ]
+          : []),
+      ]
       : []),
     ...(data?.gstInactive_applicationSubStatus === "rejected" &&
-    ((data?.gstInactive_cancellationStatus === "suoMotu" &&
-      data?.gstInactive_needToRevoceCancellation === "yes") ||
-      data?.gstInactive_cancellationStatus === "voluntarily")
+      ((data?.gstInactive_cancellationStatus === "suoMotu" &&
+        data?.gstInactive_needToRevoceCancellation === "yes") ||
+        data?.gstInactive_cancellationStatus === "voluntarily")
       ? [
-          {
-            type: "select",
-            id: "gstInactive_goingForAppeal",
-            label: "Going For Appeal",
-            options: [
-              { value: "yes", label: "Yes" },
-              { value: "no", label: "No" },
-            ],
-            required: true,
-          },
-          ...(data.gstInactive_goingForAppeal === "yes"
-            ? [
+        {
+          type: "select",
+          id: "gstInactive_goingForAppeal",
+          label: "Going For Appeal",
+          options: [
+            { value: "yes", label: "Yes" },
+            { value: "no", label: "No" },
+          ],
+          required: true,
+        },
+        ...(data.gstInactive_goingForAppeal === "yes"
+          ? [
+            {
+              type: "select",
+              id: "gstInactive_rejectState",
+              label: "Application Status",
+              options: [
+                { value: "pendingForApply", label: "Pending for Apply" },
+                { value: "applied", label: "Applied" },
+              ],
+              required: true,
+            },
+            ...(data?.gstInactive_rejectState === "applied"
+              ? [
+                {
+                  type: "text",
+                  id: "gstInactive_appealArn",
+                  label: "ARN",
+                  required: true,
+                },
+                {
+                  type: "date",
+                  id: "gstInactive_appealArnDate",
+                  label: "ARN Date",
+                  required: true,
+                },
                 {
                   type: "select",
-                  id: "gstInactive_rejectState",
-                  label: "Application Status",
+                  id: "gstInactive_appealApplicationSubStatus",
+                  label: "Application Sub Status",
                   options: [
-                    { value: "pendingForApply", label: "Pending for Apply" },
-                    { value: "applied", label: "Applied" },
+                    {
+                      value: "pendingForApproval",
+                      label: "Pending for Approval",
+                    },
+                    {
+                      value: "pendingForClarification",
+                      label: "Pending for Clarification",
+                    },
+                    { value: "rejected", label: "Rejected" },
+                    { value: "approved", label: "Approved" },
                   ],
                   required: true,
                 },
-                ...(data?.gstInactive_rejectState === "applied"
+                ...(data?.gstInactive_appealApplicationSubStatus ===
+                  "approved"
                   ? [
-                      {
-                        type: "text",
-                        id: "gstInactive_appealArn",
-                        label: "ARN",
-                        required: true,
-                      },
-                      {
-                        type: "date",
-                        id: "gstInactive_appealArnDate",
-                        label: "ARN Date",
-                        required: true,
-                      },
-                      {
-                        type: "select",
-                        id: "gstInactive_appealApplicationSubStatus",
-                        label: "Application Sub Status",
-                        options: [
-                          {
-                            value: "pendingForApproval",
-                            label: "Pending for Approval",
-                          },
-                          {
-                            value: "pendingForClarification",
-                            label: "Pending for Clarification",
-                          },
-                          { value: "rejected", label: "Rejected" },
-                          { value: "approved", label: "Approved" },
-                        ],
-                        required: true,
-                      },
-                      ...(data?.gstInactive_appealApplicationSubStatus ===
-                      "approved"
-                        ? [
-                            {
-                              type: "date",
-                              id: "gstInactive_dateOfApproval",
-                              label: "Date of Approval",
-                              required: true,
-                            },
-                          ]
-                        : []),
-                    ]
+                    {
+                      type: "date",
+                      id: "gstInactive_dateOfApproval",
+                      label: "Date of Approval",
+                      required: true,
+                    },
+                  ]
                   : []),
               ]
-            : []),
-          ...(data.gstInactive_goingForAppeal === "no"
-            ? [
-                {
-                  type: "select",
-                  id: "gstInactive_appealFileReturnStatus",
-                  label: "Final Return Status",
-                  options: [
-                    { value: "filed", label: "Filed" },
-                    { value: "notFiled", label: "Not Filed" },
-                  ],
-                  required: true,
-                },
-              ]
-            : []),
-        ]
+              : []),
+          ]
+          : []),
+        ...(data.gstInactive_goingForAppeal === "no"
+          ? [
+            {
+              type: "select",
+              id: "gstInactive_appealFileReturnStatus",
+              label: "Final Return Status",
+              options: [
+                { value: "filed", label: "Filed" },
+                { value: "notFiled", label: "Not Filed" },
+              ],
+              required: true,
+            },
+          ]
+          : []),
+      ]
       : []),
   ];
   return fields;
@@ -573,64 +573,64 @@ export const getMonthlyPamnetData = (data) => {
   const fields = [
     ...(data.taskName === "gstMonthlyPayment"
       ? [
-          {
-            type: "select",
-            id: "gstMonthlyPayment_quarter",
-            label: "Quarter",
-            options: [
-              { value: "quarter1", label: "QUARTER 1" },
-              { value: "quarter2", label: "QUARTER 2" },
-              { value: "quarter2", label: "QUARTER 2" },
-              { value: "quarter3", label: "QUARTER 3" },
-            ],
-            required: true,
-          },
-          {
-            type: "select",
-            id: "gstMonthlyPayment_payment",
-            label: "Payment",
-            options: [
-              { value: "paid", label: "Paid" },
-              { value: "notPaid", label: "Not Paid" },
-            ],
-            required: true,
-          },
-          {
-            type: "select",
-            id: "gstMonthlyPayment_monthlyMonth",
-            label: "Month",
-            defaultValue: currentMonth,
-            options: [
-              { value: "jan", label: "January" },
-              { value: "feb", label: "February" },
-              { value: "mar", label: "March" },
-              { value: "apr", label: "April" },
-              { value: "may", label: "May" },
-              { value: "jun", label: "June" },
-              { value: "jul", label: "July" },
-              { value: "aug", label: "August" },
-              { value: "sep", label: "September" },
-              { value: "oct", label: "October" },
-              { value: "nov", label: "November" },
-              { value: "dec", label: "December" },
-            ],
-            required: true,
-          },
-          {
-            type: "select",
-            id: "gstMonthlyPayment_monthlyYear",
-            label: "Year",
-            options: yearOptions,
-            defaultValue: currentYear.toString(),
-            required: true,
-          },
-          {
-            type: "date",
-            id: "gstMonthlyPayment_paymentDate",
-            label: "Payment Date",
-            required: true,
-          },
-        ]
+        {
+          type: "select",
+          id: "gstMonthlyPayment_quarter",
+          label: "Quarter",
+          options: [
+            { value: "quarter1", label: "QUARTER 1" },
+            { value: "quarter2", label: "QUARTER 2" },
+            { value: "quarter2", label: "QUARTER 2" },
+            { value: "quarter3", label: "QUARTER 3" },
+          ],
+          required: true,
+        },
+        {
+          type: "select",
+          id: "gstMonthlyPayment_payment",
+          label: "Payment",
+          options: [
+            { value: "paid", label: "Paid" },
+            { value: "notPaid", label: "Not Paid" },
+          ],
+          required: true,
+        },
+        {
+          type: "select",
+          id: "gstMonthlyPayment_monthlyMonth",
+          label: "Month",
+          defaultValue: currentMonth,
+          options: [
+            { value: "jan", label: "January" },
+            { value: "feb", label: "February" },
+            { value: "mar", label: "March" },
+            { value: "apr", label: "April" },
+            { value: "may", label: "May" },
+            { value: "jun", label: "June" },
+            { value: "jul", label: "July" },
+            { value: "aug", label: "August" },
+            { value: "sep", label: "September" },
+            { value: "oct", label: "October" },
+            { value: "nov", label: "November" },
+            { value: "dec", label: "December" },
+          ],
+          required: true,
+        },
+        {
+          type: "select",
+          id: "gstMonthlyPayment_monthlyYear",
+          label: "Year",
+          options: yearOptions,
+          defaultValue: currentYear.toString(),
+          required: true,
+        },
+        {
+          type: "date",
+          id: "gstMonthlyPayment_paymentDate",
+          label: "Payment Date",
+          required: true,
+        },
+      ]
       : []),
   ];
   return fields;
@@ -643,9 +643,9 @@ export const providentFund = (data) => {
       id: "taskName",
       label: "Task Name",
       options: [
-        { value: "pfRegistration", label: "PF - Registration" },
-        { value: "pfMonthly", label: "PF - Monthly Filing" },
-        { value: "pfAnnual", label: "PF - Annual Return" },
+        { value: "pfRegistration", label: "PF - New Registration" },
+        { value: "pfMonthly", label: "PF - Regular Monthly Filing" },
+        { value: "pfInactive", label: "PF - Inactive Registration" },
       ],
       required: true,
     },
@@ -653,12 +653,10 @@ export const providentFund = (data) => {
 
   let fields = [...defaultPfData];
 
-  if (["pfRegistration"].includes(data?.taskName)) {
+  if (["pfRegistration","pfInactive"].includes(data?.taskName)) {
     fields = [...fields, ...pfRegistration(data)];
   } else if (["pfMonthly"].includes(data?.taskName)) {
     fields = [...fields, ...pfMonthly(data)];
-  } else if (["pfAnnual"].includes(data?.taskName)) {
-    fields = [...fields, ...pfAnnual(data)];
   }
 
   return fields;
@@ -671,26 +669,54 @@ export const pfRegistration = (data) => {
       id: "applicationStatus",
       label: "Application Status",
       options: [
-        { value: "pending", label: "Pending" },
-        { value: "submitted", label: "Submitted" },
+        { value: "pending", label: "Pending for Apply" },
+        { value: "applied", label: "Applied" },
       ],
       required: true,
     },
-    ...(data?.applicationStatus === "submitted"
+    ...(data?.applicationStatus === "applied"
       ? [
-          {
-            type: "date",
-            id: "submissionDate",
-            label: "Submission Date",
-            required: false,
-          },
-          {
-            type: "text",
-            id: "registrationNumber",
-            label: "Registration Number",
-            required: false,
-          },
-        ]
+        {
+          type: "text",
+          id: "applicationNumber",
+          label: "Application Number",
+          required: false,
+        },
+        {
+          type: "date",
+          id: "applicationDate",
+          label: "Application Date",
+          required: false,
+        },
+        {
+          type: "select",
+          id: "ApplicationSubStatus",
+          label: "Application Sub Status",
+          options: [
+            {
+              value: "pendingForApproval",
+              label: "Pending for Approval",
+            },
+            {
+              value: "pendingForClarification",
+              label: "Pending for Clarification",
+            },
+            { value: "rejected", label: "Rejected" },
+            { value: "approved", label: "Approved" },
+          ],
+          required: true,
+        },
+      ]
+      : []),
+    ...(data?.ApplicationSubStatus === "approved"
+      ? [
+        {
+          type: "date",
+          id: "approval",
+          label: "Date of Approval",
+          required: false,
+        }
+      ]
       : []),
   ];
   return fields;
@@ -699,54 +725,54 @@ export const pfRegistration = (data) => {
 export const pfMonthly = (data) => {
   const fields = [
     {
-      type: "date",
-      id: "filingDate",
-      label: "Filing Date",
+      type: "select",
+      id: "filingStatus",
+      label: "Filing Status",
+      options: [
+        { value: "filed", label: "Filed" },
+        { value: "notfiled", label: "Not Filed" },
+      ],
       required: true,
     },
-    {
-      type: "number",
-      id: "totalEmployees",
-      label: "Total Employees",
-      required: true,
-    },
-    {
-      type: "number",
-      id: "totalAmount",
-      label: "Total Amount",
-      required: true,
-    },
+    ...(data?.filingStatus === "notfiled"
+      ? [
+        {
+          type: "text",
+          id: "prevNotFiled",
+          label: "Previous Month Not Filed",
+          required: false,
+        },
+        {
+          type: "select",
+          id: "currentStatus",
+          label: "Current Status",
+          options: [
+            {
+              value: "pendingDocuments",
+              label: "Documents Pending",
+            },
+            {
+              value: "waitingForClarification",
+              label: "Waiting For Clarification",
+            },
+            { value: "workInProgress", label: "Work In Progress" },
+          ],
+          required: true,
+        },
+      ]
+      : []),
+    ...(data?.filingStatus === "filed"
+      ? [
+        {
+          type: "date",
+          id: "fileDate",
+          label: "File Date",
+          required: false,
+        }
+      ]
+      : []),
   ];
 
-  return fields;
-};
-export const pfAnnual = (data) => {
-  const fields = [
-    {
-      type: "date",
-      id: "filingDate",
-      label: "Filing Date",
-      required: true,
-    },
-    {
-      type: "number",
-      id: "totalEmployees",
-      label: "Total Employees",
-      required: true,
-    },
-    {
-      type: "number",
-      id: "totalAmount",
-      label: "Total Amount",
-      required: true,
-    },
-    {
-      type: "text",
-      id: "annualReturnNumber",
-      label: "Annual Return Number",
-      required: false,
-    },
-  ];
   return fields;
 };
 
@@ -828,7 +854,7 @@ export const tdsTcsForm = (data) => {
       id: "taskName",
       label: "Task Name",
       options: [
-        { value: "all", label: "All" },
+        // { value: "all", label: "All" },
 
         { value: "tds24Q", label: "TDS-24Q" },
         { value: "tds26Q", label: "TDS-26Q" },
@@ -977,43 +1003,43 @@ export const TdsMonthly = (data) => {
 
     ...(data.paymentStatus === "paid"
       ? [
-          {
-            type: "select",
-            id: "paymentMonth",
-            label: "Payment Month",
-            options: [
-              { value: "jan", label: "January" },
-              { value: "feb", label: "February" },
-              { value: "mar", label: "March" },
-              { value: "apr", label: "April" },
-              { value: "may", label: "May" },
-              { value: "jun", label: "June" },
-              { value: "jul", label: "July" },
-              { value: "aug", label: "August" },
-              { value: "sep", label: "September" },
-              { value: "oct", label: "October" },
-              { value: "nov", label: "November" },
-              { value: "dec", label: "December" },
-            ],
-            defaultValue: currentMonth, // Dynamic list of months with the current month as default
-            // Set the default to the current month
-            required: true,
-          },
+        {
+          type: "select",
+          id: "paymentMonth",
+          label: "Payment Month",
+          options: [
+            { value: "jan", label: "January" },
+            { value: "feb", label: "February" },
+            { value: "mar", label: "March" },
+            { value: "apr", label: "April" },
+            { value: "may", label: "May" },
+            { value: "jun", label: "June" },
+            { value: "jul", label: "July" },
+            { value: "aug", label: "August" },
+            { value: "sep", label: "September" },
+            { value: "oct", label: "October" },
+            { value: "nov", label: "November" },
+            { value: "dec", label: "December" },
+          ],
+          defaultValue: currentMonth, // Dynamic list of months with the current month as default
+          // Set the default to the current month
+          required: true,
+        },
 
-          {
-            type: "select",
-            id: "gstMonthly_monthlyYear",
-            label: "Year",
-            options: yearOptions,
-            defaultValue: currentYear,
-            required: true,
-          },
-          {
-            type: "date",
-            id: "paidDate",
-            label: "Paid Date",
-          },
-        ]
+        {
+          type: "select",
+          id: "gstMonthly_monthlyYear",
+          label: "Year",
+          options: yearOptions,
+          defaultValue: currentYear,
+          required: true,
+        },
+        {
+          type: "date",
+          id: "paidDate",
+          label: "Paid Date",
+        },
+      ]
       : []),
   ];
 
