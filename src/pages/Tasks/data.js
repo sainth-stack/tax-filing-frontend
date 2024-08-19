@@ -666,7 +666,7 @@ export const pfRegistration = (data) => {
   const fields = [
     {
       type: "select",
-      id: "applicationStatus",
+      id: "pfRegistration_applicationStatus",
       label: "Application Status",
       options: [
         { value: "pending", label: "Pending for Apply" },
@@ -674,23 +674,23 @@ export const pfRegistration = (data) => {
       ],
       required: true,
     },
-    ...(data?.applicationStatus === "applied"
+    ...(data?.pfRegistration_applicationStatus === "applied"
       ? [
           {
             type: "text",
-            id: "applicationNumber",
+            id: "pfRegistration_applicationNumber",
             label: "Application Number",
             required: false,
           },
           {
             type: "date",
-            id: "applicationDate",
+            id: "pfRegistration_applicationDate",
             label: "Application Date",
             required: false,
           },
           {
             type: "select",
-            id: "ApplicationSubStatus",
+            id: "pfRegistration_ApplicationSubStatus",
             label: "Application Sub Status",
             options: [
               {
@@ -708,11 +708,11 @@ export const pfRegistration = (data) => {
           },
         ]
       : []),
-    ...(data?.ApplicationSubStatus === "approved"
+    ...(data?.pfRegistration_ApplicationSubStatus === "approved"
       ? [
           {
             type: "date",
-            id: "approval",
+            id: "pfRegistration_approval",
             label: "Date of Approval",
             required: false,
           },
@@ -726,7 +726,7 @@ export const pfMonthly = (data) => {
   const fields = [
     {
       type: "select",
-      id: "filingStatus",
+      id: "pfMonthly_filingStatus",
       label: "Filing Status",
       options: [
         { value: "filed", label: "Filed" },
@@ -738,13 +738,13 @@ export const pfMonthly = (data) => {
       ? [
           {
             type: "text",
-            id: "prevNotFiled",
+            id: "pfMonthly_prevNotFiled",
             label: "Previous Month Not Filed",
             required: false,
           },
           {
             type: "select",
-            id: "currentStatus",
+            id: "pfMonthly_currentStatus",
             label: "Current Status",
             options: [
               {
@@ -765,7 +765,7 @@ export const pfMonthly = (data) => {
       ? [
           {
             type: "date",
-            id: "fileDate",
+            id: "pfMonthly_fileDate",
             label: "File Date",
             required: false,
           },
@@ -807,7 +807,7 @@ export const tdsTcsForm = (data) => {
   const fields = [
     {
       type: "select",
-      id: "tdstcstaskName",
+      id: "tdstcs_taskName",
       label: "TDS TCS Task Name",
       options: [
         { value: "TDS and TCS -24Q", label: "TDS and TCS -24Q" },
@@ -819,7 +819,7 @@ export const tdsTcsForm = (data) => {
     },
     {
       type: "select",
-      id: "quarter",
+      id: "tdstcs_quarter",
       label: "Quarter",
       options: [
         { value: "quarter1", label: "Quarter 1" },
@@ -829,11 +829,11 @@ export const tdsTcsForm = (data) => {
       ],
       required: true,
     },
-    ...(data?.quarter
+    ...(data?.tdstcs_quarter
       ? [
           {
             type: "select",
-            id: "filingStatus",
+            id: "tdstcs_filingStatus",
             label: "Filing Status",
             options: [
               { value: "filed", label: "Filed" },
@@ -843,11 +843,11 @@ export const tdsTcsForm = (data) => {
           },
         ]
       : []),
-    ...(data?.filingStatus === "filed"
+    ...(data?.tdstcs_filingStatus === "filed"
       ? [
           {
             type: "select",
-            id: "processingStatus",
+            id: "tdstcs_processingStatus",
             label: "Processing Status",
             options: [
               { value: "processed", label: "Processed" },
@@ -857,11 +857,11 @@ export const tdsTcsForm = (data) => {
           },
         ]
       : []),
-    ...(data?.processingStatus === "processed"
+    ...(data?.tdstcs_processingStatus === "processed"
       ? [
           {
             type: "select",
-            id: "form16Generated",
+            id: "tdstcs_form16Generated",
             label: "Form 16 Generated",
             options: [
               { value: "yes", label: "Yes" },
@@ -888,10 +888,11 @@ export const TdsMonthly = (data) => {
   for (let year = startYear; year <= endYear; year++) {
     yearOptions.push({ value: year, label: year.toString() });
   }
+
   const fields = [
     {
       type: "select",
-      id: "tdsmonthlytaskName",
+      id: "tdsmonthly_taskName",
       label: "Monthly Task Name",
       options: [
         { value: "tds", label: "TDS" },
@@ -899,10 +900,9 @@ export const TdsMonthly = (data) => {
       ],
       required: true,
     },
-
     {
       type: "select",
-      id: "quarter",
+      id: "tdsmonthly_quarter",
       label: "Quarter",
       options: [
         { value: "quarter1", label: "Quarter 1" },
@@ -912,11 +912,9 @@ export const TdsMonthly = (data) => {
       ],
       required: true,
     },
-    //payment
-
     {
       type: "select",
-      id: "paymentStatus",
+      id: "tdsmonthly_paymentStatus",
       label: "Payment Status",
       options: [
         { value: "paid", label: "Paid" },
@@ -924,12 +922,11 @@ export const TdsMonthly = (data) => {
       ],
       required: true,
     },
-
-    ...(data.paymentStatus === "paid"
+    ...(data.tdsmonthly_paymentStatus === "paid"
       ? [
           {
             type: "select",
-            id: "paymentMonth",
+            id: "tdsmonthly_paymentMonth",
             label: "Payment Month",
             options: [
               { value: "jan", label: "January" },
@@ -946,13 +943,11 @@ export const TdsMonthly = (data) => {
               { value: "dec", label: "December" },
             ],
             defaultValue: currentMonth, // Dynamic list of months with the current month as default
-            // Set the default to the current month
             required: true,
           },
-
           {
             type: "select",
-            id: "gstMonthly_monthlyYear",
+            id: "tdsmonthly_year",
             label: "Year",
             options: yearOptions,
             defaultValue: currentYear,
@@ -960,7 +955,7 @@ export const TdsMonthly = (data) => {
           },
           {
             type: "date",
-            id: "paidDate",
+            id: "tdsmonthly_paidDate",
             label: "Paid Date",
           },
         ]
