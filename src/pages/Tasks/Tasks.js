@@ -45,7 +45,7 @@ const Tasks = () => {
         company: formData?.company,
 
         assignedTo:
-          formData?.assignedTo !== "all" ? formData?.assignedTo : undefined,
+          formData?.userId !== "all" ? formData?.userId : undefined,
         status: formData?.status !== "all" ? formData?.status : undefined,
 
         applicationSubStatus: formData?.applicationSubStatus,
@@ -89,7 +89,7 @@ const Tasks = () => {
   };
 
   const getFields = (field) => {
-    if (field.id === "assignedTo") {
+    if (field.id === "userId") {
       return [{ label: "All", value: "all" }, ...users];
     } else {
       return field?.options;

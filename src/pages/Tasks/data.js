@@ -13,7 +13,7 @@ export const getTasks = ({ companies = [], users = [] }) => {
       id: "assignedTo",
       label: "Assigned To",
       options: [...users],
-      defaultValue: "All",
+      // defaultValue: "All",
 
       required: true,
     },
@@ -1001,7 +1001,7 @@ export const taskSearch = [
   },
   {
     type: "select",
-    id: "assignedTo",
+    id: "userId",
     label: "Assigned To",
     options: { value: "All", label: "All" },
     defaultValue: "All",
