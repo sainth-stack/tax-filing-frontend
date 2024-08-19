@@ -4,7 +4,15 @@ import SelectInput from "../../components/select";
 import CustomInput from "../../components/input";
 import CustomFileInput from "../../components/customFile";
 import moment from "moment";
-import { getGstData, getTasks, providentFund, TDSTCS } from "./data";
+import {
+  getEsiData,
+  getGstData,
+  getIncomeTaxData,
+  getProfessionalTaxData,
+  getTasks,
+  providentFund,
+  TDSTCS,
+} from "./data";
 import { base_url } from "../../const";
 
 const Taskform = ({
@@ -231,6 +239,21 @@ const Taskform = ({
       const TdsTcsData = TDSTCS(formData);
       const finalpfdata = [...tasks, ...TdsTcsData];
       setTasks(finalpfdata);
+    } else if (formData?.taskType === "incomeTax") {
+      /* for Income - Tax */
+      const IncomeTax = getIncomeTaxData(formData);
+      const IncomeTaxData = [...tasks, ...IncomeTax];
+      setTasks(IncomeTaxData);
+    } else if (formData?.taskType === "esi") {
+      /* for Income - Tax */
+      const esi = getEsiData(formData);
+      const GetEsiData = [...tasks, ...esi];
+      setTasks(GetEsiData);
+    } else if (formData?.taskType === "professionalTax") {
+      /* for Income - professionalTax */
+      const professionalTax = getProfessionalTaxData(formData);
+      const professionalTaxData = [...tasks, ...professionalTax];
+      setTasks(professionalTaxData);
     }
   }, [formData]);
 

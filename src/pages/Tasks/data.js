@@ -56,7 +56,7 @@ export const getTasks = ({ companies = [], users = [] }) => {
         { value: "incomeTax", label: "Income Tax" },
         { value: "tds", label: "TDS and TCS" },
         { value: "esi", label: "ESI" },
-        { value: "professionalTex", label: "Professional Tax" },
+        { value: "professionalTax", label: "Professional Tax" },
       ],
       required: true,
     },
@@ -67,45 +67,6 @@ export const getTasks = ({ companies = [], users = [] }) => {
       required: true,
     },
   ];
-};
-
-export const getGstData = (data) => {
-  const type = data?.taskType;
-  console.log(data?.applicationStatus);
-  const defaultField = [
-    {
-      type: "select",
-      id: "taskName",
-      label: "Task Name",
-      options: [
-        { value: "gstNewRegistration", label: "GST - New Registration" },
-        { value: "gstInactive", label: "GST - Inactive Registration" },
-        { value: "gstRefund", label: "GST - Refund" },
-        { value: "gstAmendments", label: "GST - Amendments" },
-        { value: "gstMonthly", label: "GST - Monthly Filing" },
-        { value: "gstMonthlyPayment", label: "GST - Monthly Payment" },
-      ],
-      required: true,
-    },
-  ];
-
-  let fields = [...defaultField];
-
-  if (
-    ["gstRefund", "gstNewRegistration", "gstAmendments"].includes(
-      data?.taskName
-    )
-  ) {
-    fields = [...fields, ...GetCommonFields(data)];
-  } else if (["gstMonthly"].includes(data?.taskName)) {
-    fields = [...fields, ...getGstMonthlyData(data)];
-  } else if (["gstInactive"].includes(data?.taskName)) {
-    fields = [...fields, ...getInactiveData(data)];
-  } else if (["gstMonthlyPayment"].includes(data?.taskName)) {
-    fields = [...fields, ...getMonthlyPamnetData(data)];
-  }
-
-  return fields;
 };
 
 const GetCommonFields = (data) => {
@@ -166,7 +127,46 @@ const GetCommonFields = (data) => {
   return Commondfields;
 };
 
-export const getGstMonthlyData = (data) => {
+export const getGstData = (data) => {
+  const type = data?.taskType;
+  console.log(data?.applicationStatus);
+  const defaultField = [
+    {
+      type: "select",
+      id: "taskName",
+      label: "Task Name",
+      options: [
+        { value: "gstNewRegistration", label: "GST - New Registration" },
+        { value: "gstInactive", label: "GST - Inactive Registration" },
+        { value: "gstRefund", label: "GST - Refund" },
+        { value: "gstAmendments", label: "GST - Amendments" },
+        { value: "gstMonthly", label: "GST - Monthly Filing" },
+        { value: "gstMonthlyPayment", label: "GST - Monthly Payment" },
+      ],
+      required: true,
+    },
+  ];
+
+  let fields = [...defaultField];
+
+  if (
+    ["gstRefund", "gstNewRegistration", "gstAmendments"].includes(
+      data?.taskName
+    )
+  ) {
+    fields = [...fields, ...GetCommonFields(data)];
+  } else if (["gstMonthly"].includes(data?.taskName)) {
+    fields = [...fields, ...getGstMonthlyData(data)];
+  } else if (["gstInactive"].includes(data?.taskName)) {
+    fields = [...fields, ...getInactiveData(data)];
+  } else if (["gstMonthlyPayment"].includes(data?.taskName)) {
+    fields = [...fields, ...getMonthlyPamnetData(data)];
+  }
+
+  return fields;
+};
+
+const GetMonthlyCommonFields = (data) => {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date()
     .toLocaleString("default", { month: "short" })
@@ -178,7 +178,48 @@ export const getGstMonthlyData = (data) => {
   for (let year = startYear; year <= endYear; year++) {
     yearOptions.push({ value: year, label: year.toString() });
   }
+  const fields = [
+    {
+      type: "text",
+      id: "gstMonthly_monthlyarn",
+      label: "ARN Number",
+      required: true,
+    },
+    {
+      type: "select",
+      id: "gstMonthly_monthlyMonth",
+      label: "Month",
+      options: [
+        { value: "jan", label: "January" },
+        { value: "feb", label: "February" },
+        { value: "mar", label: "March" },
+        { value: "apr", label: "April" },
+        { value: "may", label: "May" },
+        { value: "jun", label: "June" },
+        { value: "jul", label: "July" },
+        { value: "aug", label: "August" },
+        { value: "sep", label: "September" },
+        { value: "oct", label: "October" },
+        { value: "nov", label: "November" },
+        { value: "dec", label: "December" },
+      ],
+      defaultValue: currentMonth,
+      required: true,
+    },
+    {
+      type: "select",
+      id: "gstMonthly_monthlyYear",
+      label: "Year",
+      options: yearOptions,
+      defaultValue: currentYear,
+      required: true,
+    },
+  ];
 
+  return fields;
+};
+
+export const getGstMonthlyData = (data) => {
   const fields = [
     ...(data.taskName === "gstMonthly"
       ? [
@@ -188,6 +229,7 @@ export const getGstMonthlyData = (data) => {
             label: "Type of GST Form",
             options: [
               { value: "gstr1", label: "GSTR1" },
+
               { value: "gstr3b", label: "GSTR3B" },
             ],
             required: true,
@@ -201,19 +243,19 @@ export const getGstMonthlyData = (data) => {
             id: "gstMonthly_filingStatus",
             label: "Filing Status",
             options: [
-              { value: "filled", label: "Filled" },
-              { value: "notFilled", label: "Not Filled" },
+              { value: "filed", label: "filed" },
+              { value: "notfiled", label: "Not filed" },
             ],
             required: true,
           },
         ]
       : []),
-    ...(data.gstMonthly_filingStatus === "notFilled"
+    ...(data.gstMonthly_filingStatus === "notfiled"
       ? [
           {
             type: "select",
             id: "gstMonthly_previousMonth",
-            label: "Previous Month Not Filed",
+            label: "Previous Month Not filed",
             options: [
               { value: "yes", label: "Yes" },
               { value: "no", label: "No" },
@@ -234,49 +276,16 @@ export const getGstMonthlyData = (data) => {
           },
         ]
       : []),
-    ...(data.gstMonthly_filingStatus === "filled"
+    ...(data.gstMonthly_filingStatus === "filed"
       ? [
           {
             type: "date",
-            id: "gstMonthly_fileDate",
+            id: "gstMonthly_filedate",
             label: "File Date",
             required: true,
           },
-          {
-            type: "text",
-            id: "gstMonthly_monthlyarn",
-            label: "ARN Number",
-            required: true,
-          },
-          {
-            type: "select",
-            id: "gstMonthly_monthlyMonth",
-            label: "Month",
-            options: [
-              { value: "jan", label: "January" },
-              { value: "feb", label: "February" },
-              { value: "mar", label: "March" },
-              { value: "apr", label: "April" },
-              { value: "may", label: "May" },
-              { value: "jun", label: "June" },
-              { value: "jul", label: "July" },
-              { value: "aug", label: "August" },
-              { value: "sep", label: "September" },
-              { value: "oct", label: "October" },
-              { value: "nov", label: "November" },
-              { value: "dec", label: "December" },
-            ],
-            defaultValue: currentMonth,
-            required: true,
-          },
-          {
-            type: "select",
-            id: "gstMonthly_monthlyYear",
-            label: "Year",
-            options: yearOptions,
-            defaultValue: currentYear,
-            required: true,
-          },
+          //monthly common
+          ...GetMonthlyCommonFields(),
         ]
       : []),
   ];
@@ -365,8 +374,8 @@ export const getInactiveData = (data) => {
                               id: "gstInactive_finalReturnStatus",
                               label: "Final Return Status",
                               options: [
-                                { value: "filed", label: "Filed" },
-                                { value: "notFiled", label: "Not Filed" },
+                                { value: "filed", label: "filed" },
+                                { value: "notfiled", label: "Not filed" },
                               ],
                               required: true,
                             },
@@ -450,8 +459,8 @@ export const getInactiveData = (data) => {
                               id: "gstInactive_finalReturnStatus",
                               label: "Final Return Status",
                               options: [
-                                { value: "filed", label: "Filed" },
-                                { value: "notFiled", label: "Not Filed" },
+                                { value: "filed", label: "filed" },
+                                { value: "notfiled", label: "Not filed" },
                               ],
                               required: true,
                             },
@@ -544,8 +553,8 @@ export const getInactiveData = (data) => {
                   id: "gstInactive_appealFileReturnStatus",
                   label: "Final Return Status",
                   options: [
-                    { value: "filed", label: "Filed" },
-                    { value: "notFiled", label: "Not Filed" },
+                    { value: "filed", label: "filed" },
+                    { value: "notfiled", label: "Not filed" },
                   ],
                   required: true,
                 },
@@ -729,17 +738,29 @@ export const pfMonthly = (data) => {
       id: "pfMonthly_filingStatus",
       label: "Filing Status",
       options: [
-        { value: "filed", label: "Filed" },
-        { value: "notfiled", label: "Not Filed" },
+        { value: "filed", label: "filed" },
+        { value: "notfiled", label: "Not filed" },
       ],
       required: true,
     },
-    ...(data?.filingStatus === "notfiled"
+
+    ...(data?.pfMonthly_filingStatus === "filed"
+      ? [
+          {
+            type: "date",
+            id: "pfMonthly_filedate",
+            label: "File Date",
+            required: false,
+          },
+          ...GetMonthlyCommonFields(),
+        ]
+      : []),
+    ...(data?.pfMonthly_filingStatus === "notfiled"
       ? [
           {
             type: "text",
-            id: "pfMonthly_prevNotFiled",
-            label: "Previous Month Not Filed",
+            id: "pfMonthly_prevNotfiled",
+            label: "Previous Month Not filed",
             required: false,
           },
           {
@@ -758,16 +779,6 @@ export const pfMonthly = (data) => {
               { value: "workInProgress", label: "Work In Progress" },
             ],
             required: true,
-          },
-        ]
-      : []),
-    ...(data?.filingStatus === "filed"
-      ? [
-          {
-            type: "date",
-            id: "pfMonthly_fileDate",
-            label: "File Date",
-            required: false,
           },
         ]
       : []),
@@ -810,11 +821,12 @@ export const tdsTcsForm = (data) => {
       id: "tdstcs_taskName",
       label: "TDS TCS Task Name",
       options: [
-        { value: "TDS and TCS -24Q", label: "TDS and TCS -24Q" },
-        { value: "TDS and TCS -26Q", label: "TDS and TCS -26Q" },
-        { value: "TDS and TCS -27Q", label: "TDS and TCS -27Q" },
-        { value: "TDS and TCS -27QEQ", label: "TDS and TCS -27QEQ" },
+        { value: "TDS-24Q", label: "TDS-24Q" },
+        { value: "TDS-26Q", label: "TDS-26Q" },
+        { value: "TDS-27Q", label: "TDS-27Q" },
+        { value: "TCS-27EQ", label: "TCS-27EQ" },
       ],
+
       required: true,
     },
     {
@@ -836,8 +848,8 @@ export const tdsTcsForm = (data) => {
             id: "tdstcs_filingStatus",
             label: "Filing Status",
             options: [
-              { value: "filed", label: "Filed" },
-              { value: "notFiled", label: "Not Filed" },
+              { value: "filed", label: "filed" },
+              { value: "notfiled", label: "Not filed" },
             ],
             required: true,
           },
@@ -893,10 +905,12 @@ export const TdsMonthly = (data) => {
     {
       type: "select",
       id: "tdsmonthly_taskName",
-      label: "Monthly Task Name",
+      label: "Task Type",
       options: [
-        { value: "tds", label: "TDS" },
-        { value: "tcs", label: "TCS" },
+        { value: "TDS-24Q", label: "TDS-24Q" },
+        { value: "TDS-26Q", label: "TDS-26Q" },
+        { value: "TDS-27Q", label: "TDS-27Q" },
+        { value: "TCS-27EQ", label: "TCS-27EQ" },
       ],
       required: true,
     },
@@ -964,6 +978,716 @@ export const TdsMonthly = (data) => {
 
   return fields;
 };
+// Add other task types in a similar manner
+
+// start income tax
+
+export const getIncomeTaxData = (data) => {
+  const defaultsData = [
+    {
+      type: "select",
+      id: "taskName",
+      label: "Task Name",
+      options: [
+        { value: "incomeTaxAuditCases", label: "Income Tax - Audit Cases" },
+        {
+          value: "incomeTaxNonAuditCases",
+          label: "Income Tax - Non Audit Cases",
+        },
+        { value: "incomeTaxAdvanceTax", label: "Income Tax - Advance Tax" },
+      ],
+      required: true,
+    },
+  ];
+
+  let fields = [...defaultsData];
+
+  if (["incomeTaxAuditCases"].includes(data?.taskName)) {
+    fields = [...fields, ...incomeTaxAuditForm(data)];
+  } else if (["incomeTaxNonAuditCases"].includes(data?.taskName)) {
+    fields = [...fields, ...incomeTaxNonAuditForm(data)];
+  } else if (["incomeTaxAdvanceTax"].includes(data?.taskName)) {
+    fields = [...fields, ...incomeTaxAdvanceTaxForm(data)];
+  }
+
+  return fields;
+};
+
+export const incomeTaxAuditForm = (data) => {
+  const fields = [
+    {
+      type: "select",
+      id: "incomeTax_formStatus",
+      label: "Form - 3CB and 3CD Filing Status",
+      options: [
+        { value: "filed", label: "Filed" },
+        { value: "notFiled", label: "Not Filed" },
+      ],
+      required: true,
+    },
+    ...(data?.incomeTax_formStatus === "filed"
+      ? [
+          {
+            type: "select",
+            id: "incomeTax_filingStatus",
+            label: "Income Tax Filing Status",
+            options: [
+              { value: "filed", label: "Filed" },
+              { value: "notFiled", label: "Not Filed" },
+            ],
+            required: true,
+          },
+        ]
+      : []),
+    ...(data?.incomeTax_filingStatus === "filed"
+      ? [
+          {
+            type: "select",
+            id: "incomeTax_paymentStatus",
+            label: "Tax Payment Status",
+            options: [
+              { value: "taxPaid", label: "Tax Paid" },
+              { value: "taxNotPaid", label: "Tax Not Paid" },
+              { value: "partiallyPaid", label: "Partially Paid" },
+              { value: "verified", label: "Verified" },
+            ],
+            required: true,
+          },
+        ]
+      : []),
+    ...(["taxPaid", "partiallyPaid", "verified"].includes(
+      data?.incomeTax_paymentStatus
+    )
+      ? [
+          {
+            type: "number",
+            id: "incomeTax_paymentAmount",
+            label: "Tax Payment Amount",
+            required: true,
+          },
+          {
+            type: "date",
+            id: "incomeTax_paymentDate",
+            label: "Tax Payment Date",
+            required: true,
+            placeholder: "DD-Mon-YYYY",
+          },
+        ]
+      : []),
+  ];
+
+  return fields;
+};
+
+export const incomeTaxNonAuditForm = (data) => {
+  const fields = [
+    {
+      type: "select",
+      id: "incomeTaxFilingStatus",
+      label: "Income Tax Filing Status",
+      options: [
+        { value: "filed", label: "Filed" },
+        { value: "notFiled", label: "Not Filed" },
+      ],
+      required: true,
+    },
+    ...(data?.incomeTaxFilingStatus === "filed"
+      ? [
+          {
+            type: "select",
+            id: "taxPaymentStatus",
+            label: "Tax Payment Status",
+            options: [
+              { value: "taxPaid", label: "Tax Paid" },
+              { value: "taxNotPaid", label: "Tax Not Paid" },
+              { value: "partiallyPaid", label: "Partially Paid" },
+              { value: "verified", label: "Verified" },
+              { value: "notVerified", label: "Not Verified" },
+            ],
+            required: true,
+          },
+        ]
+      : []),
+    ...(["taxPaid", "partiallyPaid", "verified"].includes(
+      data?.taxPaymentStatus
+    )
+      ? [
+          {
+            type: "number",
+            id: "taxPaymentAmount",
+            label: "Tax Payment Amount",
+            required: true,
+          },
+
+          {
+            type: "date",
+            id: "taxPaymentDate",
+            label: "Tax Payment Date",
+            required: true,
+          },
+          {
+            type: "date",
+            id: "verifiedDate",
+            label: "Verified Date",
+            required: false,
+          },
+        ]
+      : []),
+  ];
+
+  return fields;
+};
+
+export const incomeTaxAdvanceTaxForm = (data) => {
+  const fields = [
+    {
+      type: "select",
+      id: "quarter",
+      label: "Quarter",
+      options: [
+        { value: "quarter1", label: "Quarter 1" },
+        { value: "quarter2", label: "Quarter 2" },
+        { value: "quarter3", label: "Quarter 3" },
+        { value: "quarter4", label: "Quarter 4" },
+      ],
+      required: true,
+    },
+
+    ...(data?.quarter === "quarter1"
+      ? [
+          {
+            type: "select",
+            id: "taxPaymentStatus",
+            label: "Tax Payment Status",
+            options: [
+              { value: "taxPaid", label: "Tax Paid" },
+              { value: "taxNotPaid", label: "Tax Not Paid" },
+              { value: "partiallyPaid", label: "Partially Paid" },
+              { value: "verified", label: "Verified" },
+            ],
+            required: true,
+          },
+        ]
+      : []),
+    ...(["taxPaid", "partiallyPaid", "verified"].includes(
+      data?.taxPaymentStatus
+    )
+      ? [
+          {
+            type: "number",
+            id: "taxPaymentAmount",
+            label: "Tax Payment Amount",
+            required: true,
+          },
+          {
+            type: "date",
+            id: "taxPaymentDate",
+            label: "Tax Payment Date",
+            required: true,
+          },
+        ]
+      : []),
+    ...(["taxPaid", "partiallyPaid", "verified"].includes(
+      data?.taxPaymentStatus
+    )
+      ? [
+          {
+            type: "select",
+            id: "taxFilingStatus",
+            label: "Tax Filing Status",
+            options: [
+              { value: "filed", label: "Filed" },
+              { value: "notFiled", label: "Not Filed" },
+            ],
+            required: true,
+          },
+        ]
+      : []),
+  ];
+
+  return fields;
+};
+
+//start ESI
+
+export const getEsiData = (data) => {
+  const defaultsData = [
+    {
+      type: "select",
+      id: "taskName",
+      label: "Task Name",
+      options: [
+        { value: "esiNewRegistration", label: "ESI - New Registration" },
+        {
+          value: "esiRegularMonthlyActivity",
+          label: "ESI Monthly",
+        },
+        { value: "esiInactive", label: "ESI InActive Registration" },
+      ],
+      required: true,
+    },
+  ];
+
+  let fields = [...defaultsData];
+
+  if (["esiNewRegistration"].includes(data?.taskName)) {
+    fields = [...fields, ...esiNewRegistrationForm(data)];
+  } else if (["esiRegularMonthlyActivity"].includes(data?.taskName)) {
+    fields = [...fields, ...esiRegularMonthlyActivityForm(data)];
+  } else if (["esiInactive"].includes(data?.taskName)) {
+    fields = [...fields, ...esiInactiveForm(data)];
+  }
+
+  return fields;
+};
+
+export const esiNewRegistrationForm = (data) => {
+  // Base fields
+  const fields = [
+    {
+      type: "select",
+      id: "esi_new_applicationStatus",
+      label: "Application Status",
+      options: [
+        { value: "pendingForApply", label: "Pending for Apply" },
+        { value: "applied", label: "Applied" },
+      ],
+      required: true,
+    },
+
+    // Conditionally add fields based on Application Status
+
+    ...(data?.applicationStatus === "applied"
+      ? [
+          {
+            type: "text",
+            id: "esi_new_applicationNumber",
+            label: "ARN Number",
+            placeholder: "Enter ARN Number",
+            required: true,
+          },
+          {
+            type: "date",
+            id: "esi_new_applicationDate",
+            label: "Application Date",
+            placeholder: "DD-Mon-YYYY",
+            required: true,
+          },
+          {
+            type: "select",
+            id: "esi_new_applicationSubStatus",
+            label: "Application Sub Status",
+            options: [
+              { value: "pendingForApproval", label: "Pending for Approval" },
+              {
+                value: "pendingForClarification",
+                label: "Pending for Clarification",
+              },
+              { value: "rejected", label: "Rejected" },
+              { value: "approved", label: "Approved" },
+            ],
+            required: true,
+          },
+        ]
+      : []),
+    ...(data?.applicationSubStatus === "approved" &&
+    data?.applicationStatus === "closureApplied"
+      ? [
+          {
+            type: "date",
+            id: "es_new_dateOfApproval",
+            label: "Date of Approval",
+            placeholder: "DD-Mon-YYYY",
+            required: true,
+          },
+        ]
+      : []),
+  ];
+  return fields;
+};
+
+export const esiRegularMonthlyActivityForm = (data) => {
+  // Base fields
+  const fields = [
+    {
+      type: "select",
+      id: "typeOfGSTForm",
+      label: "Type of GST Form",
+      options: [
+        { value: "gstr1", label: "GSTR1" },
+        { value: "gstr3b", label: "GSTR3B" },
+        // Add other options if necessary
+      ],
+      required: true,
+    },
+
+    // Conditionally add fields based on Type of GST Form
+    ...(data?.typeOfGSTForm === "gstr1"
+      ? [
+          {
+            type: "select",
+            id: "filingStatus",
+            label: "Filing Status",
+            options: [
+              { value: "filed", label: "Filed" },
+              { value: "notFiled", label: "Not Filed" },
+            ],
+            required: true,
+          },
+        ]
+      : []),
+
+    // Conditionally add fields based on Filing Status
+    ...(data?.filingStatus === "notFiled"
+      ? [
+          {
+            type: "select",
+            id: "previousMonthNotFiled",
+            label: "Previous Month Not Filed",
+            options: [
+              { value: "yes", label: "Yes" },
+              { value: "no", label: "No" },
+            ],
+            required: true,
+          },
+          {
+            type: "select",
+            id: "currentStatus",
+            label: "Current Status",
+            options: [
+              { value: "documentsPending", label: "Documents Pending" },
+              {
+                value: "waitingForClarification",
+                label: "Waiting For Clarification",
+              },
+              { value: "workInProgress", label: "Work In Progress" },
+            ],
+            required: true,
+          },
+        ]
+      : []),
+    ...(data?.filingStatus === "filed"
+      ? [
+          {
+            type: "date",
+            id: "fileDate",
+            label: "File Date",
+            placeholder: "DD-Mon-YYYY",
+            required: true,
+          },
+        ]
+      : []),
+  ];
+
+  return fields;
+};
+
+export const esiInactiveForm = (data) => {
+  // Base fields
+  const fields = [
+    {
+      type: "select",
+      id: "esi_inactive_applicationStatus",
+      label: "Application Status",
+      options: [
+        { value: "closureApplied", label: "Closure Applied" },
+        {
+          value: "inactiveDueToNonFiling",
+          label: "Inactive Due to Non Filing",
+        },
+      ],
+      required: true,
+    },
+
+    // Conditionally add fields based on Application Status
+    ...(data?.applicationStatus === "closureApplied"
+      ? [
+          {
+            type: "text",
+            id: "esi_inactive_applicationNumber",
+            label: "ARN Number",
+            placeholder: "Enter ARN Number",
+            required: true,
+          },
+          {
+            type: "date",
+            id: "esi_inactive_applicationDate",
+            label: "Application Date",
+            placeholder: "DD-Mon-YYYY",
+            required: true,
+          },
+          {
+            type: "select",
+            id: "esi_inactive_applicationSubStatus",
+            label: "Application Sub Status",
+            options: [
+              { value: "pendingForApproval", label: "Pending for Approval" },
+              {
+                value: "pendingForClarification",
+                label: "Pending for Clarification",
+              },
+              { value: "rejected", label: "Rejected" },
+              { value: "approved", label: "Approved" },
+            ],
+            required: true,
+          },
+        ]
+      : []),
+
+    // Conditionally add Date of Approval based on Application Sub Status
+    ...(data?.applicationSubStatus === "approved"
+      ? [
+          {
+            type: "date",
+            id: "es_inactive_dateOfApproval",
+            label: "Date of Approval",
+            placeholder: "DD-Mon-YYYY",
+            required: true,
+          },
+        ]
+      : []),
+  ];
+
+  return fields;
+};
+
+//start professional tax
+
+export const getProfessionalTaxData = (data) => {
+  const defaultsData = [
+    {
+      type: "select",
+      id: "taskName",
+      label: "Task Name",
+      options: [
+        {
+          value: "professionalTaxNewRegistration",
+          label: "Professional Tax - New Registration",
+        },
+        {
+          value: "professionalTaxRegularMonthlyActivity",
+          label: "Professional Tax - Regular Monthly Activity",
+        },
+        {
+          value: "professionalTaxInactive",
+          label: "Professional Tax - Inactive",
+        },
+      ],
+      required: true,
+    },
+  ];
+
+  let fields = [...defaultsData];
+
+  if (data?.taskName === "professionalTaxNewRegistration") {
+    fields = [...fields, ...professionalTaxNewRegistrationForm(data)];
+  } else if (data?.taskName === "professionalTaxRegularMonthlyActivity") {
+    fields = [...fields, ...professionalTaxRegularMonthlyActivityForm(data)];
+  } else if (data?.taskName === "professionalTaxInactive") {
+    fields = [...fields, ...professionalTaxInactiveForm(data)];
+  }
+
+  return fields;
+};
+
+export const professionalTaxNewRegistrationForm = (data) => {
+  // Base fields for the Professional Tax - New Registration form
+  const fields = [
+    {
+      type: "select",
+      id: "applicationStatus",
+      label: "Application Status",
+      options: [
+        { value: "pendingForApply", label: "Pending for Apply" },
+        { value: "applied", label: "Applied" },
+      ],
+      required: true,
+    },
+
+    // Conditionally add fields based on Application Status
+    ...(data?.applicationStatus === "applied"
+      ? [
+          {
+            type: "text",
+            id: "applicationNumber",
+            label: "ARN Number",
+            placeholder: "Enter ARN Number",
+            required: true,
+          },
+          {
+            type: "date",
+            id: "applicationDate",
+            label: "Application Date",
+            placeholder: "DD-Mon-YYYY",
+            required: true,
+          },
+          {
+            type: "select",
+            id: "applicationSubStatus",
+            label: "Application Sub Status",
+            options: [
+              { value: "pendingForApproval", label: "Pending for Approval" },
+              {
+                value: "pendingForClarification",
+                label: "Pending for Clarification",
+              },
+              { value: "rejected", label: "Rejected" },
+              { value: "approved", label: "Approved" },
+            ],
+            required: true,
+          },
+        ]
+      : []),
+
+    // Conditionally add the Date of Approval field based on Application Sub Status
+    ...(data?.applicationSubStatus === "approved"
+      ? [
+          {
+            type: "date",
+            id: "pf_new_dateOfApproval",
+            label: "Date of Approval",
+            placeholder: "DD-Mon-YYYY",
+          },
+        ]
+      : []),
+  ];
+
+  return fields;
+};
+
+export const professionalTaxRegularMonthlyActivityForm = (data) => {
+  // Base fields for the Professional Tax - Regular Monthly Activity form
+  const fields = [
+    {
+      type: "select",
+      id: "typeOfGSTForm",
+      label: "Type of GST Form",
+      options: [
+        { value: "gstr1", label: "GSTR-1" },
+        // Add other options if needed
+      ],
+      required: true,
+    },
+
+    // Conditionally add fields based on Type of GST Form
+    ...(data?.typeOfGSTForm === "gstr1"
+      ? [
+          {
+            type: "select",
+            id: "filingStatus",
+            label: "Filing Status",
+            options: [
+              { value: "filed", label: "Filed" },
+              { value: "notFiled", label: "Not Filed" },
+            ],
+            required: true,
+          },
+
+          // Conditionally add fields based on Filing Status
+          ...(data?.filingStatus === "notFiled"
+            ? [
+                {
+                  type: "select",
+                  id: "currentStatus",
+                  label: "Current Status",
+                  options: [
+                    { value: "documentsPending", label: "Documents Pending" },
+                    {
+                      value: "waitingForClarification",
+                      label: "Waiting For Clarification",
+                    },
+                    { value: "workInProgress", label: "Work In Progress" },
+                  ],
+                  required: true,
+                },
+              ]
+            : []),
+          ...(data?.filingStatus === "filed"
+            ? [
+                {
+                  type: "date",
+                  id: "fileDate",
+                  label: "File Date",
+                  placeholder: "DD-Mon-YYYY",
+                  required: true,
+                },
+              ]
+            : []),
+        ]
+      : []),
+  ];
+
+  return fields;
+};
+
+export const professionalTaxInactiveForm = (data) => {
+  // Base fields for the Professional Tax - Inactive form
+  const fields = [
+    {
+      type: "select",
+      id: "applicationStatus",
+      label: "Application Status",
+      options: [
+        { value: "closureApplied", label: "Closure Applied" },
+        {
+          value: "inactiveDueToNonFiling",
+          label: "Inactive Due to Non Filing",
+        },
+      ],
+      required: true,
+    },
+
+    // Conditionally add fields based on Application Status
+    ...(data?.applicationSubStatus === "approved"
+      ? [
+          {
+            type: "text",
+            id: "applicationNumber",
+            label: "ARN Number",
+            placeholder: "Enter ARN Number",
+            required: true,
+          },
+          {
+            type: "date",
+            id: "applicationDate",
+            label: "Application Date",
+            placeholder: "DD-Mon-YYYY",
+            required: true,
+          },
+          {
+            type: "select",
+            id: "applicationSubStatus",
+            label: "Application Sub Status",
+            options: [
+              { value: "pendingForApproval", label: "Pending for Approval" },
+              {
+                value: "pendingForClarification",
+                label: "Pending for Clarification",
+              },
+              { value: "rejected", label: "Rejected" },
+              { value: "approved", label: "Approved" },
+            ],
+            required: true,
+          },
+        ]
+      : []),
+
+    // Conditionally add the Date of Approval field based on Application Sub Status
+    ...(data?.applicationSubStatus === "approved"
+      ? [
+          {
+            type: "date",
+            id: "pf_inactive_dateOfApproval",
+            label: "Date of Approval",
+            placeholder: "DD-Mon-YYYY",
+            required: true,
+          },
+        ]
+      : []),
+  ];
+
+  return fields;
+};
 
 const statusOptions = [
   { value: "", label: "All" },
@@ -1021,5 +1745,3 @@ export const taskSearch = [
     required: false,
   },
 ];
-
-// Add other task types in a similar manner
