@@ -986,7 +986,7 @@ export const getIncomeTaxData = (data) => {
   const defaultsData = [
     {
       type: "select",
-      id: "taskName",
+      id: "taskName", // Added common prefix 'tax_' for unique ids
       label: "Task Name",
       options: [
         { value: "incomeTaxAuditCases", label: "Income Tax - Audit Cases" },
@@ -1017,19 +1017,19 @@ export const incomeTaxAuditForm = (data) => {
   const fields = [
     {
       type: "select",
-      id: "incomeTax_formStatus",
-      label: "Form - 3CB and 3CD Filing Status",
+      id: "tax_formStatus", // Updated with common prefix 'tax_'
+      label: "3CB and 3CD Filing Status",
       options: [
         { value: "filed", label: "Filed" },
         { value: "notFiled", label: "Not Filed" },
       ],
       required: true,
     },
-    ...(data?.incomeTax_formStatus === "filed"
+    ...(data?.tax_formStatus === "filed"
       ? [
           {
             type: "select",
-            id: "incomeTax_filingStatus",
+            id: "tax_filingStatus", // Updated with common prefix 'tax_'
             label: "Income Tax Filing Status",
             options: [
               { value: "filed", label: "Filed" },
@@ -1039,11 +1039,11 @@ export const incomeTaxAuditForm = (data) => {
           },
         ]
       : []),
-    ...(data?.incomeTax_filingStatus === "filed"
+    ...(data?.tax_filingStatus === "filed"
       ? [
           {
             type: "select",
-            id: "incomeTax_paymentStatus",
+            id: "tax_paymentStatus", // Updated with common prefix 'tax_'
             label: "Tax Payment Status",
             options: [
               { value: "taxPaid", label: "Tax Paid" },
@@ -1056,18 +1056,18 @@ export const incomeTaxAuditForm = (data) => {
         ]
       : []),
     ...(["taxPaid", "partiallyPaid", "verified"].includes(
-      data?.incomeTax_paymentStatus
+      data?.tax_paymentStatus
     )
       ? [
           {
             type: "number",
-            id: "incomeTax_paymentAmount",
+            id: "tax_paymentAmount", // Updated with common prefix 'tax_'
             label: "Tax Payment Amount",
             required: true,
           },
           {
             type: "date",
-            id: "incomeTax_paymentDate",
+            id: "tax_paymentDate", // Updated with common prefix 'tax_'
             label: "Tax Payment Date",
             required: true,
             placeholder: "DD-Mon-YYYY",
@@ -1083,7 +1083,7 @@ export const incomeTaxNonAuditForm = (data) => {
   const fields = [
     {
       type: "select",
-      id: "incomeTaxFilingStatus",
+      id: "tax_filingStatus", // Updated with common prefix 'tax_'
       label: "Income Tax Filing Status",
       options: [
         { value: "filed", label: "Filed" },
@@ -1091,11 +1091,11 @@ export const incomeTaxNonAuditForm = (data) => {
       ],
       required: true,
     },
-    ...(data?.incomeTaxFilingStatus === "filed"
+    ...(data?.tax_filingStatus === "filed"
       ? [
           {
             type: "select",
-            id: "taxPaymentStatus",
+            id: "tax_paymentStatus", // Updated with common prefix 'tax_'
             label: "Tax Payment Status",
             options: [
               { value: "taxPaid", label: "Tax Paid" },
@@ -1109,25 +1109,24 @@ export const incomeTaxNonAuditForm = (data) => {
         ]
       : []),
     ...(["taxPaid", "partiallyPaid", "verified"].includes(
-      data?.taxPaymentStatus
+      data?.tax_paymentStatus
     )
       ? [
           {
             type: "number",
-            id: "taxPaymentAmount",
+            id: "tax_paymentAmount", // Updated with common prefix 'tax_'
             label: "Tax Payment Amount",
             required: true,
           },
-
           {
             type: "date",
-            id: "taxPaymentDate",
+            id: "tax_paymentDate", // Updated with common prefix 'tax_'
             label: "Tax Payment Date",
             required: true,
           },
           {
             type: "date",
-            id: "verifiedDate",
+            id: "tax_verifiedDate", // Updated with common prefix 'tax_'
             label: "Verified Date",
             required: false,
           },
@@ -1142,7 +1141,7 @@ export const incomeTaxAdvanceTaxForm = (data) => {
   const fields = [
     {
       type: "select",
-      id: "quarter",
+      id: "tax_quarter", // Updated with common prefix 'tax_'
       label: "Quarter",
       options: [
         { value: "quarter1", label: "Quarter 1" },
@@ -1152,12 +1151,11 @@ export const incomeTaxAdvanceTaxForm = (data) => {
       ],
       required: true,
     },
-
-    ...(data?.quarter === "quarter1"
+    ...(data?.tax_quarter === "quarter1"
       ? [
           {
             type: "select",
-            id: "taxPaymentStatus",
+            id: "tax_paymentStatus", // Updated with common prefix 'tax_'
             label: "Tax Payment Status",
             options: [
               { value: "taxPaid", label: "Tax Paid" },
@@ -1170,30 +1168,30 @@ export const incomeTaxAdvanceTaxForm = (data) => {
         ]
       : []),
     ...(["taxPaid", "partiallyPaid", "verified"].includes(
-      data?.taxPaymentStatus
+      data?.tax_paymentStatus
     )
       ? [
           {
             type: "number",
-            id: "taxPaymentAmount",
+            id: "tax_paymentAmount", // Updated with common prefix 'tax_'
             label: "Tax Payment Amount",
             required: true,
           },
           {
             type: "date",
-            id: "taxPaymentDate",
+            id: "tax_paymentDate", // Updated with common prefix 'tax_'
             label: "Tax Payment Date",
             required: true,
           },
         ]
       : []),
     ...(["taxPaid", "partiallyPaid", "verified"].includes(
-      data?.taxPaymentStatus
+      data?.tax_paymentStatus
     )
       ? [
           {
             type: "select",
-            id: "taxFilingStatus",
+            id: "tax_filingStatus", // Updated with common prefix 'tax_'
             label: "Tax Filing Status",
             options: [
               { value: "filed", label: "Filed" },
@@ -1209,7 +1207,6 @@ export const incomeTaxAdvanceTaxForm = (data) => {
 };
 
 //start ESI
-
 export const getEsiData = (data) => {
   const defaultsData = [
     {
@@ -1256,7 +1253,6 @@ export const esiNewRegistrationForm = (data) => {
     },
 
     // Conditionally add fields based on Application Status
-
     ...(data?.applicationStatus === "applied"
       ? [
           {
@@ -1295,7 +1291,7 @@ export const esiNewRegistrationForm = (data) => {
       ? [
           {
             type: "date",
-            id: "es_new_dateOfApproval",
+            id: "esi_new_dateOfApproval",
             label: "Date of Approval",
             placeholder: "DD-Mon-YYYY",
             required: true,
@@ -1311,12 +1307,11 @@ export const esiRegularMonthlyActivityForm = (data) => {
   const fields = [
     {
       type: "select",
-      id: "typeOfGSTForm",
+      id: "esi_typeOfGSTForm",
       label: "Type of GST Form",
       options: [
         { value: "gstr1", label: "GSTR1" },
         { value: "gstr3b", label: "GSTR3B" },
-        // Add other options if necessary
       ],
       required: true,
     },
@@ -1326,7 +1321,7 @@ export const esiRegularMonthlyActivityForm = (data) => {
       ? [
           {
             type: "select",
-            id: "filingStatus",
+            id: "esi_filingStatus",
             label: "Filing Status",
             options: [
               { value: "filed", label: "Filed" },
@@ -1342,7 +1337,7 @@ export const esiRegularMonthlyActivityForm = (data) => {
       ? [
           {
             type: "select",
-            id: "previousMonthNotFiled",
+            id: "esi_previousMonthNotFiled",
             label: "Previous Month Not Filed",
             options: [
               { value: "yes", label: "Yes" },
@@ -1352,7 +1347,7 @@ export const esiRegularMonthlyActivityForm = (data) => {
           },
           {
             type: "select",
-            id: "currentStatus",
+            id: "esi_currentStatus",
             label: "Current Status",
             options: [
               { value: "documentsPending", label: "Documents Pending" },
@@ -1370,7 +1365,7 @@ export const esiRegularMonthlyActivityForm = (data) => {
       ? [
           {
             type: "date",
-            id: "fileDate",
+            id: "esi_fileDate",
             label: "File Date",
             placeholder: "DD-Mon-YYYY",
             required: true,
@@ -1439,7 +1434,7 @@ export const esiInactiveForm = (data) => {
       ? [
           {
             type: "date",
-            id: "es_inactive_dateOfApproval",
+            id: "esi_inactive_dateOfApproval",
             label: "Date of Approval",
             placeholder: "DD-Mon-YYYY",
             required: true,
@@ -1457,7 +1452,7 @@ export const getProfessionalTaxData = (data) => {
   const defaultsData = [
     {
       type: "select",
-      id: "taskName",
+      id: "pft_taskName",
       label: "Task Name",
       options: [
         {
@@ -1479,11 +1474,11 @@ export const getProfessionalTaxData = (data) => {
 
   let fields = [...defaultsData];
 
-  if (data?.taskName === "professionalTaxNewRegistration") {
+  if (data?.pft_taskName === "professionalTaxNewRegistration") {
     fields = [...fields, ...professionalTaxNewRegistrationForm(data)];
-  } else if (data?.taskName === "professionalTaxRegularMonthlyActivity") {
+  } else if (data?.pft_taskName === "professionalTaxRegularMonthlyActivity") {
     fields = [...fields, ...professionalTaxRegularMonthlyActivityForm(data)];
-  } else if (data?.taskName === "professionalTaxInactive") {
+  } else if (data?.pft_taskName === "professionalTaxInactive") {
     fields = [...fields, ...professionalTaxInactiveForm(data)];
   }
 
@@ -1491,11 +1486,10 @@ export const getProfessionalTaxData = (data) => {
 };
 
 export const professionalTaxNewRegistrationForm = (data) => {
-  // Base fields for the Professional Tax - New Registration form
   const fields = [
     {
       type: "select",
-      id: "applicationStatus",
+      id: "pft_applicationStatus",
       label: "Application Status",
       options: [
         { value: "pendingForApply", label: "Pending for Apply" },
@@ -1503,27 +1497,25 @@ export const professionalTaxNewRegistrationForm = (data) => {
       ],
       required: true,
     },
-
-    // Conditionally add fields based on Application Status
-    ...(data?.applicationStatus === "applied"
+    ...(data?.pft_applicationStatus === "applied"
       ? [
           {
             type: "text",
-            id: "applicationNumber",
+            id: "pft_applicationNumber",
             label: "ARN Number",
             placeholder: "Enter ARN Number",
             required: true,
           },
           {
             type: "date",
-            id: "applicationDate",
+            id: "pft_applicationDate",
             label: "Application Date",
             placeholder: "DD-Mon-YYYY",
             required: true,
           },
           {
             type: "select",
-            id: "applicationSubStatus",
+            id: "pft_applicationSubStatus",
             label: "Application Sub Status",
             options: [
               { value: "pendingForApproval", label: "Pending for Approval" },
@@ -1538,13 +1530,11 @@ export const professionalTaxNewRegistrationForm = (data) => {
           },
         ]
       : []),
-
-    // Conditionally add the Date of Approval field based on Application Sub Status
-    ...(data?.applicationSubStatus === "approved"
+    ...(data?.pft_applicationSubStatus === "approved"
       ? [
           {
             type: "date",
-            id: "pf_new_dateOfApproval",
+            id: "pft_new_dateOfApproval",
             label: "Date of Approval",
             placeholder: "DD-Mon-YYYY",
           },
@@ -1556,63 +1546,44 @@ export const professionalTaxNewRegistrationForm = (data) => {
 };
 
 export const professionalTaxRegularMonthlyActivityForm = (data) => {
-  // Base fields for the Professional Tax - Regular Monthly Activity form
   const fields = [
     {
       type: "select",
-      id: "typeOfGSTForm",
-      label: "Type of GST Form",
+      id: "pft_filingStatus",
+      label: "Filing Status",
       options: [
-        { value: "gstr1", label: "GSTR-1" },
-        // Add other options if needed
+        { value: "filed", label: "Filed" },
+        { value: "notFiled", label: "Not Filed" },
       ],
       required: true,
     },
-
-    // Conditionally add fields based on Type of GST Form
-    ...(data?.typeOfGSTForm === "gstr1"
+    ...(data?.pft_filingStatus === "notFiled"
       ? [
           {
             type: "select",
-            id: "filingStatus",
-            label: "Filing Status",
+            id: "pft_currentStatus",
+            label: "Current Status",
             options: [
-              { value: "filed", label: "Filed" },
-              { value: "notFiled", label: "Not Filed" },
+              { value: "documentsPending", label: "Documents Pending" },
+              {
+                value: "waitingForClarification",
+                label: "Waiting For Clarification",
+              },
+              { value: "workInProgress", label: "Work In Progress" },
             ],
             required: true,
           },
-
-          // Conditionally add fields based on Filing Status
-          ...(data?.filingStatus === "notFiled"
-            ? [
-                {
-                  type: "select",
-                  id: "currentStatus",
-                  label: "Current Status",
-                  options: [
-                    { value: "documentsPending", label: "Documents Pending" },
-                    {
-                      value: "waitingForClarification",
-                      label: "Waiting For Clarification",
-                    },
-                    { value: "workInProgress", label: "Work In Progress" },
-                  ],
-                  required: true,
-                },
-              ]
-            : []),
-          ...(data?.filingStatus === "filed"
-            ? [
-                {
-                  type: "date",
-                  id: "fileDate",
-                  label: "File Date",
-                  placeholder: "DD-Mon-YYYY",
-                  required: true,
-                },
-              ]
-            : []),
+        ]
+      : []),
+    ...(data?.pft_filingStatus === "filed"
+      ? [
+          {
+            type: "date",
+            id: "pft_fileDate",
+            label: "File Date",
+            placeholder: "DD-Mon-YYYY",
+            required: true,
+          },
         ]
       : []),
   ];
@@ -1621,42 +1592,41 @@ export const professionalTaxRegularMonthlyActivityForm = (data) => {
 };
 
 export const professionalTaxInactiveForm = (data) => {
-  // Base fields for the Professional Tax - Inactive form
   const fields = [
     {
       type: "select",
-      id: "applicationStatus",
-      label: "Application Status",
+      id: "pft_applicationStatus",
+      label: "Application  Status",
       options: [
-        { value: "closureApplied", label: "Closure Applied" },
+        /*  { value: "pendingForApproval", label: "Pending for Approval" },
         {
-          value: "inactiveDueToNonFiling",
-          label: "Inactive Due to Non Filing",
-        },
+          value: "pendingForClarification",
+          label: "Pending for Clarification",
+        }, */
+        { value: "Pending for Apply", label: "Pending for Apply" },
+        { value: "applied", label: "Applied" },
       ],
       required: true,
     },
-
-    // Conditionally add fields based on Application Status
-    ...(data?.applicationSubStatus === "approved"
+    ...(data?.pft_applicationStatus === "applied"
       ? [
           {
             type: "text",
-            id: "applicationNumber",
+            id: "pft_applicationNumber",
             label: "ARN Number",
             placeholder: "Enter ARN Number",
             required: true,
           },
           {
             type: "date",
-            id: "applicationDate",
+            id: "pft_applicationDate",
             label: "Application Date",
             placeholder: "DD-Mon-YYYY",
             required: true,
           },
           {
             type: "select",
-            id: "applicationSubStatus",
+            id: "pft_applicationSubStatus",
             label: "Application Sub Status",
             options: [
               { value: "pendingForApproval", label: "Pending for Approval" },
@@ -1671,13 +1641,11 @@ export const professionalTaxInactiveForm = (data) => {
           },
         ]
       : []),
-
-    // Conditionally add the Date of Approval field based on Application Sub Status
-    ...(data?.applicationSubStatus === "approved"
+    ...(data?.pft_applicationSubStatus === "approved"
       ? [
           {
             type: "date",
-            id: "pf_inactive_dateOfApproval",
+            id: "pft_inactive_dateOfApproval",
             label: "Date of Approval",
             placeholder: "DD-Mon-YYYY",
             required: true,
@@ -1692,7 +1660,7 @@ export const professionalTaxInactiveForm = (data) => {
 const statusOptions = [
   { value: "", label: "All" },
   { value: "Pending for Apply", label: "Pending for Apply" },
-  { value: "Applied", label: "Applied" },
+  { value: "applied", label: "Applied" },
 ];
 
 const applicationSubstatusOptions = [
