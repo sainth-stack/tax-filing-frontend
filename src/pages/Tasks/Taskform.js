@@ -25,6 +25,7 @@ const Taskform = ({
 }) => {
   const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
+
   const tasks = getTasks([], []);
   const defaultData = tasks.reduce((acc, field) => {
     acc[field.id] = "";
@@ -138,6 +139,7 @@ const Taskform = ({
 
   useEffect(() => {
     fetchCompanies();
+
     fetchUsers();
   }, []);
 

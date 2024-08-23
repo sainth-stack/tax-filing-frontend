@@ -12,10 +12,10 @@ const CompanyForm = ({
   setCompanyRefresh,
   companyRefresh,
   view,
-  setView
+  setView,
 }) => {
   const [formData, setFormData] = useState({});
-  const sections = sectionsData(formData)
+  const sections = sectionsData(formData);
   const [error, setError] = useState("");
   const [clientStatus, setClientStatus] = useState("");
   const [expanded, setExpanded] = useState(sections ? ["Company Details"] : []);
@@ -86,7 +86,7 @@ const CompanyForm = ({
         cleanedFormData
       );
       handleFiles(response.data);
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const handleFiles = async (data) => {
@@ -104,7 +104,7 @@ const CompanyForm = ({
       const response = await axios.post(`${base_url}/files`, form);
       setFormData(initialFormData);
       setCompanyId("");
-      setView(false)
+      setView(false);
       setShowForm(false);
       setCompanyRefresh(!companyRefresh);
     } catch (error) {
@@ -141,7 +141,7 @@ const CompanyForm = ({
       try {
         if (companyId) {
           const response = await axios.get(
-            `${process.env.REACT_APP_BASE_URL}/companies/${companyId}`
+            `${base_url}/companies/${companyId}`
           );
           const companyDetails = response.data;
           console.log("Fetched company details:", companyDetails);
@@ -203,11 +203,11 @@ const CompanyForm = ({
           sections={
             sections
               ? sections.map((section) => ({
-                ...section,
-                formData,
-                handleInputChange,
-                handleFileChange,
-              }))
+                  ...section,
+                  formData,
+                  handleInputChange,
+                  handleFileChange,
+                }))
               : []
           }
           expanded={expanded}
@@ -223,7 +223,7 @@ const CompanyForm = ({
           <button
             onClick={() => {
               setCompanyId("");
-              setView(false)
+              setView(false);
               setShowForm(false);
             }}
             className="px-4 ms-2 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"

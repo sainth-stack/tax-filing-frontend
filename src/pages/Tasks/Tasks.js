@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "@mui/material";
+import { Button, Modal, Box, Typography, MenuItem } from "@mui/material";
 import Layout from "../../components/Layout/Layout";
 import TasksTable from "./TaskTable";
 import DateInput from "../../components/Date/DateInput";
 import { Dates } from "../company/data";
 import Taskform from "./Taskform";
 import axios from "axios";
-import { base_url } from "../../const";
+
 import CustomInput from "../../components/input";
 import { taskSearch } from "./data";
 import SelectInput from "../../components/select";
+import { WidthFull } from "@mui/icons-material";
+import { base_url } from "../../const";
 
 const Tasks = () => {
   const [showForm, setShowForm] = useState(false);
+  const [allUsers, setAllUsers] = useState([]);
+
   const [companyId, setCompanyId] = useState("");
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
@@ -25,7 +29,15 @@ const Tasks = () => {
     defaultValue: "",
   });
   const [tasks, setTasks] = useState([]);
+  const [companies, setCompanies] = useState([]);
+
   const [companyRefresh, setCompanyRefresh] = useState(false);
+  const [showAutoGenModal, setShowAutoGenModal] = useState(false); // For modal visibility
+  const [autoGenData, setAutoGenData] = useState({
+    company: "",
+    taskType: "",
+    year: new Date().getFullYear().toString(),
+  });
 
   const handleShowForm = () => {
     setShowForm(!showForm);
@@ -39,15 +51,20 @@ const Tasks = () => {
     }));
   };
 
+  const handleAutoGenInputChange = (e) => {
+    const { id, value } = e.target;
+    setAutoGenData((prevValues) => ({
+      ...prevValues,
+      [id]: value,
+    }));
+  };
+
   const fetchTasks = async () => {
     try {
       const { data } = await axios.post(`${base_url}/tasks/filter`, {
         company: formData?.company,
-
-        assignedTo:
-          formData?.userId !== "all" ? formData?.userId : undefined,
+        assignedTo: formData?.userId !== "all" ? formData?.userId : undefined,
         status: formData?.status !== "all" ? formData?.status : undefined,
-
         applicationSubStatus: formData?.applicationSubStatus,
         effectiveFrom: formData?.effectiveFrom,
         effectiveTo: formData?.effectiveTo,
@@ -79,6 +96,42 @@ const Tasks = () => {
     fetchUsers();
   }, [formData]);
 
+  //for  model
+  const fetchCompanies = async () => {
+    try {
+      const response = await axios.get(`${base_url}/companies/all`);
+      const data = response.data?.data.map((item) => ({
+        value: item?.companyDetails?.companyName,
+        label: item?.companyDetails?.companyName,
+      }));
+      setCompanies(data);
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+    }
+  };
+
+  const fetchAllTasks = async () => {
+    try {
+      const response = await axios.get(`${base_url}/tasks/all`);
+      /* const data = response.data?.data.map((item) => ({
+        value: item?._id,
+        label: item?.firstName,
+      })); */
+      /* const { data } = response; */
+      setAllUsers(response);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  console.log("vishnu all users data", allUsers);
+  useEffect(() => {
+    fetchCompanies();
+    fetchUsers();
+    fetchAllTasks();
+  }, []);
+
+  console.log("model", companies);
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${base_url}/tasks/${id}`);
@@ -93,6 +146,22 @@ const Tasks = () => {
       return [{ label: "All", value: "all" }, ...users];
     } else {
       return field?.options;
+    }
+  };
+
+  const handleAutoGenSubmit = async () => {
+    try {
+      const { company, taskType, year } = autoGenData;
+
+      await axios.post(`${base_url}/tasks`, {
+        company,
+        taskType,
+        year,
+      });
+      fetchTasks();
+      setShowAutoGenModal(false);
+    } catch (error) {
+      console.error("Error generating tasks:", error);
     }
   };
 
@@ -169,10 +238,27 @@ const Tasks = () => {
                   boxShadow: "1px 2px 3px gray",
                 },
               }}
+              onClick={() => setShowAutoGenModal(true)} // Show the auto-generation modal
+            >
+              Auto Generation
+            </Button>
+            <Button
+              variant="text"
+              sx={{
+                margin: ".7em",
+                bgcolor: "teal",
+                color: "white",
+                "&:hover": {
+                  bgcolor: "teal",
+                  color: "white",
+                  boxShadow: "1px 2px 3px gray",
+                },
+              }}
               onClick={handleShowForm}
             >
               Add Tasks
             </Button>
+
             {(showForm || companyId) && (
               <Button
                 variant="text"
@@ -227,6 +313,75 @@ const Tasks = () => {
           />
         </div>
       </div>
+
+      {/* Auto-Generation Modal */}
+      <Modal
+        open={showAutoGenModal}
+        onClose={() => setShowAutoGenModal(false)}
+        aria-labelledby="auto-gen-modal-title"
+        aria-describedby="auto-gen-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "white",
+            boxShadow: 24,
+            p: 5,
+            width: "600px",
+            borderRadius: 2,
+          }}
+        >
+          <Typography id="auto-gen-modal-title" variant="h6" component="h2">
+            Auto Generate Tasks
+          </Typography>
+          <div className="mt-4">
+            <SelectInput
+              id="company"
+              label="Company"
+              options={companies.map((company) => ({
+                label: company.label,
+                value: company.value,
+              }))}
+              value={autoGenData.company}
+              onChange={handleAutoGenInputChange}
+            />
+
+            <SelectInput
+              id="taskType"
+              label="Task Type"
+              //options={/* Fetch and provide task type options here */}
+              value={autoGenData.taskType}
+              onChange={handleAutoGenInputChange}
+            />
+            <CustomInput
+              id="year"
+              label="Year"
+              type="number"
+              value={autoGenData.year}
+              onChange={handleAutoGenInputChange}
+              placeholder="Enter year"
+            />
+          </div>
+          <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              variant="contained"
+              sx={{ mr: 2 }}
+              onClick={handleAutoGenSubmit}
+            >
+              Submit
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => setShowAutoGenModal(false)}
+            >
+              Cancel
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </Layout>
   );
 };
