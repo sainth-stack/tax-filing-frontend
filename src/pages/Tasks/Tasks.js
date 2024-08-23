@@ -337,7 +337,7 @@ const Tasks = () => {
           <Typography id="auto-gen-modal-title" variant="h6" component="h2">
             Auto Generate Tasks
           </Typography>
-          <div className="mt-4">
+          <div className="mt-4" style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
             <SelectInput
               id="company"
               label="Company"
@@ -352,7 +352,14 @@ const Tasks = () => {
             <SelectInput
               id="taskType"
               label="Task Type"
-              //options={/* Fetch and provide task type options here */}
+              options={[
+                { value: "gst", label: "GST" },
+                { value: "providentFund", label: "Provident Fund" },
+                { value: "incomeTax", label: "Income Tax" },
+                { value: "tds", label: "TDS and TCS" },
+                { value: "esi", label: "ESI" },
+                { value: "professionalTax", label: "Professional Tax" },
+              ]}
               value={autoGenData.taskType}
               onChange={handleAutoGenInputChange}
             />
