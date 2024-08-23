@@ -86,7 +86,7 @@ const CompanyForm = ({
         cleanedFormData
       );
       handleFiles(response.data);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleFiles = async (data) => {
@@ -203,23 +203,23 @@ const CompanyForm = ({
           sections={
             sections
               ? sections.map((section) => ({
-                  ...section,
-                  formData,
-                  handleInputChange,
-                  handleFileChange,
-                }))
+                ...section,
+                formData,
+                handleInputChange,
+                handleFileChange,
+              }))
               : []
           }
           expanded={expanded}
           handleAccordian={handleAccordian}
         />
         <div className="flex justify-end mt-4">
-          <button
+          {!view && <button
             onClick={companyId ? handleUpdate : handleSubmit}
             className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             {companyId ? "View" : "Save"}
-          </button>
+          </button>}
           <button
             onClick={() => {
               setCompanyId("");
