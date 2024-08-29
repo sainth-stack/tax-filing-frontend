@@ -169,6 +169,12 @@ export const sectionsData = (data) => {
           ],
           required: true,
         },
+        {
+          type: "file",
+          id: "gst.approvalCertificate",
+          label: "Approval Certificate",
+          required: true,
+        }
       ],
       id: "gst",
     },

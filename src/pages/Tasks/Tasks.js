@@ -27,6 +27,7 @@ const Tasks = () => {
     effectiveFrom: "",
     effectiveTo: "",
     defaultValue: "",
+    taskType:""
   });
   const [tasks, setTasks] = useState([]);
   const [companies, setCompanies] = useState([]);
@@ -65,12 +66,12 @@ const Tasks = () => {
         company: formData?.company,
         assignedTo: formData?.userId !== "all" ? formData?.userId : undefined,
         status: formData?.status !== "all" ? formData?.status : undefined,
+        taskType: formData?.taskType !== "all" ? formData?.taskType : undefined,
         applicationSubStatus: formData?.applicationSubStatus,
         effectiveFrom: formData?.effectiveFrom,
         effectiveTo: formData?.effectiveTo,
       });
 
-      console.log("Fetched tasks:", data);
       setTasks(data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -84,7 +85,6 @@ const Tasks = () => {
         value: item?._id,
         label: item?.firstName,
       }));
-      console.log("check all users  ", data);
       setUsers(data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -124,14 +124,12 @@ const Tasks = () => {
     }
   };
 
-  console.log("vishnu all users data", allUsers);
   useEffect(() => {
     fetchCompanies();
     fetchUsers();
     fetchAllTasks();
   }, []);
 
-  console.log("model", companies);
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${base_url}/tasks/${id}`);
@@ -226,7 +224,7 @@ const Tasks = () => {
             Tasks
           </label>
           <div>
-            <Button
+            {/* <Button
               variant="text"
               sx={{
                 margin: ".7em",
@@ -241,7 +239,7 @@ const Tasks = () => {
               onClick={() => setShowAutoGenModal(true)} // Show the auto-generation modal
             >
               Auto Generation
-            </Button>
+            </Button> */}
             <Button
               variant="text"
               sx={{

@@ -51,7 +51,6 @@ const EditUserForm = ({ userId, users }) => {
         formData
       );
 
-      console.log("Form updated:", response.data);
     } catch (error) {
       setError(error.message);
       console.error(

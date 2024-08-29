@@ -5,6 +5,7 @@ import CustomInput from "../../components/input";
 import CustomFileInput from "../../components/customFile";
 import moment from "moment";
 import {
+  getEndTasks,
   getEsiData,
   getGstData,
   getIncomeTaxData,
@@ -14,6 +15,7 @@ import {
   TDSTCS,
 } from "./data";
 import { base_url } from "../../const";
+import TextArea from "../../components/text-area";
 
 const Taskform = ({
   setRefresh,
@@ -27,6 +29,7 @@ const Taskform = ({
   const [users, setUsers] = useState([]);
 
   const tasks = getTasks([], []);
+  const endTask = getEndTasks()
   const defaultData = tasks.reduce((acc, field) => {
     acc[field.id] = "";
     return acc;
@@ -229,32 +232,32 @@ const Taskform = ({
   useEffect(() => {
     if (formData?.taskType === "gst") {
       const gstData = getGstData(formData);
-      const gstdata = [...tasks, ...gstData];
+      const gstdata = [...tasks, ...gstData, ...endTask];
       setTasks(gstdata);
     } else if (formData?.taskType === "providentFund") {
       /* for PF */
       const pfData = providentFund(formData);
-      const finalpfdata = [...tasks, ...pfData];
+      const finalpfdata = [...tasks, ...pfData, ...endTask];
       setTasks(finalpfdata);
     } else if (formData?.taskType === "tds") {
       /* for PF */
       const TdsTcsData = TDSTCS(formData);
-      const finalpfdata = [...tasks, ...TdsTcsData];
+      const finalpfdata = [...tasks, ...TdsTcsData, ...endTask];
       setTasks(finalpfdata);
     } else if (formData?.taskType === "incomeTax") {
       /* for Income - Tax */
       const IncomeTax = getIncomeTaxData(formData);
-      const IncomeTaxData = [...tasks, ...IncomeTax];
+      const IncomeTaxData = [...tasks, ...IncomeTax, ...endTask];
       setTasks(IncomeTaxData);
     } else if (formData?.taskType === "esi") {
       /* for Income - Tax */
       const esi = getEsiData(formData);
-      const GetEsiData = [...tasks, ...esi];
+      const GetEsiData = [...tasks, ...esi, ...endTask];
       setTasks(GetEsiData);
     } else if (formData?.taskType === "professionalTax") {
       /* for Income - professionalTax */
       const professionalTax = getProfessionalTaxData(formData);
-      const professionalTaxData = [...tasks, ...professionalTax];
+      const professionalTaxData = [...tasks, ...professionalTax, ...endTask];
       setTasks(professionalTaxData);
     }
   }, [formData]);
@@ -311,7 +314,22 @@ const Taskform = ({
                       defaultValue={field?.defaultValue}
                     />
                   );
-                } else if (
+                }
+                else if (field.type === "textarea") {
+                  return (
+                    <TextArea
+                      key={index}
+                      id={field.id}
+                      label={field.label}
+                      options={getFields(field)}
+                      value={formData[field.id] || ""}
+                      onChange={handleInputChange}
+                      required={field.required}
+                      defaultValue={field?.defaultValue}
+                    />
+                  );
+                }
+                else if (
                   field.type === "text" ||
                   field.type === "number" ||
                   field.type === "date"

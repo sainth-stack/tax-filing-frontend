@@ -78,7 +78,6 @@ export default function TasksTable({
     setCompanyId(id);
   };
 
-  console.log("tasks checking ", tasks);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
