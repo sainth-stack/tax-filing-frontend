@@ -150,7 +150,7 @@ const GetCommonFields = (data) => {
   return Commondfields;
 };
 
-export const getGstData = (data) => {
+export const getGstData = (data, companies) => {
   const defaultField = [
     {
       type: "select",
@@ -181,13 +181,13 @@ export const getGstData = (data) => {
   } else if (["gstInactive"].includes(data?.taskName)) {
     fields = [...fields, ...getInactiveData(data)];
   } else if (["gstMonthlyPayment"].includes(data?.taskName)) {
-    fields = [...fields, ...getMonthlyPamnetData(data)];
+    fields = [...fields, ...getMonthlyPamnetData(data, companies)];
   }
 
   return fields;
 };
 
-const GetMonthlyCommonFields = (data) => {
+const GetMonthlyCommonFields = (custom) => {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date()
     .toLocaleString("default", { month: "short" })
@@ -203,7 +203,7 @@ const GetMonthlyCommonFields = (data) => {
     {
       type: "text",
       id: "gstMonthly_monthlyarn",
-      label: "ARN Number",
+      label: custom ? custom : "ARN Number",
       required: true,
     },
     {
@@ -354,6 +354,7 @@ export const getGstMonthlyData = (data) => {
         //monthly common
         ...GetMonthlyCommonFields(),
         ...GetAttachmentFields(data)
+        
       ]
       : []),
   ];
@@ -362,7 +363,6 @@ export const getGstMonthlyData = (data) => {
 };
 
 const getLabel = (test) => {
-  console.log(test)
   const data = [
     { label: 'ECR Statement', key: "pfMonthly" },
     { label: 'Contribution Statement', key: "esiRegularMonthlyActivity" },
@@ -370,7 +370,6 @@ const getLabel = (test) => {
     { label: 'GSTR4 Acknowledgement', key: "GST Composition" },
   ]
   const data3 = data.filter((item) => item.key === (test.taskName || test?.gstMonthly_gstType || test?.pft_taskName))
-  console.log(data3)
   return data3?.length > 0 ? data3[0].label : "Acknowledgement"
 }
 
@@ -674,7 +673,10 @@ export const getInactiveData = (data) => {
   return fields;
 };
 
-export const getMonthlyPamnetData = (data) => {
+export const getMonthlyPamnetData = (data, companies) => {
+
+  const company = companies.filter((item) => item.value === data.company)[0]
+  const name = company?.gst?.typeOfGstFiling
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date()
     .toLocaleString("default", { month: "short" })
@@ -750,6 +752,48 @@ export const getMonthlyPamnetData = (data) => {
       ]
       : []),
   ];
+  const quarterEndMonths = ["mar", "jun", "sep", "dec"];
+  const isQuarterEnd = quarterEndMonths.includes(data.gstMonthlyPayment_monthlyMonth);
+console.log(name)
+  if (name === "QRMP") {
+    if (data.gstMonthlyPayment_payment === "paid" && !isQuarterEnd) {
+      fields.push({
+        type: "file",
+        id: "challan",
+        label: "Challan",
+        required: true,
+      });
+    } else if (isQuarterEnd) {
+      fields.push({
+        type: "file",
+        id: "GSTR3B Acknowledgement",
+        label: "GSTR3B Acknowledgement",
+        required: true,
+      });
+      fields.push({
+        type: "file",
+        id: "challan",
+        label: "Challan",
+        required: true,
+      });
+    }
+  } else if (name === "composition") {
+    if (data.gstMonthlyPayment_payment === "paid") {
+      fields.push({
+        type: "file",
+        id: "GSTR4Acknowledgement",
+        label: "GSTR4 Acknowledgement",
+        required: true,
+      });
+      fields.push({
+        type: "file",
+        id: "challan",
+        label: "Challan",
+        required: true,
+      });
+    }
+  }
+
   return fields;
 };
 
@@ -796,7 +840,7 @@ export const pfRegistration = (data) => {
         {
           type: "text",
           id: "pfRegistration_applicationNumber",
-          label: "TRNN",
+          label: "Application Number",
           required: false,
         },
         {
@@ -860,7 +904,7 @@ export const pfMonthly = (data) => {
           label: "File Date",
           required: false,
         },
-        ...GetMonthlyCommonFields(),
+        ...GetMonthlyCommonFields("TRRN"),
         ...GetAttachmentFields(data)
       ]
       : []),
@@ -1209,7 +1253,7 @@ export const incomeTaxNonAuditForm = (data) => {
       ],
       required: true,
     },
-    ...(data?.tax_filingStatus === "filedwith"
+    ...((data?.tax_filingStatus === "filedwith" || data?.tax_filingStatus === "filedwithout")
       ? [
         {
           type: "date",
@@ -1217,10 +1261,6 @@ export const incomeTaxNonAuditForm = (data) => {
           label: "Verification Date",
           required: true,
         },
-      ]
-      : []),
-    ...(data?.tax_filingStatus === "filedwithout"
-      ? [
         {
           type: "date",
           id: "tax_filing_e_Date", // Updated with common prefix 'tax_'
@@ -1277,7 +1317,6 @@ export const incomeTaxNonAuditForm = (data) => {
       ]
       : []),
   ];
-
   return fields;
 };
 
@@ -1501,7 +1540,7 @@ export const esiRegularMonthlyActivityForm = (data) => {
           placeholder: "DD-Mon-YYYY",
           required: true,
         },
-        ...getMonthYear(),
+        ...GetMonthlyCommonFields("CRN"),
         ...GetAttachmentFields(data)
       ]
       : []),

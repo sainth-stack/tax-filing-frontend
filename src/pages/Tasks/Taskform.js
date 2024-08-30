@@ -18,8 +18,6 @@ import { base_url } from "../../const";
 import TextArea from "../../components/text-area";
 
 const Taskform = ({
-  setRefresh,
-  refresh,
   showForm,
   setShowForm,
   fetchTasks,
@@ -120,6 +118,7 @@ const Taskform = ({
       const data = response.data?.data.map((item) => ({
         value: item?.companyDetails?.companyName,
         label: item?.companyDetails?.companyName,
+        ...item
       }));
       setCompanies(data);
     } catch (error) {
@@ -231,7 +230,7 @@ const Taskform = ({
 
   useEffect(() => {
     if (formData?.taskType === "gst") {
-      const gstData = getGstData(formData);
+      const gstData = getGstData(formData,companies);
       const gstdata = [...tasks, ...gstData, ...endTask];
       setTasks(gstdata);
     } else if (formData?.taskType === "providentFund") {
