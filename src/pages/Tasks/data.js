@@ -5,7 +5,6 @@ export const getTasks = ({ companies = [], users = [] }) => {
       id: "company",
       label: "Company",
       options: [...companies],
-      required: true,
     },
     {
       type: "select",
@@ -14,7 +13,6 @@ export const getTasks = ({ companies = [], users = [] }) => {
       options: [...users],
       // defaultValue: "All",
 
-      required: true,
     },
     {
       type: "select",
@@ -25,19 +23,16 @@ export const getTasks = ({ companies = [], users = [] }) => {
         { value: "medium", label: "Medium" },
         { value: "low", label: "Low" },
       ],
-      required: true,
     },
     {
       type: "date",
       id: "startDate",
       label: "Start Date",
-      required: true,
     },
     {
       type: "date",
       id: "dueDate",
       label: "Due Date",
-      required: true,
     },
     {
       type: "date",
@@ -57,7 +52,6 @@ export const getTasks = ({ companies = [], users = [] }) => {
         { value: "esi", label: "ESI" },
         { value: "professionalTax", label: "Professional Tax" },
       ],
-      required: true,
     },
   ];
 };
@@ -68,13 +62,11 @@ export const getEndTasks = () => {
       type: "file",
       id: "attachment",
       label: "Attachment",
-      required: true,
     },
     {
       type: "textarea",
       id: "remarks", // Updated with common prefix 'tax_'
       label: "Remarks",
-      required: true,
     },
   ];
 };
@@ -89,7 +81,6 @@ const GetCommonFields = (data) => {
         { value: "Pending for Apply", label: "Pending for Apply" },
         { value: "Applied", label: "Applied" },
       ],
-      required: true,
     },
     ...(data.applicationStatus === "Applied"
       ? [
@@ -138,8 +129,7 @@ const GetCommonFields = (data) => {
                 type: "file",
                 id: "approvalCertificate",
                 label: "Approval Certificate",
-                required: true,
-              },
+                        },
             ]
             : []),
         ]
@@ -164,7 +154,6 @@ export const getGstData = (data, companies) => {
         { value: "gstMonthly", label: "GST - Monthly Filing" },
         { value: "gstMonthlyPayment", label: "GST - Monthly Payment" },
       ],
-      required: true,
     },
   ];
 
@@ -204,7 +193,6 @@ const GetMonthlyCommonFields = (custom) => {
       type: "text",
       id: "gstMonthly_monthlyarn",
       label: custom ? custom : "ARN Number",
-      required: true,
     },
     {
       type: "select",
@@ -225,7 +213,6 @@ const GetMonthlyCommonFields = (custom) => {
         { value: "dec", label: "December" },
       ],
       defaultValue: currentMonth,
-      required: true,
     },
     {
       type: "select",
@@ -233,7 +220,6 @@ const GetMonthlyCommonFields = (custom) => {
       label: "Year",
       options: yearOptions,
       defaultValue: currentYear,
-      required: true,
     },
   ];
 
@@ -272,7 +258,6 @@ const getMonthYear = () => {
         { value: "dec", label: "December" },
       ],
       defaultValue: currentMonth,
-      required: true,
     },
     {
       type: "select",
@@ -280,7 +265,6 @@ const getMonthYear = () => {
       label: "Year",
       options: yearOptions,
       defaultValue: currentYear,
-      required: true,
     },
   ]
   return fields;
@@ -299,8 +283,7 @@ export const getGstMonthlyData = (data) => {
 
             { value: "gstr3b", label: "GSTR3B" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
     ...(data.gstMonthly_gstType
@@ -313,8 +296,7 @@ export const getGstMonthlyData = (data) => {
             { value: "filed", label: "filed" },
             { value: "notfiled", label: "Not filed" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
     ...(data.gstMonthly_filingStatus === "notfiled"
@@ -327,8 +309,7 @@ export const getGstMonthlyData = (data) => {
             { value: "yes", label: "Yes" },
             { value: "no", label: "No" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
     ...(data.currentStatus === "paymentPending" &&
@@ -339,8 +320,7 @@ export const getGstMonthlyData = (data) => {
           id: "gstMonthly_taxAmount",
           label: "Tax Amount",
           placeholder: "Tax Amount",
-          required: true,
-        },
+            },
       ]
       : []),
     ...(data.gstMonthly_filingStatus === "filed"
@@ -349,8 +329,7 @@ export const getGstMonthlyData = (data) => {
           type: "date",
           id: "gstMonthly_filedate",
           label: "File Date",
-          required: true,
-        },
+            },
         //monthly common
         ...GetMonthlyCommonFields(),
         ...GetAttachmentFields(data)
@@ -382,7 +361,6 @@ const GetAttachmentFields = (data) => {
       type: "file",
       id: "acknowledgement",
       label: getLabel(data),
-      required: true,
     });
 
     if (((data?.gstMonthly_filingStatus === "filed" || data.pfMonthly_filingStatus === "filed" || data.esi_filingStatus === "filed" || data.pft_filingStatus === "filed") && (data?.gstMonthly_gstType === "gstr3b" || data?.pft_taskName === "professionalTaxRegularMonthlyActivity" || ["esiRegularMonthlyActivity", "pfMonthly"].includes(data.taskName)))) {
@@ -390,8 +368,7 @@ const GetAttachmentFields = (data) => {
         type: "file",
         id: "challan",
         label: "Challan",
-        required: true,
-      });
+        });
     }
   }
 
@@ -410,7 +387,6 @@ export const getInactiveData = (data) => {
         { value: "suspended", label: "Suspended" },
         { value: "cancelled", label: "Cancelled" },
       ],
-      required: true,
     },
     ...(data.gstInactive_typeOfInactive === "cancelled"
       ? [
@@ -422,8 +398,7 @@ export const getInactiveData = (data) => {
             { value: "voluntarily", label: "Voluntarily" },
             { value: "suoMotu", label: "Suo moto" },
           ],
-          required: true,
-        },
+            },
         ...(data?.gstInactive_cancellationStatus === "voluntarily"
           ? [
             {
@@ -434,22 +409,19 @@ export const getInactiveData = (data) => {
                 { value: "pendingForApply", label: "Pending for Apply" },
                 { value: "applied", label: "Applied" },
               ],
-              required: true,
-            },
+                    },
             ...(data?.gstInactive_volApplicationStatus === "applied"
               ? [
                 {
                   type: "text",
                   id: "gstInactive_arn",
                   label: "ARN",
-                  required: true,
-                },
+                            },
                 {
                   type: "date",
                   id: "gstInactive_arnDate",
                   label: "ARN Date",
-                  required: true,
-                },
+                            },
                 {
                   type: "select",
                   id: "gstInactive_applicationSubStatus",
@@ -466,16 +438,14 @@ export const getInactiveData = (data) => {
                     { value: "rejected", label: "Rejected" },
                     { value: "approved", label: "Approved" },
                   ],
-                  required: true,
-                },
+                            },
                 ...(data?.gstInactive_applicationSubStatus === "approved"
                   ? [
                     {
                       type: "date",
                       id: "gstInactive_dateOfApproval",
                       label: "Date of Approval",
-                      required: true,
-                    },
+                                    },
                     {
                       type: "select",
                       id: "gstInactive_finalReturnStatus",
@@ -484,8 +454,7 @@ export const getInactiveData = (data) => {
                         { value: "filed", label: "filed" },
                         { value: "notfiled", label: "Not filed" },
                       ],
-                      required: true,
-                    },
+                                    },
                   ]
                   : []),
               ]
@@ -502,8 +471,7 @@ export const getInactiveData = (data) => {
                 { value: "yes", label: "Yes" },
                 { value: "no", label: "No" },
               ],
-              required: true,
-            },
+                    },
             ...(data?.gstInactive_needToRevoceCancellation === "yes"
               ? [
                 {
@@ -517,22 +485,19 @@ export const getInactiveData = (data) => {
                     },
                     { value: "applied", label: "Applied" },
                   ],
-                  required: true,
-                },
+                            },
                 ...(data?.gstInactive_applicationStatus === "applied"
                   ? [
                     {
                       type: "text",
                       id: "gstInactive_arn",
                       label: "ARN",
-                      required: true,
-                    },
+                                    },
                     {
                       type: "date",
                       id: "gstInactive_arnDate",
                       label: "ARN Date",
-                      required: true,
-                    },
+                                    },
                     {
                       type: "select",
                       id: "gstInactive_applicationSubStatus",
@@ -549,8 +514,7 @@ export const getInactiveData = (data) => {
                         { value: "rejected", label: "Rejected" },
                         { value: "approved", label: "Approved" },
                       ],
-                      required: true,
-                    },
+                                    },
                   ]
                   : []),
                 ...(data.gstInactive_applicationSubStatus === "approved"
@@ -559,8 +523,7 @@ export const getInactiveData = (data) => {
                       type: "date",
                       id: "gstInactive_dateOfApproval",
                       label: "Date of Approval",
-                      required: true,
-                    },
+                                    },
                     {
                       type: "select",
                       id: "gstInactive_finalReturnStatus",
@@ -569,8 +532,7 @@ export const getInactiveData = (data) => {
                         { value: "filed", label: "filed" },
                         { value: "notfiled", label: "Not filed" },
                       ],
-                      required: true,
-                    },
+                                    },
                   ]
                   : []),
               ]
@@ -592,8 +554,7 @@ export const getInactiveData = (data) => {
             { value: "yes", label: "Yes" },
             { value: "no", label: "No" },
           ],
-          required: true,
-        },
+            },
         ...(data.gstInactive_goingForAppeal === "yes"
           ? [
             {
@@ -604,22 +565,19 @@ export const getInactiveData = (data) => {
                 { value: "pendingForApply", label: "Pending for Apply" },
                 { value: "applied", label: "Applied" },
               ],
-              required: true,
-            },
+                    },
             ...(data?.gstInactive_rejectState === "applied"
               ? [
                 {
                   type: "text",
                   id: "gstInactive_appealArn",
                   label: "ARN",
-                  required: true,
-                },
+                            },
                 {
                   type: "date",
                   id: "gstInactive_appealArnDate",
                   label: "ARN Date",
-                  required: true,
-                },
+                            },
                 {
                   type: "select",
                   id: "gstInactive_appealApplicationSubStatus",
@@ -636,8 +594,7 @@ export const getInactiveData = (data) => {
                     { value: "rejected", label: "Rejected" },
                     { value: "approved", label: "Approved" },
                   ],
-                  required: true,
-                },
+                            },
                 ...(data?.gstInactive_appealApplicationSubStatus ===
                   "approved"
                   ? [
@@ -645,8 +602,7 @@ export const getInactiveData = (data) => {
                       type: "date",
                       id: "gstInactive_dateOfApproval",
                       label: "Date of Approval",
-                      required: true,
-                    },
+                                    },
                   ]
                   : []),
               ]
@@ -663,8 +619,7 @@ export const getInactiveData = (data) => {
                 { value: "filed", label: "filed" },
                 { value: "notfiled", label: "Not filed" },
               ],
-              required: true,
-            },
+                    },
           ]
           : []),
       ]
@@ -702,8 +657,7 @@ export const getMonthlyPamnetData = (data, companies) => {
             { value: "quarter2", label: "QUARTER 2" },
             { value: "quarter3", label: "QUARTER 3" },
           ],
-          required: true,
-        },
+            },
         {
           type: "select",
           id: "gstMonthlyPayment_payment",
@@ -712,8 +666,7 @@ export const getMonthlyPamnetData = (data, companies) => {
             { value: "paid", label: "Paid" },
             { value: "notPaid", label: "Not Paid" },
           ],
-          required: true,
-        },
+            },
         {
           type: "select",
           id: "gstMonthlyPayment_monthlyMonth",
@@ -733,22 +686,19 @@ export const getMonthlyPamnetData = (data, companies) => {
             { value: "nov", label: "November" },
             { value: "dec", label: "December" },
           ],
-          required: true,
-        },
+            },
         {
           type: "select",
           id: "gstMonthlyPayment_monthlyYear",
           label: "Year",
           options: yearOptions,
           defaultValue: currentYear.toString(),
-          required: true,
-        },
+            },
         {
           type: "date",
           id: "gstMonthlyPayment_paymentDate",
           label: "Payment Date",
-          required: true,
-        },
+            },
       ]
       : []),
   ];
@@ -761,21 +711,18 @@ console.log(name)
         type: "file",
         id: "challan",
         label: "Challan",
-        required: true,
-      });
+        });
     } else if (isQuarterEnd) {
       fields.push({
         type: "file",
         id: "GSTR3B Acknowledgement",
         label: "GSTR3B Acknowledgement",
-        required: true,
-      });
+        });
       fields.push({
         type: "file",
         id: "challan",
         label: "Challan",
-        required: true,
-      });
+        });
     }
   } else if (name === "composition") {
     if (data.gstMonthlyPayment_payment === "paid") {
@@ -783,14 +730,12 @@ console.log(name)
         type: "file",
         id: "GSTR4Acknowledgement",
         label: "GSTR4 Acknowledgement",
-        required: true,
-      });
+        });
       fields.push({
         type: "file",
         id: "challan",
         label: "Challan",
-        required: true,
-      });
+        });
     }
   }
 
@@ -808,7 +753,6 @@ export const providentFund = (data) => {
         { value: "pfMonthly", label: "PF - Regular Monthly Filing" },
         { value: "pfInactive", label: "PF - Inactive Registration" },
       ],
-      required: true,
     },
   ];
 
@@ -833,7 +777,6 @@ export const pfRegistration = (data) => {
         { value: "pending", label: "Pending for Apply" },
         { value: "applied", label: "Applied" },
       ],
-      required: true,
     },
     ...(data?.pfRegistration_applicationStatus === "applied"
       ? [
@@ -865,8 +808,7 @@ export const pfRegistration = (data) => {
             { value: "rejected", label: "Rejected" },
             { value: "approved", label: "Approved" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
     ...(data?.pfRegistration_ApplicationSubStatus === "approved"
@@ -893,7 +835,6 @@ export const pfMonthly = (data) => {
         { value: "filed", label: "filed" },
         { value: "notfiled", label: "Not filed" },
       ],
-      required: true,
     },
 
     ...(data?.pfMonthly_filingStatus === "filed"
@@ -931,8 +872,7 @@ export const pfMonthly = (data) => {
             },
             { value: "workInProgress", label: "Work In Progress" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
   ];
@@ -952,7 +892,6 @@ export const TDSTCS = (data) => {
         { value: "tdsTcs", label: "TDS/TCS" },
         { value: "tdsTcsMonthly", label: "TDS/TCS - Monthly Payment" },
       ],
-      required: true,
     },
   ];
 
@@ -980,7 +919,6 @@ export const tdsTcsForm = (data) => {
         { value: "TCS-27EQ", label: "TCS-27EQ" },
       ],
 
-      required: true,
     },
     {
       type: "select",
@@ -992,7 +930,6 @@ export const tdsTcsForm = (data) => {
         { value: "quarter3", label: "Quarter 3" },
         { value: "quarter4", label: "Quarter 4" },
       ],
-      required: true,
     },
     ...(data?.tdstcs_quarter
       ? [
@@ -1004,8 +941,7 @@ export const tdsTcsForm = (data) => {
             { value: "filed", label: "filed" },
             { value: "notfiled", label: "Not filed" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
     ...(data?.tdstcs_filingStatus === "filed"
@@ -1018,8 +954,7 @@ export const tdsTcsForm = (data) => {
             { value: "processed", label: "Processed" },
             { value: "processedWithError", label: "Processed with Error" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
     ...(data?.tdstcs_processingStatus === "processed"
@@ -1032,8 +967,7 @@ export const tdsTcsForm = (data) => {
             { value: "yes", label: "Yes" },
             { value: "no", label: "No" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
   ];
@@ -1065,7 +999,6 @@ export const TdsMonthly = (data) => {
         { value: "TDS-27Q", label: "TDS-27Q" },
         { value: "TCS-27EQ", label: "TCS-27EQ" },
       ],
-      required: true,
     },
     {
       type: "select",
@@ -1077,7 +1010,6 @@ export const TdsMonthly = (data) => {
         { value: "quarter3", label: "Quarter 3" },
         { value: "quarter4", label: "Quarter 4" },
       ],
-      required: true,
     },
     {
       type: "select",
@@ -1087,7 +1019,6 @@ export const TdsMonthly = (data) => {
         { value: "paid", label: "Paid" },
         { value: "notPaid", label: "Not Paid" },
       ],
-      required: true,
     },
     ...(data.tdsmonthly_paymentStatus === "paid"
       ? [
@@ -1110,16 +1041,14 @@ export const TdsMonthly = (data) => {
             { value: "dec", label: "December" },
           ],
           defaultValue: currentMonth, // Dynamic list of months with the current month as default
-          required: true,
-        },
+            },
         {
           type: "select",
           id: "tdsmonthly_year",
           label: "Year",
           options: yearOptions,
           defaultValue: currentYear,
-          required: true,
-        },
+            },
         {
           type: "date",
           id: "tdsmonthly_paidDate",
@@ -1149,7 +1078,6 @@ export const getIncomeTaxData = (data) => {
         },
         { value: "incomeTaxAdvanceTax", label: "Income Tax - Advance Tax" },
       ],
-      required: true,
     },
   ];
 
@@ -1176,7 +1104,6 @@ export const incomeTaxAuditForm = (data) => {
         { value: "filed", label: "Filed" },
         { value: "notFiled", label: "Not Filed" },
       ],
-      required: true,
     },
     ...(data?.tax_formStatus === "filed"
       ? [
@@ -1189,8 +1116,7 @@ export const incomeTaxAuditForm = (data) => {
             { value: "filedwithout", label: "Filed without e-Verification" },
             { value: "notFiled", label: "Not Filed" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
     ...((data?.tax_filingStatus === "filledWith" || data?.tax_filingStatus === "filedwithout")
@@ -1205,8 +1131,7 @@ export const incomeTaxAuditForm = (data) => {
             { value: "partiallyPaid", label: "Partially Paid" },
             // { value: "verified", label: "Verified" },
           ],
-          required: true,
-        }
+            }
       ]
       : []),
     ...(["taxPaid", "partiallyPaid", "verified"].includes(
@@ -1217,21 +1142,18 @@ export const incomeTaxAuditForm = (data) => {
           type: "number",
           id: "tax_paymentAmount", // Updated with common prefix 'tax_'
           label: "Tax Payment Amount",
-          required: true,
-        },
+            },
         {
           type: "date",
           id: "tax_paymentDate", // Updated with common prefix 'tax_'
           label: "Tax Payment Date",
-          required: true,
-          placeholder: "DD-Mon-YYYY",
+              placeholder: "DD-Mon-YYYY",
         },
         {
           type: "date",
           id: "tax_filingDate", // Updated with common prefix 'tax_'
           label: "Tax Filing Date",
-          required: true,
-          placeholder: "DD-Mon-YYYY",
+              placeholder: "DD-Mon-YYYY",
         },
       ]
       : []),
@@ -1251,7 +1173,6 @@ export const incomeTaxNonAuditForm = (data) => {
         { value: "filedwithout", label: "Filed without e-Verification" },
         { value: "notFiled", label: "Not Filed" },
       ],
-      required: true,
     },
     ...((data?.tax_filingStatus === "filedwith" || data?.tax_filingStatus === "filedwithout")
       ? [
@@ -1259,14 +1180,12 @@ export const incomeTaxNonAuditForm = (data) => {
           type: "date",
           id: "tax_verification_date", // Updated with common prefix 'tax_'
           label: "Verification Date",
-          required: true,
-        },
+            },
         {
           type: "date",
           id: "tax_filing_e_Date", // Updated with common prefix 'tax_'
           label: "Filed Date",
-          required: true,
-        },
+            },
       ]
       : []),
     ...((data?.tax_filingStatus === "filedwith" || data?.tax_filingStatus === "filedwithout")
@@ -1282,8 +1201,7 @@ export const incomeTaxNonAuditForm = (data) => {
             // { value: "verified", label: "Verified" },
             // { value: "notVerified", label: "Not Verified" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
     ...(["taxPaid", "partiallyPaid", "verified"].includes(
@@ -1294,14 +1212,12 @@ export const incomeTaxNonAuditForm = (data) => {
           type: "number",
           id: "tax_paymentAmount", // Updated with common prefix 'tax_'
           label: "Tax Payment Amount",
-          required: true,
-        },
+            },
         {
           type: "date",
           id: "tax_paymentDate", // Updated with common prefix 'tax_'
           label: "Tax Payment Date",
-          required: true,
-        },
+            },
         {
           type: "date",
           id: "tax_verifiedDate", // Updated with common prefix 'tax_'
@@ -1312,8 +1228,7 @@ export const incomeTaxNonAuditForm = (data) => {
           type: "date",
           id: "tax_filingDate", // Updated with common prefix 'tax_'
           label: "Filed Date",
-          required: true,
-        },
+            },
       ]
       : []),
   ];
@@ -1332,7 +1247,6 @@ export const incomeTaxAdvanceTaxForm = (data) => {
         { value: "quarter3", label: "Quarter 3" },
         { value: "quarter4", label: "Quarter 4" },
       ],
-      required: true,
     },
     ...(data?.tax_quarter === "quarter1"
       ? [
@@ -1346,8 +1260,7 @@ export const incomeTaxAdvanceTaxForm = (data) => {
             { value: "partiallyPaid", label: "Partially Paid" },
             // { value: "verified", label: "Verified" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
     ...(["taxPaid", "partiallyPaid", "verified"].includes(
@@ -1358,14 +1271,12 @@ export const incomeTaxAdvanceTaxForm = (data) => {
           type: "number",
           id: "tax_paymentAmount", // Updated with common prefix 'tax_'
           label: "Tax Payment Amount",
-          required: true,
-        },
+            },
         {
           type: "date",
           id: "tax_paymentDate", // Updated with common prefix 'tax_'
           label: "Tax Payment Date",
-          required: true,
-        },
+            },
       ]
       : []),
     // ...(["taxPaid", "partiallyPaid", "verified"].includes(
@@ -1380,8 +1291,7 @@ export const incomeTaxAdvanceTaxForm = (data) => {
     //         { value: "filed", label: "Filed" },
     //         { value: "notFiled", label: "Not Filed" },
     //       ],
-    //       required: true,
-    //     },
+    //     //     },
     //   ]
     //   : []),
   ];
@@ -1404,7 +1314,6 @@ export const getEsiData = (data) => {
         },
         { value: "esiInactive", label: "ESI InActive Registration" },
       ],
-      required: true,
     },
   ];
 
@@ -1432,7 +1341,6 @@ export const esiNewRegistrationForm = (data) => {
         { value: "pendingForApply", label: "Pending for Apply" },
         { value: "applied", label: "Applied" },
       ],
-      required: true,
     },
 
     // Conditionally add fields based on Application Status
@@ -1443,15 +1351,13 @@ export const esiNewRegistrationForm = (data) => {
           id: "esi_new_applicationNumber",
           label: "CRN",
           placeholder: "CRN",
-          required: true,
-        },
+            },
         {
           type: "date",
           id: "esi_new_applicationDate",
           label: "Application Date",
           placeholder: "DD-Mon-YYYY",
-          required: true,
-        },
+            },
         {
           type: "select",
           id: "esi_new_applicationSubStatus",
@@ -1465,8 +1371,7 @@ export const esiNewRegistrationForm = (data) => {
             { value: "rejected", label: "Rejected" },
             { value: "approved", label: "Approved" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
     ...(data?.esi_new_applicationSubStatus === "approved" ? [
@@ -1475,8 +1380,7 @@ export const esiNewRegistrationForm = (data) => {
         id: "esi_new_dateOfApproval",
         label: "Date of Approval",
         placeholder: "DD-Mon-YYYY",
-        required: true,
-      },
+        },
     ]
       : []),
   ];
@@ -1498,7 +1402,6 @@ export const esiRegularMonthlyActivityForm = (data) => {
         { value: "filed", label: "Filed" },
         { value: "notFiled", label: "Not Filed" },
       ],
-      required: true,
     },
 
 
@@ -1513,8 +1416,7 @@ export const esiRegularMonthlyActivityForm = (data) => {
             { value: "yes", label: "Yes" },
             { value: "no", label: "No" },
           ],
-          required: true,
-        },
+            },
         {
           type: "select",
           id: "esi_currentStatus",
@@ -1527,8 +1429,7 @@ export const esiRegularMonthlyActivityForm = (data) => {
             },
             { value: "workInProgress", label: "Work In Progress" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
     ...(data?.esi_filingStatus === "filed"
@@ -1538,8 +1439,7 @@ export const esiRegularMonthlyActivityForm = (data) => {
           id: "esi_fileDate",
           label: "File Date",
           placeholder: "DD-Mon-YYYY",
-          required: true,
-        },
+            },
         ...GetMonthlyCommonFields("CRN"),
         ...GetAttachmentFields(data)
       ]
@@ -1563,7 +1463,6 @@ export const esiInactiveForm = (data) => {
           label: "Inactive Due to Non Filing",
         },
       ],
-      required: true,
     },
 
     // Conditionally add fields based on Application Status
@@ -1574,15 +1473,13 @@ export const esiInactiveForm = (data) => {
           id: "esi_inactive_applicationNumber",
           label: "CRN",
           placeholder: "CRN",
-          required: true,
-        },
+            },
         {
           type: "date",
           id: "esi_inactive_applicationDate",
           label: "Application Date",
           placeholder: "DD-Mon-YYYY",
-          required: true,
-        },
+            },
         {
           type: "select",
           id: "esi_inactive_applicationSubStatus",
@@ -1596,8 +1493,7 @@ export const esiInactiveForm = (data) => {
             { value: "rejected", label: "Rejected" },
             { value: "approved", label: "Approved" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
 
@@ -1609,8 +1505,7 @@ export const esiInactiveForm = (data) => {
           id: "esi_inactive_dateOfApproval",
           label: "Date of Approval",
           placeholder: "DD-Mon-YYYY",
-          required: true,
-        },
+            },
       ]
       : []),
   ];
@@ -1640,7 +1535,6 @@ export const getProfessionalTaxData = (data) => {
           label: "Professional Tax - Inactive",
         },
       ],
-      required: true,
     },
   ];
 
@@ -1667,7 +1561,6 @@ export const professionalTaxNewRegistrationForm = (data) => {
         { value: "pendingForApply", label: "Pending for Apply" },
         { value: "applied", label: "Applied" },
       ],
-      required: true,
     },
     ...(data?.pft_applicationStatus === "applied"
       ? [
@@ -1676,15 +1569,13 @@ export const professionalTaxNewRegistrationForm = (data) => {
           id: "pft_applicationNumber",
           label: "ARN Number",
           placeholder: "Enter ARN Number",
-          required: true,
-        },
+            },
         {
           type: "date",
           id: "pft_applicationDate",
           label: "Application Date",
           placeholder: "DD-Mon-YYYY",
-          required: true,
-        },
+            },
         {
           type: "select",
           id: "pft_applicationSubStatus",
@@ -1698,8 +1589,7 @@ export const professionalTaxNewRegistrationForm = (data) => {
             { value: "rejected", label: "Rejected" },
             { value: "approved", label: "Approved" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
     ...(data?.pft_applicationSubStatus === "approved"
@@ -1727,7 +1617,6 @@ export const professionalTaxRegularMonthlyActivityForm = (data) => {
         { value: "filed", label: "Filed" },
         { value: "notFiled", label: "Not Filed" },
       ],
-      required: true,
     },
     ...(data?.pft_filingStatus === "notFiled"
       ? [
@@ -1743,8 +1632,7 @@ export const professionalTaxRegularMonthlyActivityForm = (data) => {
             },
             { value: "workInProgress", label: "Work In Progress" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
     ...(data?.pft_filingStatus === "filed"
@@ -1754,8 +1642,7 @@ export const professionalTaxRegularMonthlyActivityForm = (data) => {
           id: "pft_fileDate",
           label: "File Date",
           placeholder: "DD-Mon-YYYY",
-          required: true,
-        },
+            },
         ...GetAttachmentFields(data)
       ]
       : []),
@@ -1779,7 +1666,6 @@ export const professionalTaxInactiveForm = (data) => {
         { value: "Pending for Apply", label: "Pending for Apply" },
         { value: "applied", label: "Applied" },
       ],
-      required: true,
     },
     ...(data?.pft_applicationStatus === "applied"
       ? [
@@ -1788,15 +1674,13 @@ export const professionalTaxInactiveForm = (data) => {
           id: "pft_applicationNumber",
           label: "ARN Number",
           placeholder: "Enter ARN Number",
-          required: true,
-        },
+            },
         {
           type: "date",
           id: "pft_applicationDate",
           label: "Application Date",
           placeholder: "DD-Mon-YYYY",
-          required: true,
-        },
+            },
         {
           type: "select",
           id: "pft_applicationSubStatus",
@@ -1810,8 +1694,7 @@ export const professionalTaxInactiveForm = (data) => {
             { value: "rejected", label: "Rejected" },
             { value: "approved", label: "Approved" },
           ],
-          required: true,
-        },
+            },
       ]
       : []),
     ...(data?.pft_applicationSubStatus === "approved"
@@ -1821,8 +1704,7 @@ export const professionalTaxInactiveForm = (data) => {
           id: "pft_inactive_dateOfApproval",
           label: "Date of Approval",
           placeholder: "DD-Mon-YYYY",
-          required: true,
-        },
+            },
       ]
       : []),
   ];

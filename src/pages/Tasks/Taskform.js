@@ -149,7 +149,7 @@ const Taskform = ({
     e.preventDefault();
 
     // Check for required fields
-    const requiredFields = ["startDate", "priority", "assignedTo", "company"];
+    const requiredFields = ["startDate", "priority", "company"];
     for (const field of requiredFields) {
       if (!formData[field]) {
         setError(`Field ${field} is required.`);
