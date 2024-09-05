@@ -64,7 +64,7 @@ export default function CompanyTable({
   companyRefresh,
   name,
   status,
-  setView
+  setView,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -74,6 +74,7 @@ export default function CompanyTable({
   const [clientStatuses, setClientStatuses] = useState([]);
   const [mode, setMode] = useState(0);
   useEffect(() => {
+    console.log("check comapny table", companies);
     const fetchCompanies = async () => {
       try {
         const response = await axios.post(`${base_url}/companies/filter`, {
@@ -170,6 +171,19 @@ export default function CompanyTable({
               <TableCell align="center" padding="normal">
                 Status
               </TableCell>
+
+              <TableCell align="center" padding="normal">
+                Mobile
+              </TableCell>
+
+              <TableCell align="center" padding="normal">
+                Email Id
+              </TableCell>
+
+              <TableCell align="center" padding="normal">
+                Address
+              </TableCell>
+
               <TableCell align="center" padding="normal">
                 Actions
               </TableCell>
@@ -194,11 +208,26 @@ export default function CompanyTable({
                   <TableCell align="center" padding="normal">
                     {company.clientStatus || "N/A"}
                   </TableCell>
+                  {/* //add */}
+                  <TableCell align="center" padding="normal">
+                    {company.phone || "N/A"}
+                  </TableCell>
+
+                  <TableCell align="center" padding="normal">
+                    {company.mailId || "N/A"}
+                  </TableCell>
+
+                  <TableCell align="center" padding="normal">
+                    {company.companyAddress || "N/A"}
+                  </TableCell>
                   <TableCell align="center" padding="normal">
                     <IconButton
                       aria-label="edit"
                       size="small"
-                      onClick={() => { setCompanyId(company._id); setView(true) }}
+                      onClick={() => {
+                        setCompanyId(company._id);
+                        setView(true);
+                      }}
                     >
                       <Visibility
                         fontSize="inherit"

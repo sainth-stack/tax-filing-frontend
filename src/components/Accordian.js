@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import CustomInput from "./input";
 import CustomFileInput from "./customFile";
 import SelectInput from "./select";
+import { useEffect } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 export default function Accordian({
@@ -16,9 +17,9 @@ export default function Accordian({
   clientStatus,
   companyId,
   disabled,
-  view
+  view,
 }) {
-  const [accData, setAccData] = React.useState([])
+  const [accData, setAccData] = React.useState([]);
   const getActive = (section, index) => {
     if (section.title == "Company Details") {
       return section.formData[section.id]?.clientStatus === "active";
@@ -27,21 +28,27 @@ export default function Accordian({
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (sections) {
-      const companDetails = sections.filter((item) => item.title === "Company Details")[0]?.formData?.companyDetails
+      const companDetails = sections.filter(
+        (item) => item.title === "Company Details"
+      )[0]?.formData?.companyDetails;
       const data = sections.filter((item) => {
         if (item.title === "Partnership Firm Form C") {
-          return (companDetails?.constitution === "Partnership" && companDetails?.subConstitution === "registered") ? true : false
-        }
-        else if (item.title === "MCA") {
-          return (companDetails?.constitution === "PrivateLimited" || companDetails?.subConstitution === "llp") ? true : false
-        }
-        else return true
-      })
-      setAccData(data)
+          return companDetails?.constitution === "Partnership" &&
+            companDetails?.subConstitution === "registered"
+            ? true
+            : false;
+        } else if (item.title === "MCA") {
+          return companDetails?.constitution === "PrivateLimited" ||
+            companDetails?.subConstitution === "llp"
+            ? true
+            : false;
+        } else return true;
+      });
+      setAccData(data);
     }
-  }, [sections])
+  }, [sections]);
 
   if (!accData) return null;
   return (
@@ -92,6 +99,7 @@ export default function Accordian({
                       {section.fields.map((field, fieldIndex) => {
                         const fieldId = field.id;
                         const [sectionKey, fieldKey] = fieldId.split(".");
+
                         if (field.type === "select") {
                           return (
                             <SelectInput
@@ -104,7 +112,7 @@ export default function Accordian({
                               }
                               onChange={section.handleInputChange}
                               required={field.required}
-                              disabled="true"
+                              readOnly={field.readonly}
                             />
                           );
                         } else if (field.type === "file") {
@@ -114,6 +122,7 @@ export default function Accordian({
                               id={fieldId}
                               label={field.label}
                               required={field.required}
+                              readOnly={field.readonly}
                               link={
                                 section.formData[sectionKey]?.[fieldKey] || ""
                               }
@@ -128,12 +137,12 @@ export default function Accordian({
                             id={fieldId}
                             label={field.label}
                             required={field.required}
+                            readOnly={field.readOnly}
                             onChange={section.handleInputChange}
                             value={
                               section.formData[sectionKey]?.[fieldKey] || ""
                             }
                             placeholder={field.placeholder || ""}
-                            disabled="true"
                           />
                         );
                       })}
@@ -216,6 +225,7 @@ export default function Accordian({
                         onChange={section.handleInputChange}
                         value={section.formData[sectionKey]?.[fieldKey] || ""}
                         placeholder={field.placeholder || ""}
+                        disabled={disabled}
                       />
                     );
                   })}

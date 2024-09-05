@@ -9,6 +9,7 @@ export const sectionsData = (data) => {
           label: "Company",
           required: true,
         },
+
         {
           type: "select",
           id: "companyDetails.constitution",
@@ -21,20 +22,22 @@ export const sectionsData = (data) => {
           ],
           required: true,
         },
-        ...(data?.companyDetails?.constitution === "Partnership" ? [
-          {
-            type: "select",
-            id: "companyDetails.subConstitution",
-            label: "Sub Constitution",
-            options: [
-              { value: "registered", label: "Registered" },
-              { value: "unregistered", label: "UnRegistered" },
-              { value: "llp", label: "LLP" },
-              /*  { value: "LLP", label: "LLP" }, */
-            ],
-            required: true,
-          },
-        ] : []),
+        ...(data?.companyDetails?.constitution === "Partnership"
+          ? [
+              {
+                type: "select",
+                id: "companyDetails.subConstitution",
+                label: "Sub Constitution",
+                options: [
+                  { value: "registered", label: "Registered" },
+                  { value: "unregistered", label: "UnRegistered" },
+                  { value: "llp", label: "LLP" },
+                  /*  { value: "LLP", label: "LLP" }, */
+                ],
+                required: true,
+              },
+            ]
+          : []),
         {
           type: "select",
           id: "companyDetails.clientStatus",
@@ -63,9 +66,22 @@ export const sectionsData = (data) => {
           label: "Mail ID",
           required: true,
         },
+        {
+          type: "text",
+          id: "companyDetails.companyAddress",
+          label: "Company Address",
+          required: true,
+        },
+        {
+          type: "text",
+          id: "companyDetails.pan",
+          label: "PAN",
+          required: true,
+        },
       ],
       id: "companyDetails",
     },
+
     {
       title: "Income Tax",
       fields: [
@@ -79,7 +95,17 @@ export const sectionsData = (data) => {
           ],
           required: true,
         },
-        { type: "text", id: "incomeTax.pan", label: "PAN", required: true },
+
+        //pan readonly
+
+        {
+          type: "text",
+          id: "incomeTax.pan",
+          label: "PAN",
+          required: true,
+          readOnly: true,
+        },
+
         {
           type: "password",
           id: "incomeTax.incomeTaxPassword",
@@ -174,7 +200,7 @@ export const sectionsData = (data) => {
           id: "gst.approvalCertificate",
           label: "Approval Certificate",
           required: true,
-        }
+        },
       ],
       id: "gst",
     },
@@ -299,6 +325,18 @@ export const sectionsData = (data) => {
           type: "password",
           id: "professionalTax.ptPassword",
           label: "PT Password",
+          required: true,
+        },
+        {
+          type: "text",
+          id: "professionalTax.ptEcUsername",
+          label: "PTEC Username",
+          required: true,
+        },
+        {
+          type: "text",
+          id: "professionalTax.ptEcPassword",
+          label: "PTEC Password",
           required: true,
         },
         {
@@ -746,9 +784,24 @@ export const sectionsData = (data) => {
     {
       title: "Attachments",
       fields: [
-        { type: "file", id: "attachments.panFile", label: "PAN", required: true },
-        { type: "file", id: "attachments.gstFile", label: "GST", required: true },
-        { type: "file", id: "attachments.esiFile", label: "ESI", required: true },
+        {
+          type: "file",
+          id: "attachments.panFile",
+          label: "PAN",
+          required: true,
+        },
+        {
+          type: "file",
+          id: "attachments.gstFile",
+          label: "GST",
+          required: true,
+        },
+        {
+          type: "file",
+          id: "attachments.esiFile",
+          label: "ESI",
+          required: true,
+        },
         {
           type: "file",
           id: "attachments.pfFile",
@@ -761,7 +814,12 @@ export const sectionsData = (data) => {
           label: "Professional Tax",
           required: true,
         },
-        { type: "file", id: "attachments.tanFile", label: "TAN", required: true },
+        {
+          type: "file",
+          id: "attachments.tanFile",
+          label: "TAN",
+          required: true,
+        },
         {
           type: "file",
           id: "attachments.shopEstablishmentFile",
@@ -804,11 +862,21 @@ export const sectionsData = (data) => {
           label: "Shram Suvidha Portal",
           required: true,
         },
-        { type: "file", id: "attachments.mcaFile", label: "MCA", required: true },
-        { type: "file", id: "attachments.cinFile", label: "CIN", required: true },
+        {
+          type: "file",
+          id: "attachments.mcaFile",
+          label: "MCA",
+          required: true,
+        },
+        {
+          type: "file",
+          id: "attachments.cinFile",
+          label: "CIN",
+          required: true,
+        },
       ],
     },
-  ]
+  ];
 };
 
 export const Dates = [
