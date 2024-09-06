@@ -24,19 +24,19 @@ export const sectionsData = (data) => {
         },
         ...(data?.companyDetails?.constitution === "Partnership"
           ? [
-              {
-                type: "select",
-                id: "companyDetails.subConstitution",
-                label: "Sub Constitution",
-                options: [
-                  { value: "registered", label: "Registered" },
-                  { value: "unregistered", label: "UnRegistered" },
-                  { value: "llp", label: "LLP" },
-                  /*  { value: "LLP", label: "LLP" }, */
-                ],
-                required: true,
-              },
-            ]
+            {
+              type: "select",
+              id: "companyDetails.subConstitution",
+              label: "Sub Constitution",
+              options: [
+                { value: "registered", label: "Registered" },
+                { value: "unregistered", label: "UnRegistered" },
+                { value: "llp", label: "LLP" },
+                /*  { value: "LLP", label: "LLP" }, */
+              ],
+              required: true,
+            },
+          ]
           : []),
         {
           type: "select",
@@ -68,14 +68,14 @@ export const sectionsData = (data) => {
         },
         {
           type: "text",
-          id: "companyDetails.companyAddress",
-          label: "Company Address",
+          id: "companyDetails.pan",
+          label: "PAN",
           required: true,
         },
         {
-          type: "text",
-          id: "companyDetails.pan",
-          label: "PAN",
+          type: "textarea",
+          id: "companyDetails.companyAddress",
+          label: "Company Address",
           required: true,
         },
       ],
@@ -95,9 +95,6 @@ export const sectionsData = (data) => {
           ],
           required: true,
         },
-
-        //pan readonly
-
         {
           type: "text",
           id: "companyDetails.pan",
@@ -334,7 +331,7 @@ export const sectionsData = (data) => {
           required: true,
         },
         {
-          type: "text",
+          type: "password",
           id: "professionalTax.ptEcPassword",
           label: "PTEC Password",
           required: true,

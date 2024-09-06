@@ -25,8 +25,6 @@ const Serviceform = ({ setRefresh, refresh }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(process.env.API_URL);
-    console.log("Form Data:", formData);
     try {
       const response = await axios.post(
         `${base_url}/services`,
@@ -34,7 +32,6 @@ const Serviceform = ({ setRefresh, refresh }) => {
       );
       setRefresh(!refresh);
       setFormData(defaultData);
-      console.log("Form submitted:", response.data);
     } catch (error) {
       seterror(error.message);
       console.error(

@@ -1,6 +1,7 @@
 import React from "react";
 
-const CustomFileInput = ({ id, label, required, onChange, link }) => {
+const CustomFileInput = ({ id, label, required, onChange, link,readOnly }) => {
+  console.log(label,readOnly)
   return (
     <div className="mb-4">
       <label
@@ -14,6 +15,7 @@ const CustomFileInput = ({ id, label, required, onChange, link }) => {
         id={id}
         required={required}
         onChange={onChange}
+        readOnly={readOnly}
         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover:shadow-md"
       />
       {(link && typeof(link) ==="string") && (

@@ -74,7 +74,6 @@ export default function CompanyTable({
   const [clientStatuses, setClientStatuses] = useState([]);
   const [mode, setMode] = useState(0);
   useEffect(() => {
-    console.log("check comapny table", companies);
     const fetchCompanies = async () => {
       try {
         const response = await axios.post(`${base_url}/companies/filter`, {
@@ -89,7 +88,6 @@ export default function CompanyTable({
           _id: item._id,
         }));
 
-        console.log(data);
         // Extract client statuses into a separate array
         const statusesArray = companyDetailsArray.map(
           ({ clientStatus }) => clientStatus
@@ -180,9 +178,9 @@ export default function CompanyTable({
                 Email Id
               </TableCell>
 
-              <TableCell align="center" padding="normal">
+              {/* <TableCell align="center" padding="normal">
                 Address
-              </TableCell>
+              </TableCell> */}
 
               <TableCell align="center" padding="normal">
                 Actions
@@ -217,9 +215,9 @@ export default function CompanyTable({
                     {company.mailId || "N/A"}
                   </TableCell>
 
-                  <TableCell align="center" padding="normal">
+                  {/* <TableCell align="center" padding="normal">
                     {company.companyAddress || "N/A"}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell align="center" padding="normal">
                     <IconButton
                       aria-label="edit"

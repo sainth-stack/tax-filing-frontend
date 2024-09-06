@@ -32,7 +32,6 @@ const CompanyForm = ({
     });
     return updatedData;
   };
-
   const initialFormData = sections.reduce((acc, section) => {
     section.fields.forEach((field) => {
       const [sectionKey, fieldKey] = field.id.split(".");
@@ -46,6 +45,7 @@ const CompanyForm = ({
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
+    console.log(id, value,'dsfs')
     const [section, field] = id.split(".");
     setFormData((prev) => ({
       ...prev,
@@ -144,7 +144,6 @@ const CompanyForm = ({
             `${base_url}/companies/${companyId}`
           );
           const companyDetails = response.data;
-          console.log("Fetched company details:", companyDetails);
 
           const initialData = sections.reduce((acc, section) => {
             section.fields.forEach((field) => {

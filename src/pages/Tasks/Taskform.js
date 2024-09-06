@@ -352,6 +352,7 @@ const Taskform = ({
                       label={field.label}
                       link={formData[field.id]}
                       onChange={handleFileChange}
+                      readOnly={field?.readOnly}
                     />
                   );
                 }
