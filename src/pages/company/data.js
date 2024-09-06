@@ -100,7 +100,7 @@ export const sectionsData = (data) => {
 
         {
           type: "text",
-          id: "incomeTax.pan",
+          id: "companyDetails.pan",
           label: "PAN",
           required: true,
           readOnly: true,
