@@ -32,7 +32,7 @@ const Sidemenu = () => {
       <div className="mt-16">
         <ul>
           {/* Dashboard Menu Item */}
-          {/* <li>
+          <li>
             <Link
               to="/dashboard"
               onClick={() => handleMenuClick("dashboard")}
@@ -45,7 +45,7 @@ const Sidemenu = () => {
               <Dashboard />
               {isOpen && <span className="text-sm font-medium">Dashboard</span>}
             </Link>
-          </li> */}
+          </li>
 
           {/* Company Menu Item */}
           <li>

@@ -8,14 +8,16 @@ import CompanyForm from "./Companyform";
 import CustomInput from "../../components/input";
 import SelectInput from "../../components/select";
 import Serviceform from "./Serviceform";
+import Toast from "../../components/helpers/toast/toast";
 
 const Company = () => {
   const [showForm, setShowForm] = useState("");
   const [serviceForm, setServiceForm] = useState(false);
-  const [view, setView] = useState(false)
+  const [view, setView] = useState(false);
   const [companyId, setCompanyId] = useState("");
   const [name, setName] = useState("");
   const [status, setStatus] = useState("");
+
   const handleServiceForm = () => {
     setServiceForm(!serviceForm);
   };
@@ -121,7 +123,7 @@ const Company = () => {
                     setCompanyRefresh,
                     companyRefresh,
                     view,
-                    setView
+                    setView,
                   }}
                 />
               }
@@ -130,9 +132,12 @@ const Company = () => {
             ""
           )}
           <div className="bg-white rounded-lg shadow-md">
-            <CompanyTable {...{ setCompanyId, companyRefresh, name, status,setView }} />
+            <CompanyTable
+              {...{ setCompanyId, companyRefresh, name, status, setView }}
+            />
           </div>
         </div>
+
         {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
           <label
             htmlFor="Table"
