@@ -704,7 +704,6 @@ export const getMonthlyPamnetData = (data, companies) => {
   ];
   const quarterEndMonths = ["mar", "jun", "sep", "dec"];
   const isQuarterEnd = quarterEndMonths.includes(data.gstMonthlyPayment_monthlyMonth);
-console.log(name)
   if (name === "QRMP") {
     if (data.gstMonthlyPayment_payment === "paid" && !isQuarterEnd) {
       fields.push({

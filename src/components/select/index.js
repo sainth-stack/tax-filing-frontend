@@ -16,7 +16,6 @@ const SelectInput = ({
   disabled,
   readOnly,
 }) => {
-  console.log(defaultValue);
   return (
     <div className={`flex flex-col ${className}`}>
       <label htmlFor={id} className="mb-1" style={{ ...labelStyles }}>

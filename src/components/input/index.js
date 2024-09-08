@@ -16,7 +16,6 @@ const CustomInput = ({
   readOnly,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
-  console.log("check readonly", readOnly);
 
   return (
     <div className={`flex flex-col relative ${className}`}>
