@@ -87,11 +87,10 @@ const PieChart = () => {
         className="pie_chart shadow-lg p-4 flex justify-center w-fit"
         style={{
           width: "80%",
-
           height: "40vh",
         }}
       >
-        <Pie data={chartData} options={options} />
+        <Pie data={chartData} className="flex" options={options} />
       </div>
     </div>
   );

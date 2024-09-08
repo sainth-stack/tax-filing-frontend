@@ -9,6 +9,7 @@ import CustomInput from "../../components/input";
 import SelectInput from "../../components/select";
 import Serviceform from "./Serviceform";
 import Toast from "../../components/helpers/toast/toast";
+import CompanyAuditTrail from "../../components/AuditHistory/CompanyAuditTrail";
 
 const Company = () => {
   const [showForm, setShowForm] = useState("");
@@ -72,7 +73,8 @@ const Company = () => {
             >
               Company
             </label>
-            <div>
+            <div className="flex">
+              <CompanyAuditTrail />
               <Button
                 variant="text"
                 sx={{

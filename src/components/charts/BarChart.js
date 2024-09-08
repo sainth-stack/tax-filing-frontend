@@ -18,7 +18,7 @@ const BarChart = () => {
     labels: [],
     datasets: [
       {
-        label: "Number of Companies",
+        label: "Number of Companies By Task Type",
         data: [],
         backgroundColor: "#42A5F5",
         borderColor: "#1E88E5",
