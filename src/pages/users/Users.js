@@ -18,7 +18,6 @@ const Users = () => {
     setShowForm(!showForm);
   };
 
-
   const fetchUsers = async () => {
     try {
       const response = await axios.post(`${base_url}/users/filter`, {
@@ -61,7 +60,6 @@ const Users = () => {
               }}
             />
           </div>
-
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between" }}>
