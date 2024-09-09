@@ -3,9 +3,10 @@ import axios from "axios";
 /* import { base_url } from "./../../const"; */
 const FetchCompanyAuditTrail = async () => {
   try {
-    const response = await axios.get(`http://localhost:4500/api/audit-logs`);
+    const response = await axios.get(`http://localhost:4500/api/audit-history`);
 
-    return await response.json();
+    console.log("response auit", response);
+    return await response.data.logs;
   } catch (error) {
     console.error("Error fetching audit trail:", error);
     throw error;

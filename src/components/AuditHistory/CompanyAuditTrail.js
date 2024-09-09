@@ -12,6 +12,7 @@ const CompanyAuditTrail = () => {
     const loadAuditData = async () => {
       try {
         const data = await FetchCompanyAuditTrail();
+        console.log("data audit ui", data);
         setAuditData(data);
       } catch (error) {
         console.error("Error loading company audit data:", error);
@@ -59,7 +60,7 @@ const CompanyAuditTrail = () => {
           }}
           className="rounded-md"
         >
-          <div className="flex w-full justify-center ">
+          <div className="flex w-full justify-center overflow-auto ">
             <h3 className="text-center p-4 text-xl flex  font-bold">
               Audit History for Company
             </h3>
@@ -68,22 +69,21 @@ const CompanyAuditTrail = () => {
               <CloseIcon className="text-3xl" onClick={handleClose} />
             </span>
           </div>
-          <Table>
-            <thead>
+          <Table className="overflow-auto">
+            <thead className="bg-black p-2 text-white">
               <tr>
                 <th>Operation</th>
                 <th>User</th>
                 <th>Timestamp</th>
-                <th>Data</th>
               </tr>
             </thead>
             <tbody>
               {auditData.map((audit, index) => (
-                <tr key={index}>
+                <tr key={index} className="text-center border">
                   <td>{audit.operation}</td>
-                  <td>{audit.userId}</td>
+                  <td>{audit.user}</td>
+
                   <td>{new Date(audit.timestamp).toLocaleString()}</td>
-                  <td>{JSON.stringify(audit.dataDocument)}</td>
                 </tr>
               ))}
             </tbody>
