@@ -28,10 +28,13 @@ const PieChart = () => {
         // Create a mapping of constitutions and their counts
         const combinationCounts = companies.reduce((acc, company) => {
           const { constitution, subConstitution } = company.companyDetails;
-          console.log(constitution, subConstitution)
+          console.log(constitution, subConstitution);
           let key = "";
           if (constitution === "Partnership") {
-            key = subConstitution === "registered" ? "Partnership Registered" : "Partnership Unregistered";
+            key =
+              subConstitution === "registered"
+                ? "Partnership Registered"
+                : "Partnership Unregistered";
           } else if (constitution === "Proprietorship") {
             key = "Proprietorship";
           } else if (constitution === "PrivateLimited") {
@@ -48,11 +51,10 @@ const PieChart = () => {
         const labels = Object.keys(combinationCounts);
         const data = Object.values(combinationCounts);
         const backgroundColor = labels.map((label, index) => {
-          // Assign colors based on the label index or you can customize this
           const colors = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"];
           return colors[index % colors.length]; // Cycle through colors
         });
-        console.log(data)
+        console.log(data);
         // Set the state once with the processed data
         setChartData({
           labels,
@@ -66,7 +68,10 @@ const PieChart = () => {
           ],
         });
       } catch (error) {
-        console.error("Error fetching data for the chart:", error.response?.data || error.message);
+        console.error(
+          "Error fetching data for the chart:",
+          error.response?.data || error.message
+        );
       }
     };
 
@@ -88,7 +93,7 @@ const PieChart = () => {
     elements: {
       arc: {
         borderWidth: 1,
-        borderColor: '#fff',
+        borderColor: "#fff",
         borderRadius: 10,
       },
     },
@@ -99,7 +104,7 @@ const PieChart = () => {
       <div
         className="pie_chart shadow-lg p-4 flex justify-center w-fit"
         style={{
-          width: "95%",
+          width: "85%",
           height: "40vh",
         }}
       >
