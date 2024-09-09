@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Pie } from "react-chartjs-2";
+import { Doughnut, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import axios from "axios";
 import { base_url } from "../../const";
@@ -25,67 +25,48 @@ const PieChart = () => {
         const response = await axios.get(`${base_url}/companies/all`);
         const companies = response.data.data;
 
-        console.log(companies, "companies data");
+        // Create a mapping of constitutions and their counts
+        const combinationCounts = companies.reduce((acc, company) => {
+          const { constitution, subConstitution } = company.companyDetails;
+          console.log(constitution, subConstitution)
+          let key = "";
+          if (constitution === "Partnership") {
+            key = subConstitution === "registered" ? "Partnership Registered" : "Partnership Unregistered";
+          } else if (constitution === "Proprietorship") {
+            key = "Proprietorship";
+          } else if (constitution === "PrivateLimited") {
+            key = "PrivateLimited";
+          }
 
-        const combinationCounts = companies
-          .map((company) => {
-            const { constitution, subConstitution } = company.companyDetails;
-            if (
-              constitution === "Partnership" &&
-              subConstitution === "registered"
-            ) {
-              return "Partnership Registered";
-            } else if (constitution === "Proprietorship") {
-              return "Proprietorship";
-            } else if (constitution === "PrivateLimited") {
-              return "PrivateLimited";
-            } else if (
-              constitution === "Partnership" &&
-              subConstitution === "Unregistered"
-            ) {
-              return "Partnership Unregistered";
-            }
-            return null;
-          })
-          .filter((combination) => combination !== null)
-          .reduce((acc, combination) => {
-            acc[combination] = (acc[combination] || 0) + 1;
-            return acc;
-          }, {});
+          if (key) {
+            acc[key] = (acc[key] || 0) + 1;
+          }
 
-        const labels = [
-          "Partnership Registered",
-          "Proprietorship",
-          "PrivateLimited",
-          "Partnership Unregistered",
-        ];
-        const data = labels.map((label) => combinationCounts[label] || 0);
+          return acc;
+        }, {});
 
+        const labels = Object.keys(combinationCounts);
+        const data = Object.values(combinationCounts);
+        const backgroundColor = labels.map((label, index) => {
+          // Assign colors based on the label index or you can customize this
+          const colors = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"];
+          return colors[index % colors.length]; // Cycle through colors
+        });
+        console.log(data)
+        // Set the state once with the processed data
         setChartData({
           labels,
           datasets: [
             {
               data,
-              backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
-              borderColor: "#fff",
-              borderWidth: 1,
-            },
-          ],
-        });
-
-        console.log("Chart data:", {
-          labels,
-          datasets: [
-            {
-              data,
-              backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
+              backgroundColor,
               borderColor: "#fff",
               borderWidth: 1,
             },
           ],
         });
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data for the chart:", error.response?.data || error.message);
       }
     };
 
@@ -93,25 +74,22 @@ const PieChart = () => {
   }, []);
 
   const options = {
-    responsive: true,
     plugins: {
-      legend: {
-        position: "bottom",
+      title: {
+        display: false,
       },
-      tooltip: {
-        callbacks: {
-          label: (tooltipItem) => {
-            const label = tooltipItem.label || "";
-            const value = tooltipItem.raw || 0;
-            const total = chartData.datasets[0].data.reduce(
-              (acc, val) => acc + val,
-              0
-            );
-            return `${label}: ${value} (${((value / total) * 100).toFixed(
-              2
-            )}%)`;
-          },
-        },
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        display: false,
+      },
+    },
+    elements: {
+      arc: {
+        borderWidth: 1,
+        borderColor: '#fff',
+        borderRadius: 10,
       },
     },
   };
@@ -121,11 +99,11 @@ const PieChart = () => {
       <div
         className="pie_chart shadow-lg p-4 flex justify-center w-fit"
         style={{
-          width: "80%",
+          width: "95%",
           height: "40vh",
         }}
       >
-        <Pie data={chartData} options={options} />
+        <Doughnut data={chartData} options={options} />
       </div>
     </div>
   );
