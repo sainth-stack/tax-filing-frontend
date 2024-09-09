@@ -18,8 +18,12 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Accordian from "../../components/Accordian";
 /* import { useParams, useResolvedPath } from "react-router-dom"; */
 import { base_url } from "../../const";
-import CompanyAuditTrail from "../../components/AuditHistory/CompanyAuditTrail";
+/* import CompanyAuditTrail from "../../components/AuditHistory/CompanyAuditTrail"; */
 import { Tooltip } from "@mui/material";
+import CompanyAuditTrail, {
+  AuditBtn,
+} from "../../components/AuditHistory/CompanyAuditTrail";
+//import FetchCompanyAuditTrail from "../../components/AuditHistory/AuditCompanyApi";
 
 const theme = createTheme({
   typography: {
@@ -70,15 +74,18 @@ export default function CompanyTable({
   setView,
 }) {
   const [page, setPage] = useState(0);
+
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [auditData, setAuditData] = useState([]);
+
   const [editModal, setEditModal] = useState(false);
   const [editCompanyId, setEditCompanyId] = useState(null);
   const [companies, setCompanies] = useState([]);
   const [clientStatuses, setClientStatuses] = useState([]);
   const [open, setOpen] = useState(false);
 
-  const handleOpen = () => setOpen(true);
   const [mode, setMode] = useState(0);
+  const [auditId, setauditId] = useState();
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
@@ -121,11 +128,6 @@ export default function CompanyTable({
     setPage(0);
   };
 
-  /* const handleEditForm = (id) => {
-    setEditCompanyId(id);
-    setEditModal(true);
-  }; */
-
   const handleCloseModal = () => {
     setEditModal(false);
     setEditCompanyId(null);
@@ -140,12 +142,39 @@ export default function CompanyTable({
     }
   };
 
+  const auditHistory = async (documentId) => {
+    try {
+      if (!documentId) {
+        throw new Error("Document ID is required to fetch the audit trail.");
+      }
+
+      // Sending the documentId in the request body
+      const response = await axios.post(
+        `http://localhost:4500/api/audit-history`,
+        {
+          documentId, // Correctly sending documentId in the body
+        }
+      );
+
+      const { logs } = response.data;
+      setAuditData(logs); // Updating the state with the fetched logs
+      setOpen(true); // Opening the modal or component that displays audit history
+    } catch (error) {
+      console.error("Error fetching audit trail:", error.message);
+      throw error;
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
 
-      {<CompanyAuditTrail open={open} setOpen={setOpen} />}
-
+      {open && (
+        <CompanyAuditTrail
+          companyAuditData={auditData}
+          handleClose={() => setOpen(false)}
+        />
+      )}
       <div className="mx-auto">
         {editModal && (
           <ServiceModal open={editModal} handleClose={handleCloseModal}>
@@ -263,7 +292,7 @@ export default function CompanyTable({
                     <IconButton
                       aria-label="audit"
                       size="small"
-                      onClick={() => handleOpen()}
+                      onClick={() => auditHistory(company._id)}
                     >
                       <Tooltip
                         title="Audit History"

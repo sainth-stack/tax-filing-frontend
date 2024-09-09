@@ -74,7 +74,6 @@ const Company = () => {
               Company
             </label>
             <div className="flex">
-              <CompanyAuditTrail />
               <Button
                 variant="text"
                 sx={{
