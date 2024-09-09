@@ -20,7 +20,7 @@ const CompanyAuditTrail = ({ companyAuditData, handleClose }) => {
       >
         <div className="flex w-full justify-center overflow-auto rounded-md bg-slate-100">
           <h3 className="text-center p-2 text-md flex font-bold capitalize">
-            Audit History for Company
+            Audit History
           </h3>
           <span className="ml-auto">
             <CloseIcon
@@ -29,7 +29,7 @@ const CompanyAuditTrail = ({ companyAuditData, handleClose }) => {
             />
           </span>
         </div>
-        <Table className="overflow-auto">
+        {companyAuditData?.length > 0 ? <Table className="overflow-auto">
           <thead className="shadow-md border">
             <tr style={{ padding: "1rem" }}>
               <th className="p-2">Operation</th>
@@ -46,7 +46,9 @@ const CompanyAuditTrail = ({ companyAuditData, handleClose }) => {
               </tr>
             ))}
           </tbody>
-        </Table>
+        </Table> : <div style={{ display: 'flex', justifyContent: 'center' }}>
+          No Data Found
+        </div>}
       </div>
     </Modal>
   );
