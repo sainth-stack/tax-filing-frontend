@@ -14,9 +14,12 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import ServiceModal from "../../components/services/models/ServiceModal";
 import EditCompanyForm from "./EditCompany";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Accordian from "../../components/Accordian";
 /* import { useParams, useResolvedPath } from "react-router-dom"; */
 import { base_url } from "../../const";
+import CompanyAuditTrail from "../../components/AuditHistory/CompanyAuditTrail";
+import { Tooltip } from "@mui/material";
 
 const theme = createTheme({
   typography: {
@@ -72,6 +75,9 @@ export default function CompanyTable({
   const [editCompanyId, setEditCompanyId] = useState(null);
   const [companies, setCompanies] = useState([]);
   const [clientStatuses, setClientStatuses] = useState([]);
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(true);
   const [mode, setMode] = useState(0);
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -137,6 +143,9 @@ export default function CompanyTable({
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+
+      {<CompanyAuditTrail open={open} setOpen={setOpen} />}
+
       <div className="mx-auto">
         {editModal && (
           <ServiceModal open={editModal} handleClose={handleCloseModal}>
@@ -148,6 +157,7 @@ export default function CompanyTable({
           </ServiceModal>
         )}
       </div>
+
       <TableContainer
         component={Paper}
         className="container my-4 shadow-md rounded-lg"
@@ -215,9 +225,6 @@ export default function CompanyTable({
                     {company.mailId || "N/A"}
                   </TableCell>
 
-                  {/* <TableCell align="center" padding="normal">
-                    {company.companyAddress || "N/A"}
-                  </TableCell> */}
                   <TableCell align="center" padding="normal">
                     <IconButton
                       aria-label="edit"
@@ -251,6 +258,21 @@ export default function CompanyTable({
                         fontSize="inherit"
                         className="text-red-400 bg-gray-100 rounded"
                       />
+                    </IconButton>
+
+                    <IconButton
+                      aria-label="audit"
+                      size="small"
+                      onClick={() => handleOpen()}
+                    >
+                      <Tooltip
+                        title="Audit History"
+                        arrow
+                        variant="soft"
+                        placement="right"
+                      >
+                        <MoreVertIcon />
+                      </Tooltip>
                     </IconButton>
                   </TableCell>
                 </TableRow>

@@ -1,12 +1,13 @@
 // components/CompanyAuditTrail.js
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Table } from "@mui/material";
+import { Modal, Button, Table, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import FetchCompanyAuditTrail from "./AuditCompanyApi.js";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-const CompanyAuditTrail = () => {
+const CompanyAuditTrail = ({ setOpen, open }) => {
   const [auditData, setAuditData] = useState([]);
-  const [open, setOpen] = useState(false);
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     const loadAuditData = async () => {
@@ -21,30 +22,9 @@ const CompanyAuditTrail = () => {
     loadAuditData();
   }, []);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
   return (
     <div>
-      <div className="flex ">
-        <Button
-          onClick={handleOpen}
-          variant="text"
-          sx={{
-            bgcolor: "teal",
-            color: "white",
-            marginTop: "12px",
-
-            "&:hover": {
-              bgcolor: "teal",
-              color: "white",
-              boxShadow: "1px 2px 3px gray",
-            },
-          }}
-        >
-          Audit History
-        </Button>
-      </div>
+      <></>
       <Modal
         open={open}
         onClose={handleClose}
@@ -53,26 +33,25 @@ const CompanyAuditTrail = () => {
       >
         <div
           style={{
-            padding: "20px",
             backgroundColor: "white",
             margin: "100px auto",
             width: "80%",
           }}
-          className="rounded-md"
+          className="rounded-md p-2 "
         >
-          <div className="flex w-full justify-center overflow-auto ">
-            <h3 className="text-center p-4 text-xl flex  font-bold">
+          <div className="flex w-full justify-center overflow-auto rounded-md bg-slate-100 ">
+            <h3 className="text-center p-2 text-md flex  font-bold capitalize">
               Audit History for Company
             </h3>
             <span className="ml-auto">
               {" "}
-              <CloseIcon className="text-3xl" onClick={handleClose} />
+              <CloseIcon className="text-xl" onClick={handleClose} />
             </span>
           </div>
           <Table className="overflow-auto">
-            <thead className="bg-black p-2 text-white">
-              <tr>
-                <th>Operation</th>
+            <thead className="shadow-md border ">
+              <tr className=" " style={{ padding: "1rem" }}>
+                <th className="p-2">Operation</th>
                 <th>User</th>
                 <th>Timestamp</th>
               </tr>
@@ -82,7 +61,6 @@ const CompanyAuditTrail = () => {
                 <tr key={index} className="text-center border">
                   <td>{audit.operation}</td>
                   <td>{audit.user}</td>
-
                   <td>{new Date(audit.timestamp).toLocaleString()}</td>
                 </tr>
               ))}
