@@ -148,13 +148,9 @@ export default function CompanyTable({
         throw new Error("Document ID is required to fetch the audit trail.");
       }
 
-      // Sending the documentId in the request body
-      const response = await axios.post(
-        `http://localhost:4500/api/audit-history`,
-        {
-          documentId, // Correctly sending documentId in the body
-        }
-      );
+      const response = await axios.post(`${base_url}/audit-history`, {
+        documentId,
+      });
 
       const { logs } = response.data;
       setAuditData(logs); // Updating the state with the fetched logs
@@ -263,30 +259,52 @@ export default function CompanyTable({
                         setView(true);
                       }}
                     >
-                      <Visibility
-                        fontSize="inherit"
-                        className="text-green-400 z-0 bg-gray-50 rounded"
-                      />
+                      <Tooltip
+                        title="View"
+                        arrow
+                        variant="soft"
+                        placement="left"
+                      >
+                        <Visibility
+                          fontSize="inherit"
+                          className="text-green-400 z-0 bg-gray-50 rounded"
+                        />
+                      </Tooltip>
                     </IconButton>
+
                     <IconButton
                       aria-label="edit"
                       size="small"
                       onClick={() => setCompanyId(company._id)}
                     >
-                      <EditOutlined
-                        fontSize="inherit"
-                        className="text-green-400 z-0 bg-gray-50 rounded"
-                      />
+                      <Tooltip
+                        title="Edit"
+                        arrow
+                        variant="soft"
+                        placement="left"
+                      >
+                        <EditOutlined
+                          fontSize="inherit"
+                          className="text-green-400 z-0 bg-gray-50 rounded"
+                        />
+                      </Tooltip>
                     </IconButton>
                     <IconButton
                       aria-label="delete"
                       size="small"
                       onClick={() => handleDelete(company._id)}
                     >
-                      <DeleteOutline
-                        fontSize="inherit"
-                        className="text-red-400 bg-gray-100 rounded"
-                      />
+                      <Tooltip
+                        title="Delete"
+                        arrow
+                        variant="soft"
+                        placement="right"
+                      >
+                        <DeleteOutline
+                          fontSize="inherit"
+                          className="text-red-400 bg-gray-100 rounded"
+                        />
+                      </Tooltip>
                     </IconButton>
 
                     <IconButton
