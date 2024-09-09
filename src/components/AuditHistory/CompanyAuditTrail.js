@@ -1,8 +1,8 @@
 // components/CompanyAuditTrail.js
 import React, { useState, useEffect } from "react";
-import { fetchAuditTrail } from "../services/auditService.js";
 import { Modal, Button, Table } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import FetchCompanyAuditTrail from "./AuditCompanyApi.js";
 
 const CompanyAuditTrail = () => {
   const [auditData, setAuditData] = useState([]);
@@ -11,7 +11,7 @@ const CompanyAuditTrail = () => {
   useEffect(() => {
     const loadAuditData = async () => {
       try {
-        const data = await fetchAuditTrail("Company");
+        const data = await FetchCompanyAuditTrail();
         setAuditData(data);
       } catch (error) {
         console.error("Error loading company audit data:", error);

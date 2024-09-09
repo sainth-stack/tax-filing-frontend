@@ -25,25 +25,60 @@ const PieChart = () => {
         const response = await axios.get(`${base_url}/companies/all`);
         const companies = response.data.data;
 
-        console.log(companies, "companied data");
-        const constitutionCount = companies
-          .map((company) => company.companyDetails.constitution)
-          .filter((type) => type === "Partnership").length;
+        console.log(companies, "companies data");
 
-        console.log("constitutionCount", constitutionCount);
+        const combinationCounts = companies
+          .map((company) => {
+            const { constitution, subConstitution } = company.companyDetails;
+            if (
+              constitution === "Partnership" &&
+              subConstitution === "registered"
+            ) {
+              return "Partnership Registered";
+            } else if (constitution === "Proprietorship") {
+              return "Proprietorship";
+            } else if (constitution === "PrivateLimited") {
+              return "PrivateLimited";
+            } else if (
+              constitution === "Partnership" &&
+              subConstitution === "Unregistered"
+            ) {
+              return "Partnership Unregistered";
+            }
+            return null;
+          })
+          .filter((combination) => combination !== null)
+          .reduce((acc, combination) => {
+            acc[combination] = (acc[combination] || 0) + 1;
+            return acc;
+          }, {});
 
-        const subConstitutionCount = companies
-          .map((company) => company.companyDetails.subConstitution)
-          .filter((type) => type === "registered").length;
-
-        console.log("subConstitutionCount", subConstitutionCount);
+        const labels = [
+          "Partnership Registered",
+          "Proprietorship",
+          "PrivateLimited",
+          "Partnership Unregistered",
+        ];
+        const data = labels.map((label) => combinationCounts[label] || 0);
 
         setChartData({
-          labels: ["Constitution", "SubConstitution"],
+          labels,
           datasets: [
             {
-              data: [constitutionCount, subConstitutionCount],
-              backgroundColor: ["#FF6384", "#36A2EB"],
+              data,
+              backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
+              borderColor: "#fff",
+              borderWidth: 1,
+            },
+          ],
+        });
+
+        console.log("Chart data:", {
+          labels,
+          datasets: [
+            {
+              data,
+              backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
               borderColor: "#fff",
               borderWidth: 1,
             },
@@ -61,7 +96,7 @@ const PieChart = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: "top",
+        position: "bottom",
       },
       tooltip: {
         callbacks: {
@@ -90,7 +125,7 @@ const PieChart = () => {
           height: "40vh",
         }}
       >
-        <Pie data={chartData} className="flex" options={options} />
+        <Pie data={chartData} options={options} />
       </div>
     </div>
   );
