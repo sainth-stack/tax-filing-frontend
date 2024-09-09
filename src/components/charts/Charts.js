@@ -4,7 +4,7 @@ import BarChart from "./BarChart";
 
 const Charts = () => {
   return (
-    <div className="p-4 flex justify-center">
+    <div className="p-2 flex">
       <PieChart />
       <BarChart />
     </div>
