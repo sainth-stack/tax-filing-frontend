@@ -3,6 +3,7 @@ import { Modal, Table } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 const CompanyAuditTrail = ({ companyAuditData, handleClose }) => {
+  console.log("first companyAuditData", companyAuditData);
   return (
     <Modal
       open={true}
