@@ -3,6 +3,7 @@ import { Doughnut, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import axios from "axios";
 import { base_url } from "../../const";
+import Loader from "../helpers/loader";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -19,12 +20,15 @@ const PieChart = () => {
     ],
   });
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(`${base_url}/companies/all`);
         const companies = response.data.data;
-
+        setLoading(false);
         // Create a mapping of constitutions and their counts
         const combinationCounts = companies.reduce((acc, company) => {
           const { constitution, subConstitution } = company.companyDetails;
@@ -108,7 +112,18 @@ const PieChart = () => {
           height: "40vh",
         }}
       >
-        <Doughnut data={chartData} options={options} />
+        {loading && loading ? (
+          <>
+            <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
+              {loading && loading ? "Loading..." : "Tax Filing "}
+            </h1>
+            <div className="flex justify-center items-center  p-4">
+              <Loader size={30} />
+            </div>
+          </>
+        ) : (
+          <Doughnut data={chartData} options={options} />
+        )}
       </div>
     </div>
   );

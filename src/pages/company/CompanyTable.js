@@ -23,6 +23,7 @@ import { Tooltip } from "@mui/material";
 import CompanyAuditTrail, {
   AuditBtn,
 } from "../../components/AuditHistory/CompanyAuditTrail";
+import Loader from "../../components/helpers/loader";
 //import FetchCompanyAuditTrail from "../../components/AuditHistory/AuditCompanyApi";
 
 const theme = createTheme({
@@ -74,6 +75,7 @@ export default function CompanyTable({
   setView,
 }) {
   const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [auditData, setAuditData] = useState([]);
@@ -85,14 +87,16 @@ export default function CompanyTable({
   const [open, setOpen] = useState(false);
 
   const [mode, setMode] = useState(0);
-  const [auditId, setauditId] = useState();
   useEffect(() => {
     const fetchCompanies = async () => {
+      setLoading(true);
       try {
         const response = await axios.post(`${base_url}/companies/filter`, {
           status: status === "all" ? "" : status,
           name,
         });
+        setLoading(false);
+
         const { data } = response;
 
         // Extract company details and client statuses
@@ -134,9 +138,12 @@ export default function CompanyTable({
   };
 
   const handleDelete = async (id) => {
+    setLoading(true);
+
     try {
       await axios.delete(`${base_url}/companies/${id}`);
       setCompanies(companies.filter((company) => company._id !== id));
+      setLoading(false);
     } catch (error) {
       console.error("Error deleting company:", error);
     }
@@ -147,10 +154,12 @@ export default function CompanyTable({
       if (!documentId) {
         throw new Error("Document ID is required to fetch the audit trail.");
       }
+      setLoading(true);
 
       const response = await axios.post(`${base_url}/audit-history`, {
         documentId,
       });
+      setLoading(false);
 
       const { logs } = response.data;
       setAuditData(logs); // Updating the state with the fetched logs
@@ -223,107 +232,117 @@ export default function CompanyTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {companies
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((company, index) => (
-                <TableRow
-                  key={company._id || index}
-                  sx={{
-                    height: "48px",
-                  }}
-                >
-                  <TableCell align="center" padding="normal">
-                    {page * rowsPerPage + index + 1}
-                  </TableCell>
-                  <TableCell align="center" padding="normal">
-                    {company.companyName || "N/A"}
-                  </TableCell>
-                  <TableCell align="center" padding="normal">
-                    {company.clientStatus || "N/A"}
-                  </TableCell>
-                  {/* //add */}
-                  <TableCell align="center" padding="normal">
-                    {company.phone || "N/A"}
-                  </TableCell>
+            {loading && loading ? (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  <div className="flex justify-center items-center py-4">
+                    <Loader size={30} />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : (
+              companies
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((company, index) => (
+                  <TableRow
+                    key={company._id || index}
+                    sx={{
+                      height: "48px",
+                    }}
+                  >
+                    <TableCell align="center" padding="normal">
+                      {page * rowsPerPage + index + 1}
+                    </TableCell>
+                    <TableCell align="center" padding="normal">
+                      {company.companyName || "N/A"}
+                    </TableCell>
+                    <TableCell align="center" padding="normal">
+                      {company.clientStatus || "N/A"}
+                    </TableCell>
+                    {/* //add */}
+                    <TableCell align="center" padding="normal">
+                      {company.phone || "N/A"}
+                    </TableCell>
 
-                  <TableCell align="center" padding="normal">
-                    {company.mailId || "N/A"}
-                  </TableCell>
+                    <TableCell align="center" padding="normal">
+                      {company.mailId || "N/A"}
+                    </TableCell>
 
-                  <TableCell align="center" padding="normal">
-                    <IconButton
-                      aria-label="edit"
-                      size="small"
-                      onClick={() => {
-                        setCompanyId(company._id);
-                        setView(true);
-                      }}
-                    >
-                      <Tooltip
-                        title="View"
-                        arrow
-                        variant="soft"
-                        placement="left"
+                    <TableCell align="center" padding="normal">
+                      <IconButton
+                        aria-label="edit"
+                        size="small"
+                        onClick={() => {
+                          setCompanyId(company._id);
+                          setView(true);
+                        }}
                       >
-                        <Visibility
-                          fontSize="inherit"
-                          className="text-green-400 z-0 bg-gray-50 rounded"
-                        />
-                      </Tooltip>
-                    </IconButton>
+                        <Tooltip
+                          title="View"
+                          arrow
+                          variant="soft"
+                          placement="left"
+                        >
+                          <Visibility
+                            fontSize="inherit"
+                            className="text-green-400 z-0 bg-gray-50 rounded"
+                          />
+                        </Tooltip>
+                      </IconButton>
 
-                    <IconButton
-                      aria-label="edit"
-                      size="small"
-                      onClick={() => setCompanyId(company._id)}
-                    >
-                      <Tooltip
-                        title="Edit"
-                        arrow
-                        variant="soft"
-                        placement="left"
+                      <IconButton
+                        aria-label="edit"
+                        size="small"
+                        onClick={() => setCompanyId(company._id)}
                       >
-                        <EditOutlined
-                          fontSize="inherit"
-                          className="text-green-400 z-0 bg-gray-50 rounded"
-                        />
-                      </Tooltip>
-                    </IconButton>
-                    <IconButton
-                      aria-label="delete"
-                      size="small"
-                      onClick={() => handleDelete(company._id)}
-                    >
-                      <Tooltip
-                        title="Delete"
-                        arrow
-                        variant="soft"
-                        placement="right"
+                        <Tooltip
+                          title="Edit"
+                          arrow
+                          variant="soft"
+                          placement="left"
+                        >
+                          <EditOutlined
+                            fontSize="inherit"
+                            className="text-green-400 z-0 bg-gray-50 rounded"
+                          />
+                        </Tooltip>
+                      </IconButton>
+                      <IconButton
+                        aria-label="delete"
+                        size="small"
+                        onClick={() => handleDelete(company._id)}
                       >
-                        <DeleteOutline
-                          fontSize="inherit"
-                          className="text-red-400 bg-gray-100 rounded"
-                        />
-                      </Tooltip>
-                    </IconButton>
+                        <Tooltip
+                          title="Delete"
+                          arrow
+                          variant="soft"
+                          placement="right"
+                        >
+                          <DeleteOutline
+                            fontSize="inherit"
+                            className="text-red-400 bg-gray-100 rounded"
+                          />
+                        </Tooltip>
+                      </IconButton>
 
-                    <IconButton
-                      aria-label="audit"
-                      size="small"
-                      onClick={() => auditHistory(company._id)}
-                    >
-                      <Tooltip
-                        title="Audit History"
-                        arrow
-                        variant="soft"
-                        placement="right"
+                      <IconButton
+                        aria-label="audit"
+                        size="small"
+                        onClick={() => auditHistory(company._id)}
                       >
-                        <MoreVertIcon />
-                      </Tooltip>
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+                        <Tooltip
+                          title="Audit History"
+                          arrow
+                          variant="soft"
+                          placement="right"
+                        >
+                          <MoreVertIcon />
+                        </Tooltip>
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+            )}
           </TableBody>
         </Table>
         <TablePagination

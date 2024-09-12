@@ -1,18 +1,30 @@
+/* // ToastContainer.js
 import React, { useEffect } from "react";
 import Toast from "./toast";
 
-const ToastContainer = ({ type, message, onClose, showToast }) => {
-  console.log("toast container", type, message, onClose);
+const ToastContainer = ({ toast, onClose }) => {
+  const { type, message, open } = toast;
+
+  useEffect(() => {
+    if (open) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 3000); // Automatically close the toast after 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [open, onClose]);
+
+  if (!open) return null;
+
   return (
-    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
-      <Toast
-        message={message}
-        onClose={onClose}
-        type={type}
-        showToast={showToast}
-      />
+    <div
+      className="fixed top-20 p-4"
+      style={{ transform: "translateX(-50%)", zIndex: 100, right: "0px" }}
+    >
+      <Toast message={message} onClose={onClose} type={type} showToast={open} />
     </div>
   );
 };
 
 export default ToastContainer;
+ */

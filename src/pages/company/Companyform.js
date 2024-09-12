@@ -3,6 +3,7 @@ import axios from "axios";
 import { sectionsData } from "./data";
 import Accordian from "../../components/Accordian";
 import { base_url } from "../../const";
+import { toast } from "react-toastify";
 
 const CompanyForm = ({
   clientStatuses,
@@ -45,7 +46,7 @@ const CompanyForm = ({
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    console.log(id, value,'dsfs')
+    console.log(id, value, "dsfs");
     const [section, field] = id.split(".");
     setFormData((prev) => ({
       ...prev,
@@ -86,7 +87,11 @@ const CompanyForm = ({
         cleanedFormData
       );
       handleFiles(response.data);
-    } catch (error) { }
+      toast.success("Company created successfully");
+    } catch (error) {
+      toast.error("Error creating company");
+      console.log("error in company", error.message);
+    }
   };
 
   const handleFiles = async (data) => {
@@ -130,7 +135,9 @@ const CompanyForm = ({
         cleanedFormData
       );
       handleFiles(response.data);
+      toast.success("Company updated successfully");
     } catch (error) {
+      toast.error("Error updating company");
       setError("Error updating company data.");
       console.error("Error updating form:", error);
     }
@@ -162,8 +169,10 @@ const CompanyForm = ({
           // Set client status
           const status = companyDetails.companyDetails.clientStatus || "";
           setClientStatus(status);
+          toast.success("Company data fetched successfully");
         }
       } catch (error) {
+        toast.error("Error while fetching company data");
         setError("Error fetching company data.");
       }
     };
@@ -202,23 +211,25 @@ const CompanyForm = ({
           sections={
             sections
               ? sections.map((section) => ({
-                ...section,
-                formData,
-                handleInputChange,
-                handleFileChange,
-              }))
+                  ...section,
+                  formData,
+                  handleInputChange,
+                  handleFileChange,
+                }))
               : []
           }
           expanded={expanded}
           handleAccordian={handleAccordian}
         />
         <div className="flex justify-end mt-4">
-          {!view && <button
-            onClick={companyId ? handleUpdate : handleSubmit}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            {companyId ? "Update" : "Save"}
-          </button>}
+          {!view && (
+            <button
+              onClick={companyId ? handleUpdate : handleSubmit}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              {companyId ? "Update" : "Save"}
+            </button>
+          )}
           <button
             onClick={() => {
               setCompanyId("");

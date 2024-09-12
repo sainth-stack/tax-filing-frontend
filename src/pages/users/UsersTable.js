@@ -12,6 +12,7 @@ import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Accordian from "../../components/Accordian";
+import Loader from "../../components/helpers/loader";
 
 const theme = createTheme({
   typography: {
@@ -54,7 +55,12 @@ const theme = createTheme({
   },
 });
 
-export default function UsersTable({ users, handleDelete, setCompanyId }) {
+export default function UsersTable({
+  users,
+  handleDelete,
+  setCompanyId,
+  dataLoading,
+}) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -105,46 +111,56 @@ export default function UsersTable({ users, handleDelete, setCompanyId }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((user, index) => (
-                <TableRow key={user._id || index} sx={{ height: "48px" }}>
-                  <TableCell align="center" padding="normal">
-                    {page * rowsPerPage + index + 1}
-                  </TableCell>
-                  <TableCell align="center" padding="normal">
-                    {user.firstName + " "+ user.lastName || "N/A"}
-                  </TableCell>
-                  <TableCell align="center" padding="normal">
-                    {user.email || "N/A"}
-                  </TableCell>
-                  <TableCell align="center" padding="normal">
-                    {user.company || "N/A"}
-                  </TableCell>
-                  <TableCell align="center" padding="normal">
-                    <IconButton
-                      aria-label="edit"
-                      size="small"
-                      onClick={() => handleEditForm(user._id)}
-                    >
-                      <EditOutlined
-                        fontSize="inherit"
-                        className="text-green-400 z-0 bg-gray-50 rounded"
-                      />
-                    </IconButton>
-                    <IconButton
-                      aria-label="delete"
-                      size="small"
-                      onClick={() => handleDelete(user._id)}
-                    >
-                      <DeleteOutline
-                        fontSize="inherit"
-                        className="text-red-400 bg-gray-100 rounded"
-                      />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+            {dataLoading && dataLoading ? (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  <div className="flex justify-center items-center py-4">
+                    <Loader size={30} />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : (
+              users
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((user, index) => (
+                  <TableRow key={user._id || index} sx={{ height: "48px" }}>
+                    <TableCell align="center" padding="normal">
+                      {page * rowsPerPage + index + 1}
+                    </TableCell>
+                    <TableCell align="center" padding="normal">
+                      {user.firstName + " " + user.lastName || "N/A"}
+                    </TableCell>
+                    <TableCell align="center" padding="normal">
+                      {user.email || "N/A"}
+                    </TableCell>
+                    <TableCell align="center" padding="normal">
+                      {user.company || "N/A"}
+                    </TableCell>
+                    <TableCell align="center" padding="normal">
+                      <IconButton
+                        aria-label="edit"
+                        size="small"
+                        onClick={() => handleEditForm(user._id)}
+                      >
+                        <EditOutlined
+                          fontSize="inherit"
+                          className="text-green-400 z-0 bg-gray-50 rounded"
+                        />
+                      </IconButton>
+                      <IconButton
+                        aria-label="delete"
+                        size="small"
+                        onClick={() => handleDelete(user._id)}
+                      >
+                        <DeleteOutline
+                          fontSize="inherit"
+                          className="text-red-400 bg-gray-100 rounded"
+                        />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+            )}
           </TableBody>
         </Table>
         <TablePagination

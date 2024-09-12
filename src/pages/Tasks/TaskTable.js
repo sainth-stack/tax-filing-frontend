@@ -14,6 +14,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
 import Accordian from "../../components/Accordian";
+import Loader from "../../components/helpers/loader";
 
 const theme = createTheme({
   typography: {
@@ -61,6 +62,7 @@ export default function TasksTable({
   handleDelete,
   setCompanyId,
   formData,
+  dataLoading,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -120,56 +122,66 @@ export default function TasksTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {tasks
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((task, index) => (
-                <TableRow key={task._id || index} sx={{ height: "48px" }}>
-                  <TableCell align="center" padding="normal">
-                    {page * rowsPerPage + index + 1}
-                  </TableCell>
-                  <TableCell align="center" padding="normal">
-                    {task.company || "N/A"}
-                  </TableCell>
-                  <TableCell align="center" padding="normal">
-                    {task.taskName || "N/A"}
-                  </TableCell>
-                  <TableCell align="center" padding="normal">
-                    {new Date(task.dueDate).toLocaleDateString() || "N/A"}
-                  </TableCell>
-                  <TableCell align="center" padding="normal">
-                    {task.applicationStatus || "N/A"}
-                  </TableCell>
-                  <TableCell align="center" padding="normal">
-                    {task.assignedName || "N/A"}
-                  </TableCell>
+            {dataLoading && dataLoading ? (
+              <TableRow>
+                <TableCell colSpan={8} align="center">
+                  <div className="flex justify-center items-center py-4">
+                    <Loader size={30} />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : (
+              tasks
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((task, index) => (
+                  <TableRow key={task._id || index} sx={{ height: "48px" }}>
+                    <TableCell align="center" padding="normal">
+                      {page * rowsPerPage + index + 1}
+                    </TableCell>
+                    <TableCell align="center" padding="normal">
+                      {task.company || "N/A"}
+                    </TableCell>
+                    <TableCell align="center" padding="normal">
+                      {task.taskName || "N/A"}
+                    </TableCell>
+                    <TableCell align="center" padding="normal">
+                      {new Date(task.dueDate).toLocaleDateString() || "N/A"}
+                    </TableCell>
+                    <TableCell align="center" padding="normal">
+                      {task.applicationStatus || "N/A"}
+                    </TableCell>
+                    <TableCell align="center" padding="normal">
+                      {task.assignedName || "N/A"}
+                    </TableCell>
 
-                  <TableCell align="center" padding="normal">
-                    {task.applicationSubStatus || "N/A"}
-                  </TableCell>
-                  <TableCell align="center" padding="normal">
-                    <IconButton
-                      aria-label="edit"
-                      size="small"
-                      onClick={() => handleEditForm(task._id)}
-                    >
-                      <EditOutlined
-                        fontSize="inherit"
-                        className="text-green-400 z-0 bg-gray-50 rounded"
-                      />
-                    </IconButton>
-                    <IconButton
-                      aria-label="delete"
-                      size="small"
-                      onClick={() => handleDelete(task._id)}
-                    >
-                      <DeleteOutline
-                        fontSize="inherit"
-                        className="text-red-400 bg-gray-100 rounded"
-                      />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    <TableCell align="center" padding="normal">
+                      {task.applicationSubStatus || "N/A"}
+                    </TableCell>
+                    <TableCell align="center" padding="normal">
+                      <IconButton
+                        aria-label="edit"
+                        size="small"
+                        onClick={() => handleEditForm(task._id)}
+                      >
+                        <EditOutlined
+                          fontSize="inherit"
+                          className="text-green-400 z-0 bg-gray-50 rounded"
+                        />
+                      </IconButton>
+                      <IconButton
+                        aria-label="delete"
+                        size="small"
+                        onClick={() => handleDelete(task._id)}
+                      >
+                        <DeleteOutline
+                          fontSize="inherit"
+                          className="text-red-400 bg-gray-100 rounded"
+                        />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+            )}
           </TableBody>
         </Table>
         <TablePagination

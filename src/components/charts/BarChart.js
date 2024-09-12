@@ -10,6 +10,7 @@ import {
 } from "chart.js";
 import axios from "axios";
 import { base_url } from "../../const";
+import Loader from "../helpers/loader";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
@@ -20,7 +21,7 @@ const BarChart = () => {
       {
         label: "Number of Companies By Task Type",
         data: [],
-        borderColor: '#29CC3F',
+        borderColor: "#29CC3F",
         borderWidth: 4,
         fill: true,
         lineTension: 0.5,
@@ -28,19 +29,23 @@ const BarChart = () => {
         backgroundColor: (context) => {
           const ctx = context.chart.ctx;
           const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-          gradient.addColorStop(0, '#29CC3F');
-          gradient.addColorStop(0.8, 'rgba(41, 204, 63, 0.2)');
+          gradient.addColorStop(0, "#29CC3F");
+          gradient.addColorStop(0.8, "rgba(41, 204, 63, 0.2)");
           return gradient;
         },
       },
     ],
   });
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(`${base_url}/tasks/all`);
         const tasks = response.data.data;
+        setLoading(false);
 
         const companyCountsByTask = tasks.reduce((acc, task) => {
           const taskType = task.taskType;
@@ -71,7 +76,7 @@ const BarChart = () => {
               backgroundColor: "#42A5F5",
               borderColor: "#1E88E5",
               borderWidth: 0.5,
-              borderRadius:5,
+              borderRadius: 5,
               fill: true,
               lineTension: 0.4,
               pointRadius: 0, // Set the point radius to 0 to hide the dot
@@ -115,7 +120,6 @@ const BarChart = () => {
   //   },
   // };
 
-
   const options = {
     plugins: {
       legend: {
@@ -155,7 +159,6 @@ const BarChart = () => {
       },
     },
   };
-  
 
   return (
     <div className="container">
@@ -166,7 +169,18 @@ const BarChart = () => {
           height: "40vh",
         }}
       >
-        <Bar data={chartData} options={options} />
+        {loading && loading ? (
+          <>
+            <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
+              {loading && loading ? "Loading..." : "Tax Filing "}
+            </h1>
+            <div className="flex justify-center items-center  p-4">
+              <Loader size={30} />
+            </div>
+          </>
+        ) : (
+          <Bar data={chartData} options={options} />
+        )}
       </div>
     </div>
   );

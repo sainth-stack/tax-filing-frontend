@@ -30,26 +30,32 @@ const CompanyAuditTrail = ({ companyAuditData, handleClose }) => {
             />
           </span>
         </div>
-        {companyAuditData?.length > 0 ? <Table className="overflow-auto">
-          <thead className="shadow-md border">
-            <tr style={{ padding: "1rem" }}>
-              <th className="p-2">Operation</th>
-              <th>User</th>
-              <th>Timestamp</th>
-            </tr>
-          </thead>
-          <tbody>
-            {companyAuditData.map((audit, index) => (
-              <tr key={index} className="text-center border">
-                <td>{audit.operation || "N/A"}</td>
-                <td>{audit.authorisedPerson || "N/A"}</td>
-                <td>{new Date(audit.timestamp).toLocaleString() || "N/A"}</td>
+        {companyAuditData?.length > 0 ? (
+          <Table className="overflow-auto">
+            <thead className="shadow-md border">
+              <tr style={{ padding: "1rem" }}>
+                <th className="p-2">Operation</th>
+                <th>User</th>
+                <th>Timestamp</th>
               </tr>
-            ))}
-          </tbody>
-        </Table> : <div style={{ display: 'flex', justifyContent: 'center' }}>
-          No Data Found
-        </div>}
+            </thead>
+            <tbody>
+              {companyAuditData.map((audit, index) => (
+                <tr key={index} className="text-center border">
+                  <td>{audit?.operation || "N/A"}</td>
+                  <td>{audit?.authorisedPerson || "N/A"}</td>
+                  <td>
+                    {new Date(audit?.timestamp).toLocaleString() || "N/A"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        ) : (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            No Data Found
+          </div>
+        )}
       </div>
     </Modal>
   );

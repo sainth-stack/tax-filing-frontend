@@ -1,25 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { base_url } from "../../const";
 import Loader from "../../components/helpers/loader";
-import Toast from "../../components/helpers/toast/toast";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [showToast, setShowToast] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "admin@gmail.com",
     password: "Test@123",
     showPassword: false,
-  });
-
-  const [toastData, setToastData] = useState({
-    type: "",
-    message: "",
   });
 
   const handleChange = (e) => {
@@ -39,50 +33,59 @@ const Login = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    setLoading(true);
     try {
+      setLoading(true);
+
       const response = await axios.post(`${base_url}/users/login`, {
         email: formData.email,
         password: formData.password,
       });
 
+      setLoading(false);
+
       const { token } = response.data;
+      console.log("check login user", response.data);
       localStorage.setItem("token", token);
-      setShowToast((prev) => !prev);
-      setToastData({ type: "warning", message: "message" });
 
       if (token) {
+        toast.success("Login successful");
+
         navigate("/company");
       } else {
         navigate("/");
       }
     } catch (error) {
-      console.log(error);
+      setLoading(false);
+      toast.error("Login Failed");
+
+      console.error(error);
     }
   };
 
-  const handleClose = () => {
-    setShowToast(false);
-  };
-
-  useState(() => {
+  useEffect(() => {
     console.log(base_url);
   }, []);
+
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-5 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-lg">
-        <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
-          {loading && loading ? "Loading..." : "Tax Filing "}
-        </h1>
         {loading ? (
-          <div className="flex justify-center">
-            <Loader size={30} />
-          </div>
+          <>
+            <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
+              Loading...
+            </h1>
+            <div className="flex justify-center items-center p-4">
+              <Loader size={30} />
+            </div>
+          </>
         ) : (
           <form
             onSubmit={handleLogin}
             className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
           >
+            <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
+              Tax Filing
+            </h1>
             <p className="text-center text-lg font-medium">
               Sign in to your account
             </p>
@@ -91,7 +94,6 @@ const Login = () => {
               <label htmlFor="email" className="sr-only">
                 Email
               </label>
-
               <div className="relative">
                 <input
                   name="email"
@@ -101,23 +103,6 @@ const Login = () => {
                   className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                   placeholder="Enter email"
                 />
-
-                <span className="absolute inset-y-0 end-0 grid place-content-center px-4 cursor-pointer">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="size-4 text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-                    />
-                  </svg>
-                </span>
               </div>
             </div>
 
@@ -125,7 +110,6 @@ const Login = () => {
               <label htmlFor="password" className="sr-only">
                 Password
               </label>
-
               <div className="relative">
                 <input
                   name="password"
@@ -135,7 +119,6 @@ const Login = () => {
                   className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                   placeholder="Enter password"
                 />
-
                 <span
                   className="absolute inset-y-0 end-0 grid place-content-center px-4 cursor-pointer"
                   onClick={toggleShowPassword}
@@ -180,21 +163,12 @@ const Login = () => {
             </div>
 
             <p className="text-center text-sm text-gray-500 ms-2">
-              No account?
-              <Link classname="underline" href="#">
+              No account?{" "}
+              <Link className="underline" to="/signup">
                 Sign up
               </Link>
             </p>
           </form>
-        )}
-
-        {showToast && (
-          <Toast
-            type={toastData.type}
-            message={toastData.message}
-            onClose={handleClose}
-            showToast={showToast}
-          />
         )}
       </div>
     </div>

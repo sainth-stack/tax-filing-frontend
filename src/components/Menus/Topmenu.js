@@ -12,10 +12,19 @@ const Topmenu = () => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+
+    localStorage.removeItem("user");
+  };
+
   return (
     <>
       <div className="w-full">
-        <div className="flex items-center justify-between p-3 border-b border-gray-200" style={{ height: '80px' }}>
+        <div
+          className="flex items-center justify-between p-3 border-b border-gray-200"
+          style={{ height: "80px" }}
+        >
           <h2></h2>
           <div className="flex items-center space-x-4">
             <div>
@@ -47,6 +56,7 @@ const Topmenu = () => {
                   <Link
                     to="/"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    onClick={handleLogout}
                   >
                     Logout
                   </Link>

@@ -132,6 +132,7 @@ const Company = () => {
           ) : (
             ""
           )}
+
           <div className="bg-white rounded-lg shadow-md">
             <CompanyTable
               {...{ setCompanyId, companyRefresh, name, status, setView }}

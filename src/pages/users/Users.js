@@ -6,12 +6,16 @@ import { base_url } from "../../const";
 import CustomInput from "../../components/input";
 import UserFrom from "./Usersform";
 import UsersTable from "./UsersTable";
+import Loader from "../../components/helpers/loader";
+import { toast } from "react-toastify";
 
 const Users = () => {
   const [showForm, setShowForm] = useState(false);
   const [companyId, setCompanyId] = useState("");
   const [name, setName] = useState("");
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const [companyRefresh, setCompanyRefresh] = useState(false);
 
   const handleShowForm = () => {
@@ -34,9 +38,11 @@ const Users = () => {
   }, [name]);
 
   const handleDelete = async (id) => {
+    setLoading(true);
     try {
       await axios.delete(`${base_url}/users/${id}`);
       setUsers(users.filter((user) => user._id !== id));
+      setLoading(false);
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -136,6 +142,7 @@ const Users = () => {
               handleDelete,
               users,
             }}
+            dataLoading={loading}
           />
         </div>
       </div>

@@ -12,6 +12,8 @@ import { taskSearch } from "./data";
 import SelectInput from "../../components/select";
 import { WidthFull } from "@mui/icons-material";
 import { base_url } from "../../const";
+import Loader from "../../components/helpers/loader";
+import { toast } from "react-toastify";
 
 const Tasks = () => {
   const [showForm, setShowForm] = useState(false);
@@ -27,10 +29,11 @@ const Tasks = () => {
     effectiveFrom: "",
     effectiveTo: "",
     defaultValue: "",
-    taskType:""
+    taskType: "",
   });
   const [tasks, setTasks] = useState([]);
   const [companies, setCompanies] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [companyRefresh, setCompanyRefresh] = useState(false);
   const [showAutoGenModal, setShowAutoGenModal] = useState(false); // For modal visibility
@@ -61,6 +64,7 @@ const Tasks = () => {
   };
 
   const fetchTasks = async () => {
+    setLoading(true);
     try {
       const { data } = await axios.post(`${base_url}/tasks/filter`, {
         company: formData?.company,
@@ -71,22 +75,30 @@ const Tasks = () => {
         effectiveFrom: formData?.effectiveFrom,
         effectiveTo: formData?.effectiveTo,
       });
+      setLoading(false);
 
       setTasks(data);
     } catch (error) {
+      toast.error("Error While Tasks Filtering");
       console.error("Error fetching tasks:", error);
     }
   };
 
   const fetchUsers = async () => {
+    setLoading(true);
+
     try {
       const response = await axios.get(`${base_url}/users/all`);
       const data = response.data?.data.map((item) => ({
         value: item?._id,
         label: item?.firstName,
       }));
+      setLoading(false);
+
       setUsers(data);
     } catch (error) {
+      toast.error("Error While  Fetching ");
+
       console.error("Error fetching users:", error);
     }
   };
@@ -98,28 +110,42 @@ const Tasks = () => {
 
   //for  model
   const fetchCompanies = async () => {
+    setLoading(true);
+
     try {
       const response = await axios.get(`${base_url}/companies/all`);
+
       const data = response.data?.data.map((item) => ({
         value: item?.companyDetails?.companyName,
         label: item?.companyDetails?.companyName,
       }));
+      setLoading(false);
+
       setCompanies(data);
     } catch (error) {
+      toast.error("Error While Companies Fetching ");
+
       console.error("Error fetching companies:", error);
     }
   };
 
   const fetchAllTasks = async () => {
+    setLoading(true);
+
     try {
       const response = await axios.get(`${base_url}/tasks/all`);
+
       /* const data = response.data?.data.map((item) => ({
         value: item?._id,
         label: item?.firstName,
       })); */
       /* const { data } = response; */
+      setLoading(false);
+
       setAllUsers(response);
     } catch (error) {
+      toast.error("Error While  Fetching Tasks ");
+
       console.error("Error fetching users:", error);
     }
   };
@@ -131,10 +157,17 @@ const Tasks = () => {
   }, []);
 
   const handleDelete = async (id) => {
+    setLoading(true);
+
     try {
       await axios.delete(`${base_url}/tasks/${id}`);
+
+      setLoading(false);
       setTasks(tasks.filter((task) => task._id !== id));
+      toast.warn("Task Deleted Successfully");
     } catch (error) {
+      toast.error("Failed To Delete Task  ");
+
       console.error("Error deleting task:", error);
     }
   };
@@ -308,6 +341,7 @@ const Tasks = () => {
               tasks,
               formData,
             }}
+            dataLoading={loading}
           />
         </div>
       </div>
@@ -335,7 +369,10 @@ const Tasks = () => {
           <Typography id="auto-gen-modal-title" variant="h6" component="h2">
             Auto Generate Tasks
           </Typography>
-          <div className="mt-4" style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+          <div
+            className="mt-4"
+            style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+          >
             <SelectInput
               id="company"
               label="Company"

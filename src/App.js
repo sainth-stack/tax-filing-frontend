@@ -1,3 +1,5 @@
+// App.js
+import React, { useState } from "react";
 import "./App.css";
 import Login from "./pages/Auth/Login";
 import { Route, Routes } from "react-router";
@@ -5,32 +7,20 @@ import Pagenotfound from "./pages/Auth/Pagenotfound";
 import Company from "./pages/company/Company";
 import Tasks from "./pages/Tasks/Tasks";
 import Users from "./pages/users/Users";
-import Toast from "./components/helpers/toast/toast";
-import ToastContainer from "./components/helpers/toast/toastContainer";
-import Charts from "./components/charts/Charts";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function App({ type, message, onClose, showToast }) {
+function App() {
   return (
     <>
-      <ToastContainer
-        type={type}
-        message={message}
-        onClose={onClose}
-        showToast={showToast}
-      />
-
+      <ToastContainer className="my-6 p-4" />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-
-        <Route path="/toast" element={<Toast />} />
-
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/users" element={<Users />} />
-
         <Route path="/company" element={<Company />} />
-
         <Route path="*" element={<Pagenotfound />} />
       </Routes>
     </>

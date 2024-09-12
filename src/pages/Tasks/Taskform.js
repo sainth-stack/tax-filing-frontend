@@ -16,18 +16,15 @@ import {
 } from "./data";
 import { base_url } from "../../const";
 import TextArea from "../../components/text-area";
+import { toast } from "react-toastify";
+import Loader from "../../components/helpers/loader";
 
-const Taskform = ({
-  showForm,
-  setShowForm,
-  fetchTasks,
-  companyId,
-}) => {
+const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const tasks = getTasks([], []);
-  const endTask = getEndTasks()
+  const endTask = getEndTasks();
   const defaultData = tasks.reduce((acc, field) => {
     acc[field.id] = "";
     return acc;
@@ -118,7 +115,7 @@ const Taskform = ({
       const data = response.data?.data.map((item) => ({
         value: item?.companyDetails?.companyName,
         label: item?.companyDetails?.companyName,
-        ...item
+        ...item,
       }));
       setCompanies(data);
     } catch (error) {
@@ -170,9 +167,25 @@ const Taskform = ({
 
       // Submit form data
       if (formData._id) {
-        await axios.put(`${base_url}/tasks/${formData._id}`, formDataToSubmit);
+        try {
+          setLoading(true);
+          await axios.put(
+            `${base_url}/tasks/${formData._id}`,
+            formDataToSubmit
+          );
+          setLoading(false);
+
+          toast.success("Task Updated Successfully");
+        } catch (error) {
+          toast.error("Failed to   Update Task");
+        }
       } else {
-        await axios.post(`${base_url}/tasks`, formDataToSubmit);
+        try {
+          await axios.post(`${base_url}/tasks`, formDataToSubmit);
+          toast.success("Task Created Successfully");
+        } catch (error) {
+          toast.error("Failed to Create Task");
+        }
       }
 
       // Fetch tasks and reset form data
@@ -230,7 +243,7 @@ const Taskform = ({
 
   useEffect(() => {
     if (formData?.taskType === "gst") {
-      const gstData = getGstData(formData,companies);
+      const gstData = getGstData(formData, companies);
       const gstdata = [...tasks, ...gstData, ...endTask];
       setTasks(gstdata);
     } else if (formData?.taskType === "providentFund") {
@@ -283,6 +296,16 @@ const Taskform = ({
 
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
+      {/* {loading && loading ? (
+        <>
+          <div className="flex justify-center items-center  p-4">
+            <Loader size={30} />{" "}
+          </div>
+        </>
+      ) : (
+        <>{"Vishnu"}</>
+      )} */}
+
       <header
         className="text-black p-2 rounded-t-lg"
         style={{ background: "#f5f5f5" }}
@@ -313,8 +336,7 @@ const Taskform = ({
                       defaultValue={field?.defaultValue}
                     />
                   );
-                }
-                else if (field.type === "textarea") {
+                } else if (field.type === "textarea") {
                   return (
                     <TextArea
                       key={index}
@@ -327,8 +349,7 @@ const Taskform = ({
                       defaultValue={field?.defaultValue}
                     />
                   );
-                }
-                else if (
+                } else if (
                   field.type === "text" ||
                   field.type === "number" ||
                   field.type === "date"
