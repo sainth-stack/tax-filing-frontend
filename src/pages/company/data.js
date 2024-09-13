@@ -18,25 +18,24 @@ export const sectionsData = (data) => {
             { value: "Partnership", label: "Partnership" },
             { value: "Proprietorship", label: "Proprietorship" },
             { value: "PrivateLimited", label: "Private Limited" },
-            /*  { value: "LLP", label: "LLP" }, */
+            { value: "LLP", label: "LLP" },
           ],
           required: true,
         },
         ...(data?.companyDetails?.constitution === "Partnership"
           ? [
-            {
-              type: "select",
-              id: "companyDetails.subConstitution",
-              label: "Sub Constitution",
-              options: [
-                { value: "registered", label: "Registered" },
-                { value: "unregistered", label: "UnRegistered" },
-                { value: "llp", label: "LLP" },
-                /*  { value: "LLP", label: "LLP" }, */
-              ],
-              required: true,
-            },
-          ]
+              {
+                type: "select",
+                id: "companyDetails.subConstitution",
+                label: "Sub Constitution",
+                options: [
+                  { value: "registered", label: "Registered" },
+                  { value: "unregistered", label: "UnRegistered" },
+                  { value: "llp", label: "LLP" },
+                ],
+                required: true,
+              },
+            ]
           : []),
         {
           type: "select",

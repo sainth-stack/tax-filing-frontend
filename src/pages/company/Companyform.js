@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 
 const CompanyForm = ({
   clientStatuses,
+  companyName,
   companyId,
   setCompanyId,
   setShowForm,
@@ -181,6 +182,7 @@ const CompanyForm = ({
       fetchCompanyData();
     }
   }, [companyId]);
+
   const handleAccordian = (title) => {
     setExpanded((prevExpanded) =>
       prevExpanded.includes(title)

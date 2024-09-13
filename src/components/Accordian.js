@@ -14,7 +14,7 @@ export default function Accordian({
   sections,
   expanded,
   handleAccordian,
-  formData={},
+  formData = {},
   clientStatus,
   companyId,
   disabled,
@@ -55,7 +55,7 @@ export default function Accordian({
   return (
     <div className="p-2 ">
       {accData.map((section, index) => {
-        console.log(accData)
+        console.log(accData);
         return (
           <>
             {companyId && companyId && view ? (
@@ -117,8 +117,7 @@ export default function Accordian({
                               readOnly={field.readonly}
                             />
                           );
-                        }
-                        else if (field.type === "textarea") {
+                        } else if (field.type === "textarea") {
                           return (
                             <TextArea
                               key={index}
@@ -132,8 +131,7 @@ export default function Accordian({
                               }
                             />
                           );
-                        }
-                        else if (field.type === "file") {
+                        } else if (field.type === "file") {
                           return (
                             <CustomFileInput
                               key={fieldIndex}
@@ -221,8 +219,7 @@ export default function Accordian({
                           required={field.required}
                         />
                       );
-                    }
-                    else if (field.type === "textarea") {
+                    } else if (field.type === "textarea") {
                       return (
                         <TextArea
                           key={index}
@@ -231,13 +228,10 @@ export default function Accordian({
                           required={field.required}
                           readOnly={field.readOnly}
                           onChange={section.handleInputChange}
-                          value={
-                            section.formData[sectionKey]?.[fieldKey] || ""
-                          }
+                          value={section.formData[sectionKey]?.[fieldKey] || ""}
                         />
                       );
-                    }
-                    else if (field.type === "file") {
+                    } else if (field.type === "file") {
                       return (
                         <CustomFileInput
                           key={fieldIndex}

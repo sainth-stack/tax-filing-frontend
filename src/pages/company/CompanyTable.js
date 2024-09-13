@@ -24,7 +24,9 @@ import CompanyAuditTrail, {
   AuditBtn,
 } from "../../components/AuditHistory/CompanyAuditTrail";
 import Loader from "../../components/helpers/loader";
+import { toast } from "react-toastify";
 //import FetchCompanyAuditTrail from "../../components/AuditHistory/AuditCompanyApi";
+import Company from "./Company";
 
 const theme = createTheme({
   typography: {
@@ -107,7 +109,7 @@ export default function CompanyTable({
 
         // Extract client statuses into a separate array
         const statusesArray = companyDetailsArray.map(
-          ({ clientStatus }) => clientStatus
+          (clientStatus) => clientStatus
         );
 
         // Update state with company details and client statuses
@@ -143,8 +145,11 @@ export default function CompanyTable({
     try {
       await axios.delete(`${base_url}/companies/${id}`);
       setCompanies(companies.filter((company) => company._id !== id));
+      toast.warn("Company Deleted successfully");
       setLoading(false);
     } catch (error) {
+      toast.warn("Failed to  Delete Company  ");
+
       console.error("Error deleting company:", error);
     }
   };

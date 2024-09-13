@@ -39,11 +39,15 @@ const Users = () => {
 
   const handleDelete = async (id) => {
     setLoading(true);
+
     try {
       await axios.delete(`${base_url}/users/${id}`);
       setUsers(users.filter((user) => user._id !== id));
       setLoading(false);
+      toast.warn("User deleted successfully");
     } catch (error) {
+      toast.warn("Failed To  Delete User  ");
+
       console.error("Error deleting user:", error);
     }
   };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button } from "@mui/material";
 import CompanyTable from "./CompanyTable";
@@ -10,6 +10,9 @@ import SelectInput from "../../components/select";
 import Serviceform from "./Serviceform";
 import Toast from "../../components/helpers/toast/toast";
 import CompanyAuditTrail from "../../components/AuditHistory/CompanyAuditTrail";
+import { Dashboard } from "@mui/icons-material";
+import { useLocation } from "react-router";
+import DasahboardCompanyAccordian from "./DasahboardCompanyAccordian";
 
 const Company = () => {
   const [showForm, setShowForm] = useState("");
@@ -18,6 +21,19 @@ const Company = () => {
   const [companyId, setCompanyId] = useState("");
   const [name, setName] = useState("");
   const [status, setStatus] = useState("");
+
+  const location = useLocation();
+  const companyName = location.state?.companyName;
+
+  useEffect(() => {
+    if (companyName) {
+      alert(`Company Name: ${companyName}`);
+    }
+  }, [companyName]);
+  /* 
+  useEffect(() => {
+    setShowCompanyName(localStorage.getItem("companyName"));
+  }, []); */
 
   const handleServiceForm = () => {
     setServiceForm(!serviceForm);
@@ -65,7 +81,6 @@ const Company = () => {
               />
             </div>
           </div>
-
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <label
               htmlFor="Table"
@@ -113,6 +128,9 @@ const Company = () => {
               )}
             </div>
           </div>
+          {companyName && (
+            <DasahboardCompanyAccordian companyName={companyName} />
+          )}
           {showForm || companyId ? (
             <div className="justify-center">
               {
@@ -125,6 +143,7 @@ const Company = () => {
                     companyRefresh,
                     view,
                     setView,
+                    //companyName,
                   }}
                 />
               }
@@ -132,10 +151,16 @@ const Company = () => {
           ) : (
             ""
           )}
-
           <div className="bg-white rounded-lg shadow-md">
             <CompanyTable
-              {...{ setCompanyId, companyRefresh, name, status, setView }}
+              {...{
+                setCompanyId,
+                companyRefresh,
+                name,
+                status,
+                setView,
+                //companyName,
+              }}
             />
           </div>
         </div>

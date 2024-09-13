@@ -15,6 +15,20 @@ import Loader from "../helpers/loader";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 const BarChart = () => {
+  // Define a set of colors for bars to ensure uniqueness and consistency
+  const colors = [
+    "#42A5F5",
+    " #ff6385",
+    "#FFA726",
+    "#26C6DA",
+    "#7E57C2",
+    "#FF7043",
+    "#26A69A",
+    "#EC407A",
+    "#AB47BC",
+    "#FFCA28",
+  ];
+
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [
@@ -28,7 +42,7 @@ const BarChart = () => {
         pointRadius: 0, // Set the point radius to 0 to hide the dot
         backgroundColor: (context) => {
           const ctx = context.chart.ctx;
-          const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+          const gradient = ctx.createLinearGradient(2, 5, 0, 200);
           gradient.addColorStop(0, "#29CC3F");
           gradient.addColorStop(0.8, "rgba(41, 204, 63, 0.2)");
           return gradient;
@@ -67,13 +81,19 @@ const BarChart = () => {
             0
           )
         );
+
+        // Use the predefined colors array to set unique colors for each bar
+        const barColors = labels.map(
+          (_, index) => colors[index % colors.length]
+        );
+
         setChartData({
           labels: labels,
           datasets: [
             {
               label: "Number of Companies",
               data: data,
-              backgroundColor: "#42A5F5",
+              backgroundColor: barColors, // Set bar colors
               borderColor: "#1E88E5",
               borderWidth: 0.5,
               borderRadius: 5,
@@ -85,40 +105,12 @@ const BarChart = () => {
         });
       } catch (error) {
         console.error("Error fetching data:", error);
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
-
-  // const options = {
-  //   responsive: true,
-  //   plugins: {
-  //     legend: {
-  //       position: "top",
-  //     },
-  //   },
-  //   scales: {
-  //     x: {
-  //       title: {
-  //         display: true,
-  //         text: "Task Types",
-  //       },
-  //     },
-  //     y: {
-  //       beginAtZero: true,
-  //       title: {
-  //         display: true,
-  //         text: "Number of Companies",
-  //       },
-  //       /* ticks: {
-  //         callback: (value) => {
-  //           return Number.isInteger(value) ? value : value.toFixed(0);
-  //         },
-  //       }, */
-  //     },
-  //   },
-  // };
 
   const options = {
     plugins: {
@@ -169,12 +161,12 @@ const BarChart = () => {
           height: "40vh",
         }}
       >
-        {loading && loading ? (
+        {loading ? (
           <>
             <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
-              {loading && loading ? "Loading..." : "Tax Filing "}
+              Loading...
             </h1>
-            <div className="flex justify-center items-center  p-4">
+            <div className="flex justify-center items-center p-4">
               <Loader size={30} />
             </div>
           </>
