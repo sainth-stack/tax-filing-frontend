@@ -67,7 +67,7 @@ const Charts = () => {
         />
       </div>
 
-      <div className="p-2 flex gap-3">
+      <div className="grid grid-cols-2 gap-4  container">
         <PieChart companyDetails={companies} loading={loading} />
         <BarChart />
         <PaymentGraph />
