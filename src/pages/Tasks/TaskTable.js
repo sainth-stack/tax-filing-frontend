@@ -151,7 +151,7 @@ export default function TasksTable({
                       {task.applicationStatus || "N/A"}
                     </TableCell>
                     <TableCell align="center" padding="normal">
-                      {task.assignedName || "N/A"}
+                      {task.assignedTo || "N/A"}
                     </TableCell>
 
                     <TableCell align="center" padding="normal">

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -20,6 +20,27 @@
   right: 4rem;
 }
 
-body{
+body {
   font-family: Work Sans;
+}
+
+.scrollable-element {
+  overflow-y: scroll;
+}
+
+.scrollable-element::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollable-element::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.scrollable-element::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.scrollable-element::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

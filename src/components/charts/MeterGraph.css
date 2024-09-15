@@ -1,0 +1,25 @@
+.labels-overlay {
+  display: flex;
+  justify-content: space-around;
+  position: absolute;
+
+  top: 10px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  pointer-events: none; /* Make sure it does not block clicks */
+}
+
+.label {
+  cursor: pointer;
+  font-weight: bold;
+  color: #000;
+  pointer-events: auto; /* Allow clicks */
+}
+
+.label h6 {
+  margin: 0;
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  font-weight: bold;
+}

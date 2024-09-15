@@ -5,7 +5,9 @@ import SelectInput from "../select";
 import axios from "axios";
 import { base_url } from "../../const";
 import PaymentGraph from "./PaymentGraph";
-import TasksGraph from "./TasksGraph";
+import TasksGraph from "./PendingCompeltedTaksGraph";
+import MeterGraph from "./MeterGraph";
+import PendingCompeltedTaksGraph from "./PendingCompeltedTaksGraph";
 
 const Charts = () => {
   const [loading, setLoading] = useState(false);
@@ -71,7 +73,8 @@ const Charts = () => {
         <PieChart companyDetails={companies} loading={loading} />
         <BarChart />
         <PaymentGraph />
-        <TasksGraph />
+        <MeterGraph />
+        <PendingCompeltedTaksGraph />
       </div>
     </>
   );

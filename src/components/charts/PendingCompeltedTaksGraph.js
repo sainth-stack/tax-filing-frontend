@@ -1,7 +1,7 @@
-// components/TaskStatusGraph.js
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import axios from "axios";
+import { base_url } from "../../const";
 import {
   CategoryScale,
   LinearScale,
@@ -11,18 +11,20 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { base_url } from "../../const";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
+// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartDataLabels
 );
 
-const TaskStatusGraph = () => {
+const PendingCompletedTasksGraph = () => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(false);
 
@@ -33,65 +35,52 @@ const TaskStatusGraph = () => {
         const response = await axios.get(`${base_url}/tasks/all`);
         const tasks = response.data.data;
 
-        // Initialize objects to hold counts and task types
-        const taskTypes = [];
-        const completedCounts = {};
-        const notCompletedCounts = {};
+        const pendingTasksByPerson = {};
+        const completedTasksByPerson = {};
 
-        // Process tasks and aggregate data
         tasks.forEach((task) => {
-          const taskType = task.taskType || "Unknown";
-          const paymentStatus = task.PaymentStatus || "Unknown"; // Updated field name
+          const assignedTo = task.assignedTo || "Unassigned";
+          const actualCompletionDate = task.actualCompletionDate
+            ? new Date(task.actualCompletionDate)
+            : null;
+          const dueDate = task.dueDate ? new Date(task.dueDate) : null;
 
-          // Collect unique task types
-          if (!taskTypes.includes(taskType)) {
-            taskTypes.push(taskType);
-            completedCounts[taskType] = 0;
-            notCompletedCounts[taskType] = 0;
-          }
-
-          // Count completed tasks based on actualCompletionDate
-          if (task.actualCompletionDate) {
-            completedCounts[taskType]++;
-          }
-
-          // Count not completed tasks based on paymentStatus
-          if (paymentStatus !== "paid") {
-            notCompletedCounts[taskType]++;
+          if (actualCompletionDate && dueDate) {
+            if (actualCompletionDate > dueDate) {
+              pendingTasksByPerson[assignedTo] =
+                (pendingTasksByPerson[assignedTo] || 0) + 1;
+            } else {
+              completedTasksByPerson[assignedTo] =
+                (completedTasksByPerson[assignedTo] || 0) + 1;
+            }
           }
         });
 
-        // Ensure all task types are included
-        taskTypes.forEach((type) => {
-          if (!(type in completedCounts)) completedCounts[type] = 0;
-          if (!(type in notCompletedCounts)) notCompletedCounts[type] = 0;
-        });
+        // Create labels (list of unique assignedTo values)
+        const labels = [
+          ...new Set([
+            ...Object.keys(pendingTasksByPerson),
+            ...Object.keys(completedTasksByPerson),
+          ]),
+        ].sort();
 
-        // Prepare data for the bar chart
-        const completedData = taskTypes.map(
-          (type) => completedCounts[type] || 0
-        );
-        const notCompletedData = taskTypes.map(
-          (type) => notCompletedCounts[type] || 0
-        );
-
-        const chartData = {
-          labels: taskTypes,
+        const data = {
+          labels,
           datasets: [
             {
-              label: "Completed",
-              data: completedData,
+              label: "Pending Tasks",
+              data: labels.map((label) => pendingTasksByPerson[label] || 0),
               backgroundColor: "blue",
             },
             {
-              label: "Not Completed",
-              data: notCompletedData,
-              backgroundColor: "red",
+              label: "Completed Tasks",
+              data: labels.map((label) => completedTasksByPerson[label] || 0),
+              backgroundColor: "orange",
             },
           ],
         };
 
-        setChartData(chartData);
+        setChartData(data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching or processing data:", error);
@@ -104,21 +93,23 @@ const TaskStatusGraph = () => {
 
   return (
     <div
-      className="bar_chart shadow-lg p-2 scrollable-element"
       style={{
+        position: "relative",
         width: "100%",
         height: "40vh",
-        overflow: "scroll",
+        overflow: "auto",
       }}
+      className="shadow-lg mt-4 scrollable-element
+"
     >
-      <h2>Task Status Overview</h2>
+      <h2>Tasks Overview by Person</h2>
       {loading ? (
         <p>Loading...</p>
       ) : (
         <Bar
           data={chartData}
           options={{
-            indexAxis: "x", // Horizontal bars
+            indexAxis: "y",
             scales: {
               x: {
                 stacked: true,
@@ -136,9 +127,6 @@ const TaskStatusGraph = () => {
                     size: 16,
                     weight: "bold",
                   },
-                  callback: function (value) {
-                    return value; // Display only numerical counts on y-axis
-                  },
                 },
               },
             },
@@ -152,6 +140,17 @@ const TaskStatusGraph = () => {
                   },
                 },
               },
+              datalabels: {
+                display: true,
+                color: "white",
+                anchor: "center",
+                align: "center",
+                formatter: (value) => value,
+                font: {
+                  size: 20,
+                  weight: "bold",
+                },
+              },
             },
             responsive: true,
             maintainAspectRatio: true,
@@ -162,4 +161,4 @@ const TaskStatusGraph = () => {
   );
 };
 
-export default TaskStatusGraph;
+export default PendingCompletedTasksGraph;

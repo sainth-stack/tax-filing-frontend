@@ -127,7 +127,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
     try {
       const response = await axios.get(`${base_url}/users/all`);
       const data = response.data?.data.map((item) => ({
-        value: item?._id,
+        value: item?.firstName,
         label: item?.firstName,
       }));
       setUsers(data);
