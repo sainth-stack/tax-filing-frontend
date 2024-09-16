@@ -70,12 +70,12 @@ const PendingCompletedTasksGraph = () => {
             {
               label: "Pending Tasks",
               data: labels.map((label) => pendingTasksByPerson[label] || 0),
-              backgroundColor: "blue",
+              backgroundColor: "rgba(0, 0, 255, 0.75)",
             },
             {
               label: "Completed Tasks",
               data: labels.map((label) => completedTasksByPerson[label] || 0),
-              backgroundColor: "orange",
+              backgroundColor: "rgba(255, 0, 0, 0.75)",
             },
           ],
         };
@@ -145,7 +145,7 @@ const PendingCompletedTasksGraph = () => {
                 color: "white",
                 anchor: "center",
                 align: "center",
-                formatter: (value) => value,
+                formatter: (value) => value || "",
                 font: {
                   size: 20,
                   weight: "bold",

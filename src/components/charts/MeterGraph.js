@@ -90,7 +90,7 @@ const MeterGraph = () => {
   return (
     <div
       style={{ position: "relative", width: "100%", height: "40vh" }}
-      className="shadow-lg mt-4"
+      className="shadow-lg mt-4 overflow-auto scrollable-element"
     >
       <div className="mt-6 m-2">
         <GaugeChart

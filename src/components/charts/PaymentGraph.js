@@ -1,4 +1,3 @@
-// components/TaskStatusGraph.js
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import axios from "axios";
@@ -33,41 +32,69 @@ const TaskStatusGraph = () => {
         const response = await axios.get(`${base_url}/tasks/all`);
         const tasks = response.data.data;
 
-        // Initialize objects to hold counts and task types
         const taskTypes = [];
         const completedCounts = {};
         const notCompletedCounts = {};
 
-        // Process tasks and aggregate data
-        tasks.forEach((task) => {
-          const taskType = task.taskType || "Unknown";
-          const paymentStatus = task.PaymentStatus || "Unknown"; // Updated field name
+        const getStatusForTaskType = (task) => {
+          switch (task.taskType) {
+            case "gst":
+              return {
+                filingStatus: task.gstMonthly_filingStatus || "Unknown",
+                paymentStatus: task.gstMonthlyPayment_payment || "Unknown",
+              };
+            case "pf":
+              return {
+                filingStatus: task.pfMonthly_filingStatus || "Unknown",
+                paymentStatus: "N/A",
+              };
+            case "tds":
+              return {
+                filingStatus: task.tdstcsMonthly_filingStatus || "Unknown",
+                paymentStatus: task.tdsmonthly_paymentStatus || "Unknown",
+              };
+            case "incomeTax":
+              return {
+                filingStatus: task.taxMonthly_filingStatus || "Unknown",
+                paymentStatus: task.taxmonthly_paymentStatus || "Unknown",
+              };
+            case "esi":
+              return {
+                filingStatus: task.esiMonthly_filingStatus || "Unknown",
+                paymentStatus: "N/A",
+              };
+            case "professionalTax":
+              return {
+                filingStatus: task.pftMonthly_filingStatus || "Unknown",
+                paymentStatus: "N/A",
+              };
+            default:
+              return {
+                filingStatus: "Unknown",
+                paymentStatus: task.paymentStatus || "Unknown",
+              };
+          }
+        };
 
-          // Collect unique task types
+        tasks.map((task) => {
+          const taskType = task.taskType || "Unknown";
+          const { filingStatus, paymentStatus } = getStatusForTaskType(task);
+
           if (!taskTypes.includes(taskType)) {
             taskTypes.push(taskType);
             completedCounts[taskType] = 0;
             notCompletedCounts[taskType] = 0;
           }
 
-          // Count completed tasks based on actualCompletionDate
-          if (task.actualCompletionDate) {
+          if (filingStatus === "Completed" || paymentStatus === "paid") {
             completedCounts[taskType]++;
-          }
-
-          // Count not completed tasks based on paymentStatus
-          if (paymentStatus !== "paid") {
+          } else {
             notCompletedCounts[taskType]++;
           }
+
+          return null;
         });
 
-        // Ensure all task types are included
-        taskTypes.forEach((type) => {
-          if (!(type in completedCounts)) completedCounts[type] = 0;
-          if (!(type in notCompletedCounts)) notCompletedCounts[type] = 0;
-        });
-
-        // Prepare data for the bar chart
         const completedData = taskTypes.map(
           (type) => completedCounts[type] || 0
         );
@@ -81,12 +108,12 @@ const TaskStatusGraph = () => {
             {
               label: "Completed",
               data: completedData,
-              backgroundColor: "blue",
+              backgroundColor: "rgba( 0, 0, 255,0.75)",
             },
             {
               label: "Not Completed",
               data: notCompletedData,
-              backgroundColor: "red",
+              backgroundColor: "rgba(255, 0, 0, 0.75)",
             },
           ],
         };
@@ -150,6 +177,17 @@ const TaskStatusGraph = () => {
                     size: 14,
                     weight: "bold",
                   },
+                },
+              },
+              datalabels: {
+                display: true,
+                color: "white",
+                anchor: "center",
+                align: "center",
+                formatter: (value) => value || "",
+                font: {
+                  size: 20,
+                  weight: "bold",
                 },
               },
             },
