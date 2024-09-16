@@ -3,7 +3,6 @@ import axios from "axios";
 import GaugeChart from "react-gauge-chart";
 import { base_url } from "./../../const";
 import "./MeterGraph.css";
-import { type } from "@testing-library/user-event/dist/type";
 
 const MeterGraph = () => {
   const [data, setData] = useState({
@@ -22,10 +21,11 @@ const MeterGraph = () => {
         const response = await axios.get(`${base_url}/tasks/all`);
         const tasks = response.data.data;
 
+        const currentDate = new Date();
+
         const categorizedTasks = tasks.reduce(
           (acc, task) => {
             const dueDate = new Date(task.dueDate);
-            const startDate = new Date(task.startDate);
             const actualCompletionDate = task.actualCompletionDate
               ? new Date(task.actualCompletionDate)
               : null;
@@ -37,7 +37,11 @@ const MeterGraph = () => {
                 acc.overdue.push(task);
               }
             } else {
-              acc.inProgress.push(task);
+              if (currentDate > dueDate) {
+                acc.overdue.push(task);
+              } else {
+                acc.inProgress.push(task);
+              }
             }
             return acc;
           },
@@ -71,10 +75,10 @@ const MeterGraph = () => {
   if (data.overdue > 0) {
     categories.push(data.overdue / totalTasks);
     colors.push("#FF0000");
-    if (data.inProgress > 0) {
-      categories.push(data.inProgress / totalTasks);
-      colors.push("#FFBF00");
-    }
+  }
+  if (data.inProgress > 0) {
+    categories.push(data.inProgress / totalTasks);
+    colors.push("#FFBF00");
   }
   if (data.completed > 0) {
     categories.push(data.completed / totalTasks);
@@ -187,7 +191,6 @@ const MeterGraph = () => {
                     }}
                   >
                     {task.taskType}
-                    {/* Ensure this is the field you want to display */}
                   </li>
                 )
               )
