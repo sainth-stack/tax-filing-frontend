@@ -10,6 +10,7 @@ import Users from "./pages/users/Users";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import NotificationSettings from "./pages/notifications/NotificationSettings";
 
 function App() {
   return (
@@ -21,6 +22,11 @@ function App() {
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/users" element={<Users />} />
         <Route path="/company" element={<Company />} />
+        <Route
+          path="/notification-settings"
+          element={<NotificationSettings />}
+        />
+
         <Route path="*" element={<Pagenotfound />} />
       </Routes>
     </>

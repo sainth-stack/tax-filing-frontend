@@ -209,29 +209,22 @@ export default function CompanyTable({
         >
           <TableHead>
             <TableRow>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 S.No
               </TableCell>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Company Name
               </TableCell>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Status
               </TableCell>
-
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Mobile
               </TableCell>
-
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Email Id
               </TableCell>
-
-              {/* <TableCell align="center" padding="normal">
-                Address
-              </TableCell> */}
-
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Actions
               </TableCell>
             </TableRow>
@@ -249,31 +242,23 @@ export default function CompanyTable({
               companies
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((company, index) => (
-                  <TableRow
-                    key={company._id || index}
-                    sx={{
-                      height: "48px",
-                    }}
-                  >
-                    <TableCell align="center" padding="normal">
+                  <TableRow key={company._id || index} sx={{ height: "48px" }}>
+                    <TableCell align="left" padding="normal">
                       {page * rowsPerPage + index + 1}
                     </TableCell>
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {company.companyName || "N/A"}
                     </TableCell>
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {company.clientStatus || "N/A"}
                     </TableCell>
-                    {/* //add */}
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {company.phone || "N/A"}
                     </TableCell>
-
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {company.mailId || "N/A"}
                     </TableCell>
-
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       <IconButton
                         aria-label="edit"
                         size="small"
@@ -294,7 +279,6 @@ export default function CompanyTable({
                           />
                         </Tooltip>
                       </IconButton>
-
                       <IconButton
                         aria-label="edit"
                         size="small"
@@ -329,7 +313,6 @@ export default function CompanyTable({
                           />
                         </Tooltip>
                       </IconButton>
-
                       <IconButton
                         aria-label="audit"
                         size="small"
@@ -350,6 +333,7 @@ export default function CompanyTable({
             )}
           </TableBody>
         </Table>
+
         <TablePagination
           rowsPerPageOptions={[5, 10, 15]}
           component="div"

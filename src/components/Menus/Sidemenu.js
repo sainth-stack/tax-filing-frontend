@@ -8,6 +8,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import BusinessIcon from "@mui/icons-material/Business";
 import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
+import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 
 const Sidemenu = () => {
   const location = useLocation();
@@ -90,6 +91,25 @@ const Sidemenu = () => {
             >
               <PeopleAltOutlined />
               {isOpen && <span className="text-sm font-medium">Users</span>}
+            </Link>
+          </li>
+          {/* notification settings */}
+          <li>
+            <Link
+              to="/notification-settings"
+              onClick={() => handleMenuClick("notification-settings")}
+              className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${
+                activeItem === "notification-settings"
+                  ? "border-blue-500 bg-blue-50 text-blue-700"
+                  : "border-transparent"
+              } border-l-4 transition-colors duration-200`}
+            >
+              <NotificationsActiveOutlinedIcon />
+              {isOpen && (
+                <span className="text-sm font-medium">
+                  Notification-Settings
+                </span>
+              )}
             </Link>
           </li>
         </ul>

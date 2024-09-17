@@ -95,28 +95,28 @@ export default function TasksTable({
         >
           <TableHead>
             <TableRow>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 S.No
               </TableCell>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Company
               </TableCell>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Task Name
               </TableCell>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Due Date
               </TableCell>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Status
               </TableCell>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Assigned To
               </TableCell>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Application Sub Status
               </TableCell>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Actions
               </TableCell>
             </TableRow>
@@ -135,29 +135,28 @@ export default function TasksTable({
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((task, index) => (
                   <TableRow key={task._id || index} sx={{ height: "48px" }}>
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {page * rowsPerPage + index + 1}
                     </TableCell>
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {task.company || "N/A"}
                     </TableCell>
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {task.taskName || "N/A"}
                     </TableCell>
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {new Date(task.dueDate).toLocaleDateString() || "N/A"}
                     </TableCell>
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {task.applicationStatus || "N/A"}
                     </TableCell>
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {task.assignedTo || "N/A"}
                     </TableCell>
-
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {task.applicationSubStatus || "N/A"}
                     </TableCell>
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       <IconButton
                         aria-label="edit"
                         size="small"
@@ -184,6 +183,7 @@ export default function TasksTable({
             )}
           </TableBody>
         </Table>
+
         <TablePagination
           rowsPerPageOptions={[5, 10, 15]}
           component="div"

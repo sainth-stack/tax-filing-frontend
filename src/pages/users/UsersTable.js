@@ -93,19 +93,19 @@ export default function UsersTable({
         >
           <TableHead>
             <TableRow>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 S.No
               </TableCell>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Name
               </TableCell>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Email
               </TableCell>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Company Name
               </TableCell>
-              <TableCell align="center" padding="normal">
+              <TableCell align="left" padding="normal">
                 Actions
               </TableCell>
             </TableRow>
@@ -124,19 +124,19 @@ export default function UsersTable({
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((user, index) => (
                   <TableRow key={user._id || index} sx={{ height: "48px" }}>
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {page * rowsPerPage + index + 1}
                     </TableCell>
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {user.firstName + " " + user.lastName || "N/A"}
                     </TableCell>
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {user.email || "N/A"}
                     </TableCell>
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       {user.company || "N/A"}
                     </TableCell>
-                    <TableCell align="center" padding="normal">
+                    <TableCell align="left" padding="normal">
                       <IconButton
                         aria-label="edit"
                         size="small"
@@ -163,6 +163,7 @@ export default function UsersTable({
             )}
           </TableBody>
         </Table>
+
         <TablePagination
           rowsPerPageOptions={[5, 10, 15]}
           component="div"
