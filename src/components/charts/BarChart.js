@@ -11,48 +11,45 @@ import {
 import axios from "axios";
 import { base_url } from "../../const";
 import Loader from "../helpers/loader";
+import { IconButton } from "@mui/material";
+import { CloseOutlined } from "@mui/icons-material";
+import { useNavigate } from "react-router";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-const BarChart = () => {
-  // Define a set of colors for bars to ensure uniqueness and consistency
+const BarChart = ({ chartHeight }) => {
   const colors = [
-    "#42A5F5",
-    " #ff6385",
-    "#FFA726",
-    "#26C6DA",
-    "#7E57C2",
-    "#FF7043",
-    "#26A69A",
-    "#EC407A",
-    "#AB47BC",
-    "#FFCA28",
+    "#42A5F5", "#ff6385", "#FFA726", "#26C6DA", "#7E57C2", "#FF7043", "#26A69A", "#EC407A", "#AB47BC", "#FFCA28"
   ];
 
   const [chartData, setChartData] = useState({
     labels: [],
-    datasets: [
-      {
-        label: "Number of Companies By Task Type",
-        data: [],
-        borderColor: "#29CC3F",
-        borderWidth: 4,
-        fill: true,
-        lineTension: 0.5,
-        pointRadius: 0, // Set the point radius to 0 to hide the dot
-        backgroundColor: (context) => {
-          const ctx = context.chart.ctx;
-          const gradient = ctx.createLinearGradient(2, 5, 0, 200);
-          gradient.addColorStop(0, "#29CC3F");
-          gradient.addColorStop(0.8, "rgba(41, 204, 63, 0.2)");
-          return gradient;
-        },
+    datasets: [{
+      label: "Number of Companies By Task Type",
+      data: [],
+      borderColor: "#29CC3F",
+      borderWidth: 4,
+      fill: true,
+      lineTension: 0.5,
+      pointRadius: 0,
+      backgroundColor: (context) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(2, 5, 0, 200);
+        gradient.addColorStop(0, "#29CC3F");
+        gradient.addColorStop(0.8, "rgba(41, 204, 63, 0.2)");
+        return gradient;
       },
-    ],
+    }],
   });
 
   const [loading, setLoading] = useState(false);
-
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
+  const [clickedCompanies, setClickedCompanies] = useState([]);
+  const [clickedLabel, setClickedLabel] = useState("");
+  // const [companyCountsByTask, setCompanyCountsByTask] = useState({}); // Store company counts by task
+  const [companyGroupsByTask, setCompanyGroupByTask] = useState([])
+  const navigate = useNavigate()
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -61,7 +58,7 @@ const BarChart = () => {
         const tasks = response.data.data;
         setLoading(false);
 
-        const companyCountsByTask = tasks.reduce((acc, task) => {
+        const companyCounts = tasks.reduce((acc, task) => {
           const taskType = task.taskType;
           const companyName = task.companyName;
 
@@ -73,35 +70,51 @@ const BarChart = () => {
 
           return acc;
         }, {});
+        console.log(tasks)
+        const companyGroupsByTask = tasks.reduce((acc, task) => {
+          const taskType = task.taskType;
+          const companyName = task.company;
 
-        const labels = Object.keys(companyCountsByTask);
+          // If the task type doesn't exist in the accumulator, initialize it with an empty array
+          if (!acc[taskType]) {
+            acc[taskType] = [];
+          }
+
+          // Add the company name to the list of companies for this task type
+          acc[taskType].push(companyName);
+
+          return acc;
+        }, {});
+
+        setCompanyGroupByTask(companyGroupsByTask)
+
+        // setCompanyCountsByTask(companyCounts);
+
+        const labels = Object.keys(companyCounts);
         const data = labels.map((taskType) =>
-          Object.values(companyCountsByTask[taskType]).reduce(
+          Object.values(companyCounts[taskType]).reduce(
             (sum, count) => sum + count,
             0
           )
         );
 
-        // Use the predefined colors array to set unique colors for each bar
         const barColors = labels.map(
           (_, index) => colors[index % colors.length]
         );
 
         setChartData({
           labels: labels,
-          datasets: [
-            {
-              label: "Number of Companies",
-              data: data,
-              backgroundColor: barColors, // Set bar colors
-              borderColor: "#1E88E5",
-              borderWidth: 0.5,
-              borderRadius: 5,
-              fill: true,
-              lineTension: 0.4,
-              pointRadius: 0, // Set the point radius to 0 to hide the dot
-            },
-          ],
+          datasets: [{
+            label: "Number of Companies",
+            data: data,
+            backgroundColor: barColors,
+            borderColor: "#1E88E5",
+            borderWidth: 0.5,
+            borderRadius: 5,
+            fill: true,
+            lineTension: 0.4,
+            pointRadius: 0,
+          }],
         });
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -112,7 +125,30 @@ const BarChart = () => {
     fetchData();
   }, []);
 
+  const handleClick = (event, elements) => {
+    if (elements.length > 0) {
+      const index = elements[0].index;
+      const label = chartData.labels[index];
+      const companies = Object.values(companyGroupsByTask[label]);
+
+      // Ensure you're getting the bounding rectangle of the chart container
+      const chartContainer = event.chart.canvas.parentNode;
+      const chartRect = chartContainer.getBoundingClientRect();
+
+      // Calculate the position of the popup relative to the viewport
+      const popupX = event.clientX - chartRect.left + window.scrollX;
+      const popupY = event.clientY - chartRect.top + window.scrollY;
+
+      setClickedLabel(label);
+      setClickedCompanies(companies); // Show company names
+      // setPopupPosition({ x: 10, y: 20 });
+      setPopupVisible(true);
+    }
+  };
+
+
   const options = {
+    onClick: handleClick, // Add click handler
     plugins: {
       legend: {
         display: false,
@@ -143,22 +179,29 @@ const BarChart = () => {
           display: false,
         },
         ticks: {
-          stepSize: 1, // Ensure y-axis uses whole number steps
-          callback: (value) => {
-            return Number.isInteger(value) ? value : null; // Only display integers
-          },
+          stepSize: 1,
+          callback: (value) => Number.isInteger(value) ? value : null,
         },
       },
     },
   };
 
+  const handleCompanyClick = (companyName) => {
+    navigate("/company", { state: { companyName } });
+  };
+
   return (
     <div className="container">
       <div
-        className="bar_chart shadow-lg p-2"
+        className="bar_chart p-2"
         style={{
           width: "100%",
-          height: "40vh",
+          position: "relative",
+          height: chartHeight || "380px", // Match pie chart height
+          border: "1px solid #e0e0e0",
+          borderRadius: "8px",
+          backgroundColor: "#fff",
+          padding: "8px",
         }}
       >
         {loading ? (
@@ -174,6 +217,69 @@ const BarChart = () => {
           <Bar data={chartData} options={options} />
         )}
       </div>
+
+      {popupVisible && (
+        <div
+          style={{
+            position: "absolute",
+            marginTop: '-350px',
+            marginLeft: '350px',
+            backgroundColor: "#fff",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+            borderRadius: "12px",
+            padding: "12px",
+            zIndex: 1000,
+            width: "250px",
+            maxHeight: "300px", // Set a fixed maximum height,
+            overflow: "auto",  // Enable vertical scrolling if content overflows
+          }}
+        >
+          <div
+            style={{
+              textAlign: "center",
+              marginBottom: "12px",
+              fontSize: "18px",
+              fontWeight: "600",
+              color: "#333",
+            }}
+          >
+            {clickedLabel}
+          </div>
+          <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
+            {clickedCompanies.map((company, index) => (
+              <li
+                key={index}
+                style={{
+                  padding: "10px 12px",
+                  borderBottom: index !== clickedCompanies.length - 1 ? "1px solid #eee" : "none",
+                  cursor: "pointer",
+                  transition: "background-color 0.2s ease",
+                }}
+                className="hover:bg-gray-100"
+                onClick={() => handleCompanyClick(company)}
+              >
+                <strong style={{ color: "#555" }}>Company:</strong>{" "}
+                <span style={{ color: "#007BFF" }}>{company}</span>
+              </li>
+            ))}
+          </ul>
+          <IconButton
+            onClick={() => setPopupVisible(false)}
+            style={{
+              position: "absolute",
+              top: "-10px",
+              right: "-10px",
+              backgroundColor: "#f5f5f5",
+              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+              borderRadius: "50%",
+              padding: "6px",
+            }}
+          >
+            <CloseOutlined />
+          </IconButton>
+        </div>
+      )}
+
     </div>
   );
 };

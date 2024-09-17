@@ -3,20 +3,13 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import CompanyTable from "./CompanyTable";
 import Layout from "./../../components/Layout/Layout";
-import ServiceTable from "../../components/services/Servicetable";
 import CompanyForm from "./Companyform";
 import CustomInput from "../../components/input";
 import SelectInput from "../../components/select";
-import Serviceform from "./Serviceform";
-import Toast from "../../components/helpers/toast/toast";
-import CompanyAuditTrail from "../../components/AuditHistory/CompanyAuditTrail";
-import { Dashboard } from "@mui/icons-material";
 import { useLocation } from "react-router";
-import DasahboardCompanyAccordian from "./DasahboardCompanyAccordian";
 
 const Company = () => {
   const [showForm, setShowForm] = useState("");
-  const [serviceForm, setServiceForm] = useState(false);
   const [view, setView] = useState(false);
   const [companyId, setCompanyId] = useState("");
   const [name, setName] = useState("");
@@ -27,22 +20,15 @@ const Company = () => {
 
   useEffect(() => {
     if (companyName) {
-      alert(`Company Name: ${companyName}`);
+      setView(true)
+      setCompanyId(companyName)
     }
   }, [companyName]);
-  /* 
-  useEffect(() => {
-    setShowCompanyName(localStorage.getItem("companyName"));
-  }, []); */
 
-  const handleServiceForm = () => {
-    setServiceForm(!serviceForm);
-  };
   const handleShowForm = () => {
     setShowForm(!showForm);
   };
 
-  const [refresh, setRefresh] = useState(false);
   const [companyRefresh, setCompanyRefresh] = useState(false);
   return (
     <>
@@ -128,9 +114,6 @@ const Company = () => {
               )}
             </div>
           </div>
-          {companyName && (
-            <DasahboardCompanyAccordian companyName={companyName} />
-          )}
           {showForm || companyId ? (
             <div className="justify-center">
               {

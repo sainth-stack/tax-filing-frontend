@@ -58,10 +58,7 @@ const PendingCompletedTasksGraph = () => {
 
         // Create labels (list of unique assignedTo values)
         const labels = [
-          ...new Set([
-            ...Object.keys(pendingTasksByPerson),
-            ...Object.keys(completedTasksByPerson),
-          ]),
+          ...new Set([ ...Object.keys(pendingTasksByPerson), ...Object.keys(completedTasksByPerson) ]),
         ].sort();
 
         const data = {
@@ -70,12 +67,12 @@ const PendingCompletedTasksGraph = () => {
             {
               label: "Pending Tasks",
               data: labels.map((label) => pendingTasksByPerson[label] || 0),
-              backgroundColor: "rgba(0, 0, 255, 0.75)",
+              backgroundColor: "rgba(255, 99, 132, 0.8)", // Red for pending
             },
             {
               label: "Completed Tasks",
               data: labels.map((label) => completedTasksByPerson[label] || 0),
-              backgroundColor: "rgba(255, 0, 0, 0.75)",
+              backgroundColor: "rgba(75, 192, 192, 0.8)", // Green for completed
             },
           ],
         };
@@ -98,13 +95,18 @@ const PendingCompletedTasksGraph = () => {
         width: "100%",
         height: "40vh",
         overflow: "auto",
+        borderRadius: "10px",
+        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.15)",
+        backgroundColor: "#f9f9f9",
+        padding: "20px",
       }}
-      className="shadow-lg mt-4 scrollable-element
-"
+      className="shadow-lg mt-4"
     >
-      <h2>Tasks Overview by Person</h2>
+      <h2 style={{ textAlign: "center", marginBottom: "20px", fontSize: "24px", color: "#333" }}>
+        Tasks Overview by Person
+      </h2>
       {loading ? (
-        <p>Loading...</p>
+        <p style={{ textAlign: "center", fontSize: "18px", color: "#666" }}>Loading...</p>
       ) : (
         <Bar
           data={chartData}
@@ -113,20 +115,28 @@ const PendingCompletedTasksGraph = () => {
             scales: {
               x: {
                 stacked: true,
+                grid: {
+                  display: false, // Hide grid lines
+                },
                 ticks: {
                   font: {
                     size: 16,
                     weight: "bold",
                   },
+                  color: "#333",
                 },
               },
               y: {
                 stacked: true,
+                grid: {
+                  display: false, // Hide grid lines
+                },
                 ticks: {
                   font: {
                     size: 16,
                     weight: "bold",
                   },
+                  color: "#333",
                 },
               },
             },
@@ -138,22 +148,31 @@ const PendingCompletedTasksGraph = () => {
                     size: 14,
                     weight: "bold",
                   },
+                  color: "#333",
                 },
               },
               datalabels: {
                 display: true,
                 color: "white",
-                anchor: "center",
-                align: "center",
+                anchor: "end",
+                align: "top",
                 formatter: (value) => value || "",
                 font: {
-                  size: 20,
+                  size: 14,
                   weight: "bold",
                 },
               },
             },
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
+            layout: {
+              padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10,
+              },
+            },
           }}
         />
       )}
