@@ -52,10 +52,13 @@ const Tasks = () => {
   const location = useLocation();
   const TaskId = location.state?.companyId;
   const PaymentGraphDetails = location?.state?.selectedTasks;
+
   const PendingTasksGraphDetails = location?.state?.selectedTask;
+  const MeterGraph = location?.state?.meterTasks;
 
   console.log("payment {3rd} graph", PaymentGraphDetails);
   console.log("PendingTasksGraphDetails {5rd} graph", PendingTasksGraphDetails);
+  console.log("Meter /Tasks {5rd} graph", MeterGraph);
 
   const [tasks, setTasks] = useState([]);
   const [companies, setCompanies] = useState([]);
@@ -81,8 +84,14 @@ const Tasks = () => {
       setOpen(true);
     }
   }, []);
+
   useEffect(() => {
     if (PendingTasksGraphDetails) {
+      setOpen(true);
+    }
+  }, []);
+  useEffect(() => {
+    if (MeterGraph) {
       setOpen(true);
     }
   }, []);
@@ -353,6 +362,37 @@ const Tasks = () => {
                 </DialogTitle>
                 <DialogContent>
                   {PendingTasksGraphDetails?.tasks?.map((task, index) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        border: "1px solid #ddd",
+                        padding: 1,
+                        borderRadius: "4px",
+                      }}
+                    >
+                      <Typography variant="body1">{task.taskName}</Typography>
+                    </Box>
+                  ))}
+                </DialogContent>
+              </Dialog>
+            )}
+
+            {MeterGraph && (
+              <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+                <DialogTitle>
+                  Task List
+                  <IconButton
+                    edge="end"
+                    color="inherit"
+                    onClick={handleClose}
+                    aria-label="close"
+                    sx={{ position: "absolute", right: 8, top: 8 }}
+                  >
+                    <CloseOutlined />
+                  </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                  {MeterGraph?.map((task, index) => (
                     <Box
                       key={index}
                       sx={{

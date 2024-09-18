@@ -3,6 +3,7 @@ import axios from "axios";
 import GaugeChart from "react-gauge-chart";
 import { base_url } from "./../../const";
 import "./MeterGraph.css";
+import { useNavigate } from "react-router";
 
 const MeterGraph = () => {
   const [data, setData] = useState({
@@ -11,6 +12,8 @@ const MeterGraph = () => {
     completed: 0,
   });
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
   const [selectedCategory, setSelectedCategory] = useState("");
   const [taskDetails, setTaskDetails] = useState({
     overdue: [],
@@ -90,6 +93,10 @@ const MeterGraph = () => {
   const handleCategoryClick = (category) => {
     console.log(`Selected category: ${category}`);
     console.log("Tasks:", taskDetails[category.toLowerCase()]);
+    navigate("/tasks", {
+      state: { meterTasks: taskDetails[category.toLowerCase()] },
+    });
+
     setSelectedCategory(category);
   };
 
@@ -174,7 +181,6 @@ const MeterGraph = () => {
                 fontSize: "16px",
                 fontWeight: "bold",
               }}
-              onClick={() => setSelectedCategory("")}
             >
               &times;
             </button>
