@@ -34,8 +34,8 @@ const TaskStatusGraph = () => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [popupContent, setPopupContent] = useState("");
-  const [clickedTaskType, setClickedTaskType] = useState("");
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -43,53 +43,15 @@ const TaskStatusGraph = () => {
         const response = await axios.get(`${base_url}/tasks/all`);
         const tasks = response.data.data;
         setTasks(tasks);
+
         const taskTypes = [];
         const completedCounts = {};
         const notCompletedCounts = {};
 
-        const getStatusForTaskType = (task) => {
-          switch (task.taskType) {
-            case "gst":
-              return {
-                filingStatus: task.gstMonthly_filingStatus || "Unknown",
-                paymentStatus: task.gstMonthlyPayment_payment || "Unknown",
-              };
-            case "pf":
-              return {
-                filingStatus: task.pfMonthly_filingStatus || "Unknown",
-                paymentStatus: "N/A",
-              };
-            case "tds":
-              return {
-                filingStatus: task.tdstcsMonthly_filingStatus || "Unknown",
-                paymentStatus: task.tdsmonthly_paymentStatus || "Unknown",
-              };
-            case "incomeTax":
-              return {
-                filingStatus: task.taxMonthly_filingStatus || "Unknown",
-                paymentStatus: task.taxmonthly_paymentStatus || "Unknown",
-              };
-            case "esi":
-              return {
-                filingStatus: task.esiMonthly_filingStatus || "Unknown",
-                paymentStatus: "N/A",
-              };
-            case "professionalTax":
-              return {
-                filingStatus: task.pftMonthly_filingStatus || "Unknown",
-                paymentStatus: "N/A",
-              };
-            default:
-              return {
-                filingStatus: "Unknown",
-                paymentStatus: task.paymentStatus || "Unknown",
-              };
-          }
-        };
-
-        tasks.map((task) => {
+        // Collect counts of completed and not completed tasks based on `actualCompletionDate`
+        tasks.forEach((task) => {
           const taskType = task.taskType || "Unknown";
-          const { filingStatus, paymentStatus } = getStatusForTaskType(task);
+          const isCompleted = task.actualCompletionDate !== null;
 
           if (!taskTypes.includes(taskType)) {
             taskTypes.push(taskType);
@@ -97,13 +59,11 @@ const TaskStatusGraph = () => {
             notCompletedCounts[taskType] = 0;
           }
 
-          if (filingStatus === "Completed" || paymentStatus === "paid") {
+          if (isCompleted) {
             completedCounts[taskType]++;
           } else {
             notCompletedCounts[taskType]++;
           }
-
-          return null;
         });
 
         const completedData = taskTypes.map(
@@ -113,7 +73,7 @@ const TaskStatusGraph = () => {
           (type) => notCompletedCounts[type] || 0
         );
 
-        const chartData = {
+        setChartData({
           labels: taskTypes,
           datasets: [
             {
@@ -127,9 +87,8 @@ const TaskStatusGraph = () => {
               backgroundColor: "rgba(255, 0, 0, 0.75)",
             },
           ],
-        };
+        });
 
-        setChartData(chartData);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching or processing data:", error);
@@ -142,11 +101,9 @@ const TaskStatusGraph = () => {
 
   const handleClick = (event, elements) => {
     if (elements.length > 0) {
+      const datasetIndex = elements[0].datasetIndex;
       const index = elements[0].index;
       const label = chartData.labels[index];
-      const completedCount = chartData.datasets[0].data[index];
-      const notCompletedCount = chartData.datasets[1].data[index];
-      const content = `Completed: ${completedCount}, Not Completed: ${notCompletedCount}`;
 
       const chartContainer = event.chart.canvas.parentNode;
       const chartRect = chartContainer.getBoundingClientRect();
@@ -154,16 +111,33 @@ const TaskStatusGraph = () => {
       const popupX = event.clientX - chartRect.left + window.scrollX;
       const popupY = event.clientY - chartRect.top + window.scrollY;
 
-      const selectedTasks = tasks.filter((task) => task.taskType === label);
+      // Determine whether the user clicked on the "Completed" or "Not Completed" section
+      const isCompletedSection = datasetIndex === 0; // Index 0 is for "Completed"
+      const isNotCompletedSection = datasetIndex === 1; // Index 1 is for "Not Completed"
+
+      let selectedTasks = [];
+
+      if (isCompletedSection) {
+        selectedTasks = tasks.filter(
+          (task) => task.taskType === label && task.actualCompletionDate !== null
+        );
+      } else if (isNotCompletedSection) {
+        selectedTasks = tasks.filter(
+          (task) => task.taskType === label && task.actualCompletionDate === null
+        );
+      }
+
       setTaskDetails(selectedTasks);
-      console.log("task derils cliked in {3rd}", selectedTasks);
-      navigate("/tasks", { state: { selectedTasks } });
-      setClickedTaskType(label);
-      setPopupContent(content);
       setPopupPosition({ x: popupX, y: popupY });
       setPopupVisible(true);
     }
   };
+
+  const handleTaskClick = (taskId) => {
+    navigate(`/tasks`, { state: { taskId } });
+    setPopupVisible(false); // Hide the popup after navigation
+  };
+
 
   const options = {
     indexAxis: "x",
@@ -171,42 +145,25 @@ const TaskStatusGraph = () => {
     scales: {
       x: {
         stacked: true,
-        grid: {
-          display: false,
-        },
+        grid: { display: false },
         ticks: {
-          font: {
-            size: 16,
-            weight: "bold",
-          },
+          font: { size: 16, weight: "bold" },
         },
       },
       y: {
         stacked: true,
-        grid: {
-          display: false,
-        },
+        grid: { display: false },
         ticks: {
-          font: {
-            size: 16,
-            weight: "bold",
-          },
+          font: { size: 16, weight: "bold" },
           stepSize: 1,
-          callback: function (value) {
-            return Number.isInteger(value) ? value : "";
-          },
+          callback: (value) => (Number.isInteger(value) ? value : ""),
         },
       },
     },
     plugins: {
       legend: {
         position: "top",
-        labels: {
-          font: {
-            size: 14,
-            weight: "bold",
-          },
-        },
+        labels: { font: { size: 14, weight: "bold" } },
       },
       datalabels: {
         display: true,
@@ -214,10 +171,7 @@ const TaskStatusGraph = () => {
         anchor: "center",
         align: "center",
         formatter: (value) => value || "",
-        font: {
-          size: 20,
-          weight: "bold",
-        },
+        font: { size: 20, weight: "bold" },
       },
     },
     responsive: true,
@@ -229,7 +183,7 @@ const TaskStatusGraph = () => {
       className="bar_chart p-2"
       style={{
         width: "100%",
-        height: "380px",
+        height: "450px",
         border: "1px solid #e0e0e0",
         borderRadius: "8px",
         backgroundColor: "#fff",
@@ -237,9 +191,7 @@ const TaskStatusGraph = () => {
         position: "relative",
       }}
     >
-      <h2
-        style={{ marginBottom: "16px", fontSize: "24px", fontWeight: "bold" }}
-      >
+      <h2 style={{ marginBottom: "16px", fontSize: "24px", fontWeight: "bold" }}>
         Task Status Overview
       </h2>
       {loading ? <p>Loading...</p> : <Bar data={chartData} options={options} />}
@@ -247,29 +199,18 @@ const TaskStatusGraph = () => {
         <div
           style={{
             position: "absolute",
-            top: popupPosition.y,
-            left: popupPosition.x,
+            top: 100,
+            left: 100,
             backgroundColor: "#fff",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
             borderRadius: "12px",
             padding: "16px",
             zIndex: 1000,
             width: "250px",
-            maxHeight: "300px", // Limit the height of the popup
-            overflowY: "auto", // Add scroll if content overflows
+            maxHeight: "300px",
+            overflowY: "auto",
           }}
         >
-          <div
-            style={{
-              textAlign: "center",
-              marginBottom: "12px",
-              fontSize: "18px",
-              fontWeight: "600",
-              color: "#333",
-            }}
-          >
-            {popupContent}
-          </div>
           <IconButton
             onClick={() => setPopupVisible(false)}
             style={{
@@ -283,23 +224,61 @@ const TaskStatusGraph = () => {
           >
             <CloseOutlined />
           </IconButton>
+
           <div>
-            {taskDetails.map((task) => (
-              <div key={task._id} style={{ marginBottom: "8px" }}>
-                <h4
+            {taskDetails.length > 0 ? (
+              taskDetails.map((task) => (
+                <div
+                  key={task._id}
+                  onClick={() => handleTaskClick(task._id)} // Task click handler
                   style={{
-                    margin: "0 0 4px 0",
-                    fontSize: "16px",
-                    fontWeight: "500",
+                    marginBottom: "8px",
+                    padding: "8px",
+                    cursor: "pointer",
+                    borderRadius: "6px",
+                    backgroundColor: "#f5f5f5",
+                    transition: "background-color 0.3s ease",
                   }}
+                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#e0e0e0")}
+                  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#f5f5f5")}
                 >
-                  {task.taskName || "No Name"}{" "}
-                </h4>
-              </div>
-            ))}
+                  <h4
+                    style={{
+                      margin: "0 0 4px 0",
+                      fontSize: "16px",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {task.taskName || "No Name"}
+                  </h4>
+                  <p
+                    style={{
+                      margin: "0",
+                      fontSize: "14px",
+                      color: "#666",
+                    }}
+                  >
+                    Task Type: {task.taskType || "Unknown"}
+                  </p>
+                  <p
+                    style={{
+                      margin: "0",
+                      fontSize: "14px",
+                      color: task.actualCompletionDate ? "green" : "red",
+                    }}
+                  >
+                    Status: {task.actualCompletionDate ? "Completed" : "Not Completed"}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p>No tasks available</p>
+            )}
           </div>
         </div>
       )}
+
+
     </div>
   );
 };

@@ -49,17 +49,6 @@ const Tasks = () => {
   });
   const [view, setView] = useState(false);
 
-  const location = useLocation();
-  const TaskId = location.state?.companyId;
-  const PaymentGraphDetails = location?.state?.selectedTasks;
-
-  const PendingTasksGraphDetails = location?.state?.selectedTask;
-  const MeterGraph = location?.state?.meterTasks;
-
-  console.log("payment {3rd} graph", PaymentGraphDetails);
-  console.log("PendingTasksGraphDetails {5rd} graph", PendingTasksGraphDetails);
-  console.log("Meter /Tasks {5rd} graph", MeterGraph);
-
   const [tasks, setTasks] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -72,31 +61,41 @@ const Tasks = () => {
     year: new Date().getFullYear().toString(),
   });
 
-  useEffect(() => {
-    if (TaskId) {
-      setView(true);
-      setCompanyId(TaskId);
-    }
-  }, [TaskId]);
+
+  const location = useLocation();
+  const taskId = location.state?.taskId;
 
   useEffect(() => {
-    if (PaymentGraphDetails) {
-      setOpen(true);
+    if (taskId) {
+      setShowForm(true);
+      setCompanyId(taskId);
     }
-  }, []);
+  }, [taskId]);
 
-  useEffect(() => {
-    if (PendingTasksGraphDetails) {
-      setOpen(true);
-    }
-  }, []);
-  useEffect(() => {
-    if (MeterGraph) {
-      setOpen(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (TaskId) {
+  //     setView(true);
+  //     setCompanyId(TaskId);
+  //   }
+  // }, [TaskId]);
 
-  console.log("tasks page id", TaskId);
+  // useEffect(() => {
+  //   if (PaymentGraphDetails) {
+  //     setOpen(true);
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   if (PendingTasksGraphDetails) {
+  //     setOpen(true);
+  //   }
+  // }, []);
+  // useEffect(() => {
+  //   if (MeterGraph) {
+  //     setOpen(true);
+  //   }
+  // }, []);
+
 
   const handleClose = () => {
     setOpen(false);
@@ -315,98 +314,6 @@ const Tasks = () => {
             Tasks
           </label>
           <div>
-            {PaymentGraphDetails && (
-              <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-                <DialogTitle>
-                  Task List
-                  <IconButton
-                    edge="end"
-                    color="inherit"
-                    onClick={handleClose}
-                    aria-label="close"
-                    sx={{ position: "absolute", right: 8, top: 8 }}
-                  >
-                    <CloseOutlined />
-                  </IconButton>
-                </DialogTitle>
-                <DialogContent>
-                  {PaymentGraphDetails?.map((task, index) => (
-                    <Box
-                      key={index}
-                      sx={{
-                        border: "1px solid #ddd",
-                        padding: 1,
-                        borderRadius: "4px",
-                      }}
-                    >
-                      <Typography variant="body1">{task.taskName}</Typography>
-                    </Box>
-                  ))}
-                </DialogContent>
-              </Dialog>
-            )}
-
-            {PendingTasksGraphDetails && (
-              <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-                <DialogTitle>
-                  Task List
-                  <IconButton
-                    edge="end"
-                    color="inherit"
-                    onClick={handleClose}
-                    aria-label="close"
-                    sx={{ position: "absolute", right: 8, top: 8 }}
-                  >
-                    <CloseOutlined />
-                  </IconButton>
-                </DialogTitle>
-                <DialogContent>
-                  {PendingTasksGraphDetails?.tasks?.map((task, index) => (
-                    <Box
-                      key={index}
-                      sx={{
-                        border: "1px solid #ddd",
-                        padding: 1,
-                        borderRadius: "4px",
-                      }}
-                    >
-                      <Typography variant="body1">{task.taskName}</Typography>
-                    </Box>
-                  ))}
-                </DialogContent>
-              </Dialog>
-            )}
-
-            {MeterGraph && (
-              <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-                <DialogTitle>
-                  Task List
-                  <IconButton
-                    edge="end"
-                    color="inherit"
-                    onClick={handleClose}
-                    aria-label="close"
-                    sx={{ position: "absolute", right: 8, top: 8 }}
-                  >
-                    <CloseOutlined />
-                  </IconButton>
-                </DialogTitle>
-                <DialogContent>
-                  {MeterGraph?.map((task, index) => (
-                    <Box
-                      key={index}
-                      sx={{
-                        border: "1px solid #ddd",
-                        padding: 1,
-                        borderRadius: "4px",
-                      }}
-                    >
-                      <Typography variant="body1">{task.taskName}</Typography>
-                    </Box>
-                  ))}
-                </DialogContent>
-              </Dialog>
-            )}
 
             {/* <Button
               variant="text"

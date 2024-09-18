@@ -18,7 +18,6 @@ const Company = () => {
   const location = useLocation();
   const companyName = location.state?.companyName;
 
-  console.log("tooltip company", companyName);
   useEffect(() => {
     if (companyName) {
       setView(true);

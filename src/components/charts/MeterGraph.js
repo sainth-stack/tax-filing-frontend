@@ -12,14 +12,13 @@ const MeterGraph = () => {
     completed: 0,
   });
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-
   const [selectedCategory, setSelectedCategory] = useState("");
   const [taskDetails, setTaskDetails] = useState({
     overdue: [],
     inProgress: [],
     completed: [],
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,8 +26,6 @@ const MeterGraph = () => {
         setLoading(true);
         const response = await axios.get(`${base_url}/tasks/all`);
         const tasks = response.data.data;
-
-        const currentDate = new Date();
 
         const categorizedTasks = tasks.reduce(
           (acc, task) => {
@@ -71,7 +68,6 @@ const MeterGraph = () => {
   if (loading) return <div>Loading...</div>;
 
   const totalTasks = data.completed + data.inProgress + data.overdue;
-
   const categories = [];
   const colors = [];
 
@@ -91,22 +87,19 @@ const MeterGraph = () => {
   const averagePercentage = categories.reduce((acc, val) => acc + val, 0);
 
   const handleCategoryClick = (category) => {
-    console.log(`Selected category: ${category}`);
-    console.log("Tasks:", taskDetails[category.toLowerCase()]);
-    navigate("/tasks", {
-      state: { meterTasks: taskDetails[category.toLowerCase()] },
-    });
-
     setSelectedCategory(category);
   };
 
-  console.log("selected category from meter", selectedCategory);
+  const handleTaskClick = (taskId) => {
+    navigate(`/tasks`, { state: { taskId } });
+  };
+
   return (
     <div
       style={{
         width: "100%",
         position: "relative",
-        height: "380px",
+        height: "450px",
         border: "1px solid #e0e0e0",
         borderRadius: "8px",
         backgroundColor: "#fff",
@@ -129,6 +122,8 @@ const MeterGraph = () => {
           needleShadowColor="#000000"
         />
       </div>
+
+      {/* Category Labels */}
       <div className="labels-overlay">
         {["overdue", "inProgress", "completed"].map((label, index) => {
           const count = [data.overdue, data.inProgress, data.completed][index];
@@ -147,6 +142,7 @@ const MeterGraph = () => {
         })}
       </div>
 
+      {/* Popup for Selected Category */}
       {selectedCategory && (
         <div
           style={{
@@ -165,6 +161,7 @@ const MeterGraph = () => {
           }}
           className="container shadow-md"
         >
+          {/* Header */}
           <div
             style={{
               display: "flex",
@@ -174,6 +171,7 @@ const MeterGraph = () => {
           >
             <h3 style={{ margin: "0" }}>{selectedCategory}</h3>
             <button
+              onClick={() => setSelectedCategory("")}
               style={{
                 background: "none",
                 border: "none",
@@ -186,6 +184,7 @@ const MeterGraph = () => {
             </button>
           </div>
 
+          {/* Task List */}
           <ul
             style={{
               listStyle: "none",
@@ -197,14 +196,20 @@ const MeterGraph = () => {
               taskDetails[selectedCategory.toLowerCase()].map((task) => (
                 <li
                   key={task._id}
+                  onClick={() => handleTaskClick(task._id)}
                   style={{
                     padding: "5px 0",
                     borderBottom: "1px solid #ddd",
                     margin: "1px 3px",
+                    cursor: "pointer",
                   }}
                 >
+                  <strong>Name:</strong> {task.taskName}
+                  <br />
                   <strong>Type:</strong> {task.taskType}
                   <br />
+                  <strong>Status:</strong>{" "}
+                  {task.actualCompletionDate ? "Completed" : "In Progress"}
                 </li>
               ))
             ) : (
