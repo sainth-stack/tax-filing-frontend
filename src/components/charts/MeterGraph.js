@@ -12,7 +12,11 @@ const MeterGraph = () => {
   });
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [taskDetails, setTaskDetails] = useState({});
+  const [taskDetails, setTaskDetails] = useState({
+    overdue: [],
+    inProgress: [],
+    completed: [],
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,11 +41,7 @@ const MeterGraph = () => {
                 acc.overdue.push(task);
               }
             } else {
-              if (currentDate > dueDate) {
-                acc.overdue.push(task);
-              } else {
-                acc.inProgress.push(task);
-              }
+              acc.inProgress.push(task);
             }
             return acc;
           },
@@ -88,20 +88,23 @@ const MeterGraph = () => {
   const averagePercentage = categories.reduce((acc, val) => acc + val, 0);
 
   const handleCategoryClick = (category) => {
+    console.log(`Selected category: ${category}`);
+    console.log("Tasks:", taskDetails[category.toLowerCase()]);
     setSelectedCategory(category);
   };
 
+  console.log("selected category from meter", selectedCategory);
   return (
     <div
-      style={{ 
+      style={{
         width: "100%",
         position: "relative",
-        height:"380px", // Match pie chart height
+        height: "380px",
         border: "1px solid #e0e0e0",
         borderRadius: "8px",
         backgroundColor: "#fff",
         padding: "8px",
-       }}
+      }}
       className="overflow-auto scrollable-element"
     >
       <div className="mt-6 m-2">
@@ -116,12 +119,11 @@ const MeterGraph = () => {
           needleColor="#000000"
           arcPadding={0.01}
           needleBaseColor="#000000"
-          formatTextValue={""}
           needleShadowColor="#000000"
         />
       </div>
       <div className="labels-overlay">
-        {["Overdue", "In Progress", "Completed"].map((label, index) => {
+        {["overdue", "inProgress", "completed"].map((label, index) => {
           const count = [data.overdue, data.inProgress, data.completed][index];
 
           return count > 0 ? (
@@ -185,23 +187,20 @@ const MeterGraph = () => {
               margin: "10px 0 0 0",
             }}
           >
-            {(
-              taskDetails[selectedCategory.toLowerCase().replace(" ", "")] || []
-            ).length > 0 ? (
-              taskDetails[selectedCategory.toLowerCase().replace(" ", "")].map(
-                (task) => (
-                  <li
-                    key={task._id}
-                    style={{
-                      padding: "5px 0",
-                      borderBottom: "1px solid #ddd",
-                      margin: "1px 3px",
-                    }}
-                  >
-                    {task.taskType}
-                  </li>
-                )
-              )
+            {(taskDetails[selectedCategory.toLowerCase()] || []).length > 0 ? (
+              taskDetails[selectedCategory.toLowerCase()].map((task) => (
+                <li
+                  key={task._id}
+                  style={{
+                    padding: "5px 0",
+                    borderBottom: "1px solid #ddd",
+                    margin: "1px 3px",
+                  }}
+                >
+                  <strong>Type:</strong> {task.taskType}
+                  <br />
+                </li>
+              ))
             ) : (
               <li style={{ padding: "10px", textAlign: "center" }}>
                 No tasks found.

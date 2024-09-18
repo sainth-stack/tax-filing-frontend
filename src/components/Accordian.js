@@ -55,7 +55,6 @@ export default function Accordian({
   return (
     <div className="p-2 ">
       {accData.map((section, index) => {
-        console.log(accData);
         return (
           <>
             {companyId && companyId && view ? (

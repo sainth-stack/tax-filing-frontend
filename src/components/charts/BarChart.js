@@ -19,27 +19,38 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 const BarChart = ({ chartHeight }) => {
   const colors = [
-    "#42A5F5", "#ff6385", "#FFA726", "#26C6DA", "#7E57C2", "#FF7043", "#26A69A", "#EC407A", "#AB47BC", "#FFCA28"
+    "#42A5F5",
+    "#ff6385",
+    "#FFA726",
+    "#26C6DA",
+    "#7E57C2",
+    "#FF7043",
+    "#26A69A",
+    "#EC407A",
+    "#AB47BC",
+    "#FFCA28",
   ];
 
   const [chartData, setChartData] = useState({
     labels: [],
-    datasets: [{
-      label: "Number of Companies By Task Type",
-      data: [],
-      borderColor: "#29CC3F",
-      borderWidth: 4,
-      fill: true,
-      lineTension: 0.5,
-      pointRadius: 0,
-      backgroundColor: (context) => {
-        const ctx = context.chart.ctx;
-        const gradient = ctx.createLinearGradient(2, 5, 0, 200);
-        gradient.addColorStop(0, "#29CC3F");
-        gradient.addColorStop(0.8, "rgba(41, 204, 63, 0.2)");
-        return gradient;
+    datasets: [
+      {
+        label: "Number of Companies By Task Type",
+        data: [],
+        borderColor: "#29CC3F",
+        borderWidth: 4,
+        fill: true,
+        lineTension: 0.5,
+        pointRadius: 0,
+        backgroundColor: (context) => {
+          const ctx = context.chart.ctx;
+          const gradient = ctx.createLinearGradient(2, 5, 0, 200);
+          gradient.addColorStop(0, "#29CC3F");
+          gradient.addColorStop(0.8, "rgba(41, 204, 63, 0.2)");
+          return gradient;
+        },
       },
-    }],
+    ],
   });
 
   const [loading, setLoading] = useState(false);
@@ -47,9 +58,9 @@ const BarChart = ({ chartHeight }) => {
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [clickedCompanies, setClickedCompanies] = useState([]);
   const [clickedLabel, setClickedLabel] = useState("");
-  // const [companyCountsByTask, setCompanyCountsByTask] = useState({}); // Store company counts by task
-  const [companyGroupsByTask, setCompanyGroupByTask] = useState([])
-  const navigate = useNavigate()
+  const [companyGroupsByTask, setCompanyGroupByTask] = useState([]);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -60,35 +71,38 @@ const BarChart = ({ chartHeight }) => {
 
         const companyCounts = tasks.reduce((acc, task) => {
           const taskType = task.taskType;
-          const companyName = task.companyName;
+          const TaskId = task._id;
 
           if (!acc[taskType]) {
             acc[taskType] = {};
           }
 
-          acc[taskType][companyName] = (acc[taskType][companyName] || 0) + 1;
+          acc[taskType][TaskId] = (acc[taskType][TaskId] || 0) + 1;
 
           return acc;
         }, {});
-        console.log(tasks)
+
         const companyGroupsByTask = tasks.reduce((acc, task) => {
           const taskType = task.taskType;
           const companyName = task.company;
+          const TaskId = task._id;
 
-          // If the task type doesn't exist in the accumulator, initialize it with an empty array
           if (!acc[taskType]) {
-            acc[taskType] = [];
+            acc[taskType] = {
+              ids: [],
+              names: [],
+              idsWithNames: [], // Array to store [TaskId, companyName] pairs
+            };
           }
 
-          // Add the company name to the list of companies for this task type
-          acc[taskType].push(companyName);
+          acc[taskType].ids.push(TaskId);
+          acc[taskType].names.push(companyName);
+          acc[taskType].idsWithNames.push([TaskId, companyName]); // Store as pairs
 
           return acc;
         }, {});
 
-        setCompanyGroupByTask(companyGroupsByTask)
-
-        // setCompanyCountsByTask(companyCounts);
+        setCompanyGroupByTask(companyGroupsByTask);
 
         const labels = Object.keys(companyCounts);
         const data = labels.map((taskType) =>
@@ -104,17 +118,19 @@ const BarChart = ({ chartHeight }) => {
 
         setChartData({
           labels: labels,
-          datasets: [{
-            label: "Number of Companies",
-            data: data,
-            backgroundColor: barColors,
-            borderColor: "#1E88E5",
-            borderWidth: 0.5,
-            borderRadius: 5,
-            fill: true,
-            lineTension: 0.4,
-            pointRadius: 0,
-          }],
+          datasets: [
+            {
+              label: "Number of Companies",
+              data: data,
+              backgroundColor: barColors,
+              borderColor: "#1E88E5",
+              borderWidth: 0.5,
+              borderRadius: 5,
+              fill: true,
+              lineTension: 0.4,
+              pointRadius: 0,
+            },
+          ],
         });
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -129,7 +145,7 @@ const BarChart = ({ chartHeight }) => {
     if (elements.length > 0) {
       const index = elements[0].index;
       const label = chartData.labels[index];
-      const companies = Object.values(companyGroupsByTask[label]);
+      const companies = companyGroupsByTask[label]?.idsWithNames || []; // Fetch company IDs and names
 
       // Ensure you're getting the bounding rectangle of the chart container
       const chartContainer = event.chart.canvas.parentNode;
@@ -140,15 +156,14 @@ const BarChart = ({ chartHeight }) => {
       const popupY = event.clientY - chartRect.top + window.scrollY;
 
       setClickedLabel(label);
-      setClickedCompanies(companies); // Show company names
-      // setPopupPosition({ x: 10, y: 20 });
+      setClickedCompanies(companies); // Show company names with IDs
+      setPopupPosition({ x: popupX, y: popupY });
       setPopupVisible(true);
     }
   };
 
-
   const options = {
-    onClick: handleClick, // Add click handler
+    onClick: handleClick,
     plugins: {
       legend: {
         display: false,
@@ -180,14 +195,14 @@ const BarChart = ({ chartHeight }) => {
         },
         ticks: {
           stepSize: 1,
-          callback: (value) => Number.isInteger(value) ? value : null,
+          callback: (value) => (Number.isInteger(value) ? value : null),
         },
       },
     },
   };
 
-  const handleCompanyClick = (companyName) => {
-    navigate("/company", { state: { companyName } });
+  const handleCompanyClick = (companyId) => {
+    navigate("/tasks", { state: { companyId } }); // Pass companyId to the new route
   };
 
   return (
@@ -197,7 +212,7 @@ const BarChart = ({ chartHeight }) => {
         style={{
           width: "100%",
           position: "relative",
-          height: chartHeight || "380px", // Match pie chart height
+          height: chartHeight || "380px",
           border: "1px solid #e0e0e0",
           borderRadius: "8px",
           backgroundColor: "#fff",
@@ -222,16 +237,16 @@ const BarChart = ({ chartHeight }) => {
         <div
           style={{
             position: "absolute",
-            marginTop: '-350px',
-            marginLeft: '350px',
+            top: popupPosition.y,
+            left: popupPosition.x,
             backgroundColor: "#fff",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
             borderRadius: "12px",
             padding: "12px",
             zIndex: 1000,
             width: "250px",
-            maxHeight: "300px", // Set a fixed maximum height,
-            overflow: "auto",  // Enable vertical scrolling if content overflows
+            maxHeight: "300px",
+            overflow: "auto",
           }}
         >
           <div
@@ -246,23 +261,27 @@ const BarChart = ({ chartHeight }) => {
             {clickedLabel}
           </div>
           <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
-            {clickedCompanies.map((company, index) => (
+            {clickedCompanies.map(([companyId, companyName], index) => (
               <li
-                key={index}
+                key={companyId}
                 style={{
                   padding: "10px 12px",
-                  borderBottom: index !== clickedCompanies.length - 1 ? "1px solid #eee" : "none",
+                  borderBottom:
+                    index !== clickedCompanies.length - 1
+                      ? "1px solid #eee"
+                      : "none",
                   cursor: "pointer",
                   transition: "background-color 0.2s ease",
                 }}
                 className="hover:bg-gray-100"
-                onClick={() => handleCompanyClick(company)}
+                onClick={() => handleCompanyClick(companyId)} // Pass companyId on click
               >
                 <strong style={{ color: "#555" }}>Company:</strong>{" "}
-                <span style={{ color: "#007BFF" }}>{company}</span>
+                <span style={{ color: "#007BFF" }}>{companyName}</span>
               </li>
             ))}
           </ul>
+
           <IconButton
             onClick={() => setPopupVisible(false)}
             style={{
@@ -270,16 +289,13 @@ const BarChart = ({ chartHeight }) => {
               top: "-10px",
               right: "-10px",
               backgroundColor: "#f5f5f5",
-              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
-              borderRadius: "50%",
-              padding: "6px",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
             }}
           >
             <CloseOutlined />
           </IconButton>
         </div>
       )}
-
     </div>
   );
 };

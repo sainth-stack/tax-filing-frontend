@@ -1,5 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal, Box, Typography, MenuItem } from "@mui/material";
+import {
+  Button,
+  Modal,
+  Box,
+  Typography,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  IconButton,
+  DialogContent,
+} from "@mui/material";
+
+import { CloseOutlined } from "@mui/icons-material";
+
 import Layout from "../../components/Layout/Layout";
 import TasksTable from "./TaskTable";
 import DateInput from "../../components/Date/DateInput";
@@ -14,13 +27,16 @@ import { WidthFull } from "@mui/icons-material";
 import { base_url } from "../../const";
 import Loader from "../../components/helpers/loader";
 import { toast } from "react-toastify";
+import { useLocation } from "react-router";
 
 const Tasks = () => {
   const [showForm, setShowForm] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
-
+  const [showtasks, setShowTasks] = useState(false);
   const [companyId, setCompanyId] = useState("");
   const [users, setUsers] = useState([]);
+  const [open, setOpen] = useState(false);
+
   const [formData, setFormData] = useState({
     company: "",
     assignedTo: "",
@@ -31,6 +47,16 @@ const Tasks = () => {
     defaultValue: "",
     taskType: "",
   });
+  const [view, setView] = useState(false);
+
+  const location = useLocation();
+  const TaskId = location.state?.companyId;
+  const PaymentGraphDetails = location?.state?.selectedTasks;
+  const PendingTasksGraphDetails = location?.state?.selectedTask;
+
+  console.log("payment {3rd} graph", PaymentGraphDetails);
+  console.log("PendingTasksGraphDetails {5rd} graph", PendingTasksGraphDetails);
+
   const [tasks, setTasks] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -43,6 +69,29 @@ const Tasks = () => {
     year: new Date().getFullYear().toString(),
   });
 
+  useEffect(() => {
+    if (TaskId) {
+      setView(true);
+      setCompanyId(TaskId);
+    }
+  }, [TaskId]);
+
+  useEffect(() => {
+    if (PaymentGraphDetails) {
+      setOpen(true);
+    }
+  }, []);
+  useEffect(() => {
+    if (PendingTasksGraphDetails) {
+      setOpen(true);
+    }
+  }, []);
+
+  console.log("tasks page id", TaskId);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   const handleShowForm = () => {
     setShowForm(!showForm);
   };
@@ -116,8 +165,8 @@ const Tasks = () => {
       const response = await axios.get(`${base_url}/companies/all`);
 
       const data = response.data?.data.map((item) => ({
-        value: item?.companyDetails?.companyName,
-        label: item?.companyDetails?.companyName,
+        value: item?.companyDetails?.TaskId,
+        label: item?.companyDetails?.TaskId,
       }));
       setLoading(false);
 
@@ -257,6 +306,68 @@ const Tasks = () => {
             Tasks
           </label>
           <div>
+            {PaymentGraphDetails && (
+              <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+                <DialogTitle>
+                  Task List
+                  <IconButton
+                    edge="end"
+                    color="inherit"
+                    onClick={handleClose}
+                    aria-label="close"
+                    sx={{ position: "absolute", right: 8, top: 8 }}
+                  >
+                    <CloseOutlined />
+                  </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                  {PaymentGraphDetails?.map((task, index) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        border: "1px solid #ddd",
+                        padding: 1,
+                        borderRadius: "4px",
+                      }}
+                    >
+                      <Typography variant="body1">{task.taskName}</Typography>
+                    </Box>
+                  ))}
+                </DialogContent>
+              </Dialog>
+            )}
+
+            {PendingTasksGraphDetails && (
+              <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+                <DialogTitle>
+                  Task List
+                  <IconButton
+                    edge="end"
+                    color="inherit"
+                    onClick={handleClose}
+                    aria-label="close"
+                    sx={{ position: "absolute", right: 8, top: 8 }}
+                  >
+                    <CloseOutlined />
+                  </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                  {PendingTasksGraphDetails?.tasks?.map((task, index) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        border: "1px solid #ddd",
+                        padding: 1,
+                        borderRadius: "4px",
+                      }}
+                    >
+                      <Typography variant="body1">{task.taskName}</Typography>
+                    </Box>
+                  ))}
+                </DialogContent>
+              </Dialog>
+            )}
+
             {/* <Button
               variant="text"
               sx={{
@@ -314,6 +425,19 @@ const Tasks = () => {
           </div>
         </div>
 
+        {showtasks && showtasks.length > 0 && (
+          <div>
+            <h4>Task Details:</h4>
+            <ul>
+              {showtasks.map((task, index) => (
+                <li key={index}>
+                  <strong>{task}</strong>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {showForm || companyId ? (
           <div className="justify-center">
             <Taskform
@@ -322,6 +446,8 @@ const Tasks = () => {
                 setCompanyId,
                 setShowForm,
                 showForm,
+                view,
+
                 setCompanyRefresh,
                 companyRefresh,
                 fetchTasks,

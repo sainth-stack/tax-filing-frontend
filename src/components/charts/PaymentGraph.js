@@ -13,6 +13,8 @@ import {
 import { base_url } from "../../const";
 import { IconButton } from "@mui/material";
 import { CloseOutlined } from "@mui/icons-material";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import { useNavigate } from "react-router";
 
 ChartJS.register(
   CategoryScale,
@@ -20,23 +22,27 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartDataLabels
 );
 
 const TaskStatusGraph = () => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(false);
+  const [tasks, setTasks] = useState([]);
+  const [taskDetails, setTaskDetails] = useState([]);
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [popupContent, setPopupContent] = useState("");
-
+  const [clickedTaskType, setClickedTaskType] = useState("");
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         const response = await axios.get(`${base_url}/tasks/all`);
         const tasks = response.data.data;
-
+        setTasks(tasks);
         const taskTypes = [];
         const completedCounts = {};
         const notCompletedCounts = {};
@@ -113,12 +119,12 @@ const TaskStatusGraph = () => {
             {
               label: "Completed",
               data: completedData,
-              backgroundColor: "rgba(0, 255, 0, 0.75)", // Green color for completed
+              backgroundColor: "rgba(0, 255, 0, 0.75)",
             },
             {
               label: "Not Completed",
               data: notCompletedData,
-              backgroundColor: "rgba(255, 0, 0, 0.75)", // Red color for not completed
+              backgroundColor: "rgba(255, 0, 0, 0.75)",
             },
           ],
         };
@@ -148,6 +154,11 @@ const TaskStatusGraph = () => {
       const popupX = event.clientX - chartRect.left + window.scrollX;
       const popupY = event.clientY - chartRect.top + window.scrollY;
 
+      const selectedTasks = tasks.filter((task) => task.taskType === label);
+      setTaskDetails(selectedTasks);
+      console.log("task derils cliked in {3rd}", selectedTasks);
+      navigate("/tasks", { state: { selectedTasks } });
+      setClickedTaskType(label);
       setPopupContent(content);
       setPopupPosition({ x: popupX, y: popupY });
       setPopupVisible(true);
@@ -155,13 +166,13 @@ const TaskStatusGraph = () => {
   };
 
   const options = {
-    indexAxis: "x", // Horizontal bars
-    onClick: handleClick, // Add click handler
+    indexAxis: "x",
+    onClick: handleClick,
     scales: {
       x: {
         stacked: true,
         grid: {
-          display: false, // Hide grid lines
+          display: false,
         },
         ticks: {
           font: {
@@ -173,16 +184,16 @@ const TaskStatusGraph = () => {
       y: {
         stacked: true,
         grid: {
-          display: false, // Hide grid lines
+          display: false,
         },
         ticks: {
           font: {
             size: 16,
             weight: "bold",
           },
-          stepSize: 1, // Display integer values only
+          stepSize: 1,
           callback: function (value) {
-            return Number.isInteger(value) ? value : ''; // Ensure only integers are shown
+            return Number.isInteger(value) ? value : "";
           },
         },
       },
@@ -212,26 +223,26 @@ const TaskStatusGraph = () => {
     responsive: true,
     maintainAspectRatio: true,
   };
-  
 
   return (
-    <div className="bar_chart p-2" style={{
-      width: "100%",
-      height: "380px",
-      border: "1px solid #e0e0e0",
-      borderRadius: "8px",
-      backgroundColor: "#fff",
-      padding: "16px",
-      position: "relative",
-    }}>
-      <h2 style={{ marginBottom: "16px", fontSize: "24px", fontWeight: "bold" }}>
+    <div
+      className="bar_chart p-2"
+      style={{
+        width: "100%",
+        height: "380px",
+        border: "1px solid #e0e0e0",
+        borderRadius: "8px",
+        backgroundColor: "#fff",
+        padding: "16px",
+        position: "relative",
+      }}
+    >
+      <h2
+        style={{ marginBottom: "16px", fontSize: "24px", fontWeight: "bold" }}
+      >
         Task Status Overview
       </h2>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <Bar data={chartData} options={options} />
-      )}
+      {loading ? <p>Loading...</p> : <Bar data={chartData} options={options} />}
       {popupVisible && (
         <div
           style={{
@@ -265,14 +276,28 @@ const TaskStatusGraph = () => {
               position: "absolute",
               top: "-10px",
               right: "-10px",
-              backgroundColor: "#f5f5f5",
-              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+              backgroundColor: "#fff",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
               borderRadius: "50%",
-              padding: "6px",
             }}
           >
             <CloseOutlined />
           </IconButton>
+          <div>
+            {taskDetails.map((task) => (
+              <div key={task._id} style={{ marginBottom: "8px" }}>
+                <h4
+                  style={{
+                    margin: "0 0 4px 0",
+                    fontSize: "16px",
+                    fontWeight: "500",
+                  }}
+                >
+                  {task.taskName || "No Name"}{" "}
+                </h4>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
