@@ -5,7 +5,7 @@ import { base_url } from "./../../const";
 import "./MeterGraph.css";
 import { useNavigate } from "react-router";
 
-const MeterGraph = () => {
+const MeterGraph = ({ MeterGraphDetails }) => {
   const [data, setData] = useState({
     overdue: 0,
     inProgress: 0,
@@ -27,7 +27,13 @@ const MeterGraph = () => {
         const response = await axios.get(`${base_url}/tasks/all`);
         const tasks = response.data.data;
 
-        const categorizedTasks = tasks.reduce(
+        const filteredTasks = tasks.filter((task) =>
+          MeterGraphDetails.some(
+            (company) => company.companyName === task.company
+          )
+        );
+
+        const categorizedTasks = filteredTasks.reduce(
           (acc, task) => {
             const dueDate = new Date(task.dueDate);
             const actualCompletionDate = task.actualCompletionDate
@@ -48,14 +54,10 @@ const MeterGraph = () => {
           { completed: [], inProgress: [], overdue: [] }
         );
 
-        console.log(categorizedTasks);
-
-        console.log(categorizedTasks);
-
         setData({
-          inProgress: categorizedTasks?.inProgress.length,
-          overdue: categorizedTasks?.overdue.length,
-          completed: categorizedTasks?.completed.length,
+          inProgress: categorizedTasks.inProgress.length,
+          overdue: categorizedTasks.overdue.length,
+          completed: categorizedTasks.completed.length,
         });
 
         setTaskDetails(categorizedTasks);
@@ -67,7 +69,7 @@ const MeterGraph = () => {
     };
 
     fetchData();
-  }, []);
+  }, [MeterGraphDetails]);
 
   if (loading) return <div>Loading...</div>;
 
@@ -98,7 +100,6 @@ const MeterGraph = () => {
     navigate(`/tasks`, { state: { taskId } });
   };
 
-  console.log("in porgess chein", taskDetails[selectedCategory]);
   return (
     <div
       style={{
@@ -212,9 +213,6 @@ const MeterGraph = () => {
                   <strong>Name:</strong> {task.taskName}
                   <br />
                   <strong>Type:</strong> {task.taskType}
-                  <br />
-                  {/* <strong>Status:</strong>{" "}
-                  {task.actualCompletionDate ? "Completed" : "In Progress"} */}
                 </li>
               ))
             ) : (

@@ -8,11 +8,17 @@ import PaymentGraph from "./PaymentGraph";
 import TasksGraph from "./PendingCompeltedTaksGraph";
 import MeterGraph from "./MeterGraph";
 import PendingCompeltedTaksGraph from "./PendingCompeltedTaksGraph";
+import { monthsJson, yearsJson } from "./FilterData";
+import moment from "moment/moment";
 
 const Charts = () => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("all");
   const [companies, setCompanies] = useState([]);
+  const [filteredTasks, setfilteredTasks] = useState([]);
+
+  const [month, setMonth] = useState(new Date().getMonth() + 1);
+  const [year, setYear] = useState(new Date().getFullYear());
   const [clientStatuses, setClientStatuses] = useState([]);
 
   useEffect(() => {
@@ -49,6 +55,26 @@ const Charts = () => {
     fetchCompanies();
   }, [status]);
 
+  const handleFilterChange = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.post(`${base_url}/tasks/filter`, {
+        year,
+        month,
+      });
+
+      setfilteredTasks(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching filtered tasks:", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleFilterChange();
+  }, [year, month]);
+
   return (
     <>
       <div className="flex items-center m-3 p-3">
@@ -67,14 +93,42 @@ const Charts = () => {
             fontWeight: 500,
           }}
         />
+        <SelectInput
+          id="year"
+          className="shadow-sm ml-2"
+          label="Year"
+          value={year}
+          onChange={(e) => setYear(e.target.value)}
+          options={yearsJson}
+          labelStyles={{ fontWeight: 500 }}
+        />
+        <SelectInput
+          id="month"
+          className="shadow-sm ml-2"
+          label="Month"
+          value={month}
+          onChange={(e) => setMonth(e.target.value)}
+          options={monthsJson}
+          labelStyles={{ fontWeight: 500 }}
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4  container">
         <PieChart companyDetails={companies} loading={loading} />
         <BarChart barDetails={companies} barloading={loading} />
-        <PaymentGraph />
-        <MeterGraph />
-        <PendingCompeltedTaksGraph />
+
+        <PaymentGraph
+          paymentGraphDetails={companies}
+          filterTime={filteredTasks}
+        />
+        <MeterGraph
+          MeterGraphDetails={companies}
+          filteredTasks={filteredTasks}
+        />
+        <PendingCompeltedTaksGraph
+          PendingCompeltedTaksGraphDetails={companies}
+          filteredTasks={filteredTasks}
+        />
       </div>
     </>
   );

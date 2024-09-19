@@ -27,7 +27,7 @@ ChartJS.register(
   ChartDataLabels
 );
 
-const PendingCompletedTasksGraph = () => {
+const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails }) => {
   const navigate = useNavigate();
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(false);
@@ -46,10 +46,15 @@ const PendingCompletedTasksGraph = () => {
         setLoading(true);
         const response = await axios.get(`${base_url}/tasks/all`);
         const tasks = response.data.data;
+        const filteredTasks = tasks.filter((task) =>
+          PendingCompeltedTaksGraphDetails.some(
+            (company) => company.companyName === task.company
+          )
+        );
         const pendingTasksByPerson = {};
         const completedTasksByPerson = {};
 
-        tasks.forEach((task) => {
+        filteredTasks.forEach((task) => {
           const assignedTo = task.assignedTo || "Unassigned";
           const actualCompletionDate = task.actualCompletionDate
             ? new Date(task.actualCompletionDate)
@@ -108,7 +113,7 @@ const PendingCompletedTasksGraph = () => {
     };
 
     fetchData();
-  }, []);
+  }, [PendingCompeltedTaksGraphDetails]);
 
   const handleClick = (event, elements) => {
     if (elements.length > 0) {

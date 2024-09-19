@@ -26,7 +26,8 @@ ChartJS.register(
   ChartDataLabels
 );
 
-const TaskStatusGraph = () => {
+const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
+  console.log("filter time", filterTime);
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(false);
   const [tasks, setTasks] = useState([]);
@@ -41,15 +42,23 @@ const TaskStatusGraph = () => {
       try {
         setLoading(true);
         const response = await axios.get(`${base_url}/tasks/all`);
-        const tasks = response.data.data;
-        setTasks(tasks);
+        const tasksData = response.data.data;
+
+        // Assuming `barDetails` is defined and contains company information
+        const filteredTasks = tasksData.filter((task) =>
+          paymentGraphDetails.some(
+            (company) => company.companyName === task.company
+          )
+        );
+
+        setTasks(filteredTasks); // Set filtered tasks here
 
         const taskTypes = [];
         const completedCounts = {};
         const notCompletedCounts = {};
 
         // Collect counts of completed and not completed tasks based on `actualCompletionDate`
-        tasks.forEach((task) => {
+        filteredTasks.forEach((task) => {
           const taskType = task.taskType || "Unknown";
           const isCompleted = task.actualCompletionDate !== null;
 
@@ -79,7 +88,6 @@ const TaskStatusGraph = () => {
             {
               label: "Completed",
               data: completedData,
-
               backgroundColor: "#008000",
             },
             {
@@ -89,16 +97,15 @@ const TaskStatusGraph = () => {
             },
           ],
         });
-
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching or processing data:", error);
+      } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [paymentGraphDetails]);
 
   const handleClick = (event, elements) => {
     if (elements.length > 0) {

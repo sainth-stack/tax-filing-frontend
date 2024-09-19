@@ -17,7 +17,7 @@ import { useNavigate } from "react-router";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-const BarChart = ({ chartHeight, barDetails }) => {
+const BarChart = ({ chartHeight, barDetails, barloading }) => {
   const colors = [
     "#42A5F5",
     "#ff6385",
@@ -82,7 +82,6 @@ const BarChart = ({ chartHeight, barDetails }) => {
           }
 
           acc[taskType][TaskId] = (acc[taskType][TaskId] || 0) + 1;
-          console.log(acc, "acc");
 
           return acc;
         }, {});
@@ -206,10 +205,11 @@ const BarChart = ({ chartHeight, barDetails }) => {
 
   const handleCompanyClick = (taskId) => {
     alert(taskId);
-    navigate("/tasks", { state: { taskId } }); // Pass companyId to the new route
+
+    navigate("/tasks", { state: { taskId } });
   };
 
-  console.log("hey cliked", clickedCompanies);
+  console.log("hey clicked", clickedCompanies);
   return (
     <div className="container">
       <div
@@ -226,9 +226,6 @@ const BarChart = ({ chartHeight, barDetails }) => {
       >
         {loading ? (
           <>
-            <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
-              Loading...
-            </h1>
             <div className="flex justify-center items-center p-4">
               <Loader size={30} />
             </div>
@@ -265,27 +262,36 @@ const BarChart = ({ chartHeight, barDetails }) => {
           >
             {clickedLabel}
           </div>
-          <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
-            {clickedCompanies.map(([companyId, companyName], index) => (
-              <li
-                key={companyId}
-                style={{
-                  padding: "10px 12px",
-                  borderBottom:
-                    index !== clickedCompanies.length - 1
-                      ? "1px solid #eee"
-                      : "none",
-                  cursor: "pointer",
-                  transition: "background-color 0.2s ease",
-                }}
-                className="hover:bg-gray-100"
-                onClick={() => handleCompanyClick(companyId)} // Pass companyId on click
-              >
-                <strong style={{ color: "#555" }}>Company:</strong>{" "}
-                <span style={{ color: "#007BFF" }}>{companyName}</span>
-              </li>
-            ))}
-          </ul>
+
+          {barloading ? (
+            <>
+              <div className="flex justify-center items-center p-4">
+                <Loader size={30} />
+              </div>
+            </>
+          ) : (
+            <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
+              {clickedCompanies.map(([companyId, companyName], index) => (
+                <li
+                  key={companyId}
+                  style={{
+                    padding: "10px 12px",
+                    borderBottom:
+                      index !== clickedCompanies.length - 1
+                        ? "1px solid #eee"
+                        : "none",
+                    cursor: "pointer",
+                    transition: "background-color 0.2s ease",
+                  }}
+                  className="hover:bg-gray-100"
+                  onClick={() => handleCompanyClick(companyId)} // Pass companyId on click
+                >
+                  <strong style={{ color: "#555" }}>Company:</strong>{" "}
+                  <span style={{ color: "#007BFF" }}>{companyName}</span>
+                </li>
+              ))}
+            </ul>
+          )}
 
           <IconButton
             onClick={() => setPopupVisible(false)}
