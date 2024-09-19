@@ -96,13 +96,13 @@ const BarChart = ({ chartHeight, barDetails }) => {
             acc[taskType] = {
               ids: [],
               names: [],
-              idsWithNames: [], // Array to store [TaskId, companyName] pairs
+              idsWithNames: [],
             };
           }
 
           acc[taskType].ids.push(TaskId);
           acc[taskType].names.push(companyName);
-          acc[taskType].idsWithNames.push([TaskId, companyName]); // Store as pairs
+          acc[taskType].idsWithNames.push([TaskId, companyName]);
 
           return acc;
         }, {});
@@ -150,18 +150,16 @@ const BarChart = ({ chartHeight, barDetails }) => {
     if (elements.length > 0) {
       const index = elements[0].index;
       const label = chartData.labels[index];
-      const companies = companyGroupsByTask[label]?.idsWithNames || []; // Fetch company IDs and names
+      const companies = companyGroupsByTask[label]?.idsWithNames || [];
 
-      // Ensure you're getting the bounding rectangle of the chart container
       const chartContainer = event.chart.canvas.parentNode;
       const chartRect = chartContainer.getBoundingClientRect();
 
-      // Calculate the position of the popup relative to the viewport
       const popupX = event.clientX - chartRect.left + window.scrollX;
       const popupY = event.clientY - chartRect.top + window.scrollY;
 
       setClickedLabel(label);
-      setClickedCompanies(companies); // Show company names with IDs
+      setClickedCompanies(companies);
       setPopupPosition({ x: popupX, y: popupY });
       setPopupVisible(true);
     }
