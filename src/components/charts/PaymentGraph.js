@@ -79,12 +79,13 @@ const TaskStatusGraph = () => {
             {
               label: "Completed",
               data: completedData,
-              backgroundColor: "rgba(0, 255, 0, 0.75)",
+
+              backgroundColor: "#008000",
             },
             {
               label: "Not Completed",
               data: notCompletedData,
-              backgroundColor: "rgba(255, 0, 0, 0.75)",
+              backgroundColor: "#FF0000",
             },
           ],
         });
@@ -119,11 +120,13 @@ const TaskStatusGraph = () => {
 
       if (isCompletedSection) {
         selectedTasks = tasks.filter(
-          (task) => task.taskType === label && task.actualCompletionDate !== null
+          (task) =>
+            task.taskType === label && task.actualCompletionDate !== null
         );
       } else if (isNotCompletedSection) {
         selectedTasks = tasks.filter(
-          (task) => task.taskType === label && task.actualCompletionDate === null
+          (task) =>
+            task.taskType === label && task.actualCompletionDate === null
         );
       }
 
@@ -137,7 +140,6 @@ const TaskStatusGraph = () => {
     navigate(`/tasks`, { state: { taskId } });
     setPopupVisible(false); // Hide the popup after navigation
   };
-
 
   const options = {
     indexAxis: "x",
@@ -191,7 +193,9 @@ const TaskStatusGraph = () => {
         position: "relative",
       }}
     >
-      <h2 style={{ marginBottom: "16px", fontSize: "24px", fontWeight: "bold" }}>
+      <h2
+        style={{ marginBottom: "16px", fontSize: "24px", fontWeight: "bold" }}
+      >
         Task Status Overview
       </h2>
       {loading ? <p>Loading...</p> : <Bar data={chartData} options={options} />}
@@ -239,8 +243,12 @@ const TaskStatusGraph = () => {
                     backgroundColor: "#f5f5f5",
                     transition: "background-color 0.3s ease",
                   }}
-                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#e0e0e0")}
-                  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#f5f5f5")}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#e0e0e0")
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#f5f5f5")
+                  }
                 >
                   <h4
                     style={{
@@ -267,7 +275,8 @@ const TaskStatusGraph = () => {
                       color: task.actualCompletionDate ? "green" : "red",
                     }}
                   >
-                    Status: {task.actualCompletionDate ? "Completed" : "Not Completed"}
+                    Status:{" "}
+                    {task.actualCompletionDate ? "Completed" : "Not Completed"}
                   </p>
                 </div>
               ))
@@ -277,8 +286,6 @@ const TaskStatusGraph = () => {
           </div>
         </div>
       )}
-
-
     </div>
   );
 };

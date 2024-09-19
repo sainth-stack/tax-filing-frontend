@@ -17,7 +17,7 @@ import { useNavigate } from "react-router";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-const BarChart = ({ chartHeight }) => {
+const BarChart = ({ chartHeight, barDetails }) => {
   const colors = [
     "#42A5F5",
     "#ff6385",
@@ -66,10 +66,14 @@ const BarChart = ({ chartHeight }) => {
       setLoading(true);
       try {
         const response = await axios.get(`${base_url}/tasks/all`);
-        const tasks = response.data.data;
+        const tasksData = response.data.data;
         setLoading(false);
 
-        const companyCounts = tasks.reduce((acc, task) => {
+        const filteredTasks = tasksData.filter((task) =>
+          barDetails.some((company) => company.companyName === task.company)
+        );
+
+        const companyCounts = filteredTasks.reduce((acc, task) => {
           const taskType = task.taskType;
           const TaskId = task._id;
 
@@ -78,11 +82,12 @@ const BarChart = ({ chartHeight }) => {
           }
 
           acc[taskType][TaskId] = (acc[taskType][TaskId] || 0) + 1;
+          console.log(acc, "acc");
 
           return acc;
         }, {});
 
-        const companyGroupsByTask = tasks.reduce((acc, task) => {
+        const companyGroupsByTask = filteredTasks.reduce((acc, task) => {
           const taskType = task.taskType;
           const companyName = task.company;
           const TaskId = task._id;
@@ -139,7 +144,7 @@ const BarChart = ({ chartHeight }) => {
     };
 
     fetchData();
-  }, []);
+  }, [barDetails]);
 
   const handleClick = (event, elements) => {
     if (elements.length > 0) {
@@ -201,10 +206,12 @@ const BarChart = ({ chartHeight }) => {
     },
   };
 
-  const handleCompanyClick = (companyId) => {
-    navigate("/tasks", { state: { companyId } }); // Pass companyId to the new route
+  const handleCompanyClick = (taskId) => {
+    alert(taskId);
+    navigate("/tasks", { state: { taskId } }); // Pass companyId to the new route
   };
 
+  console.log("hey cliked", clickedCompanies);
   return (
     <div className="container">
       <div

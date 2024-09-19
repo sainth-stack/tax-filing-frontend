@@ -61,7 +61,6 @@ const Tasks = () => {
     year: new Date().getFullYear().toString(),
   });
 
-
   const location = useLocation();
   const taskId = location.state?.taskId;
 
@@ -71,31 +70,6 @@ const Tasks = () => {
       setCompanyId(taskId);
     }
   }, [taskId]);
-
-  // useEffect(() => {
-  //   if (TaskId) {
-  //     setView(true);
-  //     setCompanyId(TaskId);
-  //   }
-  // }, [TaskId]);
-
-  // useEffect(() => {
-  //   if (PaymentGraphDetails) {
-  //     setOpen(true);
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   if (PendingTasksGraphDetails) {
-  //     setOpen(true);
-  //   }
-  // }, []);
-  // useEffect(() => {
-  //   if (MeterGraph) {
-  //     setOpen(true);
-  //   }
-  // }, []);
-
 
   const handleClose = () => {
     setOpen(false);
@@ -314,23 +288,6 @@ const Tasks = () => {
             Tasks
           </label>
           <div>
-
-            {/* <Button
-              variant="text"
-              sx={{
-                margin: ".7em",
-                bgcolor: "teal",
-                color: "white",
-                "&:hover": {
-                  bgcolor: "teal",
-                  color: "white",
-                  boxShadow: "1px 2px 3px gray",
-                },
-              }}
-              onClick={() => setShowAutoGenModal(true)} // Show the auto-generation modal
-            >
-              Auto Generation
-            </Button> */}
             <Button
               variant="text"
               sx={{

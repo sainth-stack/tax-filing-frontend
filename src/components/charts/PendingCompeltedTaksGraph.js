@@ -35,7 +35,10 @@ const PendingCompletedTasksGraph = () => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [popupContent, setPopupContent] = useState({ title: "", tasks: [] });
-  const [tasksData, setTasksData] = useState({ pendingTasksByPerson: {}, completedTasksByPerson: {} });
+  const [tasksData, setTasksData] = useState({
+    pendingTasksByPerson: {},
+    completedTasksByPerson: {},
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,7 +51,9 @@ const PendingCompletedTasksGraph = () => {
 
         tasks.forEach((task) => {
           const assignedTo = task.assignedTo || "Unassigned";
-          const actualCompletionDate = task.actualCompletionDate ? new Date(task.actualCompletionDate) : null;
+          const actualCompletionDate = task.actualCompletionDate
+            ? new Date(task.actualCompletionDate)
+            : null;
 
           if (actualCompletionDate) {
             if (!completedTasksByPerson[assignedTo]) {
@@ -77,13 +82,18 @@ const PendingCompletedTasksGraph = () => {
           datasets: [
             {
               label: "Pending Tasks",
-              data: labels.map((label) => pendingTasksByPerson[label]?.count || 0),
-              backgroundColor: "rgba(255, 0, 0, 0.75)",
+              data: labels.map(
+                (label) => pendingTasksByPerson[label]?.count || 0
+              ),
+
+              backgroundColor: "#FF0000",
             },
             {
               label: "Completed Tasks",
-              data: labels.map((label) => completedTasksByPerson[label]?.count || 0),
-              backgroundColor: "rgba(0, 255, 0, 0.75)", // Green for completed
+              data: labels.map(
+                (label) => completedTasksByPerson[label]?.count || 0
+              ),
+              backgroundColor: "#008000", // Green for completed
             },
           ],
         };
@@ -111,7 +121,9 @@ const PendingCompletedTasksGraph = () => {
         : tasksData.completedTasksByPerson[assignedUser]?.tasks || [];
 
       setPopupContent({
-        title: `${isPendingTasks ? "Pending" : "Completed"} Tasks for ${assignedUser} (${tasks.length})`,
+        title: `${
+          isPendingTasks ? "Pending" : "Completed"
+        } Tasks for ${assignedUser} (${tasks.length})`,
         tasks,
       });
 
@@ -167,7 +179,7 @@ const PendingCompletedTasksGraph = () => {
               onClick: handleClick,
               scales: {
                 x: {
-                  type: 'linear', // Ensure x-axis is linear to handle integer values
+                  type: "linear", // Ensure x-axis is linear to handle integer values
                   stacked: true,
                   grid: {
                     display: false,
@@ -221,91 +233,97 @@ const PendingCompletedTasksGraph = () => {
               responsive: true,
               maintainAspectRatio: true,
             }}
-
           />
 
-      {popupVisible && (
-        <div
-          style={{
-            position: "absolute",
-            top: 100,
-            left: 100,
-            backgroundColor: "#fff",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-            borderRadius: "12px",
-            padding: "16px",
-            zIndex: 1000,
-            width: "250px",
-            maxHeight: "300px",
-            overflowY: "auto",
-          }}
-        >
-          <IconButton
-            onClick={() => setPopupVisible(false)}
-            style={{
-              position: "absolute",
-              top: "-10px",
-              right: "-10px",
-              backgroundColor: "#fff",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-              borderRadius: "50%",
-            }}
-          >
-            <CloseOutlined />
-          </IconButton>
+          {popupVisible && (
+            <div
+              style={{
+                position: "absolute",
+                top: 100,
+                left: 100,
+                backgroundColor: "#fff",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                borderRadius: "12px",
+                padding: "16px",
+                zIndex: 1000,
+                width: "250px",
+                maxHeight: "300px",
+                overflowY: "auto",
+              }}
+            >
+              <IconButton
+                onClick={() => setPopupVisible(false)}
+                style={{
+                  position: "absolute",
+                  top: "-10px",
+                  right: "-10px",
+                  backgroundColor: "#fff",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                  borderRadius: "50%",
+                }}
+              >
+                <CloseOutlined />
+              </IconButton>
 
-          <div>
-            {popupContent?.tasks?.length > 0 ? (
-              popupContent?.tasks?.map((task) => (
-                <div
-                  key={task._id}
-                  onClick={() => handleTaskClick(task._id)} // Task click handler
-                  style={{
-                    marginBottom: "8px",
-                    padding: "8px",
-                    cursor: "pointer",
-                    borderRadius: "6px",
-                    backgroundColor: "#f5f5f5",
-                    transition: "background-color 0.3s ease",
-                  }}
-                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#e0e0e0")}
-                  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#f5f5f5")}
-                >
-                  <h4
-                    style={{
-                      margin: "0 0 4px 0",
-                      fontSize: "16px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    {task.taskName || "No Name"}
-                  </h4>
-                  <p
-                    style={{
-                      margin: "0",
-                      fontSize: "14px",
-                      color: "#666",
-                    }}
-                  >
-                    Task Type: {task.taskType || "Unknown"}
-                  </p>
-                  <p
-                    style={{
-                      margin: "0",
-                      fontSize: "14px",
-                      color: task.actualCompletionDate ? "green" : "red",
-                    }}
-                  >
-                    Status: {task.actualCompletionDate ? "Completed" : "Not Completed"}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p>No tasks available</p>
-            )}
-          </div>
-        </div>
-      )}
+              <div>
+                {popupContent?.tasks?.length > 0 ? (
+                  popupContent?.tasks?.map((task) => (
+                    <div
+                      key={task._id}
+                      onClick={() => handleTaskClick(task._id)} // Task click handler
+                      style={{
+                        marginBottom: "8px",
+                        padding: "8px",
+                        cursor: "pointer",
+                        borderRadius: "6px",
+                        backgroundColor: "#f5f5f5",
+                        transition: "background-color 0.3s ease",
+                      }}
+                      onMouseOver={(e) =>
+                        (e.currentTarget.style.backgroundColor = "#e0e0e0")
+                      }
+                      onMouseOut={(e) =>
+                        (e.currentTarget.style.backgroundColor = "#f5f5f5")
+                      }
+                    >
+                      <h4
+                        style={{
+                          margin: "0 0 4px 0",
+                          fontSize: "16px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {task.taskName || "No Name"}
+                      </h4>
+                      <p
+                        style={{
+                          margin: "0",
+                          fontSize: "14px",
+                          color: "#666",
+                        }}
+                      >
+                        Task Type: {task.taskType || "Unknown"}
+                      </p>
+                      <p
+                        style={{
+                          margin: "0",
+                          fontSize: "14px",
+                          color: task.actualCompletionDate ? "green" : "red",
+                        }}
+                      >
+                        Status:{" "}
+                        {task.actualCompletionDate
+                          ? "Completed"
+                          : "Not Completed"}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p>No tasks available</p>
+                )}
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>

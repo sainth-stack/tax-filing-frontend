@@ -7,8 +7,8 @@ import { useNavigate } from "react-router";
 
 const MeterGraph = () => {
   const [data, setData] = useState({
-    inProgress: 0,
     overdue: 0,
+    inProgress: 0,
     completed: 0,
   });
   const [loading, setLoading] = useState(true);
@@ -48,10 +48,14 @@ const MeterGraph = () => {
           { completed: [], inProgress: [], overdue: [] }
         );
 
+        console.log(categorizedTasks);
+
+        console.log(categorizedTasks);
+
         setData({
-          inProgress: categorizedTasks.inProgress.length,
-          overdue: categorizedTasks.overdue.length,
-          completed: categorizedTasks.completed.length,
+          inProgress: categorizedTasks?.inProgress.length,
+          overdue: categorizedTasks?.overdue.length,
+          completed: categorizedTasks?.completed.length,
         });
 
         setTaskDetails(categorizedTasks);
@@ -94,6 +98,7 @@ const MeterGraph = () => {
     navigate(`/tasks`, { state: { taskId } });
   };
 
+  console.log("in porgess chein", taskDetails[selectedCategory]);
   return (
     <div
       style={{
@@ -192,8 +197,8 @@ const MeterGraph = () => {
               margin: "10px 0 0 0",
             }}
           >
-            {(taskDetails[selectedCategory.toLowerCase()] || []).length > 0 ? (
-              taskDetails[selectedCategory.toLowerCase()].map((task) => (
+            {(taskDetails[selectedCategory] || []).length > 0 ? (
+              taskDetails[selectedCategory].map((task) => (
                 <li
                   key={task._id}
                   onClick={() => handleTaskClick(task._id)}
@@ -208,8 +213,8 @@ const MeterGraph = () => {
                   <br />
                   <strong>Type:</strong> {task.taskType}
                   <br />
-                  <strong>Status:</strong>{" "}
-                  {task.actualCompletionDate ? "Completed" : "In Progress"}
+                  {/* <strong>Status:</strong>{" "}
+                  {task.actualCompletionDate ? "Completed" : "In Progress"} */}
                 </li>
               ))
             ) : (

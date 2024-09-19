@@ -11,7 +11,7 @@ import PendingCompeltedTaksGraph from "./PendingCompeltedTaksGraph";
 
 const Charts = () => {
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("all");
   const [companies, setCompanies] = useState([]);
   const [clientStatuses, setClientStatuses] = useState([]);
 
@@ -39,7 +39,7 @@ const Charts = () => {
         setCompanies(companyDetailsArray);
         setClientStatuses(statusesArray);
 
-        console.log("Clinet statuss ,pir", statusesArray);
+        console.log("global companies details", companies);
         // Log client statuses
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -71,7 +71,7 @@ const Charts = () => {
 
       <div className="grid grid-cols-2 gap-4  container">
         <PieChart companyDetails={companies} loading={loading} />
-        <BarChart />
+        <BarChart barDetails={companies} barloading={loading} />
         <PaymentGraph />
         <MeterGraph />
         <PendingCompeltedTaksGraph />
