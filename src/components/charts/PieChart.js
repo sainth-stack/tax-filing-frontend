@@ -9,6 +9,7 @@ import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import ChartsHeader from "./Header";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -280,17 +281,9 @@ const PieChart = ({ companyDetails, loading }) => {
           padding: "8px", // Add padding for a card-like layout
         }}
       >
-        <h2
-          style={{
-            textAlign: "start",
-            fontSize: "24px",
-            fontWeight: "bold",
-            color: "#333",
-            // marginBottom: "16px"
-          }}
-        >
-          Companies
-        </h2>
+        {/* //Header part */}
+
+        <ChartsHeader title={" Companies"} />
 
         {/* 3-dot Icon */}
 
