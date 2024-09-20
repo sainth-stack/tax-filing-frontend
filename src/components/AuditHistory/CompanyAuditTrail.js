@@ -3,7 +3,7 @@ import { Modal, Table } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 const CompanyAuditTrail = ({ companyAuditData, handleClose }) => {
-  console.log("first companyAuditData", companyAuditData);
+  console.log("vishnu companyAuditData", companyAuditData);
   return (
     <Modal
       open={true}
@@ -43,7 +43,7 @@ const CompanyAuditTrail = ({ companyAuditData, handleClose }) => {
               {companyAuditData.map((audit, index) => (
                 <tr key={index} className="text-center border">
                   <td>{audit?.operation || "N/A"}</td>
-                  <td>{audit?.authorisedPerson || "N/A"}</td>
+                  <td>{audit?.user || "N/A"}</td>
                   <td>
                     {new Date(audit?.timestamp).toLocaleString() || "N/A"}
                   </td>
