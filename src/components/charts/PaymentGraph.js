@@ -11,10 +11,13 @@ import {
   Legend,
 } from "chart.js";
 import { base_url } from "../../const";
-import { IconButton } from "@mui/material";
-import { CloseOutlined } from "@mui/icons-material";
+import { Grid, IconButton, Menu, MenuItem } from "@mui/material";
+import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useNavigate } from "react-router";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import { saveAs } from "file-saver";
 
 ChartJS.register(
   CategoryScale,
@@ -31,6 +34,8 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(false);
   const [tasks, setTasks] = useState([]);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(menuAnchorEl);
   const [taskDetails, setTaskDetails] = useState([]);
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
@@ -50,7 +55,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
           )
         );
 
-        setTasks(filteredTasks); 
+        setTasks(filteredTasks);
 
         const taskTypes = [];
         const completedCounts = {};
@@ -186,113 +191,194 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
     maintainAspectRatio: true,
   };
 
+  const handleExportAsCSV = () => {
+    const csvContent = chartData.labels
+      .map((label, index) => {
+        return `${label},${chartData.datasets[0].data[index]},${chartData.datasets[1].data[index]}`;
+      })
+      .join("\n");
+
+    const blob = new Blob(
+      [`Task Type,Completed,Not Completed\n${csvContent}`],
+      {
+        type: "text/csv;charset=utf-8;",
+      }
+    );
+    saveAs(blob, "task_status.csv");
+  };
+
+  // Export as PDF
+  const handleExportAsPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Task Status Overview", 14, 16);
+
+    const tableData = chartData.labels.map((label, index) => [
+      label,
+      chartData.datasets[0].data[index], // Completed count
+      chartData.datasets[1].data[index], // Not Completed count
+    ]);
+
+    doc.autoTable({
+      head: [["Task Type", "Completed", "Not Completed"]],
+      body: tableData,
+      startY: 30,
+    });
+
+    doc.save("task_status.pdf");
+  };
+
+  const handleMenuOpen = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+
   return (
-    <div
-      className="bar_chart p-2"
-      style={{
-        width: "100%",
-        height: "450px",
-        border: "1px solid #e0e0e0",
-        borderRadius: "8px",
-        backgroundColor: "#fff",
-        padding: "16px",
-        position: "relative",
-      }}
-    >
-      <h2
-        style={{ marginBottom: "16px", fontSize: "24px", fontWeight: "bold" }}
-      >
-        Task Status Overview
-      </h2>
-      {loading ? <p>Loading...</p> : <Bar data={chartData} options={options} />}
-      {popupVisible && (
-        <div
-          style={{
-            position: "absolute",
-            top: 100,
-            left: 100,
-            backgroundColor: "#fff",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-            borderRadius: "12px",
-            padding: "16px",
-            zIndex: 1000,
-            width: "250px",
-            maxHeight: "300px",
-            overflowY: "auto",
-          }}
-        >
+    <>
+      <div className="container">
+        <Grid>
           <IconButton
-            onClick={() => setPopupVisible(false)}
-            style={{
-              position: "absolute",
-              top: "-10px",
-              right: "-10px",
-              backgroundColor: "#fff",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-              borderRadius: "50%",
+            onClick={handleMenuOpen}
+            sx={{
+              position: "relative",
+              left: "35rem",
+              top: "2.5rem",
+              zIndex: 1000,
             }}
           >
-            <CloseOutlined />
+            <MoreVertIcon />
           </IconButton>
 
-          <div>
-            {taskDetails.length > 0 ? (
-              taskDetails.map((task) => (
-                <div
-                  key={task._id}
-                  onClick={() => handleTaskClick(task._id)} // Task click handler
-                  style={{
-                    marginBottom: "8px",
-                    padding: "8px",
-                    cursor: "pointer",
-                    borderRadius: "6px",
-                    backgroundColor: "#f5f5f5",
-                    transition: "background-color 0.3s ease",
-                  }}
-                  onMouseOver={(e) =>
-                    (e.currentTarget.style.backgroundColor = "#e0e0e0")
-                  }
-                  onMouseOut={(e) =>
-                    (e.currentTarget.style.backgroundColor = "#f5f5f5")
-                  }
-                >
-                  <h4
-                    style={{
-                      margin: "0 0 4px 0",
-                      fontSize: "16px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    {task.taskName || "No Name"}
-                  </h4>
-                  <p
-                    style={{
-                      margin: "0",
-                      fontSize: "14px",
-                      color: "#666",
-                    }}
-                  >
-                    Task Type: {task.taskType || "Unknown"}
-                  </p>
-                  <p
-                    style={{
-                      margin: "0",
-                      fontSize: "14px",
-                      color: task.actualCompletionDate ? "green" : "red",
-                    }}
-                  >
-                    Status:{" "}
-                    {task.actualCompletionDate ? "Completed" : "Not Completed"}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p>No tasks available</p>
-            )}
-          </div>
+          <Menu
+            anchorEl={menuAnchorEl}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleExportAsCSV}>Export as CSV</MenuItem>
+            <MenuItem onClick={handleExportAsPDF}>Export as PDF</MenuItem>
+          </Menu>
+        </Grid>
+        <div
+          className="bar_chart p-2"
+          style={{
+            width: "100%",
+            height: "450px",
+            border: "1px solid #e0e0e0",
+            borderRadius: "8px",
+            backgroundColor: "#fff",
+            padding: "16px",
+            position: "relative",
+          }}
+        >
+          <h2
+            style={{
+              marginBottom: "16px",
+              fontSize: "24px",
+              fontWeight: "bold",
+            }}
+          >
+            Task Status Overview
+          </h2>
+
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            <Bar data={chartData} options={options} />
+          )}
+          {popupVisible && (
+            <div
+              style={{
+                position: "absolute",
+                top: 100,
+                left: 100,
+                backgroundColor: "#fff",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                borderRadius: "12px",
+                padding: "16px",
+                zIndex: 1000,
+                width: "250px",
+                maxHeight: "300px",
+                overflowY: "auto",
+              }}
+            >
+              <IconButton
+                onClick={() => setPopupVisible(false)}
+                style={{
+                  position: "absolute",
+                  top: "-10px",
+                  right: "-10px",
+                  backgroundColor: "#fff",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                  borderRadius: "50%",
+                }}
+              >
+                <CloseOutlined />
+              </IconButton>
+
+              <div>
+                {taskDetails.length > 0 ? (
+                  taskDetails.map((task) => (
+                    <div
+                      key={task._id}
+                      onClick={() => handleTaskClick(task._id)} // Task click handler
+                      style={{
+                        marginBottom: "8px",
+                        padding: "8px",
+                        cursor: "pointer",
+                        borderRadius: "6px",
+                        backgroundColor: "#f5f5f5",
+                        transition: "background-color 0.3s ease",
+                      }}
+                      onMouseOver={(e) =>
+                        (e.currentTarget.style.backgroundColor = "#e0e0e0")
+                      }
+                      onMouseOut={(e) =>
+                        (e.currentTarget.style.backgroundColor = "#f5f5f5")
+                      }
+                    >
+                      <h4
+                        style={{
+                          margin: "0 0 4px 0",
+                          fontSize: "16px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {task.taskName || "No Name"}
+                      </h4>
+                      <p
+                        style={{
+                          margin: "0",
+                          fontSize: "14px",
+                          color: "#666",
+                        }}
+                      >
+                        Task Type: {task.taskType || "Unknown"}
+                      </p>
+                      <p
+                        style={{
+                          margin: "0",
+                          fontSize: "14px",
+                          color: task.actualCompletionDate ? "green" : "red",
+                        }}
+                      >
+                        Status:{" "}
+                        {task.actualCompletionDate
+                          ? "Completed"
+                          : "Not Completed"}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p>No tasks available</p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 

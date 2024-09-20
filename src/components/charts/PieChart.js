@@ -4,8 +4,11 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useNavigate } from "react-router-dom";
 import Loader from "../helpers/loader";
-import { IconButton } from "@mui/material";
-import { CloseOutlined } from "@mui/icons-material";
+import { Grid, IconButton, Menu, MenuItem } from "@mui/material";
+import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
+import { saveAs } from "file-saver";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -23,7 +26,8 @@ const PieChart = ({ companyDetails, loading }) => {
   });
 
   const [clickedCompany, setClickedCompany] = useState([]);
-
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(menuAnchorEl);
   const [clickedLabel, setClickedLabel] = useState("");
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
@@ -151,8 +155,121 @@ const PieChart = ({ companyDetails, loading }) => {
     onClick: onChartClick,
   };
 
+  //exporing graphps hereeee
+  const handleExportAsCSV = () => {
+    const csvContent = companyDetails
+      .map((company) => {
+        return `${company.companyName || "--"},${
+          company.constitution || "--"
+        },${company.subConstitution || "--"},${company.clientStatus || "--"},${
+          company.authorisedPerson || "--"
+        },${company.phone || "--"},${company.mailId || "--"},${
+          company.pan || "--"
+        },${company.companyAddress || "--"}`;
+      })
+      .join("\n");
+
+    const blob = new Blob(
+      [
+        `Company Name,Constitution,Sub Constitution,Client Status,Authorised Person,Phone,Mail ID,PAN,Company Address\n${csvContent}`,
+      ],
+      {
+        type: "text/csv;charset=utf-8;",
+      }
+    );
+
+    saveAs(blob, "company_details.csv");
+  };
+
+  //export as pdf vishnu
+  const handleExportAsPDF = () => {
+    const doc = new jsPDF();
+
+    console.log("Generating PDF...");
+
+    if (companyDetails.length === 0) {
+      console.error("No data to export.");
+      return;
+    }
+
+    doc.text("Company Details", 14, 16);
+
+    const tableData = companyDetails.map((company) => ({
+      CompanyName: company.companyName || " --",
+      Constitution: company.constitution || " --",
+      SubConstitution: company.subConstitution || " --",
+      clientStatus: company.clientStatus || " --",
+      authorisedPerson: company.authorisedPerson || " --",
+      phone: company.phone || " --",
+      mailId: company.mailId || " --",
+      pan: company.pan || " --",
+      companyAddress: company.companyAddress || " --",
+    }));
+
+    doc.autoTable({
+      head: [
+        [
+          "Company Name",
+          "Constitution",
+          "Sub Constitution",
+          "Client Status",
+          "Authorized Person",
+          "Phone",
+          "MailId",
+          "PAN",
+          "Company Address",
+        ],
+      ],
+      body: tableData.map((item) => [
+        item.CompanyName,
+        item.Constitution,
+        item.SubConstitution,
+        item.clientStatus,
+        item.authorisedPerson,
+        item.phone,
+        item.mailId,
+        item.pan,
+        item.companyAddress,
+      ]),
+      startY: 30,
+    });
+
+    doc.save("company_details.pdf");
+    console.log("PDF generated and downloaded.");
+  };
+
+  const handleMenuOpen = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+
   return (
     <div className="container">
+      <Grid>
+        <IconButton
+          onClick={handleMenuOpen}
+          sx={{
+            position: "relative",
+            left: "35rem",
+            top: "2.5rem",
+          }}
+        >
+          <MoreVertIcon />
+        </IconButton>
+
+        <Menu
+          anchorEl={menuAnchorEl}
+          open={isMenuOpen}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleExportAsCSV}>Export as CSV</MenuItem>
+          <MenuItem onClick={handleExportAsPDF}>Export as PDF</MenuItem>
+        </Menu>
+      </Grid>
+
       <div
         style={{
           width: "100%",
@@ -174,6 +291,9 @@ const PieChart = ({ companyDetails, loading }) => {
         >
           Companies
         </h2>
+
+        {/* 3-dot Icon */}
+
         {loading ? (
           <>
             <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">

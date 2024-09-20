@@ -11,9 +11,12 @@ import {
 import axios from "axios";
 import { base_url } from "../../const";
 import Loader from "../helpers/loader";
-import { IconButton } from "@mui/material";
-import { CloseOutlined } from "@mui/icons-material";
+import { Grid, IconButton, Menu, MenuItem } from "@mui/material";
+import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import { saveAs } from "file-saver";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
@@ -59,6 +62,8 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
   const [clickedCompanies, setClickedCompanies] = useState([]);
   const [clickedLabel, setClickedLabel] = useState("");
   const [companyGroupsByTask, setCompanyGroupByTask] = useState([]);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(menuAnchorEl);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -209,9 +214,68 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
     navigate("/tasks", { state: { taskId } });
   };
 
-  console.log("hey clicked", clickedCompanies);
+  //console.log("hey clicked", clickedCompanies);
+
+  const handleExportAsCSV = () => {
+    const csvContent = chartData.labels
+      .map((label, index) => {
+        return `${label},${chartData.datasets[0].data[index]}`;
+      })
+      .join("\n");
+
+    const blob = new Blob([`Task Type,Number of Companies\n${csvContent}`], {
+      type: "text/csv;charset=utf-8;",
+    });
+    saveAs(blob, "task_types.csv");
+  };
+
+  // Export as PDF
+  const handleExportAsPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Company Details by Task Type", 14, 16);
+    doc.autoTable({
+      head: [["Task Type", "Number of Companies"]],
+      body: chartData.labels.map((label, index) => [
+        label,
+        chartData.datasets[0].data[index],
+      ]),
+      startY: 30,
+    });
+    doc.save("task_types.pdf");
+  };
+
+  const handleMenuOpen = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+
   return (
     <div className="container">
+      <Grid>
+        <IconButton
+          onClick={handleMenuOpen}
+          sx={{
+            position: "relative",
+            left: "35rem",
+            top: "2.5rem",
+            zIndex: 1000,
+          }}
+        >
+          <MoreVertIcon />
+        </IconButton>
+
+        <Menu
+          anchorEl={menuAnchorEl}
+          open={isMenuOpen}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleExportAsCSV}>Export as CSV</MenuItem>
+          <MenuItem onClick={handleExportAsPDF}>Export as PDF</MenuItem>
+        </Menu>
+      </Grid>
       <div
         className="bar_chart p-2"
         style={{

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
-import { Users } from "./data";
+import { GetUsers, Users } from "./data";
 import SelectInput from "../../components/select";
 import CustomInput from "../../components/input";
 import CustomCheckbox from "../../components/Checkbox/Checkbox";
@@ -15,10 +15,14 @@ const UserForm = ({
   fetchUsers,
   companyId,
 }) => {
+  const users = GetUsers([]);
+  const [Users, setUsers] = useState(users);
   const defaultData = Users[0].fields.reduce((acc, field) => {
     acc[field.id] = "";
     return acc;
   }, {});
+
+  const [companies, setCompanies] = useState([]);
 
   const [formData, setFormData] = useState(defaultData);
   const [error, setError] = useState(null);
@@ -49,7 +53,7 @@ const UserForm = ({
       }
 
       fetchUsers();
-      setShowForm(false)
+      setShowForm(false);
       setFormData(defaultData);
     } catch (error) {
       setError(error.message);
@@ -64,9 +68,7 @@ const UserForm = ({
     // Fetch existing task data if `companyId` is provided
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(
-          `${base_url}/users/${companyId}`
-        );
+        const response = await axios.get(`${base_url}/users/${companyId}`);
         const formattedData = mapDates(response.data);
         setFormData(formattedData);
       } catch (error) {
@@ -83,6 +85,32 @@ const UserForm = ({
       fetchUserData();
     }
   }, [companyId, setShowForm]);
+
+  //gettiing companies
+
+  const fetchCompanies = async () => {
+    try {
+      const response = await axios.get(`${base_url}/companies/all`);
+      const data = response.data?.data.map((item) => ({
+        value: item?.companyDetails?.companyName,
+        label: item?.companyDetails?.companyName,
+        ...item,
+      }));
+      setCompanies(data);
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+    }
+  };
+
+  //vishnu
+  useEffect(() => {
+    fetchCompanies();
+  }, []);
+
+  useEffect(() => {
+    const updatedUsers = GetUsers({ companies });
+    setUsers(updatedUsers);
+  }, [companies]);
 
   const mapDates = (data) => {
     if (Array.isArray(data)) {
@@ -109,18 +137,17 @@ const UserForm = ({
     if (checked) {
       setFormData((prev) => ({
         ...prev,
-        "whatsappNumber": prev["mobileNumber"],
+        whatsappNumber: prev["mobileNumber"],
         [id]: type === "checkbox" ? checked : value,
       }));
     } else {
       setFormData((prev) => ({
         ...prev,
-        "whatsappNumber": "",
+        whatsappNumber: "",
         [id]: type === "checkbox" ? checked : value,
       }));
     }
-  }
-
+  };
 
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
@@ -165,7 +192,11 @@ const UserForm = ({
                             id={field.id}
                             label={field.label}
                             checked={formData[field.id]}
-                            onChange={field.id == "sameAsWhatsappNumber" ? handleWatsappInputChange : handleInputChange}
+                            onChange={
+                              field.id == "sameAsWhatsappNumber"
+                                ? handleWatsappInputChange
+                                : handleInputChange
+                            }
                             required={field.required}
                           />
                         </div>
