@@ -27,8 +27,6 @@ const PieChart = ({ companyDetails, loading }) => {
   });
 
   const [clickedCompany, setClickedCompany] = useState([]);
-  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-  const isMenuOpen = Boolean(menuAnchorEl);
   const [clickedLabel, setClickedLabel] = useState("");
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
@@ -48,8 +46,8 @@ const PieChart = ({ companyDetails, loading }) => {
           subConstitution === "registered"
             ? "Partnership Registered"
             : subConstitution === "llp"
-            ? "Limited Liability Partnership (LLP)"
-            : "Partnership Unregistered";
+              ? "Limited Liability Partnership (LLP)"
+              : "Partnership Unregistered";
       } else if (constitution === "Proprietorship") {
         key = "Proprietorship";
       } else if (constitution === "PrivateLimited") {
@@ -97,8 +95,8 @@ const PieChart = ({ companyDetails, loading }) => {
             subConstitution === "registered"
               ? "Partnership Registered"
               : subConstitution === "llp"
-              ? "Limited Liability Partnership (LLP)"
-              : "Partnership Unregistered";
+                ? "Limited Liability Partnership (LLP)"
+                : "Partnership Unregistered";
         } else if (constitution === "Proprietorship") {
           key = "Proprietorship";
         } else if (constitution === "PrivateLimited") {
@@ -123,6 +121,7 @@ const PieChart = ({ companyDetails, loading }) => {
       },
       legend: {
         display: false,
+        position: 'top',
       },
       tooltip: {
         enabled: true,
@@ -156,17 +155,13 @@ const PieChart = ({ companyDetails, loading }) => {
     onClick: onChartClick,
   };
 
-  //exporing graphps hereeee
   const handleExportAsCSV = () => {
     const csvContent = companyDetails
       .map((company) => {
-        return `${company.companyName || "--"},${
-          company.constitution || "--"
-        },${company.subConstitution || "--"},${company.clientStatus || "--"},${
-          company.authorisedPerson || "--"
-        },${company.phone || "--"},${company.mailId || "--"},${
-          company.pan || "--"
-        },${company.companyAddress || "--"}`;
+        return `${company.companyName || "--"},${company.constitution || "--"
+          },${company.subConstitution || "--"},${company.clientStatus || "--"},${company.authorisedPerson || "--"
+          },${company.phone || "--"},${company.mailId || "--"},${company.pan || "--"
+          },${company.companyAddress || "--"}`;
       })
       .join("\n");
 
@@ -239,38 +234,8 @@ const PieChart = ({ companyDetails, loading }) => {
     console.log("PDF generated and downloaded.");
   };
 
-  const handleMenuOpen = (event) => {
-    setMenuAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchorEl(null);
-  };
-
   return (
     <div className="container">
-      <Grid>
-        <IconButton
-          onClick={handleMenuOpen}
-          sx={{
-            position: "relative",
-            left: "35rem",
-            top: "2.5rem",
-          }}
-        >
-          <MoreVertIcon />
-        </IconButton>
-
-        <Menu
-          anchorEl={menuAnchorEl}
-          open={isMenuOpen}
-          onClose={handleMenuClose}
-        >
-          <MenuItem onClick={handleExportAsCSV}>Export as CSV</MenuItem>
-          <MenuItem onClick={handleExportAsPDF}>Export as PDF</MenuItem>
-        </Menu>
-      </Grid>
-
       <div
         style={{
           width: "100%",
@@ -297,11 +262,30 @@ const PieChart = ({ companyDetails, loading }) => {
             </div>
           </>
         ) : (
-          <div className="flex justify-center items-center p-2">
-            <div style={{ width: "300px", height: "300px" }}>
-              {" "}
-              {/* Fit the graph container */}
-              <Doughnut data={chartData} options={options} />
+          <div className="flex justify-center items-start p-4">
+            {/* Graph Section */}
+            <div className="w-full sm:w-2/3 lg:w-3/4">
+              <div style={{ width: "300px", height: "300px" }}>
+                <Doughnut data={chartData} options={options} />
+              </div>
+            </div>
+
+            {/* Dynamic Custom Legends Section */}
+            <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
+              <h2 className="text-lg font-bold mb-4">Legend</h2>
+              <ul className="space-y-2">
+                {chartData.labels.map((label, index) => (
+                  <li key={index} className="flex items-center">
+                    <span
+                      className="w-4 h-4 inline-block mr-2"
+                      style={{
+                        backgroundColor: chartData.datasets[0].backgroundColor[index],
+                      }}
+                    ></span>
+                    <span>{label}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         )}

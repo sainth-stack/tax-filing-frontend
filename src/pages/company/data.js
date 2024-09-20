@@ -72,6 +72,18 @@ export const sectionsData = (data) => {
           required: true,
         },
         {
+          type: "date",
+          id: "companyDetails.effectiveFrom",
+          label: "Effective From",
+          required: true,
+        },
+        {
+          type: "date",
+          id: "companyDetails.effectiveTo",
+          label: "Effective To",
+          required: true,
+        },
+        {
           type: "textarea",
           id: "companyDetails.companyAddress",
           label: "Company Address",

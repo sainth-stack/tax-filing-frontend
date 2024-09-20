@@ -16,7 +16,6 @@ const Charts = () => {
   const [status, setStatus] = useState("all");
   const [companies, setCompanies] = useState([]);
   const [filteredTasks, setfilteredTasks] = useState([]);
-
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
   const [clientStatuses, setClientStatuses] = useState([]);
@@ -27,6 +26,8 @@ const Charts = () => {
       try {
         const response = await axios.post(`${base_url}/companies/filter`, {
           status: status === "all" ? "" : status,
+          year,
+          month
         });
         setLoading(false);
 
@@ -35,6 +36,7 @@ const Charts = () => {
         console.log("Chart company data", data);
         const companyDetailsArray = data.map((item) => ({
           ...item.companyDetails,
+          ...item,
           _id: item._id,
         }));
 
@@ -53,7 +55,7 @@ const Charts = () => {
     };
 
     fetchCompanies();
-  }, [status]);
+  }, [status, year, month]);
 
   const handleFilterChange = async () => {
     setLoading(true);

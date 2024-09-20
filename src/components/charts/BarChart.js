@@ -11,12 +11,13 @@ import {
 import axios from "axios";
 import { base_url } from "../../const";
 import Loader from "../helpers/loader";
-import { Grid, IconButton, Menu, MenuItem } from "@mui/material";
-import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import { CloseOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { saveAs } from "file-saver";
+import Header from "../../pages/Dashboard/card-container";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
@@ -62,63 +63,82 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
   const [clickedCompanies, setClickedCompanies] = useState([]);
   const [clickedLabel, setClickedLabel] = useState("");
   const [companyGroupsByTask, setCompanyGroupByTask] = useState([]);
-  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-  const isMenuOpen = Boolean(menuAnchorEl);
   const navigate = useNavigate();
-
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${base_url}/tasks/all`);
-        const tasksData = response.data.data;
+        // Remove tasks API call and work only with barDetails
         setLoading(false);
 
-        const filteredTasks = tasksData.filter((task) =>
-          barDetails.some((company) => company.companyName === task.company)
-        );
+        // Filter companies with active statuses in different categories (e.g., gst, incomeTax)
+        const filteredCompanies = barDetails.filter((company) => {
+          return (
+            company.gst?.status === "active" ||
+            company.incomeTax?.status === "active" ||
+            company.esi?.status === "active" ||
+            company.providentFund?.status === "active" ||
+            company.professionalTax?.status === "active" ||
+            company.tds?.status === "active" ||
+            company.shopCommercialEstablishment?.status === "active" ||
+            company.msme?.status === "active" ||
+            company.fssai?.status === "active" ||
+            company.factoryLicense?.status === "active" ||
+            company.importExport?.status === "active" ||
+            company.partnershipFirmFormC?.status === "active" ||
+            company.shramSuvidhaPortal?.status === "active" ||
+            company.mca?.status === "active"
+          );
+        });
 
-        const companyCounts = filteredTasks.reduce((acc, task) => {
-          const taskType = task.taskType;
-          const TaskId = task._id;
+        // Group companies by active task type
+        const activeCompanyGroups = filteredCompanies.reduce((acc, company) => {
+          const taskTypes = [
+            "gst",
+            "incomeTax",
+            "esi",
+            "providentFund",
+            "professionalTax",
+            "tds",
+            "shopCommercialEstablishment",
+            "msme",
+            "fssai",
+            "factoryLicense",
+            "importExport",
+            "partnershipFirmFormC",
+            "shramSuvidhaPortal",
+            "mca",
+          ];
 
-          if (!acc[taskType]) {
-            acc[taskType] = {};
-          }
+          taskTypes.forEach((taskType) => {
+            if (company[taskType]?.status === "active") {
+              if (!acc[taskType]) {
+                acc[taskType] = {
+                  ids: [],
+                  names: [],
+                  idsWithNames: [],
+                };
+              }
 
-          acc[taskType][TaskId] = (acc[taskType][TaskId] || 0) + 1;
+              const companyId = company._id;
+              const companyName = company.companyName;
+
+              acc[taskType].ids.push(companyId);
+              acc[taskType].names.push(companyName);
+              acc[taskType].idsWithNames.push([companyId, companyName]);
+            }
+          });
 
           return acc;
         }, {});
 
-        const companyGroupsByTask = filteredTasks.reduce((acc, task) => {
-          const taskType = task.taskType;
-          const companyName = task.company;
-          const TaskId = task._id;
+        // Set the grouped active company data
+        setCompanyGroupByTask(activeCompanyGroups);
 
-          if (!acc[taskType]) {
-            acc[taskType] = {
-              ids: [],
-              names: [],
-              idsWithNames: [],
-            };
-          }
-
-          acc[taskType].ids.push(TaskId);
-          acc[taskType].names.push(companyName);
-          acc[taskType].idsWithNames.push([TaskId, companyName]);
-
-          return acc;
-        }, {});
-
-        setCompanyGroupByTask(companyGroupsByTask);
-
-        const labels = Object.keys(companyCounts);
-        const data = labels.map((taskType) =>
-          Object.values(companyCounts[taskType]).reduce(
-            (sum, count) => sum + count,
-            0
-          )
+        // Prepare chart data
+        const labels = Object.keys(activeCompanyGroups);
+        const data = labels.map(
+          (taskType) => activeCompanyGroups[taskType].ids.length
         );
 
         const barColors = labels.map(
@@ -129,7 +149,7 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
           labels: labels,
           datasets: [
             {
-              label: "Number of Companies",
+              label: "Number of Active Companies",
               data: data,
               backgroundColor: barColors,
               borderColor: "#1E88E5",
@@ -142,13 +162,14 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
           ],
         });
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error processing data:", error);
         setLoading(false);
       }
     };
 
     fetchData();
   }, [barDetails]);
+
 
   const handleClick = (event, elements) => {
     if (elements.length > 0) {
@@ -209,9 +230,7 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
   };
 
   const handleCompanyClick = (taskId) => {
-    alert(taskId);
-
-    navigate("/tasks", { state: { taskId } });
+    navigate("/company", { state: { companyName:taskId } });
   };
 
   //console.log("hey clicked", clickedCompanies);
@@ -244,38 +263,8 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
     doc.save("task_types.pdf");
   };
 
-  const handleMenuOpen = (event) => {
-    setMenuAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchorEl(null);
-  };
-
   return (
     <div className="container">
-      <Grid>
-        <IconButton
-          onClick={handleMenuOpen}
-          sx={{
-            position: "relative",
-            left: "35rem",
-            top: "2.5rem",
-            zIndex: 1000,
-          }}
-        >
-          <MoreVertIcon />
-        </IconButton>
-
-        <Menu
-          anchorEl={menuAnchorEl}
-          open={isMenuOpen}
-          onClose={handleMenuClose}
-        >
-          <MenuItem onClick={handleExportAsCSV}>Export as CSV</MenuItem>
-          <MenuItem onClick={handleExportAsPDF}>Export as PDF</MenuItem>
-        </Menu>
-      </Grid>
       <div
         className="bar_chart p-2"
         style={{
@@ -288,6 +277,7 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
           padding: "8px",
         }}
       >
+        <Header {...{ title: 'Active Services by company', handleExportAsCSV, handleExportAsPDF }} />
         {loading ? (
           <>
             <div className="flex justify-center items-center p-4">
@@ -295,7 +285,9 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
             </div>
           </>
         ) : (
-          <Bar data={chartData} options={options} />
+         <div style={{width:'100%',height:'310px'}}>
+           <Bar data={chartData} options={options} style={{ width: "250px", height: "250px" }} />
+         </div>
         )}
       </div>
 
@@ -303,8 +295,8 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
         <div
           style={{
             position: "absolute",
-            top: popupPosition.y,
-            left: popupPosition.x,
+            marginTop: '-400px',
+            marginLeft: '300px',
             backgroundColor: "#fff",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
             borderRadius: "12px",

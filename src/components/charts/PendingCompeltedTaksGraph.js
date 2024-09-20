@@ -18,6 +18,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Grid, IconButton, Menu, MenuItem } from "@mui/material";
 import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router";
+import Header from "../../pages/Dashboard/card-container";
 
 // Register Chart.js components
 ChartJS.register(
@@ -131,9 +132,8 @@ const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails }) => {
         : tasksData.completedTasksByPerson[assignedUser]?.tasks || [];
 
       setPopupContent({
-        title: `${
-          isPendingTasks ? "Pending" : "Completed"
-        } Tasks for ${assignedUser} (${tasks.length})`,
+        title: `${isPendingTasks ? "Pending" : "Completed"
+          } Tasks for ${assignedUser} (${tasks.length})`,
         tasks,
       });
 
@@ -189,39 +189,9 @@ const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails }) => {
     doc.save("task_status.pdf");
   };
 
-  const handleMenuOpen = (event) => {
-    setMenuAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchorEl(null);
-  };
-
   return (
     <>
       <div className="container">
-        <Grid>
-          <IconButton
-            onClick={handleMenuOpen}
-            sx={{
-              position: "relative",
-              left: "35rem",
-              top: "3.5rem",
-              zIndex: 1000,
-            }}
-          >
-            <MoreVertIcon />
-          </IconButton>
-
-          <Menu
-            anchorEl={menuAnchorEl}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={handleExportAsCSV}>Export as CSV</MenuItem>
-            <MenuItem onClick={handleExportAsPDF}>Export as PDF</MenuItem>
-          </Menu>
-        </Grid>
 
         <div
           style={{
@@ -235,16 +205,7 @@ const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails }) => {
           }}
           className="mt-4"
         >
-          <h2
-            style={{
-              textAlign: "center",
-              marginBottom: "10px",
-              fontSize: "24px",
-              color: "#333",
-            }}
-          >
-            Tasks Overview by Person
-          </h2>
+          <Header {...{ title: 'Monthly Filing status by task by company', handleExportAsPDF, handleExportAsCSV }} />
           {loading ? (
             <p style={{ textAlign: "center", fontSize: "18px", color: "#666" }}>
               Loading...
