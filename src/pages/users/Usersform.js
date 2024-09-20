@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
-import { GetUsers, Users } from "./data";
+import { GetUsers } from "./data";
 import SelectInput from "../../components/select";
 import CustomInput from "../../components/input";
 import CustomCheckbox from "../../components/Checkbox/Checkbox";
@@ -17,12 +17,11 @@ const UserForm = ({
 }) => {
   const users = GetUsers([]);
   const [Users, setUsers] = useState(users);
+  const [companies, setCompanies] = useState([]);
   const defaultData = Users[0].fields.reduce((acc, field) => {
     acc[field.id] = "";
     return acc;
   }, {});
-
-  const [companies, setCompanies] = useState([]);
 
   const [formData, setFormData] = useState(defaultData);
   const [error, setError] = useState(null);
@@ -54,6 +53,7 @@ const UserForm = ({
 
       fetchUsers();
       setShowForm(false);
+
       setFormData(defaultData);
     } catch (error) {
       setError(error.message);
@@ -149,6 +149,7 @@ const UserForm = ({
     }
   };
 
+  console.log("users data chcking");
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
       <header

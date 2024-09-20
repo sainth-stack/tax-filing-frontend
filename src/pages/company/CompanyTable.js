@@ -166,12 +166,17 @@ export default function CompanyTable({
       });
       setLoading(false);
 
-      const { logs } = response.data;
-      setAuditData(logs); // Updating the state with the fetched logs
-      setOpen(true); // Opening the modal or component that displays audit history
+      const { logs } = response.data; // Assuming logs contain the audit trail
+      if (logs && logs.length > 0) {
+        setAuditData(logs); // Updating the state with the fetched logs
+        setOpen(true); // Opening the modal to display audit history
+      } else {
+        toast.warn("No audit history found for this company.");
+      }
     } catch (error) {
+      setLoading(false); // Ensure loading state is turned off on error
+      toast.error("Error fetching audit trail: " + error.message);
       console.error("Error fetching audit trail:", error.message);
-      throw error;
     }
   };
 

@@ -9,7 +9,7 @@ import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import Header from "../../pages/Dashboard/card-container";
+import ChartsHeader from "./Header";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -246,7 +246,12 @@ const PieChart = ({ companyDetails, loading }) => {
           padding: "8px", // Add padding for a card-like layout
         }}
       >
-        <Header {...{ title: 'Company Status by Constitution and Subconstitution', handleExportAsCSV, handleExportAsPDF }} />
+        {/* //Header part */}
+
+        <ChartsHeader title={" Companies"} />
+
+        {/* 3-dot Icon */}
+
         {loading ? (
           <>
             <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
