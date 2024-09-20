@@ -44,14 +44,13 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
         const response = await axios.get(`${base_url}/tasks/all`);
         const tasksData = response.data.data;
 
-        // Assuming `barDetails` is defined and contains company information
         const filteredTasks = tasksData.filter((task) =>
           paymentGraphDetails.some(
             (company) => company.companyName === task.company
           )
         );
 
-        setTasks(filteredTasks); // Set filtered tasks here
+        setTasks(filteredTasks); 
 
         const taskTypes = [];
         const completedCounts = {};

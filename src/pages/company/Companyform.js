@@ -90,8 +90,7 @@ const CompanyForm = ({
       handleFiles(response.data);
       toast.success("Company created successfully");
     } catch (error) {
-      toast.error("Error creating company");
-      console.log("error in company", error.message);
+      toast.error(`Error: ${error.response?.data?.message || error.message}`);
     }
   };
 
