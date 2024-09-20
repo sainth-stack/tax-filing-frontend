@@ -8,7 +8,7 @@ import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import jsPDF from "jspdf"; // PDF export
 import "jspdf-autotable"; // Required for table formatting
-import { Grid, IconButton, Menu, MenuItem } from "@mui/material";
+import Header from "../../pages/Dashboard/card-container";
 
 const MeterGraph = ({ MeterGraphDetails }) => {
   const [data, setData] = useState({
@@ -86,19 +86,18 @@ const MeterGraph = ({ MeterGraphDetails }) => {
   const colors = [];
 
   if (data.overdue > 0) {
-    categories.push(data.overdue / totalTasks);
+    categories.push(data.overdue);
     colors.push("#FF0000");
   }
   if (data.inProgress > 0) {
-    categories.push(data.inProgress / totalTasks);
+    categories.push(data.inProgress);
     colors.push("#FFBF00");
   }
   if (data.completed > 0) {
-    categories.push(data.completed / totalTasks);
+    categories.push(data.completed);
     colors.push("#008000");
   }
-
-  const averagePercentage = categories.reduce((acc, val) => acc + val, 0);
+  const averagePercentage = (1 / categories.reduce((acc, val) => acc + val, 0)) * 100;
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
@@ -174,40 +173,9 @@ const MeterGraph = ({ MeterGraphDetails }) => {
     doc.save(`all_tasks.pdf`);
   };
 
-  const handleMenuOpen = (event) => {
-    setMenuAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchorEl(null);
-  };
-
   return (
     <>
       <div className="container">
-        <Grid>
-          <IconButton
-            onClick={handleMenuOpen}
-            sx={{
-              position: "relative",
-              left: "35rem",
-              top: "2.5rem",
-              zIndex: 1000,
-            }}
-          >
-            <MoreVertIcon />
-          </IconButton>
-
-          <Menu
-            anchorEl={menuAnchorEl}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={exportToCSV}>Export as CSV</MenuItem>
-            <MenuItem onClick={exportToPDF}>Export as PDF</MenuItem>
-          </Menu>
-        </Grid>
-
         <div
           style={{
             width: "100%",
@@ -220,11 +188,12 @@ const MeterGraph = ({ MeterGraphDetails }) => {
           }}
           className="overflow-auto scrollable-element"
         >
-          <div className="mt-6 m-2">
+          <Header {...{ title: 'Monthly Filing status by task by company' }} />
+          <div className="mt-10 m-2">
             <GaugeChart
               id="gauge-chart"
               nrOfLevels={categories.length || 1}
-              percent={averagePercentage}
+              percent={averagePercentage / 100}
               textColor="#000"
               fontSize="20px"
               colors={colors}
@@ -236,7 +205,6 @@ const MeterGraph = ({ MeterGraphDetails }) => {
             />
           </div>
 
-          {/* Category Labels */}
           <div className="labels-overlay">
             {["overdue", "inProgress", "completed"].map((label, index) => {
               const count = [data.overdue, data.inProgress, data.completed][

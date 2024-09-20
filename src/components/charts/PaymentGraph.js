@@ -18,6 +18,7 @@ import { useNavigate } from "react-router";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { saveAs } from "file-saver";
+import Header from "../../pages/Dashboard/card-container";
 
 ChartJS.register(
   CategoryScale,
@@ -93,11 +94,13 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
               label: "Completed",
               data: completedData,
               backgroundColor: "#008000",
+              borderRadius: 5,
             },
             {
               label: "Not Completed",
               data: notCompletedData,
               backgroundColor: "#FF0000",
+              borderRadius: 5,
             },
           ],
         });
@@ -227,39 +230,9 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
     doc.save("task_status.pdf");
   };
 
-  const handleMenuOpen = (event) => {
-    setMenuAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchorEl(null);
-  };
-
   return (
     <>
       <div className="container">
-        <Grid>
-          <IconButton
-            onClick={handleMenuOpen}
-            sx={{
-              position: "relative",
-              left: "35rem",
-              top: "2.5rem",
-              zIndex: 1000,
-            }}
-          >
-            <MoreVertIcon />
-          </IconButton>
-
-          <Menu
-            anchorEl={menuAnchorEl}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={handleExportAsCSV}>Export as CSV</MenuItem>
-            <MenuItem onClick={handleExportAsPDF}>Export as PDF</MenuItem>
-          </Menu>
-        </Grid>
         <div
           className="bar_chart p-2"
           style={{
@@ -272,15 +245,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
             position: "relative",
           }}
         >
-          <h2
-            style={{
-              marginBottom: "16px",
-              fontSize: "24px",
-              fontWeight: "bold",
-            }}
-          >
-            Task Status Overview
-          </h2>
+          <Header {...{ title: 'Monthly Filing status by task by company', handleExportAsCSV, handleExportAsPDF }} />
 
           {loading ? (
             <p>Loading...</p>
