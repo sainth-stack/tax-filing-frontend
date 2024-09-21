@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import CompanyTable from "./CompanyTable";
 import Layout from "./../../components/Layout/Layout";
 import CompanyForm from "./Companyform";
 import CustomInput from "../../components/input";
 import SelectInput from "../../components/select";
 import { useLocation } from "react-router";
+import DateInput from "../../components/Date/DateInput";
+import { Dates } from "./data";
 
 const Company = () => {
   const [showForm, setShowForm] = useState("");
@@ -65,6 +67,20 @@ const Company = () => {
                   fontWeight: 500,
                 }}
               />
+              {Dates[0].fields.map((field) => (
+                <Box key={field.id} className="flex items-center mx-2">
+                  <DateInput
+                    type={field.type}
+                    id={field.id}
+                    className="shadow-sm"
+                    label={field.label}
+                    value={"formData[field.id]"}
+                    onChange={"handleInputChange"}
+                    required={field.required}
+                    labelStyles={{ fontWeight: 500 }}
+                  />
+                </Box>
+              ))}
             </div>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
