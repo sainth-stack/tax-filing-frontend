@@ -9,7 +9,7 @@ import jsPDF from "jspdf"; // PDF export
 import "jspdf-autotable"; // Required for table formatting
 import Header from "../../pages/Dashboard/card-container";
 
-const MeterGraph = ({ MeterGraphDetails,filteredTasks }) => {
+const MeterGraph = ({ MeterGraphDetails, filteredTasks }) => {
   const [data, setData] = useState({
     overdue: 0,
     inProgress: 0,
