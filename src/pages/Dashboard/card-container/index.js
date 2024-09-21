@@ -6,7 +6,6 @@ import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
 const Header = ({ children, handleExportAsCSV, handleExportAsPDF, title }) => {
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const isMenuOpen = Boolean(menuAnchorEl);
-    //exporing graphps hereeee
 
     const handleMenuOpen = (event) => {
         setMenuAnchorEl(event.currentTarget);

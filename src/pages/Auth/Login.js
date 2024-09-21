@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+/* import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { base_url } from "../../const";
@@ -174,6 +174,193 @@ const Login = () => {
         )}
       </div>
     </div>
+  );
+};
+
+export default Login;
+
+#3b82f5
+ */
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
+import axios from "axios";
+import { base_url } from "../../const";
+import Loader from "../../components/helpers/loader";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  IconButton,
+  InputAdornment,
+  CircularProgress,
+} from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { LoginJson } from "./LoginJson";
+
+const Login = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "admin@gmail.com",
+    password: "Test@123",
+    showPassword: false,
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const toggleShowPassword = () => {
+    setFormData((prevState) => ({
+      ...prevState,
+      showPassword: !prevState.showPassword,
+    }));
+  };
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    try {
+      setLoading(true);
+
+      const response = await axios.post(`${base_url}/users/login`, {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      setLoading(false);
+      const { token } = response.data;
+      localStorage.setItem("token", token);
+
+      if (token) {
+        toast.success("Login successful");
+        navigate("/company");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+      setLoading(false);
+      toast.error("Login Failed");
+    }
+  };
+
+  useEffect(() => {
+    console.log(base_url);
+  }, []);
+
+  return (
+    <Container maxWidth="sm">
+      {loading ? (
+        <Box textAlign="center" mt={5}>
+          <Typography variant="h5" sx={{ color: "#3b82f5" }}>
+            Loading...
+          </Typography>
+          <Box className="flex justify-center items-center p-4">
+            <Loader size={30} />
+          </Box>
+        </Box>
+      ) : (
+        <Box
+          component="form"
+          onSubmit={handleLogin}
+          sx={{
+            mt: 5,
+            p: 3,
+            boxShadow: 3,
+            borderRadius: 2,
+            backgroundColor: "white",
+          }}
+        >
+          <Typography
+            variant="h4"
+            align="center"
+            sx={{ color: "#3b82f5" }}
+            gutterBottom
+          >
+            Tax Filing
+          </Typography>
+          <Typography variant="body1" align="center" gutterBottom>
+            Sign in to your account
+          </Typography>
+
+          {LoginJson.map((field, index) => (
+            <TextField
+              key={index}
+              name={field.name}
+              label={field.label}
+              type={
+                field.name === "password" && formData.showPassword
+                  ? "text"
+                  : field.type
+              }
+              value={formData[field.name]}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              InputProps={
+                field.name === "password"
+                  ? {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={toggleShowPassword}
+                          >
+                            {formData.showPassword ? (
+                              <VisibilityOff />
+                            ) : (
+                              <Visibility />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }
+                  : null
+              }
+            />
+          ))}
+
+          <Box mt={2} display="flex" justifyContent="space-between">
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              color="primary"
+              sx={{ mr: 1 }}
+            >
+              Sign in
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ ml: 1 }}
+            >
+              Forget password
+            </Button>
+          </Box>
+
+          <Typography align="center" variant="body2" mt={2}>
+            No account?{" "}
+            <Link
+              to="/signup"
+              style={{ textDecoration: "none", color: "blue" }}
+            >
+              Sign up
+            </Link>
+          </Typography>
+        </Box>
+      )}
+    </Container>
   );
 };
 
