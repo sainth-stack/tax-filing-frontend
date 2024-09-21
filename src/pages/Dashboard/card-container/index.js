@@ -2,8 +2,9 @@ import { Grid, IconButton, Menu, MenuItem } from "@mui/material";
 import jsPDF from "jspdf";
 import { useState } from "react";
 import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
+import SelectInput from "../../../components/select";
 
-const Header = ({ children, handleExportAsCSV, handleExportAsPDF, title }) => {
+const Header = ({ children, handleExportAsCSV, handleExportAsPDF, title, type, setType, payment = false }) => {
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const isMenuOpen = Boolean(menuAnchorEl);
 
@@ -15,7 +16,7 @@ const Header = ({ children, handleExportAsCSV, handleExportAsPDF, title }) => {
         setMenuAnchorEl(null);
     };
     return (
-        <div style={{ display: 'flex',justifyContent:'space-between' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <h2
                 style={{
                     textAlign: "start",
@@ -26,14 +27,27 @@ const Header = ({ children, handleExportAsCSV, handleExportAsPDF, title }) => {
             >
                 {title}
             </h2>
-            <Grid>
+            <Grid style={{ display: 'flex', gap: '5px',alignItems:'center' }}>
+                {payment && <SelectInput
+                    id="month"
+                    className="shadow-sm ml-2"
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                    default1={"Payment Type"}
+                    options={[
+                        { value: "all", label: "All" },
+                        { value: "filing", label: "Monthly Filing" },
+                        { value: "payment", label: "Monthly Payment" },
+                    ]}
+                    labelStyles={{ fontWeight: 500 }}
+                />}
                 <IconButton
                     onClick={handleMenuOpen}
-                    // sx={{
-                    //     position: "relative",
-                    //     left: "35rem",
-                    //     top: "2.5rem",
-                    // }}
+                // sx={{
+                //     position: "relative",
+                //     left: "35rem",
+                //     top: "2.5rem",
+                // }}
                 >
                     <MoreVertIcon />
                 </IconButton>

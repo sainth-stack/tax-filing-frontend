@@ -29,15 +29,6 @@ const MeterGraph = ({ MeterGraphDetails,filteredTasks }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${base_url}/tasks/all`);
-        const tasks = response.data.data;
-
-        const filteredTasks = tasks.filter((task) =>
-          MeterGraphDetails.some(
-            (company) => company.companyName === task.company
-          )
-        );
-
         const categorizedTasks = filteredTasks.reduce(
           (acc, task) => {
             const dueDate = new Date(task.dueDate);
@@ -74,11 +65,10 @@ const MeterGraph = ({ MeterGraphDetails,filteredTasks }) => {
     };
 
     fetchData();
-  }, [MeterGraphDetails]);
+  }, [filteredTasks]);
 
   if (loading) return <div>Loading...</div>;
 
-  const totalTasks = data.completed + data.inProgress + data.overdue;
   const categories = [];
   const colors = [];
 

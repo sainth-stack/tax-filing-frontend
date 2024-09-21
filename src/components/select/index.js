@@ -13,6 +13,7 @@ const SelectInput = ({
   className,
   style,
   labelStyles,
+  default1,
   disabled,
   readOnly,
 }) => {
@@ -27,11 +28,11 @@ const SelectInput = ({
         onChange={onChange}
         disabled={readOnly}
         className="border rounded p-[9px] focus:outline-none focus:ring-2 focus:ring-blue-500"
-        // required={required}
-        // defaultValue={defaultValue}
+      // required={required}
+      // defaultValue={defaultValue}
       >
         <option value="" disabled>
-          Select an option
+          {default1 ||'Select an option'}
         </option>
         {options?.map((option, index) => (
           <option key={index} value={option?.value}>

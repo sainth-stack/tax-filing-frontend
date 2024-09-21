@@ -116,7 +116,7 @@ const Charts = () => {
 
         <PaymentGraph
           paymentGraphDetails={companies}
-          filterTime={filteredTasks}
+          filterTime2={filteredTasks}
         />
         <MeterGraph
           MeterGraphDetails={companies}

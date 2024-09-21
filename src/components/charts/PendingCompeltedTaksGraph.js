@@ -31,14 +31,12 @@ ChartJS.register(
   ChartDataLabels
 );
 
-const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails }) => {
+const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails, filteredTasks }) => {
   const navigate = useNavigate();
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [popupVisible, setPopupVisible] = useState(false);
-  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-  const isMenuOpen = Boolean(menuAnchorEl);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [popupContent, setPopupContent] = useState({ title: "", tasks: [] });
   const [tasksData, setTasksData] = useState({
@@ -50,13 +48,6 @@ const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${base_url}/tasks/all`);
-        const tasks = response.data.data;
-        const filteredTasks = tasks.filter((task) =>
-          PendingCompeltedTaksGraphDetails.some(
-            (company) => company.companyName === task.company
-          )
-        );
         const pendingTasksByPerson = {};
         const completedTasksByPerson = {};
 
@@ -119,7 +110,7 @@ const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails }) => {
     };
 
     fetchData();
-  }, [PendingCompeltedTaksGraphDetails]);
+  }, [filteredTasks]);
 
   const handleClick = (event, elements) => {
     if (elements.length > 0) {
@@ -205,7 +196,7 @@ const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails }) => {
           }}
           className="mt-4"
         >
-          <Header {...{ title: 'Monthly Filing status by task by company', handleExportAsPDF, handleExportAsCSV }} />
+          <Header {...{ title: 'Tasks by Assignee', handleExportAsPDF, handleExportAsCSV }} />
           {loading ? (
             <p style={{ textAlign: "center", fontSize: "18px", color: "#666" }}>
               Loading...

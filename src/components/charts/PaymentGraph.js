@@ -30,12 +30,32 @@ ChartJS.register(
   ChartDataLabels
 );
 
-const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
+const TaskStatusGraph = ({ paymentGraphDetails, filterTime2 }) => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(false);
   const [taskDetails, setTaskDetails] = useState([]);
   const [popupVisible, setPopupVisible] = useState(false);
+  const [type, setType] = useState('')
   const navigate = useNavigate();
+  console.log(filterTime2)
+  const [filterTime, setFilterData] = useState([])
+
+  useEffect(() => {
+    let filtered = filterTime2;
+
+    if (type === "payment") {
+      // Filter tasks that have monthly filing, which is applicable to GST only
+      filtered = filterTime.filter((task) => task.taskType === "gst");
+    } else if (type === "filing") {
+      // Filter tasks that have monthly payment (for gst, esi, providentFund, etc.)
+      const paymentTaskTypes = ["gst", "providentFund", "esi", "tds", "professionalTax"];
+      console.log(filterTime)
+      filtered = filterTime.filter((task) => paymentTaskTypes.includes(task.taskType));
+    }
+
+    setFilterData(filtered);
+  }, [type,filterTime2]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,7 +88,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
         const notCompletedData = taskTypes.map(
           (type) => notCompletedCounts[type] || 0
         );
-        console.log(completedCounts,notCompletedCounts)
+        console.log(completedCounts, notCompletedCounts)
 
         setChartData({
           labels: taskTypes,
@@ -95,7 +115,10 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
     };
 
     fetchData();
-  }, [paymentGraphDetails]);
+  }, [filterTime]);
+
+
+
 
   const handleClick = (event, elements) => {
     if (elements.length > 0) {
@@ -221,7 +244,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
             position: "relative",
           }}
         >
-          <Header {...{ title: 'Monthly Filing/Payment status by task by company', handleExportAsCSV, handleExportAsPDF }} />
+          <Header {...{ title: 'Monthly Filing/Payment status by task by company', handleExportAsCSV, handleExportAsPDF, payment: true, type, setType }} />
 
           {loading ? (
             <p>Loading...</p>
