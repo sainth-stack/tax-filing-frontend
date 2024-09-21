@@ -16,16 +16,13 @@ import ServiceModal from "../../components/services/models/ServiceModal";
 import EditCompanyForm from "./EditCompany";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Accordian from "../../components/Accordian";
-/* import { useParams, useResolvedPath } from "react-router-dom"; */
 import { base_url } from "../../const";
-/* import CompanyAuditTrail from "../../components/AuditHistory/CompanyAuditTrail"; */
 import { Tooltip } from "@mui/material";
 import CompanyAuditTrail, {
   AuditBtn,
 } from "../../components/AuditHistory/CompanyAuditTrail";
 import Loader from "../../components/helpers/loader";
 import { toast } from "react-toastify";
-//import FetchCompanyAuditTrail from "../../components/AuditHistory/AuditCompanyApi";
 import Company from "./Company";
 
 const theme = createTheme({
@@ -140,10 +137,21 @@ export default function CompanyTable({
   };
 
   const handleDelete = async (id) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("Token is missing. User may not be logged in.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await axios.delete(`${base_url}/companies/${id}`);
+      await axios.delete(`${base_url}/companies/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setCompanies(companies.filter((company) => company._id !== id));
       toast.warn("Company Deleted successfully");
       setLoading(false);
@@ -159,22 +167,30 @@ export default function CompanyTable({
       if (!documentId) {
         throw new Error("Document ID is required to fetch the audit trail.");
       }
-      setLoading(true);
 
+      console.log("Fetching audit trail for document ID:", documentId);
+
+      setLoading(true);
       const response = await axios.post(`${base_url}/audit-history`, {
         documentId,
       });
+
       setLoading(false);
 
-      const { logs } = response.data; // Assuming logs contain the audit trail
+      console.log("Response from audit-history API:", response);
+
+      const { logs } = response.data;
+
       if (logs && logs.length > 0) {
-        setAuditData(logs); // Updating the state with the fetched logs
-        setOpen(true); // Opening the modal to display audit history
+        console.log("Audit logs received:", logs);
+        setAuditData(logs);
+        setOpen(true);
       } else {
+        console.log("No audit logs found.");
         toast.warn("No audit history found for this company.");
       }
     } catch (error) {
-      setLoading(false); // Ensure loading state is turned off on error
+      setLoading(false);
       toast.error("Error fetching audit trail: " + error.message);
       console.error("Error fetching audit trail:", error.message);
     }

@@ -70,6 +70,12 @@ const CompanyForm = ({
     }));
   };
   const handleSubmit = async (e) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("Token is missing. User may not be logged in.");
+      return;
+    }
     e.preventDefault();
     try {
       const cleanedFormData = { ...formData };
@@ -85,7 +91,12 @@ const CompanyForm = ({
 
       const response = await axios.post(
         `${base_url}/companies`,
-        cleanedFormData
+        cleanedFormData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include your token here
+          },
+        }
       );
       handleFiles(response.data);
       toast.success("Company created successfully");
@@ -95,6 +106,12 @@ const CompanyForm = ({
   };
 
   const handleFiles = async (data) => {
+    const token = localStorage.getItem("token"); // Retrieve the token
+
+    if (!token) {
+      console.error("Token is missing. User may not be logged in.");
+      return; // Prevent making the request if the token is not available
+    }
     try {
       const form = new FormData();
       // Append files
@@ -106,7 +123,12 @@ const CompanyForm = ({
 
       form.append("companyId", data?._id);
 
-      const response = await axios.post(`${base_url}/files`, form);
+      const response = await axios.post(`${base_url}/files`, form, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include your token here
+          "Content-Type": "multipart/form-data", // If uploading files, set content type
+        },
+      });
       setFormData(initialFormData);
       setCompanyId("");
       setView(false);
@@ -118,6 +140,14 @@ const CompanyForm = ({
   };
 
   const handleUpdate = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("Token is missing. User may not be logged in.");
+      // Handle the absence of the token (e.g., redirect to login)
+      return;
+    }
+
     try {
       const cleanedFormData = { ...formData };
 
@@ -132,7 +162,10 @@ const CompanyForm = ({
 
       const response = await axios.put(
         `${base_url}/companies/${companyId}`,
-        cleanedFormData
+        cleanedFormData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       handleFiles(response.data);
       toast.success("Company updated successfully");
