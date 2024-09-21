@@ -67,8 +67,10 @@ const Company = () => {
                   fontWeight: 500,
                 }}
               />
-              {Dates[0].fields.map((field) => (
-                <Box key={field.id} className="flex items-center mx-2">
+
+              {/* Effective commented */}
+              {/*  {Dates[0].fields.map((field) => (
+                <Box key={field.id} className="flex items-center mx-4">
                   <DateInput
                     type={field.type}
                     id={field.id}
@@ -80,7 +82,7 @@ const Company = () => {
                     labelStyles={{ fontWeight: 500 }}
                   />
                 </Box>
-              ))}
+              ))} */}
             </div>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>

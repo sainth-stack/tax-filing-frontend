@@ -3,7 +3,6 @@ import axios from "axios";
 import GaugeChart from "react-gauge-chart";
 import { base_url } from "./../../const";
 import "./MeterGraph.css";
-import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 
 import { useNavigate } from "react-router";
 import jsPDF from "jspdf"; // PDF export
@@ -17,8 +16,6 @@ const MeterGraph = ({ MeterGraphDetails }) => {
     completed: 0,
   });
   const [loading, setLoading] = useState(true);
-  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-  const isMenuOpen = Boolean(menuAnchorEl);
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [taskDetails, setTaskDetails] = useState({
@@ -97,7 +94,8 @@ const MeterGraph = ({ MeterGraphDetails }) => {
     categories.push(data.completed);
     colors.push("#008000");
   }
-  const averagePercentage = (1 / categories.reduce((acc, val) => acc + val, 0)) * 100;
+  const averagePercentage =
+    (1 / categories.reduce((acc, val) => acc + val, 0)) * 100;
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
@@ -110,7 +108,7 @@ const MeterGraph = ({ MeterGraphDetails }) => {
   // Export CSV
   // Export CSV
   // Export CSV
-  const exportToCSV = () => {
+  const handleExportAsCSV = () => {
     const fields = ["Task Name", "Task Type", "Status"];
     const allTasks = [
       ...taskDetails.completed.map((task) => ({
@@ -144,7 +142,7 @@ const MeterGraph = ({ MeterGraphDetails }) => {
   };
 
   // Export PDF
-  const exportToPDF = () => {
+  const handleExportAsPDF = () => {
     const doc = new jsPDF();
     const allTasks = [
       ...taskDetails.completed.map((task) => ({
@@ -188,7 +186,11 @@ const MeterGraph = ({ MeterGraphDetails }) => {
           }}
           className="overflow-auto scrollable-element"
         >
-          <Header {...{ title: 'Monthly Filing status by task by company' }} />
+          <Header
+            {...{ title: "Monthly Filing status by task by company " }}
+            handleExportAsCSV={handleExportAsCSV}
+            handleExportAsPDF={handleExportAsPDF}
+          />
           <div className="mt-10 m-2">
             <GaugeChart
               id="gauge-chart"
