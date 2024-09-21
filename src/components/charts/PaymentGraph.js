@@ -31,39 +31,21 @@ ChartJS.register(
 );
 
 const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
-  console.log("filter time", filterTime);
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(false);
-  const [tasks, setTasks] = useState([]);
-  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-  const isMenuOpen = Boolean(menuAnchorEl);
   const [taskDetails, setTaskDetails] = useState([]);
   const [popupVisible, setPopupVisible] = useState(false);
-  const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
-  const [popupContent, setPopupContent] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${base_url}/tasks/all`);
-        const tasksData = response.data.data;
-
-        const filteredTasks = tasksData.filter((task) =>
-          paymentGraphDetails.some(
-            (company) => company.companyName === task.company
-          )
-        );
-
-        setTasks(filteredTasks);
-
         const taskTypes = [];
         const completedCounts = {};
         const notCompletedCounts = {};
-
         // Collect counts of completed and not completed tasks based on `actualCompletionDate`
-        filteredTasks.forEach((task) => {
+        filterTime?.forEach((task) => {
           const taskType = task.taskType || "Unknown";
           const isCompleted = task.actualCompletionDate !== null;
 
@@ -86,6 +68,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
         const notCompletedData = taskTypes.map(
           (type) => notCompletedCounts[type] || 0
         );
+        console.log(completedCounts,notCompletedCounts)
 
         setChartData({
           labels: taskTypes,
@@ -120,12 +103,6 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
       const index = elements[0].index;
       const label = chartData.labels[index];
 
-      const chartContainer = event.chart.canvas.parentNode;
-      const chartRect = chartContainer.getBoundingClientRect();
-
-      const popupX = event.clientX - chartRect.left + window.scrollX;
-      const popupY = event.clientY - chartRect.top + window.scrollY;
-
       // Determine whether the user clicked on the "Completed" or "Not Completed" section
       const isCompletedSection = datasetIndex === 0; // Index 0 is for "Completed"
       const isNotCompletedSection = datasetIndex === 1; // Index 1 is for "Not Completed"
@@ -133,19 +110,18 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
       let selectedTasks = [];
 
       if (isCompletedSection) {
-        selectedTasks = tasks.filter(
+        selectedTasks = filterTime?.filter(
           (task) =>
-            task.taskType === label && task.actualCompletionDate !== null
+            task?.taskType === label && task?.actualCompletionDate !== null
         );
       } else if (isNotCompletedSection) {
-        selectedTasks = tasks.filter(
+        selectedTasks = filterTime?.filter(
           (task) =>
-            task.taskType === label && task.actualCompletionDate === null
+            task?.taskType === label && task?.actualCompletionDate === null
         );
       }
 
       setTaskDetails(selectedTasks);
-      setPopupPosition({ x: popupX, y: popupY });
       setPopupVisible(true);
     }
   };
@@ -245,7 +221,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime }) => {
             position: "relative",
           }}
         >
-          <Header {...{ title: 'Monthly Filing status by task by company', handleExportAsCSV, handleExportAsPDF }} />
+          <Header {...{ title: 'Monthly Filing/Payment status by task by company', handleExportAsCSV, handleExportAsPDF }} />
 
           {loading ? (
             <p>Loading...</p>

@@ -37,7 +37,6 @@ const PieChart = ({ companyDetails, loading }) => {
   };
 
   useEffect(() => {
-    console.log(companyDetails)
     const combinationCounts = companyDetails.reduce((acc, company) => {
       const { constitution, subConstitution } = company;
 

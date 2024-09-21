@@ -9,7 +9,7 @@ import jsPDF from "jspdf"; // PDF export
 import "jspdf-autotable"; // Required for table formatting
 import Header from "../../pages/Dashboard/card-container";
 
-const MeterGraph = ({ MeterGraphDetails }) => {
+const MeterGraph = ({ MeterGraphDetails,filteredTasks }) => {
   const [data, setData] = useState({
     overdue: 0,
     inProgress: 0,
@@ -187,7 +187,7 @@ const MeterGraph = ({ MeterGraphDetails }) => {
           className="overflow-auto scrollable-element"
         >
           <Header
-            {...{ title: "Monthly Filing status by task by company " }}
+            {...{ title: "Tasks Due Date" }}
             handleExportAsCSV={handleExportAsCSV}
             handleExportAsPDF={handleExportAsPDF}
           />
