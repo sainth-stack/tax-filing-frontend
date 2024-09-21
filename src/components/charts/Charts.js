@@ -5,11 +5,9 @@ import SelectInput from "../select";
 import axios from "axios";
 import { base_url } from "../../const";
 import PaymentGraph from "./PaymentGraph";
-import TasksGraph from "./PendingCompeltedTaksGraph";
 import MeterGraph from "./MeterGraph";
 import PendingCompeltedTaksGraph from "./PendingCompeltedTaksGraph";
 import { monthsJson, yearsJson } from "./FilterData";
-import moment from "moment/moment";
 
 const Charts = () => {
   const [loading, setLoading] = useState(false);
@@ -33,7 +31,6 @@ const Charts = () => {
 
         const { data } = response;
 
-        console.log("Chart company data", data);
         const companyDetailsArray = data.map((item) => ({
           ...item.companyDetails,
           ...item,
@@ -47,7 +44,6 @@ const Charts = () => {
         setCompanies(companyDetailsArray);
         setClientStatuses(statusesArray);
 
-        console.log("global companies details", companies);
         // Log client statuses
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -76,7 +72,6 @@ const Charts = () => {
   useEffect(() => {
     handleFilterChange();
   }, [year, month]);
-
   return (
     <>
       <div className="flex items-center m-3 p-3">

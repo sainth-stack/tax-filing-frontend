@@ -9,7 +9,7 @@ import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import ChartsHeader from "./Header";
+import Header from "../../pages/Dashboard/card-container";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -37,6 +37,7 @@ const PieChart = ({ companyDetails, loading }) => {
   };
 
   useEffect(() => {
+    console.log(companyDetails)
     const combinationCounts = companyDetails.reduce((acc, company) => {
       const { constitution, subConstitution } = company;
 
@@ -248,7 +249,7 @@ const PieChart = ({ companyDetails, loading }) => {
       >
         {/* //Header part */}
 
-        <ChartsHeader title={" Companies"} />
+        <Header title={"Company Status by Constitution and Subconstitution"} {...{ handleExportAsCSV, handleExportAsPDF }} />
 
         {/* 3-dot Icon */}
 
