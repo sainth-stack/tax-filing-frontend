@@ -25,7 +25,7 @@ const Charts = () => {
         const response = await axios.post(`${base_url}/companies/filter`, {
           status: status === "all" ? "" : status,
           year,
-          month
+          month,
         });
         setLoading(false);
 
@@ -112,19 +112,23 @@ const Charts = () => {
 
       <div className="grid grid-cols-2 gap-4  container">
         <PieChart companyDetails={companies} loading={loading} />
-        <BarChart barDetails={companies} barloading={loading} />
+        <BarChart barDetails={companies} loading={loading} />
 
         <PaymentGraph
           paymentGraphDetails={companies}
           filterTime2={filteredTasks}
+          loading={loading}
         />
         <MeterGraph
           MeterGraphDetails={companies}
           filteredTasks={filteredTasks}
+          loading={loading}
         />
         <PendingCompeltedTaksGraph
           PendingCompeltedTaksGraphDetails={companies}
           filteredTasks={filteredTasks}
+                 loading={loading}
+
         />
       </div>
     </>

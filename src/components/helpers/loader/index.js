@@ -10,6 +10,7 @@ export default function Loader({ size = 35 }) {
         boxShadow: "1px 2px 3px  gray",
         borderRadius: "50%",
         alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <CircularProgress

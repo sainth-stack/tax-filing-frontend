@@ -4,12 +4,20 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useNavigate } from "react-router-dom";
 import Loader from "../helpers/loader";
-import { Grid, IconButton, Menu, MenuItem } from "@mui/material";
+import {
+  Box,
+  Grid,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+} from "@mui/material";
 import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import Header from "../../pages/Dashboard/card-container";
+import NoDataFound from "./NoDataFound";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -46,8 +54,8 @@ const PieChart = ({ companyDetails, loading }) => {
           subConstitution === "registered"
             ? "Partnership Registered"
             : subConstitution === "llp"
-              ? "Limited Liability Partnership (LLP)"
-              : "Partnership Unregistered";
+            ? "Limited Liability Partnership (LLP)"
+            : "Partnership Unregistered";
       } else if (constitution === "Proprietorship") {
         key = "Proprietorship";
       } else if (constitution === "PrivateLimited") {
@@ -95,8 +103,8 @@ const PieChart = ({ companyDetails, loading }) => {
             subConstitution === "registered"
               ? "Partnership Registered"
               : subConstitution === "llp"
-                ? "Limited Liability Partnership (LLP)"
-                : "Partnership Unregistered";
+              ? "Limited Liability Partnership (LLP)"
+              : "Partnership Unregistered";
         } else if (constitution === "Proprietorship") {
           key = "Proprietorship";
         } else if (constitution === "PrivateLimited") {
@@ -121,7 +129,7 @@ const PieChart = ({ companyDetails, loading }) => {
       },
       legend: {
         display: false,
-        position: 'top',
+        position: "top",
       },
       tooltip: {
         enabled: true,
@@ -158,10 +166,13 @@ const PieChart = ({ companyDetails, loading }) => {
   const handleExportAsCSV = () => {
     const csvContent = companyDetails
       .map((company) => {
-        return `${company.companyName || "--"},${company.constitution || "--"
-          },${company.subConstitution || "--"},${company.clientStatus || "--"},${company.authorisedPerson || "--"
-          },${company.phone || "--"},${company.mailId || "--"},${company.pan || "--"
-          },${company.companyAddress || "--"}`;
+        return `${company.companyName || "--"},${
+          company.constitution || "--"
+        },${company.subConstitution || "--"},${company.clientStatus || "--"},${
+          company.authorisedPerson || "--"
+        },${company.phone || "--"},${company.mailId || "--"},${
+          company.pan || "--"
+        },${company.companyAddress || "--"}`;
       })
       .join("\n");
 
@@ -243,51 +254,74 @@ const PieChart = ({ companyDetails, loading }) => {
           border: "1px solid #e0e0e0", // Light gray border for a card-like appearance
           borderRadius: "8px", // Rounded corners for a smoother look
           backgroundColor: "#fff", // Card-like white background
-          padding: "8px", // Add padding for a card-like layout
+          padding: "8px",
+          // Add padding for a card-like layout
         }}
       >
         {/* //Header part */}
-
-        <Header title={"Company Status by Constitution and Subconstitution"} {...{ handleExportAsCSV, handleExportAsPDF }} />
 
         {/* 3-dot Icon */}
 
         {loading ? (
           <>
-            <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
-              {loading ? "Loading..." : "Tax Filing"}
-            </h1>
-            <div className="flex justify-center items-center m-2">
-              <Loader size={30} />
+            <div className="flex justify-center   items-center m-2">
+              <Loader />
             </div>
           </>
         ) : (
-          <div className="flex justify-center items-start p-4">
-            {/* Graph Section */}
-            <div className="w-full sm:w-2/3 lg:w-3/4">
-              <div style={{ width: "300px", height: "300px" }}>
-                <Doughnut data={chartData} options={options} />
+          <>
+            <Header
+              title={"Company Status by Constitution and Subconstitution"}
+              {...{ handleExportAsCSV, handleExportAsPDF }}
+            />
+            <div className="flex justify-center  items-start p-4">
+              {/* Graph Section */}
+
+              <div className="w-full">
+                <div style={{ width: "auto", height: "300px" }}>
+                  {chartData.labels.length === 0 ? (
+                    <>
+                      <Grid
+                        container
+                        justifyContent="center"
+                        alignItems="center"
+                        style={{ width: "700px", height: "300px" }}
+                      >
+                        <NoDataFound />
+                      </Grid>
+                    </>
+                  ) : (
+                    <>
+                      <Doughnut data={chartData} options={options} />
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Dynamic Custom Legends Section */}
+
+              <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
+                <ul className="space-y-2">
+                  {chartData.labels.length !== 0 &&
+                    chartData.labels.map((label, index) => (
+                      <>
+                        <h2 className="text-lg font-bold mb-4">Legend</h2>
+                        <li key={index} className="flex items-center">
+                          <span
+                            className="w-4 h-4 inline-block mr-2"
+                            style={{
+                              backgroundColor:
+                                chartData.datasets[0].backgroundColor[index],
+                            }}
+                          ></span>
+                          <span>{label}</span>
+                        </li>
+                      </>
+                    ))}
+                </ul>
               </div>
             </div>
-
-            {/* Dynamic Custom Legends Section */}
-            <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
-              <h2 className="text-lg font-bold mb-4">Legend</h2>
-              <ul className="space-y-2">
-                {chartData.labels.map((label, index) => (
-                  <li key={index} className="flex items-center">
-                    <span
-                      className="w-4 h-4 inline-block mr-2"
-                      style={{
-                        backgroundColor: chartData.datasets[0].backgroundColor[index],
-                      }}
-                    ></span>
-                    <span>{label}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          </>
         )}
       </div>
 

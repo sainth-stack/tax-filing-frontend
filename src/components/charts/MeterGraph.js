@@ -8,14 +8,16 @@ import { useNavigate } from "react-router";
 import jsPDF from "jspdf"; // PDF export
 import "jspdf-autotable"; // Required for table formatting
 import Header from "../../pages/Dashboard/card-container";
+import Loader from "../helpers/loader";
+import NoDataFound from "./NoDataFound";
 
-const MeterGraph = ({ MeterGraphDetails, filteredTasks }) => {
+const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   const [data, setData] = useState({
     overdue: 0,
     inProgress: 0,
     completed: 0,
   });
-  const [loading, setLoading] = useState(true);
+  // Default to 50% or other initial value
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [taskDetails, setTaskDetails] = useState({
@@ -28,7 +30,6 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
         const categorizedTasks = filteredTasks.reduce(
           (acc, task) => {
             const dueDate = new Date(task.dueDate);
@@ -57,17 +58,13 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks }) => {
         });
 
         setTaskDetails(categorizedTasks);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setLoading(false);
       }
     };
 
     fetchData();
   }, [filteredTasks]);
-
-  if (loading) return <div>Loading...</div>;
 
   const categories = [];
   const colors = [];
@@ -84,8 +81,9 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks }) => {
     categories.push(data.completed);
     colors.push("#008000");
   }
-  const averagePercentage =
-    (1 / categories.reduce((acc, val) => acc + val, 0)) * 100;
+
+  const total = categories.reduce((acc, val) => acc + val, 0);
+  const averagePercentage = total > 0 ? (1 / total) * 100 : 0;
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
@@ -176,26 +174,55 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks }) => {
           }}
           className="overflow-auto scrollable-element"
         >
-          <Header
-            {...{ title: "Tasks Due Date" }}
-            handleExportAsCSV={handleExportAsCSV}
-            handleExportAsPDF={handleExportAsPDF}
-          />
-          <div className="mt-10 m-2">
-            <GaugeChart
-              id="gauge-chart"
-              nrOfLevels={categories.length || 1}
-              percent={averagePercentage / 100}
-              textColor="#000"
-              fontSize="20px"
-              colors={colors}
-              arcWidth={0.3}
-              needleColor="#000000"
-              arcPadding={0.01}
-              needleBaseColor="#000000"
-              needleShadowColor="#000000"
-            />
-          </div>
+          {loading ? (
+            <>
+              <div className="flex justify-center   items-center m-2">
+                <Loader />
+              </div>
+            </>
+          ) : (
+            <>
+              <Header
+                {...{ title: "Tasks Due Date" }}
+                handleExportAsCSV={handleExportAsCSV}
+                handleExportAsPDF={handleExportAsPDF}
+              />
+              {categories.length === 0 ? (
+                <NoDataFound />
+              ) : (
+                <>
+                  <div className="mt-10 m-2" style={{ position: "relative" }}>
+                    <GaugeChart
+                      id="gauge-chart"
+                      nrOfLevels={(categories && categories.length) || 1}
+                      percent={
+                        parseFloat((averagePercentage / 100).toFixed(1)) || 0
+                      }
+                      textColor="#000"
+                      fontSize="20px"
+                      colors={colors}
+                      arcWidth={0.3}
+                      needleColor="#000000"
+                      arcPadding={0.01}
+                      needleBaseColor="#000000"
+                      needleShadowColor="#000000"
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "10%",
+                        left: "-40px",
+                      }}
+                    >
+                      <span>
+                        {categories[Math.floor(categories.length / 2)]}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )}
+            </>
+          )}
 
           <div className="labels-overlay">
             {["overdue", "inProgress", "completed"].map((label, index) => {

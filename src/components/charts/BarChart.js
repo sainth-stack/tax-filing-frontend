@@ -18,10 +18,11 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { saveAs } from "file-saver";
 import Header from "../../pages/Dashboard/card-container";
+import NoDataFound from "./NoDataFound";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-const BarChart = ({ chartHeight, barDetails, barloading }) => {
+const BarChart = ({ chartHeight, barDetails, loading }) => {
   const colors = [
     "#42A5F5",
     "#ff6385",
@@ -57,7 +58,6 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
     ],
   });
 
-  const [loading, setLoading] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [clickedCompanies, setClickedCompanies] = useState([]);
@@ -66,10 +66,8 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
   const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
       try {
         // Remove tasks API call and work only with barDetails
-        setLoading(false);
 
         // Filter companies with active statuses in different categories (e.g., gst, incomeTax)
         const filteredCompanies = barDetails.filter((company) => {
@@ -163,13 +161,11 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
         });
       } catch (error) {
         console.error("Error processing data:", error);
-        setLoading(false);
       }
     };
 
     fetchData();
   }, [barDetails]);
-
 
   const handleClick = (event, elements) => {
     if (elements.length > 0) {
@@ -197,7 +193,12 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
         display: false,
       },
       datalabels: {
-        display: false,
+        display: true,
+        color: "white",
+        anchor: "center",
+        align: "center",
+        formatter: (value) => value || "",
+        font: { size: 20, weight: "bold" },
       },
     },
     responsive: true,
@@ -230,7 +231,7 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
   };
 
   const handleCompanyClick = (taskId) => {
-    navigate("/company", { state: { companyName:taskId } });
+    navigate("/company", { state: { companyName: taskId } });
   };
 
   //console.log("hey clicked", clickedCompanies);
@@ -277,17 +278,36 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
           padding: "8px",
         }}
       >
-        <Header {...{ title: 'Active Services by company', handleExportAsCSV, handleExportAsPDF }} />
         {loading ? (
           <>
             <div className="flex justify-center items-center p-4">
-              <Loader size={30} />
+              <Loader />
             </div>
           </>
         ) : (
-         <div style={{width:'100%',height:'310px'}}>
-           <Bar data={chartData} options={options} style={{ width: "250px", height: "250px" }} />
-         </div>
+          <>
+            <Header
+              {...{
+                title: "Active Services by company",
+                handleExportAsCSV,
+                handleExportAsPDF,
+              }}
+            />
+
+            {chartData.labels.length === 0 ? (
+              <NoDataFound />
+            ) : (
+              <div className="w-full">
+                <div style={{ width: "auto", height: "310px" }}>
+                  <Bar
+                    data={chartData}
+                    options={options}
+                    style={{ width: "250px", height: "250px" }}
+                  />
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -295,8 +315,8 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
         <div
           style={{
             position: "absolute",
-            marginTop: '-400px',
-            marginLeft: '300px',
+            marginTop: "-400px",
+            marginLeft: "300px",
             backgroundColor: "#fff",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
             borderRadius: "12px",
@@ -319,7 +339,7 @@ const BarChart = ({ chartHeight, barDetails, barloading }) => {
             {clickedLabel}
           </div>
 
-          {barloading ? (
+          {loading ? (
             <>
               <div className="flex justify-center items-center p-4">
                 <Loader size={30} />

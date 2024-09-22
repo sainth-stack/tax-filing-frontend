@@ -19,6 +19,8 @@ import { Grid, IconButton, Menu, MenuItem } from "@mui/material";
 import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import Header from "../../pages/Dashboard/card-container";
+import Loader from "../helpers/loader";
+import NoDataFound from "./NoDataFound";
 
 // Register Chart.js components
 ChartJS.register(
@@ -31,10 +33,13 @@ ChartJS.register(
   ChartDataLabels
 );
 
-const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails, filteredTasks }) => {
+const PendingCompletedTasksGraph = ({
+  PendingCompeltedTaksGraphDetails,
+  filteredTasks,
+  loading,
+}) => {
   const navigate = useNavigate();
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
-  const [loading, setLoading] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
@@ -47,7 +52,6 @@ const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails, filtered
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
         const pendingTasksByPerson = {};
         const completedTasksByPerson = {};
 
@@ -102,10 +106,8 @@ const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails, filtered
 
         setTasksData({ pendingTasksByPerson, completedTasksByPerson });
         setChartData(data);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching or processing data:", error);
-        setLoading(false);
       }
     };
 
@@ -123,8 +125,9 @@ const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails, filtered
         : tasksData.completedTasksByPerson[assignedUser]?.tasks || [];
 
       setPopupContent({
-        title: `${isPendingTasks ? "Pending" : "Completed"
-          } Tasks for ${assignedUser} (${tasks.length})`,
+        title: `${
+          isPendingTasks ? "Pending" : "Completed"
+        } Tasks for ${assignedUser} (${tasks.length})`,
         tasks,
       });
 
@@ -183,7 +186,6 @@ const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails, filtered
   return (
     <>
       <div className="container">
-
         <div
           style={{
             width: "100%",
@@ -196,14 +198,26 @@ const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails, filtered
           }}
           className="mt-4"
         >
-          <Header {...{ title: 'Tasks by Assignee', handleExportAsPDF, handleExportAsCSV }} />
           {loading ? (
-            <p style={{ textAlign: "center", fontSize: "18px", color: "#666" }}>
-              Loading...
-            </p>
+            <div className="flex justify-center   items-center m-2">
+              <Loader />
+            </div>
           ) : (
             <>
-              <Bar
+              <Header
+                {...{
+                  title: "Tasks by Assignee",
+                  handleExportAsPDF,
+                  handleExportAsCSV,
+                }}
+              />
+
+                {chartData.labels.length === 0 ? (
+                  <NoDataFound />
+                ) : (
+                   <>
+
+                     <Bar
                 data={chartData}
                 options={{
                   indexAxis: "y",
@@ -265,6 +279,14 @@ const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails, filtered
                   maintainAspectRatio: true,
                 }}
               />
+                   </>
+                )
+              
+                  
+                
+                }
+
+             
 
               {popupVisible && (
                 <div
@@ -352,7 +374,7 @@ const PendingCompletedTasksGraph = ({ PendingCompeltedTaksGraphDetails, filtered
                         </div>
                       ))
                     ) : (
-                      <p>No tasks available</p>
+                      <NoDataFound />
                     )}
                   </div>
                 </div>

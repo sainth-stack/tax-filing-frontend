@@ -19,6 +19,8 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { saveAs } from "file-saver";
 import Header from "../../pages/Dashboard/card-container";
+import Loader from "../helpers/loader";
+import NoDataFound from "./NoDataFound";
 
 ChartJS.register(
   CategoryScale,
@@ -30,15 +32,14 @@ ChartJS.register(
   ChartDataLabels
 );
 
-const TaskStatusGraph = ({ paymentGraphDetails, filterTime2 }) => {
+const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
-  const [loading, setLoading] = useState(false);
   const [taskDetails, setTaskDetails] = useState([]);
   const [popupVisible, setPopupVisible] = useState(false);
-  const [type, setType] = useState('')
+  const [type, setType] = useState("");
   const navigate = useNavigate();
-  console.log(filterTime2)
-  const [filterTime, setFilterData] = useState([])
+  console.log(filterTime2);
+  const [filterTime, setFilterData] = useState([]);
 
   useEffect(() => {
     let filtered = filterTime2;
@@ -48,19 +49,25 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2 }) => {
       filtered = filterTime.filter((task) => task.taskType === "gst");
     } else if (type === "filing") {
       // Filter tasks that have monthly payment (for gst, esi, providentFund, etc.)
-      const paymentTaskTypes = ["gst", "providentFund", "esi", "tds", "professionalTax"];
-      console.log(filterTime)
-      filtered = filterTime.filter((task) => paymentTaskTypes.includes(task.taskType));
+      const paymentTaskTypes = [
+        "gst",
+        "providentFund",
+        "esi",
+        "tds",
+        "professionalTax",
+      ];
+      console.log(filterTime);
+      filtered = filterTime.filter((task) =>
+        paymentTaskTypes.includes(task.taskType)
+      );
     }
 
     setFilterData(filtered);
-  }, [type,filterTime2]);
-
+  }, [type, filterTime2]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
         const taskTypes = [];
         const completedCounts = {};
         const notCompletedCounts = {};
@@ -88,7 +95,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2 }) => {
         const notCompletedData = taskTypes.map(
           (type) => notCompletedCounts[type] || 0
         );
-        console.log(completedCounts, notCompletedCounts)
+        console.log(completedCounts, notCompletedCounts);
 
         setChartData({
           labels: taskTypes,
@@ -110,15 +117,11 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2 }) => {
       } catch (error) {
         console.error("Error fetching or processing data:", error);
       } finally {
-        setLoading(false);
       }
     };
 
     fetchData();
   }, [filterTime]);
-
-
-
 
   const handleClick = (event, elements) => {
     if (elements.length > 0) {
@@ -244,12 +247,35 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2 }) => {
             position: "relative",
           }}
         >
-          <Header {...{ title: 'Monthly Filing/Payment status by task by company', handleExportAsCSV, handleExportAsPDF, payment: true, type, setType }} />
-
           {loading ? (
-            <p>Loading...</p>
+            <div className="flex justify-center   items-center m-2">
+              <Loader />
+            </div>
           ) : (
-            <Bar data={chartData} options={options} />
+            <>
+              <Header
+                {...{
+                  title: "Monthly Filing/Payment status by task by company",
+                  handleExportAsCSV,
+                  handleExportAsPDF,
+                  payment: true,
+                  type,
+                  setType,
+                }}
+              />
+
+              <div className="w-full  ">
+                <div style={{ width: "auto", height: "340px" }}>
+                  {chartData.labels.length === 0 ? ( // Change to `===` for proper check
+                    <NoDataFound />
+                  ) : (
+                    <>
+                      <Bar data={chartData} options={options} />
+                    </>
+                  )}
+                </div>
+              </div>
+            </>
           )}
           {popupVisible && (
             <div

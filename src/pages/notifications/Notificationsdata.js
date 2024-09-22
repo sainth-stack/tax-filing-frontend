@@ -1,25 +1,43 @@
 export const checkboxJson = [
   {
-    id: "objectives",
-    label: "Objectives",
+    id: "Company",
+    label: "Company",
     items: [
       {
-        id: "createObjectives",
-        label: "Create Objectives",
+        id: "createCompany",
+        label: "Create Company",
       },
       {
-        id: "updateObjectives",
-        label: "Update Objectives",
+        id: "updateCompany",
+        label: "Update Company",
       },
       {
-        id: "DeleteObjectives",
-        label: "Delete Objectives",
+        id: "deleteCompany",
+        label: "Delete Company",
+      },
+    ],
+  },
+  {
+    id: "users",
+    label: "Users",
+    items: [
+      {
+        id: "createUser",
+        label: "Create User",
       },
       {
+        id: "updateUser",
+        label: "Update User",
+      },
+      {
+        id: "deleteUser",
+        label: "Delete User",
+      },
+      /* {
         id: "unlockObjectives",
         label: "Unlock Objectives",
       },
-
+ */
       {
         id: "approval",
         label: "Approval",
@@ -34,30 +52,13 @@ export const checkboxJson = [
       },
     ],
   },
-  {
-    id: "keyResults",
-    label: "Key Results",
-    items: [
-      {
-        id: "createKR",
-        label: "Create KR",
-      },
-      {
-        id: "updateKR",
-        label: "Update KR",
-      },
-      {
-        id: "deleteKR",
-        label: "Delete KR",
-      },
-    ],
-  },
+
   {
     id: "tasks",
     label: "Tasks",
     items: [
       {
-        id: "createTas",
+        id: "createTask",
         label: "Create Task",
       },
       {
