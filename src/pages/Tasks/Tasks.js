@@ -94,12 +94,14 @@ const Tasks = () => {
     }));
   };
 
+  console.log("form data", formData);
   const fetchTasks = async () => {
     setLoading(true);
     try {
       const { data } = await axios.post(`${base_url}/tasks/filter`, {
         company: formData?.company,
-        assignedTo: formData?.userId !== "all" ? formData?.userId : undefined,
+        assignedTo:
+          formData?.assignedTo !== "all" ? formData?.assignedTo : undefined,
         status: formData?.status !== "all" ? formData?.status : undefined,
         taskType: formData?.taskType !== "all" ? formData?.taskType : undefined,
         applicationSubStatus: formData?.applicationSubStatus,
@@ -108,6 +110,7 @@ const Tasks = () => {
       });
       setLoading(false);
 
+      console.log("filtrede users", data);
       setTasks(data);
     } catch (error) {
       toast.error("Error While Tasks Filtering");
@@ -121,7 +124,7 @@ const Tasks = () => {
     try {
       const response = await axios.get(`${base_url}/users/all`);
       const data = response.data?.data.map((item) => ({
-        value: item?._id,
+        value: item?.firstName,
         label: item?.firstName,
       }));
       setLoading(false);
@@ -133,6 +136,7 @@ const Tasks = () => {
       console.error("Error fetching users:", error);
     }
   };
+  console.log("users ", users);
 
   useEffect(() => {
     fetchTasks();
@@ -204,7 +208,7 @@ const Tasks = () => {
   };
 
   const getFields = (field) => {
-    if (field.id === "userId") {
+    if (field.id === "assignedTo") {
       return [{ label: "All", value: "all" }, ...users];
     } else {
       return field?.options;
@@ -240,9 +244,9 @@ const Tasks = () => {
                     id={field?.id}
                     label={field?.label}
                     options={getFields(field)}
-                    value={formData[field?.id]}
+                    value={formData[field.id]}
                     onChange={handleInputChange}
-                    required={field?.required}
+                    required={field.required}
                     defaultValue={field.defaultValue}
                   />
                 );
@@ -271,7 +275,7 @@ const Tasks = () => {
                 id={field.id}
                 className="shadow-sm"
                 label={field.label}
-                value={formData[field.id]}
+                value={formData[field?.id]}
                 onChange={handleInputChange}
                 required={field.required}
                 labelStyles={{ fontWeight: 500 }}
