@@ -13,6 +13,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Accordian from "../../components/Accordian";
 import Loader from "../../components/helpers/loader";
+import SortableTableHeader from './../../components/table/SortableTableHeader';
 
 const theme = createTheme({
   typography: {
@@ -61,6 +62,11 @@ export default function UsersTable({
   setCompanyId,
   dataLoading,
 }) {
+
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('sno'); // default sorting by S.No
+
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -76,6 +82,29 @@ export default function UsersTable({
   const handleEditForm = (id) => {
     setCompanyId(id);
   };
+
+  const handleRequestSort = (columnId) => {
+    const isAsc = orderBy === columnId && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(columnId);
+  };
+
+  const sortedUsers = users.sort((a, b) => {
+    if (orderBy === 'sno') {
+      return order === 'asc' ? a.sno - b.sno : b.sno - a.sno;
+    }
+    if (orderBy === 'name') {
+      return order === 'asc' ? (a.firstName || '').localeCompare(b.firstName || '') : (b.firstName || '').localeCompare(a.firstName || '');
+    }
+    if (orderBy === 'email') {
+      return order === 'asc' ? (a.email || '').localeCompare(b.email || '') : (b.email || '').localeCompare(a.email || '');
+    }
+    if (orderBy === 'companyName') {
+      return order === 'asc' ? (a.company || '').localeCompare(b.company || '') : (b.company || '').localeCompare(a.company || '');
+    }
+    return 0;
+  });
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -93,22 +122,39 @@ export default function UsersTable({
         >
           <TableHead>
             <TableRow>
-              <TableCell align="left" padding="normal">
-                S.No
-              </TableCell>
-              <TableCell align="left" padding="normal">
-                Name
-              </TableCell>
-              <TableCell align="left" padding="normal">
-                Email
-              </TableCell>
-              <TableCell align="left" padding="normal">
-                Company Name
-              </TableCell>
+              <SortableTableHeader
+                columnId="sno"
+                label="S.No"
+                order={order}
+                orderBy={orderBy}
+                onSort={handleRequestSort}
+              />
+              <SortableTableHeader
+                columnId="name"
+                label="Name"
+                order={order}
+                orderBy={orderBy}
+                onSort={handleRequestSort}
+              />
+              <SortableTableHeader
+                columnId="email"
+                label="Email"
+                order={order}
+                orderBy={orderBy}
+                onSort={handleRequestSort}
+              />
+              <SortableTableHeader
+                columnId="companyName"
+                label="Company Name"
+                order={order}
+                orderBy={orderBy}
+                onSort={handleRequestSort}
+              />
               <TableCell align="left" padding="normal">
                 Actions
               </TableCell>
             </TableRow>
+
           </TableHead>
           <TableBody>
             {dataLoading && dataLoading ? (
@@ -120,7 +166,7 @@ export default function UsersTable({
                 </TableCell>
               </TableRow>
             ) : (
-              users
+              sortedUsers
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((user, index) => (
                   <TableRow key={user._id || index} sx={{ height: "48px" }}>

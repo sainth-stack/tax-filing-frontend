@@ -17,13 +17,14 @@ import EditCompanyForm from "./EditCompany";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Accordian from "../../components/Accordian";
 import { base_url } from "../../const";
-import { Tooltip } from "@mui/material";
+import { TableSortLabel, Tooltip } from "@mui/material";
 import CompanyAuditTrail, {
   AuditBtn,
 } from "../../components/AuditHistory/CompanyAuditTrail";
 import Loader from "../../components/helpers/loader";
 import { toast } from "react-toastify";
 import Company from "./Company";
+import SortableTableHeader from "../../components/table/SortableTableHeader";
 
 const theme = createTheme({
   typography: {
@@ -73,6 +74,10 @@ export default function CompanyTable({
   status,
   setView,
 }) {
+
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('');
+
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -196,6 +201,31 @@ export default function CompanyTable({
     }
   };
 
+  ///sort columns
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+  const sortedCompanies = companies.sort((a, b) => {
+
+
+
+    if (orderBy === 'companyName') {
+      return (order === 'asc' ? a.companyName.localeCompare(b.companyName) : b.companyName.localeCompare(a.companyName));
+    }
+    if (orderBy === 'clientStatus') {
+      return (order === 'asc' ? a.clientStatus.localeCompare(b.clientStatus) : b.clientStatus.localeCompare(a.clientStatus));
+    }
+    if (orderBy === 'phone') {
+      return (order === 'asc' ? a.phone.localeCompare(b.phone) : b.phone.localeCompare(a.phone));
+    }
+    if (orderBy === 'mailId') {
+      return (order === 'asc' ? a.mailId.localeCompare(b.mailId) : b.mailId.localeCompare(a.mailId));
+    }
+    return 0;
+  });
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -230,21 +260,43 @@ export default function CompanyTable({
         >
           <TableHead>
             <TableRow>
-              <TableCell align="left" padding="normal">
-                S.No
-              </TableCell>
-              <TableCell align="left" padding="normal">
-                Company Name
-              </TableCell>
-              <TableCell align="left" padding="normal">
-                Status
-              </TableCell>
-              <TableCell align="left" padding="normal">
-                Mobile
-              </TableCell>
-              <TableCell align="left" padding="normal">
-                Email Id
-              </TableCell>
+              <SortableTableHeader
+                columnId="sno"
+                label="S.No"
+                order={order}
+                orderBy={orderBy}
+                onSort={handleRequestSort}
+              />
+
+
+              <SortableTableHeader
+                columnId="companyName"
+                label="Company Name"
+                order={order}
+                orderBy={orderBy}
+                onSort={handleRequestSort}
+              />
+              <SortableTableHeader
+                columnId="clientStatus"
+                label="Status"
+                order={order}
+                orderBy={orderBy}
+                onSort={handleRequestSort}
+              />
+              <SortableTableHeader
+                columnId="phone"
+                label="Mobile"
+                order={order}
+                orderBy={orderBy}
+                onSort={handleRequestSort}
+              />
+              <SortableTableHeader
+                columnId="mailId"
+                label="Email Id"
+                order={order}
+                orderBy={orderBy}
+                onSort={handleRequestSort}
+              />
               <TableCell align="left" padding="normal">
                 Actions
               </TableCell>
@@ -260,7 +312,7 @@ export default function CompanyTable({
                 </TableCell>
               </TableRow>
             ) : (
-              companies
+              sortedCompanies
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((company, index) => (
                   <TableRow key={company._id || index} sx={{ height: "48px" }}>

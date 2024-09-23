@@ -15,6 +15,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 
 import Accordian from "../../components/Accordian";
 import Loader from "../../components/helpers/loader";
+import SortableTableHeader from "../../components/table/SortableTableHeader";
 
 const theme = createTheme({
   typography: {
@@ -64,8 +65,15 @@ export default function TasksTable({
   formData,
   dataLoading,
 }) {
+
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('sno'); // default sorting by S.No
+
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -79,6 +87,51 @@ export default function TasksTable({
   const handleEditForm = (id) => {
     setCompanyId(id);
   };
+
+  const handleRequestSort = (columnId) => {
+    const isAsc = orderBy === columnId && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(columnId);
+  };
+
+
+  const sortedTasks = tasks.sort((a, b) => {
+    if (orderBy === 'sno') {
+      return order === 'asc' ? a.sno - b.sno : b.sno - a.sno;
+    }
+    if (orderBy === 'company') {
+      return order === 'asc'
+        ? (a.company || '').localeCompare(b.company || '')
+        : (b.company || '').localeCompare(a.company || '');
+    }
+    if (orderBy === 'taskName') {
+      return order === 'asc'
+        ? (a.taskName || '').localeCompare(b.taskName || '')
+        : (b.taskName || '').localeCompare(a.taskName || '');
+    }
+    if (orderBy === 'dueDate') {
+      return order === 'asc' ? new Date(a.dueDate) - new Date(b.dueDate) : new Date(b.dueDate) - new Date(a.dueDate);
+    }
+    if (orderBy === 'status') {
+      return order === 'asc'
+        ? (a.applicationStatus || '').localeCompare(b.applicationStatus || '')
+        : (b.applicationStatus || '').localeCompare(a.applicationStatus || '');
+    }
+    if (orderBy === 'assignedTo') {
+      return order === 'asc'
+        ? (a.assignedTo || '').localeCompare(b.assignedTo || '')
+        : (b.assignedTo || '').localeCompare(a.assignedTo || '');
+    }
+    if (orderBy === 'applicationSubStatus') {
+      return order === 'asc'
+        ? (a.applicationSubStatus || '').localeCompare(b.applicationSubStatus || '')
+        : (b.applicationSubStatus || '').localeCompare(a.applicationSubStatus || '');
+    }
+    return 0; // Default case, no sorting
+  });
+
+
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -95,27 +148,15 @@ export default function TasksTable({
         >
           <TableHead>
             <TableRow>
-              <TableCell align="left" padding="normal">
-                S.No
-              </TableCell>
-              <TableCell align="left" padding="normal">
-                Company
-              </TableCell>
-              <TableCell align="left" padding="normal">
-                Task Name
-              </TableCell>
-              <TableCell align="left" padding="normal">
-                Due Date
-              </TableCell>
-              <TableCell align="left" padding="normal">
-                Status
-              </TableCell>
-              <TableCell align="left" padding="normal">
-                Assigned To
-              </TableCell>
-              <TableCell align="left" padding="normal">
-                Application Sub Status
-              </TableCell>
+
+              <SortableTableHeader columnId="sno" label="S.No" order={order} orderBy={orderBy} onSort={handleRequestSort} />
+              <SortableTableHeader columnId="company" label="Company" order={order} orderBy={orderBy} onSort={handleRequestSort} />
+              <SortableTableHeader columnId="taskName" label="Task Name" order={order} orderBy={orderBy} onSort={handleRequestSort} />
+              <SortableTableHeader columnId="dueDate" label="Due Date" order={order} orderBy={orderBy} onSort={handleRequestSort} />
+              <SortableTableHeader columnId="status" label="Status" order={order} orderBy={orderBy} onSort={handleRequestSort} />
+              <SortableTableHeader columnId="assignedTo" label="Assigned To" order={order} orderBy={orderBy} onSort={handleRequestSort} />
+              <SortableTableHeader columnId="applicationSubStatus" label="Application Sub Status" order={order} orderBy={orderBy} onSort={handleRequestSort} />
+
               <TableCell align="left" padding="normal">
                 Actions
               </TableCell>
@@ -131,7 +172,7 @@ export default function TasksTable({
                 </TableCell>
               </TableRow>
             ) : (
-              tasks
+              sortedTasks
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((task, index) => (
                   <TableRow key={task._id || index} sx={{ height: "48px" }}>
