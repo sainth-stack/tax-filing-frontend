@@ -54,8 +54,8 @@ const PieChart = ({ companyDetails, loading }) => {
           subConstitution === "registered"
             ? "Partnership Registered"
             : subConstitution === "llp"
-            ? "Limited Liability Partnership (LLP)"
-            : "Partnership Unregistered";
+              ? "Limited Liability Partnership (LLP)"
+              : "Partnership Unregistered";
       } else if (constitution === "Proprietorship") {
         key = "Proprietorship";
       } else if (constitution === "PrivateLimited") {
@@ -103,8 +103,8 @@ const PieChart = ({ companyDetails, loading }) => {
             subConstitution === "registered"
               ? "Partnership Registered"
               : subConstitution === "llp"
-              ? "Limited Liability Partnership (LLP)"
-              : "Partnership Unregistered";
+                ? "Limited Liability Partnership (LLP)"
+                : "Partnership Unregistered";
         } else if (constitution === "Proprietorship") {
           key = "Proprietorship";
         } else if (constitution === "PrivateLimited") {
@@ -166,13 +166,10 @@ const PieChart = ({ companyDetails, loading }) => {
   const handleExportAsCSV = () => {
     const csvContent = companyDetails
       .map((company) => {
-        return `${company.companyName || "--"},${
-          company.constitution || "--"
-        },${company.subConstitution || "--"},${company.clientStatus || "--"},${
-          company.authorisedPerson || "--"
-        },${company.phone || "--"},${company.mailId || "--"},${
-          company.pan || "--"
-        },${company.companyAddress || "--"}`;
+        return `${company.companyName || "--"},${company.constitution || "--"
+          },${company.subConstitution || "--"},${company.clientStatus || "--"},${company.authorisedPerson || "--"
+          },${company.phone || "--"},${company.mailId || "--"},${company.pan || "--"
+          },${company.companyAddress || "--"}`;
       })
       .join("\n");
 
@@ -301,20 +298,21 @@ const PieChart = ({ companyDetails, loading }) => {
               {/* Dynamic Custom Legends Section */}
 
               <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
-                <ul className="space-y-2">
+                <ul className="space-y-2 ">
+                  <h2 className="text-lg font-bold mb-4">Legend</h2>
                   {chartData.labels.length !== 0 &&
                     chartData.labels.map((label, index) => (
                       <>
-                        <h2 className="text-lg font-bold mb-4">Legend</h2>
                         <li key={index} className="flex items-center">
                           <span
-                            className="w-4 h-4 inline-block mr-2"
+                            className=" h-4 inline-block mr-1"
                             style={{
+                              minWidth: "17px",
                               backgroundColor:
                                 chartData.datasets[0].backgroundColor[index],
                             }}
                           ></span>
-                          <span>{label}</span>
+                          <span className="mx-2">{label}</span>
                         </li>
                       </>
                     ))}

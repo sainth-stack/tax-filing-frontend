@@ -44,6 +44,8 @@ export const getTasks = ({ companies = [], users = [] }) => {
       id: "taskType",
       label: "Task Type",
       options: [
+        { value: "all", label: "All" },
+      
         { value: "gst", label: "GST" },
         { value: "providentFund", label: "Provident Fund" },
         { value: "incomeTax", label: "Income Tax" },
@@ -1767,6 +1769,8 @@ export const taskSearch = [
     id: "taskType",
     label: "Task Type",
     options: [
+      { value: "all", label: "All" },
+
       { value: "gst", label: "GST" },
       { value: "providentFund", label: "Provident Fund" },
       { value: "incomeTax", label: "Income Tax" },

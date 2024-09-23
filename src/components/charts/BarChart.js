@@ -297,15 +297,63 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
             {chartData.labels.length === 0 ? (
               <NoDataFound />
             ) : (
-              <div className="w-full">
-                <div style={{ width: "auto", height: "310px" }}>
-                  <Bar
-                    data={chartData}
-                    options={options}
-                    style={{ width: "250px", height: "250px" }}
-                  />
+              <>
+                <div className="flex">
+                  <div className="w-full">
+                    <div style={{ width: "auto", height: "310px" }}>
+                      <Bar
+                        data={chartData}
+                        options={options}
+                        style={{ width: "250px", height: "250px" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
+                    <h2 className="text-lg font-bold mb-4">Legend</h2>
+                    <ul className="space-y-2">
+                      {chartData.labels.length !== 0 &&
+                        chartData.labels.map((label, index) => (
+                          <li key={index} className="flex items-center">
+                            <span
+                              className="w-4 h-4 inline-block mr-2"
+                              style={{
+                                backgroundColor:
+                                  chartData.datasets[0].backgroundColor[index],
+                              }}
+                            ></span>
+                            <span>{label}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
                 </div>
-              </div>
+
+
+
+                <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
+                  <ul className="space-y-2">
+                    <h2 className="text-lg font-bold mb-4">Legend</h2>
+                    {chartData.labels.length !== 0 &&
+                      chartData.labels.map((label, index) => (
+                        <>
+                          <li key={index} className="flex items-center">
+                            <span
+                              className="w-4 h-4 inline-block mr-2"
+                              style={{
+                                backgroundColor:
+                                  chartData.datasets[0].backgroundColor[index],
+                              }}
+                            ></span>
+                            <span>{label}</span>
+                          </li>
+                        </>
+                      ))}
+                  </ul>
+                </div>
+
+              </>
+
             )}
           </>
         )}

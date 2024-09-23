@@ -67,19 +67,19 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   }, [filteredTasks]);
 
   const categories = [];
-  const colors = [];
+  const colors = ["#FF0000", "#FFBF00", "#008000"];
 
   if (data.overdue > 0) {
     categories.push(data.overdue);
-    colors.push("#FF0000");
+    ///colors.push("#FF0000");
   }
   if (data.inProgress > 0) {
     categories.push(data.inProgress);
-    colors.push("#FFBF00");
+    ///colors.push("#FFBF00");
   }
   if (data.completed > 0) {
     categories.push(data.completed);
-    colors.push("#008000");
+    ///colors.push("#008000");
   }
 
   console.log("categories", categories);
@@ -276,10 +276,12 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
           )}
 
           <div className="labels-overlay">
+
             {["overdue", "inProgress", "completed"].map((label, index) => {
               const count = [data.overdue, data.inProgress, data.completed][
                 index
               ];
+              const backgroundColor = colors[index];
 
               return count > 0 ? (
                 <div
@@ -287,7 +289,16 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                   className="label"
                   onClick={() => handleCategoryClick(label)}
                 >
-                  <div>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    {/* Color indicator */}
+                    <div
+                      style={{
+                        backgroundColor: colors[index], // Apply color here
+                        width: "2.2rem",
+                        height: ".8rem",
+                        marginRight: "10px"
+                      }}
+                    />
                     <h6>{`${label}: ${count}`}</h6>
                   </div>
                 </div>
