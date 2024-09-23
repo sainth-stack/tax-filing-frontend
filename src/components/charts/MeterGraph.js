@@ -82,8 +82,14 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
     colors.push("#008000");
   }
 
-  const total = categories.reduce((acc, val) => acc + val, 0);
-  const averagePercentage = total > 0 ? (1 / total) * 100 : 0;
+  console.log("categories", categories);
+  const completedCategories = categories[2];
+  console.log("completedCategories", completedCategories);
+
+  const totalCategories = categories[0] + categories[1] + categories[2];
+  console.log("totalCategories", totalCategories);
+  const averagePercentage =
+    totalCategories > 0 ? (completedCategories / totalCategories) * 100 : 1;
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
@@ -206,17 +212,52 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                       arcPadding={0.01}
                       needleBaseColor="#000000"
                       needleShadowColor="#000000"
-                      formatTextValue={(value) => `${value}%`}
+                      formatTextValue={(averagePercentage) =>
+                        `${averagePercentage}%`
+                      }
                     />
-                    {data?.overdue && <div style={{ position: 'absolute', top: '45%', left: '23%', color: '#FFF', fontSize: '20px', fontWeight: 500 }}>
-                      {data?.overdue}
-                    </div>}
-                    {data?.inProgress && <div style={{ position: 'absolute', top: '15%', left: '48%', color: '#FFF', fontSize: '20px', fontWeight: 500 }}>
-                      {data?.inProgress}
-                    </div>}
-                    {data?.completed && <div style={{ position: 'absolute', top: '45%', right: '23%', color: '#FFF', fontSize: '20px', fontWeight: 500 }}>
-                      {data?.completed}
-                    </div>}
+                    {data?.overdue && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "45%",
+                          left: "23%",
+                          color: "#FFF",
+                          fontSize: "20px",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {data?.overdue}
+                      </div>
+                    )}
+                    {data?.inProgress && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "15%",
+                          left: "48%",
+                          color: "#FFF",
+                          fontSize: "20px",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {data?.inProgress}
+                      </div>
+                    )}
+                    {data?.completed && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "45%",
+                          right: "23%",
+                          color: "#FFF",
+                          fontSize: "20px",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {data?.completed}
+                      </div>
+                    )}
                     <div
                       style={{
                         position: "absolute",
