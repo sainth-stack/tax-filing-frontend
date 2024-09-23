@@ -42,28 +42,31 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
   const [filterTime, setFilterData] = useState([]);
 
   useEffect(() => {
-    let filtered = filterTime2;
+    let filtered = [...filterTime2]; // Ensure it starts with filterTime2
 
     if (type === "payment") {
-      // Filter tasks that have monthly filing, which is applicable to GST only
-      filtered = filterTime.filter((task) => task.taskType === "gst");
+      // Filter for tasks with GST monthly payments
+      filtered = filterTime2.filter(
+        (task) => task?.taskName === 'gstMonthlyPayment'
+      );
     } else if (type === "filing") {
-      // Filter tasks that have monthly payment (for gst, esi, providentFund, etc.)
-      const paymentTaskTypes = [
-        "gst",
-        "providentFund",
-        "esi",
-        "tds",
-        "professionalTax",
+      // Filter for tasks with specific monthly payment tasks
+      const paymentTaskNames = [
+        'tdsTcsMonthly',
+        'esiRegularMonthlyActivity',
+        'gstMonthly',
+        'pfMonthly'
       ];
-      console.log(filterTime);
-      filtered = filterTime.filter((task) =>
-        paymentTaskTypes.includes(task.taskType)
+
+      filtered = filterTime2.filter(
+        (task) =>
+          paymentTaskNames.includes(task?.taskName)
       );
     }
 
     setFilterData(filtered);
   }, [type, filterTime2]);
+
 
   useEffect(() => {
     const fetchData = async () => {

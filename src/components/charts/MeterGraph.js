@@ -206,7 +206,17 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                       arcPadding={0.01}
                       needleBaseColor="#000000"
                       needleShadowColor="#000000"
+                      formatTextValue={(value) => `${value}%`}
                     />
+                    {data?.overdue && <div style={{ position: 'absolute', top: '45%', left: '23%', color: '#FFF', fontSize: '20px', fontWeight: 500 }}>
+                      {data?.overdue}
+                    </div>}
+                    {data?.inProgress && <div style={{ position: 'absolute', top: '15%', left: '48%', color: '#FFF', fontSize: '20px', fontWeight: 500 }}>
+                      {data?.inProgress}
+                    </div>}
+                    {data?.completed && <div style={{ position: 'absolute', top: '45%', right: '23%', color: '#FFF', fontSize: '20px', fontWeight: 500 }}>
+                      {data?.completed}
+                    </div>}
                     <div
                       style={{
                         position: "absolute",
