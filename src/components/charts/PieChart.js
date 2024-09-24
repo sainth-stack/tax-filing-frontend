@@ -246,7 +246,7 @@ const PieChart = ({ companyDetails, loading }) => {
   };
 
   return (
-    <div className="container">
+    <div className="container ">
       <div
         style={{
           width: "100%",
@@ -283,14 +283,20 @@ const PieChart = ({ companyDetails, loading }) => {
                         container
                         justifyContent="center"
                         alignItems="center"
-                        style={{ width: "700px", height: "300px" }}
                       >
                         <NoDataFound />
                       </Grid>
                     </>
                   ) : (
                     <>
-                      <Doughnut data={chartData} options={options} />
+                      <Grid
+                        container
+                        justifyContent="center"
+                        alignItems="center"
+                        style={{ width: "700px", height: "300px" }}
+                      >
+                        <Doughnut data={chartData} options={options} />
+                      </Grid>
                     </>
                   )}
                 </div>
