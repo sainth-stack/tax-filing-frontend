@@ -301,7 +301,14 @@ const PieChart = ({ companyDetails, loading }) => {
                     </>
                   ) : (
                     <>
-                      <Doughnut data={chartData} options={options} />
+                      <Grid
+                        container
+                        justifyContent="center"
+                        alignItems="center"
+                        style={{ width: "700px", height: "300px" }}
+                      >
+                        <Doughnut data={chartData} options={options} />
+                      </Grid>
                     </>
                   )}
                 </div>
