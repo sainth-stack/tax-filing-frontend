@@ -96,9 +96,7 @@ export default function TasksTable({
 
 
   const sortedTasks = tasks.sort((a, b) => {
-    if (orderBy === 'sno') {
-      return order === 'asc' ? a.sno - b.sno : b.sno - a.sno;
-    }
+
     if (orderBy === 'company') {
       return order === 'asc'
         ? (a.company || '').localeCompare(b.company || '')
@@ -149,7 +147,9 @@ export default function TasksTable({
           <TableHead>
             <TableRow>
 
-              <SortableTableHeader columnId="sno" label="S.No" order={order} orderBy={orderBy} onSort={handleRequestSort} />
+              <TableCell align="left" padding="normal">
+                S.NO
+              </TableCell>
               <SortableTableHeader columnId="company" label="Company" order={order} orderBy={orderBy} onSort={handleRequestSort} />
               <SortableTableHeader columnId="taskName" label="Task Name" order={order} orderBy={orderBy} onSort={handleRequestSort} />
               <SortableTableHeader columnId="dueDate" label="Due Date" order={order} orderBy={orderBy} onSort={handleRequestSort} />

@@ -90,9 +90,7 @@ export default function UsersTable({
   };
 
   const sortedUsers = users.sort((a, b) => {
-    if (orderBy === 'sno') {
-      return order === 'asc' ? a.sno - b.sno : b.sno - a.sno;
-    }
+
     if (orderBy === 'name') {
       return order === 'asc' ? (a.firstName || '').localeCompare(b.firstName || '') : (b.firstName || '').localeCompare(a.firstName || '');
     }
@@ -122,13 +120,9 @@ export default function UsersTable({
         >
           <TableHead>
             <TableRow>
-              <SortableTableHeader
-                columnId="sno"
-                label="S.No"
-                order={order}
-                orderBy={orderBy}
-                onSort={handleRequestSort}
-              />
+              <TableCell align="left" padding="normal">
+                S.NO
+              </TableCell>
               <SortableTableHeader
                 columnId="name"
                 label="Name"

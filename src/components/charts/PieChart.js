@@ -128,7 +128,7 @@ const PieChart = ({ companyDetails, loading }) => {
         display: true,
       },
       legend: {
-        display: false,
+        display: true,
         position: "top",
       },
       tooltip: {
@@ -141,6 +141,7 @@ const PieChart = ({ companyDetails, loading }) => {
           },
         },
       },
+
       datalabels: {
         display: true,
         color: "#fff",
@@ -297,7 +298,7 @@ const PieChart = ({ companyDetails, loading }) => {
 
               {/* Dynamic Custom Legends Section */}
 
-              <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
+              {/*  <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
                 <ul className="space-y-2 ">
                   <h2 className="text-lg font-bold mb-4">Legend</h2>
                   {chartData.labels.length !== 0 &&
@@ -317,7 +318,7 @@ const PieChart = ({ companyDetails, loading }) => {
                       </>
                     ))}
                 </ul>
-              </div>
+              </div> */}
             </div>
           </>
         )}

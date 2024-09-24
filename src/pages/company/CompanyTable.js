@@ -260,13 +260,9 @@ export default function CompanyTable({
         >
           <TableHead>
             <TableRow>
-              <SortableTableHeader
-                columnId="sno"
-                label="S.No"
-                order={order}
-                orderBy={orderBy}
-                onSort={handleRequestSort}
-              />
+              <TableCell align="left" padding="normal">
+                S.NO
+              </TableCell>
 
 
               <SortableTableHeader

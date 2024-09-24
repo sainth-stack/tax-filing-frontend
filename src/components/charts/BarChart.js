@@ -190,7 +190,14 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
     onClick: handleClick,
     plugins: {
       legend: {
-        display: false,
+        display: true, // Keep the legend displayed
+        position: 'top', // Can also use 'bottom', 'left', 'right'
+        labels: {
+          boxWidth: 20, // Size of legend box
+          padding: 10,  // Padding around labels
+          usePointStyle: true,
+          // Optional: for circle legend indicators
+        },
       },
       datalabels: {
         display: true,
@@ -309,7 +316,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
                     </div>
                   </div>
 
-                  <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
+                  {/* <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
                     <h2 className="text-lg font-bold mb-4">Legend</h2>
                     <ul className="space-y-2">
                       {chartData.labels.length !== 0 &&
@@ -326,7 +333,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
                           </li>
                         ))}
                     </ul>
-                  </div>
+                  </div> */}
                 </div>
 
 
