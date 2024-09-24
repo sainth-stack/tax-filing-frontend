@@ -129,7 +129,12 @@ const PieChart = ({ companyDetails, loading }) => {
       },
       legend: {
         display: true,
-        position: "top",
+        position: 'top',
+        labels: {
+          boxWidth: 30,
+          padding: 10,
+
+        },
       },
       tooltip: {
         enabled: true,
@@ -272,10 +277,10 @@ const PieChart = ({ companyDetails, loading }) => {
               title={"Company Status by Constitution and Subconstitution"}
               {...{ handleExportAsCSV, handleExportAsPDF }}
             />
-            <div className="flex justify-center  items-start p-4">
+            <div className="flex justify-center  items-start ">
               {/* Graph Section */}
 
-              <div className="w-full">
+              <div className="w-full ">
                 <div style={{ width: "auto", height: "300px" }}>
                   {chartData.labels.length === 0 ? (
                     <>

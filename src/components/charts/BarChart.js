@@ -193,9 +193,8 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
         display: true,
         position: 'top',
         labels: {
-          boxWidth: 20,
+          boxWidth: 30,
           padding: 10,
-          usePointStyle: true,
 
         },
       },
