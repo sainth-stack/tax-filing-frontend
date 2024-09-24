@@ -206,7 +206,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
       x: {
         title: {
           display: true,
-          text: "Task Types",
+          text: "",
         },
         grid: {
           display: false,

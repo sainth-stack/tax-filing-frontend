@@ -60,7 +60,7 @@ const PieChart = ({ companyDetails, loading }) => {
         key = "Proprietorship";
       } else if (constitution === "PrivateLimited") {
         key = "PrivateLimited";
-      }  else if (constitution === "LLP") {
+      } else if (constitution === "LLP") {
         key = "LLP";
       }
 
@@ -296,7 +296,29 @@ const PieChart = ({ companyDetails, loading }) => {
                         style={{ width: "700px", height: "300px" }}
                       >
                         <Doughnut data={chartData} options={options} />
+                        <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
+                          <ul className="space-y-2 ">
+                            <h2 className="text-lg font-bold mb-4"></h2>
+                            {chartData.labels.length !== 0 &&
+                              chartData.labels.map((label, index) => (
+                                <>
+                                  <li key={index} className="flex items-center">
+                                    <span
+                                      className=" h-4 inline-block mr-1"
+                                      style={{
+                                        minWidth: "17px",
+                                        backgroundColor:
+                                          chartData.datasets[0].backgroundColor[index],
+                                      }}
+                                    ></span>
+                                    <span className="mx-2" style={{ fontSize: '14px', fontWeight: 600 }}>{label}</span>
+                                  </li>
+                                </>
+                              ))}
+                          </ul>
+                        </div>
                       </Grid>
+
                     </>
                   )}
                 </div>
@@ -304,27 +326,6 @@ const PieChart = ({ companyDetails, loading }) => {
 
               {/* Dynamic Custom Legends Section */}
 
-              <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
-                <ul className="space-y-2 ">
-                  <h2 className="text-lg font-bold mb-4"></h2>
-                  {chartData.labels.length !== 0 &&
-                    chartData.labels.map((label, index) => (
-                      <>
-                        <li key={index} className="flex items-center">
-                          <span
-                            className=" h-4 inline-block mr-1"
-                            style={{
-                              minWidth: "17px",
-                              backgroundColor:
-                                chartData.datasets[0].backgroundColor[index],
-                            }}
-                          ></span>
-                          <span className="mx-2" style={{fontSize:'14px',fontWeight:600}}>{label}</span>
-                        </li>
-                      </>
-                    ))}
-                </ul>
-              </div>
             </div>
           </>
         )}
