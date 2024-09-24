@@ -131,11 +131,18 @@ const PieChart = ({ companyDetails, loading }) => {
         display: true,
         position: 'top',
         labels: {
+          top: 2,
           boxWidth: 30,
           padding: 10,
 
         },
       },
+      layout: {
+        padding: {
+          top: 20,
+        },
+      },
+      responsive: true,
       tooltip: {
         enabled: true,
         callbacks: {
@@ -253,21 +260,20 @@ const PieChart = ({ companyDetails, loading }) => {
       <div
         style={{
           width: "100%",
-          height: "380px", // Match pie chart height
+          height: "380px",
+
+          top: "20px",
           border: "1px solid #e0e0e0", // Light gray border for a card-like appearance
           borderRadius: "8px", // Rounded corners for a smoother look
           backgroundColor: "#fff", // Card-like white background
-          padding: "8px",
           // Add padding for a card-like layout
         }}
       >
-        {/* //Header part */}
 
-        {/* 3-dot Icon */}
 
         {loading ? (
           <>
-            <div className="flex justify-center   items-center m-2">
+            <div className="flex justify-center  items-center m-2">
               <Loader />
             </div>
           </>

@@ -23,6 +23,7 @@ import Loader from "../helpers/loader";
 import NoDataFound from "./NoDataFound";
 
 ChartJS.register(
+
   CategoryScale,
   LinearScale,
   BarElement,
