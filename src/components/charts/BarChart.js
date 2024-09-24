@@ -190,13 +190,13 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
     onClick: handleClick,
     plugins: {
       legend: {
-        display: true, // Keep the legend displayed
-        position: 'top', // Can also use 'bottom', 'left', 'right'
+        display: true,
+        position: 'top',
         labels: {
-          boxWidth: 20, // Size of legend box
-          padding: 10,  // Padding around labels
+          boxWidth: 20,
+          padding: 10,
           usePointStyle: true,
-          // Optional: for circle legend indicators
+
         },
       },
       datalabels: {
@@ -335,30 +335,6 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
                     </ul>
                   </div> */}
                 </div>
-
-
-
-                <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
-                  <ul className="space-y-2">
-                    <h2 className="text-lg font-bold mb-4">Legend</h2>
-                    {chartData.labels.length !== 0 &&
-                      chartData.labels.map((label, index) => (
-                        <>
-                          <li key={index} className="flex items-center">
-                            <span
-                              className="w-4 h-4 inline-block mr-2"
-                              style={{
-                                backgroundColor:
-                                  chartData.datasets[0].backgroundColor[index],
-                              }}
-                            ></span>
-                            <span>{label}</span>
-                          </li>
-                        </>
-                      ))}
-                  </ul>
-                </div>
-
               </>
 
             )}
