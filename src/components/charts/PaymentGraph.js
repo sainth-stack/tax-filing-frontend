@@ -39,7 +39,6 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [type, setType] = useState("");
   const navigate = useNavigate();
-  console.log(filterTime2);
   const [filterTime, setFilterData] = useState([]);
 
   useEffect(() => {
@@ -78,7 +77,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
         // Collect counts of completed and not completed tasks based on `actualCompletionDate`
         filterTime?.forEach((task) => {
           const taskType = task.taskType || "Unknown";
-          const isCompleted = task.actualCompletionDate !== null;
+          const isCompleted = (task?.actualCompletionDate !==null && task?.actualCompletionDate !== '' && task?.actualCompletionDate !== 'null');
 
           if (!taskTypes.includes(taskType)) {
             taskTypes.push(taskType);
@@ -99,7 +98,6 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
         const notCompletedData = taskTypes.map(
           (type) => notCompletedCounts[type] || 0
         );
-        console.log(completedCounts, notCompletedCounts);
 
         setChartData({
           labels: taskTypes,
@@ -142,15 +140,17 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
       if (isCompletedSection) {
         selectedTasks = filterTime?.filter(
           (task) =>
-            task?.taskType === label && task?.actualCompletionDate !== null
+            task?.taskType === label && (task?.actualCompletionDate && task?.actualCompletionDate !== '' && task?.actualCompletionDate !== 'null')
         );
       } else if (isNotCompletedSection) {
         selectedTasks = filterTime?.filter(
-          (task) =>
-            task?.taskType === label && task?.actualCompletionDate === null
+          (task) => {
+            console.log(task?.actualCompletionDate)
+            return task?.taskType === label && (task?.actualCompletionDate === null || task?.actualCompletionDate === '' || task?.actualCompletionDate === 'null')
+          }
         );
       }
-
+      console.log(selectedTasks)
       setTaskDetails(selectedTasks);
       setPopupVisible(true);
     }

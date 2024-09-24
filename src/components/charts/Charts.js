@@ -17,7 +17,7 @@ const Charts = () => {
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
   const [clientStatuses, setClientStatuses] = useState([]);
-
+console.log(filteredTasks,'dsfsd')
   useEffect(() => {
     const fetchCompanies = async () => {
       setLoading(true);

@@ -82,12 +82,9 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
     ///colors.push("#008000");
   }
 
-  console.log("categories", categories);
   const completedCategories = categories[2];
-  console.log("completedCategories", completedCategories);
 
   const totalCategories = categories[0] + categories[1] + categories[2];
-  console.log("totalCategories", totalCategories);
   const averagePercentage =
     totalCategories > 0 ? (completedCategories / totalCategories) * 100 : 1;
 

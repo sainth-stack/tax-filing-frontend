@@ -57,7 +57,6 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
       },
     ],
   });
-
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [clickedCompanies, setClickedCompanies] = useState([]);
@@ -190,13 +189,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
     onClick: handleClick,
     plugins: {
       legend: {
-        display: true,
-        position: 'top',
-        labels: {
-          boxWidth: 30,
-          padding: 10,
-
-        },
+        display: false,
       },
       datalabels: {
         display: true,
@@ -304,9 +297,25 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
               <NoDataFound />
             ) : (
               <>
-                <div className="flex">
+
+                <div className="">
+                  <ul className="flex flex-wrap w-full">
+                    {chartData.labels.length !== 0 &&
+                      chartData.labels.map((label, index) => (
+                        <li key={index} className="flex items-center mb-2 mr-4">
+                          <span
+                            className="w-4 h-4 inline-block mr-2"
+                            style={{
+                              backgroundColor: chartData.datasets[0].backgroundColor[index],
+                            }}
+                          ></span>
+                          <span style={{ fontSize: '12px', fontWeight: 600 }}>{label}</span>
+                        </li>
+                      ))}
+                  </ul>
+
                   <div className="w-full">
-                    <div style={{ width: "auto", height: "310px" }}>
+                    <div style={{ width: "auto", height: "300px" }}>
                       <Bar
                         data={chartData}
                         options={options}
@@ -314,25 +323,6 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
                       />
                     </div>
                   </div>
-
-                  {/* <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
-                    <h2 className="text-lg font-bold mb-4">Legend</h2>
-                    <ul className="space-y-2">
-                      {chartData.labels.length !== 0 &&
-                        chartData.labels.map((label, index) => (
-                          <li key={index} className="flex items-center">
-                            <span
-                              className="w-4 h-4 inline-block mr-2"
-                              style={{
-                                backgroundColor:
-                                  chartData.datasets[0].backgroundColor[index],
-                              }}
-                            ></span>
-                            <span>{label}</span>
-                          </li>
-                        ))}
-                    </ul>
-                  </div> */}
                 </div>
               </>
 

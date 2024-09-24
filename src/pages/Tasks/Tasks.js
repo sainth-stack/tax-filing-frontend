@@ -94,7 +94,6 @@ const Tasks = () => {
     }));
   };
 
-  console.log("form data", formData);
   const fetchTasks = async () => {
     setLoading(true);
     try {

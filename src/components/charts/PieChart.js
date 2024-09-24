@@ -60,7 +60,10 @@ const PieChart = ({ companyDetails, loading }) => {
         key = "Proprietorship";
       } else if (constitution === "PrivateLimited") {
         key = "PrivateLimited";
+      }  else if (constitution === "LLP") {
+        key = "LLP";
       }
+
 
       if (key) {
         acc[key] = (acc[key] || 0) + 1;
@@ -128,19 +131,8 @@ const PieChart = ({ companyDetails, loading }) => {
         display: true,
       },
       legend: {
-        display: true,
-        position: 'top',
-        labels: {
-          top: 2,
-          boxWidth: 30,
-          padding: 10,
-
-        },
-      },
-      layout: {
-        padding: {
-          top: 20,
-        },
+        display: false,
+        position: "top",
       },
       responsive: true,
       tooltip: {
@@ -202,7 +194,6 @@ const PieChart = ({ companyDetails, loading }) => {
   const handleExportAsPDF = () => {
     const doc = new jsPDF();
 
-    console.log("Generating PDF...");
 
     if (companyDetails.length === 0) {
       console.error("No data to export.");
@@ -252,7 +243,6 @@ const PieChart = ({ companyDetails, loading }) => {
     });
 
     doc.save("company_details.pdf");
-    console.log("PDF generated and downloaded.");
   };
 
   return (
@@ -260,12 +250,11 @@ const PieChart = ({ companyDetails, loading }) => {
       <div
         style={{
           width: "100%",
-          height: "380px",
-
-          top: "20px",
+          height: "380px", // Match pie chart height
           border: "1px solid #e0e0e0", // Light gray border for a card-like appearance
           borderRadius: "8px", // Rounded corners for a smoother look
           backgroundColor: "#fff", // Card-like white background
+          padding: "8px",
           // Add padding for a card-like layout
         }}
       >
@@ -273,7 +262,7 @@ const PieChart = ({ companyDetails, loading }) => {
 
         {loading ? (
           <>
-            <div className="flex justify-center  items-center m-2">
+            <div className="flex justify-center   items-center m-2">
               <Loader />
             </div>
           </>
@@ -283,10 +272,10 @@ const PieChart = ({ companyDetails, loading }) => {
               title={"Company Status by Constitution and Subconstitution"}
               {...{ handleExportAsCSV, handleExportAsPDF }}
             />
-            <div className="flex justify-center  items-start ">
+            <div className="flex justify-center  items-start p-4">
               {/* Graph Section */}
 
-              <div className="w-full ">
+              <div className="w-full">
                 <div style={{ width: "auto", height: "300px" }}>
                   {chartData.labels.length === 0 ? (
                     <>
@@ -309,7 +298,7 @@ const PieChart = ({ companyDetails, loading }) => {
 
               {/* Dynamic Custom Legends Section */}
 
-              {/*  <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
+              <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
                 <ul className="space-y-2 ">
                   <h2 className="text-lg font-bold mb-4"></h2>
                   {chartData.labels.length !== 0 &&
@@ -324,12 +313,12 @@ const PieChart = ({ companyDetails, loading }) => {
                                 chartData.datasets[0].backgroundColor[index],
                             }}
                           ></span>
-                          <span className="mx-2">{label}</span>
+                          <span className="mx-2" style={{fontSize:'14px',fontWeight:600}}>{label}</span>
                         </li>
                       </>
                     ))}
                 </ul>
-              </div> */}
+              </div>
             </div>
           </>
         )}

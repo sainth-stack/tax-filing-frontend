@@ -149,7 +149,6 @@ const UserForm = ({
     }
   };
 
-  console.log("users data chcking");
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
       <header
