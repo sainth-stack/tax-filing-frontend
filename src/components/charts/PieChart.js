@@ -48,6 +48,7 @@ const PieChart = ({ companyDetails, loading }) => {
     const combinationCounts = companyDetails.reduce((acc, company) => {
       const { constitution, subConstitution } = company;
 
+
       let key = "";
       if (constitution === "Partnership") {
         key =
@@ -63,6 +64,7 @@ const PieChart = ({ companyDetails, loading }) => {
       } else if (constitution === "LLP") {
         key = "LLP";
       }
+
 
 
       if (key) {
@@ -112,6 +114,9 @@ const PieChart = ({ companyDetails, loading }) => {
           key = "Proprietorship";
         } else if (constitution === "PrivateLimited") {
           key = "PrivateLimited";
+        }
+        else if (constitution === "LLP") {
+          key = "LLP";
         }
         return key === clickedLabel;
       });
@@ -244,6 +249,8 @@ const PieChart = ({ companyDetails, loading }) => {
 
     doc.save("company_details.pdf");
   };
+
+  console.log("company Details: ", companyDetails)
 
   return (
     <div className="container ">

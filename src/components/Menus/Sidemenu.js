@@ -9,6 +9,7 @@ import { Link, useLocation } from "react-router-dom";
 import BusinessIcon from "@mui/icons-material/Business";
 import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
 import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
+import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 
 const Sidemenu = () => {
   const location = useLocation();
@@ -37,11 +38,10 @@ const Sidemenu = () => {
             <Link
               to="/dashboard"
               onClick={() => handleMenuClick("dashboard")}
-              className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${
-                activeItem === "dashboard"
-                  ? "border-blue-500 bg-blue-50 text-blue-700"
-                  : "border-transparent"
-              } border-l-4 transition-colors duration-200`}
+              className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${activeItem === "dashboard"
+                ? "border-blue-500 bg-blue-50 text-blue-700"
+                : "border-transparent"
+                } border-l-4 transition-colors duration-200`}
             >
               <Dashboard />
               {isOpen && <span className="text-sm font-medium">Dashboard</span>}
@@ -53,11 +53,10 @@ const Sidemenu = () => {
             <Link
               to="/company"
               onClick={() => handleMenuClick("company")}
-              className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${
-                activeItem === "company"
-                  ? "border-blue-500 bg-blue-50 text-blue-700"
-                  : "border-transparent"
-              } border-l-4 transition-colors duration-200`}
+              className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${activeItem === "company"
+                ? "border-blue-500 bg-blue-50 text-blue-700"
+                : "border-transparent"
+                } border-l-4 transition-colors duration-200`}
             >
               <BusinessIcon />
               {isOpen && <span className="text-sm font-medium">Company</span>}
@@ -68,11 +67,10 @@ const Sidemenu = () => {
             <Link
               to="/tasks"
               onClick={() => handleMenuClick("tasks")}
-              className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${
-                activeItem === "tasks"
-                  ? "border-blue-500 bg-blue-50 text-blue-700"
-                  : "border-transparent"
-              } border-l-4 transition-colors duration-200`}
+              className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${activeItem === "tasks"
+                ? "border-blue-500 bg-blue-50 text-blue-700"
+                : "border-transparent"
+                } border-l-4 transition-colors duration-200`}
             >
               <TaskOutlinedIcon />
               {isOpen && <span className="text-sm font-medium">Tasks</span>}
@@ -83,11 +81,10 @@ const Sidemenu = () => {
             <Link
               to="/users"
               onClick={() => handleMenuClick("users")}
-              className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${
-                activeItem === "users"
-                  ? "border-blue-500 bg-blue-50 text-blue-700"
-                  : "border-transparent"
-              } border-l-4 transition-colors duration-200`}
+              className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${activeItem === "users"
+                ? "border-blue-500 bg-blue-50 text-blue-700"
+                : "border-transparent"
+                } border-l-4 transition-colors duration-200`}
             >
               <PeopleAltOutlined />
               {isOpen && <span className="text-sm font-medium">Users</span>}
@@ -98,16 +95,36 @@ const Sidemenu = () => {
             <Link
               to="/notification-settings"
               onClick={() => handleMenuClick("notification-settings")}
-              className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${
-                activeItem === "notification-settings"
-                  ? "border-blue-500 bg-blue-50 text-blue-700"
-                  : "border-transparent"
-              } border-l-4 transition-colors duration-200`}
+              className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${activeItem === "notification-settings"
+                ? "border-blue-500 bg-blue-50 text-blue-700"
+                : "border-transparent"
+                } border-l-4 transition-colors duration-200`}
             >
               <NotificationsActiveOutlinedIcon />
               {isOpen && (
                 <span className="text-sm font-medium">
                   Notification-Settings
+                </span>
+              )}
+            </Link>
+          </li>
+
+
+
+          {/* for Agency  */}
+          <li>
+            <Link
+              to="/agency"
+              onClick={() => handleMenuClick("Agency")}
+              className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${activeItem === "Agency"
+                ? "border-blue-500 bg-blue-50 text-blue-700"
+                : "border-transparent"
+                } border-l-4 transition-colors duration-200`}
+            >
+              <AssuredWorkloadIcon />
+              {isOpen && (
+                <span className="text-sm font-medium">
+                  Agency
                 </span>
               )}
             </Link>

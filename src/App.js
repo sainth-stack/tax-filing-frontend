@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NotificationSettings from "./pages/notifications/NotificationSettings";
+import Agency from "./pages/Agency/Agency";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           path="/notification-settings"
           element={<NotificationSettings />}
         />
+        <Route path="/agency" element={<Agency />} />
 
         <Route path="*" element={<Pagenotfound />} />
       </Routes>
