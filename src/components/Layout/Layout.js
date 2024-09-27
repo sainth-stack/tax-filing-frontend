@@ -6,6 +6,8 @@ import Sidemenu from "../Menus/Sidemenu";
 import Topmenu from "../Menus/Topmenu";
 
 const Layout = ({ children }) => {
+  const user = JSON.parse(localStorage.getItem('user'))
+  console.log(user)
   return (
     <>
       <div className="flex flex-col h-screen">
@@ -19,7 +21,7 @@ const Layout = ({ children }) => {
         </header>
         <div className="flex flex-grow" style={{}}>
           <aside className="w-25 bg-gray-100 shadow-md h-full fixed left-0 pt-16">
-            <Sidemenu />
+            <Sidemenu {...{user}} />
           </aside>
           <div
             className="flex flex-col flex-grow"

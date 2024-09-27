@@ -43,16 +43,14 @@ const Login = () => {
 
       setLoading(false);
 
-      const { token } = response.data;
-      console.log("check login user", response.data);
+      const { token, user } = response.data;
       localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
-      if (token) {
-        toast.success("Login successful");
-
-        navigate("/company");
-      } else {
-        navigate("/");
+      if (token && user.role == 'A') {
+        navigate("/dashboard");
+      } else if (user.role == "S") {
+        navigate("/agency");
       }
     } catch (error) {
       setLoading(false);

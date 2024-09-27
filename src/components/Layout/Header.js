@@ -2,7 +2,7 @@ import React from "react";
 import Topmenu from "../Menus/Topmenu";
 import Sidemenu from "../Menus/Sidemenu";
 
-const Header = () => {
+const Header = ({user}) => {
   return (
     <>
       <div className="bg-gray-900 h-50 ">
@@ -10,7 +10,7 @@ const Header = () => {
           <Topmenu />
         </div>
         <div className="top-20">
-          <Sidemenu />
+          <Sidemenu user={{ user }} />
         </div>
       </div>
     </>
