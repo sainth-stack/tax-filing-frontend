@@ -125,7 +125,7 @@ const CompanyForm = ({
 
       const response = await axios.post(`${base_url}/files`, form, {
         headers: {
-          Authorization: `Bearer ${token}`, // Include your token here
+          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data", // If uploading files, set content type
         },
       });
@@ -245,11 +245,11 @@ const CompanyForm = ({
           sections={
             sections
               ? sections.map((section) => ({
-                  ...section,
-                  formData,
-                  handleInputChange,
-                  handleFileChange,
-                }))
+                ...section,
+                formData,
+                handleInputChange,
+                handleFileChange,
+              }))
               : []
           }
           expanded={expanded}

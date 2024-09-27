@@ -1,34 +1,31 @@
 import React, { useEffect, useState } from "react";
 
 import { Box, Button } from "@mui/material";
-import { useLocation } from "react-router";
 import Layout from './../../components/Layout/Layout';
 import CustomInput from "../../components/input";
 import SelectInput from "../../components/select";
 import AgencyForm from "./AgencyForm";
 import AgencyTable from "./AgencyTable";
+import DateInput from "../../components/Date/DateInput";
+import { Dates } from "../company/data";
 
 const Company = () => {
     const [showForm, setShowForm] = useState("");
     const [view, setView] = useState(false);
-    const [agencyId, setAgencyId] = useState("");
+    //const [editAgencyId, setEdiAgencyId] = useState(null);
+
+    const [agencyId, setAgencyId] = useState(null);
     const [name, setName] = useState("");
     const [status, setStatus] = useState("");
 
 
 
-    /*  useEffect(() => {
-         if (companyName) {
-             setView(true);
-             agencyId(companyName);
-         }
-     }, [companyName]);
-  */
     const handleShowForm = () => {
         setShowForm(!showForm);
     };
 
-    // const [companyRefresh, setCompanyRefresh] = useState(false);
+    const [agencyRefresh, setAgencyRefresh] = useState(false);
+
     return (
         <>
             <Layout>
@@ -36,7 +33,7 @@ const Company = () => {
                     <div className="flex flex-row my-3 gap-4">
                         <div className="flex items-center">
                             <CustomInput
-                                id="agency"
+                                id="AgencyDetails.agencyName"
                                 label="Agency"
                                 className="shadow-sm"
                                 value={name}
@@ -66,20 +63,20 @@ const Company = () => {
                             />
 
                             {/* Effective commented */}
-                            {/*  {Dates[0].fields.map((field) => (
-                <Box key={field.id} className="flex items-center mx-4">
-                  <DateInput
-                    type={field.type}
-                    id={field.id}
-                    className="shadow-sm"
-                    label={field.label}
-                    value={"formData[field.id]"}
-                    onChange={"handleInputChange"}
-                    required={field.required}
-                    labelStyles={{ fontWeight: 500 }}
-                  />
-                </Box>
-              ))} */}
+                            {Dates[0].fields.map((field) => (
+                                <Box key={field.id} className="flex items-center mx-4">
+                                    <DateInput
+                                        type={field.type}
+                                        id={field.id}
+                                        className="shadow-sm"
+                                        label={field.label}
+                                        value={"formData[field.id]"}
+                                        onChange={"handleInputChange"}
+                                        required={field.required}
+                                        labelStyles={{ fontWeight: 500 }}
+                                    />
+                                </Box>
+                            ))}
                         </div>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -134,14 +131,16 @@ const Company = () => {
                             {
                                 <AgencyForm
                                     {...{
+
                                         agencyId,
                                         setAgencyId,
                                         setShowForm,
-                                        //setCompanyRefresh,
-                                        //companyRefresh,
+                                        showForm,
+                                        agencyRefresh,
+                                        setAgencyRefresh,
                                         view,
                                         setView,
-                                        //companyName,
+
                                     }}
                                 />
                             }
@@ -152,10 +151,13 @@ const Company = () => {
                     <div className="bg-white rounded-lg shadow-md">
                         <AgencyTable
                             {...{
-                                setAgencyId,
-                                //companyRefresh,
-                                name,
+                                agencyId,
+                                view,
                                 status,
+                                setAgencyId,
+                                agencyRefresh,
+                                setAgencyRefresh,
+                                name,
                                 setView,
                                 //companyName,
                             }}

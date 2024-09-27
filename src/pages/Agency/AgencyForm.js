@@ -5,49 +5,40 @@ import { sectionsData } from "./data";
 import { base_url } from "../../const";
 import Accordian from "../../components/Accordian";
 
-const CompanyForm = ({
-    clientStatuses,
-    companyName,
-    companyId,
-    setCompanyId,
+const AgencyForm = ({
+    agencyId,
+    showForm,
+    setAgencyId,
     setShowForm,
-    setCompanyRefresh,
-    companyRefresh,
+    agencyRefresh,
+    setAgencyRefresh,
     view,
     setView,
 }) => {
     const [formData, setFormData] = useState({});
     const sections = sectionsData(formData);
     const [error, setError] = useState("");
-    const [clientStatus, setClientStatus] = useState("");
     const [expanded, setExpanded] = useState(sections ? ["Agency Details"] : []);
 
-    const replaceEmptyObjectsWithEmptyStrings = (data) => {
-        const updatedData = { ...data };
-        Object.keys(updatedData).forEach((key) => {
-            if (
-                typeof updatedData[key] === "object" &&
-                Object.keys(updatedData[key]).length === 0
-            ) {
-                updatedData[key] = "";
-            }
-        });
-        return updatedData;
-    };
+    // Initialize empty form data based on sections
     const initialFormData = sections.reduce((acc, section) => {
         section.fields.forEach((field) => {
             const [sectionKey, fieldKey] = field.id.split(".");
             if (!acc[sectionKey]) {
                 acc[sectionKey] = {};
             }
-            acc[sectionKey][fieldKey] = "";
+            acc[sectionKey][fieldKey] = ""; // Set initial values to empty
         });
         return acc;
     }, {});
 
+    useEffect(() => {
+        setFormData(initialFormData); // Initialize form data on mount
+    }, [agencyId]); // Only runs when agencyId changes
+
+    // Input change handler
     const handleInputChange = (e) => {
         const { id, value } = e.target;
-        console.log(id, value, "dsfs");
         const [section, field] = id.split(".");
         setFormData((prev) => ({
             ...prev,
@@ -58,163 +49,7 @@ const CompanyForm = ({
         }));
     };
 
-    const handleFileChange = (e) => {
-        const { id, files } = e.target;
-        const [section, field] = id.split(".");
-        setFormData((prev) => ({
-            ...prev,
-            [section]: {
-                ...prev[section],
-                [field]: files[0],
-            },
-        }));
-    };
-    /*  const handleSubmit = async (e) => {
-         const token = localStorage.getItem("token");
- 
-         if (!token) {
-             console.error("Token is missing. User may not be logged in.");
-             return;
-         }
-         e.preventDefault();
-         try {
-             const cleanedFormData = { ...formData };
- 
-             // Replace empty objects with empty strings in each section
-             Object.keys(cleanedFormData).forEach((sectionKey) => {
-                 if (sectionKey === "attachments") {
-                     cleanedFormData[sectionKey] = replaceEmptyObjectsWithEmptyStrings(
-                         cleanedFormData[sectionKey]
-                     );
-                 }
-             });
- 
-             const response = await axios.post(
-                 `${base_url}/companies`,
-                 cleanedFormData,
-                 {
-                     headers: {
-                         Authorization: `Bearer ${token}`, // Include your token here
-                     },
-                 }
-             );
-             handleFiles(response.data);
-             toast.success("Company created successfully");
-         } catch (error) {
-             toast.error(`Error: ${error.response?.data?.message || error.message}`);
-         }
-     }; */
-
-    /*   const handleFiles = async (data) => {
-          const token = localStorage.getItem("token"); // Retrieve the token
-  
-          if (!token) {
-              console.error("Token is missing. User may not be logged in.");
-              return; // Prevent making the request if the token is not available
-          }
-          try {
-              const form = new FormData();
-              // Append files
-              for (const [key, file] of Object.entries(formData.attachments || {})) {
-                  if (file) {
-                      form.append(key, file);
-                  }
-              }
-  
-              form.append("companyId", data?._id);
-  
-              const response = await axios.post(`${base_url}/files`, form, {
-                  headers: {
-                      Authorization: `Bearer ${token}`, // Include your token here
-                      "Content-Type": "multipart/form-data", // If uploading files, set content type
-                  },
-              });
-              setFormData(initialFormData);
-              setCompanyId("");
-              setView(false);
-              setShowForm(false);
-              setCompanyRefresh(!companyRefresh);
-          } catch (error) {
-              console.error("Error submitting form:", error);
-          }
-      }; */
-
-    /*  const handleUpdate = async () => {
-         const token = localStorage.getItem("token");
- 
-         if (!token) {
-             console.error("Token is missing. User may not be logged in.");
-             // Handle the absence of the token (e.g., redirect to login)
-             return;
-         }
- 
-         try {
-             const cleanedFormData = { ...formData };
- 
-             // Replace empty objects with empty strings in each section
-             Object.keys(cleanedFormData).forEach((sectionKey) => {
-                 if (sectionKey === "attachments") {
-                     cleanedFormData[sectionKey] = replaceEmptyObjectsWithEmptyStrings(
-                         cleanedFormData[sectionKey]
-                     );
-                 }
-             });
- 
-             const response = await axios.put(
-                 `${base_url}/companies/${companyId}`,
-                 cleanedFormData,
-                 {
-                     headers: { Authorization: `Bearer ${token}` },
-                 }
-             );
-             handleFiles(response.data);
-             toast.success("Company updated successfully");
-         } catch (error) {
-             toast.error("Error updating company");
-             setError("Error updating company data.");
-             console.error("Error updating form:", error);
-         }
-     }; */
-
-    /*  useEffect(() => {
-         const fetchCompanyData = async () => {
-             try {
-                 if (companyId) {
-                     const response = await axios.get(
-                         `${base_url}/companies/${companyId}`
-                     );
-                     const companyDetails = response.data;
- 
-                     const initialData = sections.reduce((acc, section) => {
-                         section.fields.forEach((field) => {
-                             const [sectionKey, fieldKey] = field.id.split(".");
-                             if (!acc[sectionKey]) {
-                                 acc[sectionKey] = {};
-                             }
-                             acc[sectionKey][fieldKey] =
-                                 companyDetails[sectionKey]?.[fieldKey] || "";
-                         });
-                         return acc;
-                     }, {});
- 
-                     setFormData(initialData);
- 
-                     // Set client status
-                     const status = companyDetails.companyDetails.clientStatus || "";
-                     setClientStatus(status);
-                     toast.success("Company data fetched successfully");
-                 }
-             } catch (error) {
-                 toast.error("Error while fetching company data");
-                 setError("Error fetching company data.");
-             }
-         };
- 
-         if (companyId) {
-             fetchCompanyData();
-         }
-     }, [companyId]); */
-
+    // Accordion toggle handler
     const handleAccordian = (title) => {
         setExpanded((prevExpanded) =>
             prevExpanded.includes(title)
@@ -223,24 +58,69 @@ const CompanyForm = ({
         );
     };
 
-    //const sectionBackgroundColor = clientStatus === "active" ? "blue" : "red";
+    // Form submit handler
+    const handleFormSubmit = async () => {
+        try {
+            const cleanedFormData = { ...formData };
+
+            const response = agencyId
+                ? await axios.put(`${base_url}/agencies/${agencyId}`, cleanedFormData)
+                : await axios.post(`${base_url}/agencies`, cleanedFormData);
+
+            toast.success(agencyId ? "Agency updated successfully" : "Agency created successfully");
+            setAgencyRefresh(!agencyRefresh);
+            setShowForm(false);
+        } catch (error) {
+            console.error("Error submitting agency form:", error);
+            toast.error(`Error: ${error.response?.data?.message || error.message}`);
+            setError("Error submitting agency data.");
+        }
+    };
+
+    // Fetch agency data when agencyId changes
+    useEffect(() => {
+        const fetchAgencyData = async () => {
+            if (agencyId) {
+                try {
+                    const response = await axios.get(`${base_url}/agencies/${agencyId}`);
+                    const agencyDetails = response.data;
+                    console.log("Agency details:", agencyDetails);
+
+                    // Populate formData based on fetched agency details
+                    const updatedFormData = sections.reduce((acc, section) => {
+                        section.fields.forEach((field) => {
+                            const [sectionKey, fieldKey] = field.id.split(".");
+                            if (!acc[sectionKey]) {
+                                acc[sectionKey] = {};
+                            }
+                            acc[sectionKey][fieldKey] = agencyDetails[sectionKey]?.[fieldKey] || "";
+                        });
+                        return acc;
+                    }, {});
+
+                    setFormData(updatedFormData); // Update formData with fetched data
+                    toast.success("Agency data fetched successfully");
+                } catch (error) {
+                    toast.error("Error fetching agency data");
+                    setError("Error fetching agency data.");
+                }
+            }
+        };
+
+        fetchAgencyData();
+    }, [agencyId]); // Only re-run when agencyId changes
 
     return (
         <div className="container mx-auto p-4 bg-gray rounded-lg shadow-md">
-            <header
-                className="text-black p-4 rounded-t-lg"
-                style={{
-                    background: "lightgrey",
-                }}
-            >
+            <header className="text-black p-4 rounded-t-lg" style={{ background: "lightgrey" }}>
                 <h1 className="text-2xl font-bold">
-                    {companyId ? "Edit Agency" : "Create New Agency"}
+                    {agencyId ? "Edit Agency" : "Create New Agency"}
                 </h1>
             </header>
             <div className="p-6 ">
+
                 <Accordian
-                    companyId={companyId}
-                    clientStatus={clientStatus}
+                    agencyId={agencyId}
                     view={view}
                     sections={
                         sections
@@ -248,7 +128,6 @@ const CompanyForm = ({
                                 ...section,
                                 formData,
                                 handleInputChange,
-                                handleFileChange,
                             }))
                             : []
                     }
@@ -258,16 +137,15 @@ const CompanyForm = ({
                 <div className="flex justify-end mt-4">
                     {!view && (
                         <button
-                            onClick={alert("this is a test Agency")}
-                            //onClick={companyId ? handleUpdate : handleSubmit}
+                            onClick={handleFormSubmit}
                             className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
                         >
-                            {companyId ? "Update" : "Save"}
+                            {agencyId ? "Update" : "Save"}
                         </button>
                     )}
                     <button
                         onClick={() => {
-                            // setCompanyId("");
+                            setAgencyId("");
                             setView(false);
                             setShowForm(false);
                         }}
@@ -281,4 +159,4 @@ const CompanyForm = ({
     );
 };
 
-export default CompanyForm;
+export default AgencyForm;
