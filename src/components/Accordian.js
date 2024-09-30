@@ -13,6 +13,7 @@ import TextArea from "./text-area";
 export default function Accordian({
   sections,
   expanded,
+  agencyId,
   handleAccordian,
   formData = {},
   clientStatus,
@@ -53,7 +54,7 @@ export default function Accordian({
 
   if (!accData) return null;
   return (
-    <div className="p-2 ">
+    <>
       {accData.map((section, index) => {
         return (
           <>
@@ -263,6 +264,6 @@ export default function Accordian({
           </>
         );
       })}
-    </div>
+    </>
   );
 }

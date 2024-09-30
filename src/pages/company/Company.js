@@ -32,6 +32,7 @@ const Company = () => {
   };
 
   const [companyRefresh, setCompanyRefresh] = useState(false);
+
   return (
     <>
       <Layout>
@@ -68,21 +69,7 @@ const Company = () => {
                 }}
               />
 
-              {/* Effective commented */}
-              {/*  {Dates[0].fields.map((field) => (
-                <Box key={field.id} className="flex items-center mx-4">
-                  <DateInput
-                    type={field.type}
-                    id={field.id}
-                    className="shadow-sm"
-                    label={field.label}
-                    value={"formData[field.id]"}
-                    onChange={"handleInputChange"}
-                    required={field.required}
-                    labelStyles={{ fontWeight: 500 }}
-                  />
-                </Box>
-              ))} */}
+
             </div>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -160,48 +147,13 @@ const Company = () => {
                 name,
                 status,
                 setView,
-                //companyName,
+                companyName,
               }}
             />
           </div>
         </div>
 
-        {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <label
-            htmlFor="Table"
-            className="block mb-2 text-xl font-medium text-gray-900 ps-2 pt-4"
-          >
-            Services
-          </label>
-          <div>
-            <Button
-              onClick={handleServiceForm}
-              variant="text"
-              sx={{
-                margin: ".7em",
-                bgcolor: "teal",
-                color: "white",
-                "&:hover": {
-                  bgcolor: "teal",
-                  color: "white",
-                },
-              }}
-            >
-              Add Service
-            </Button>
-          </div>
-        </div>
-        {serviceForm && serviceForm ? (
-          <div className="justify-center">
-            {<Serviceform {...{ setRefresh, refresh }} />}
-          </div>
-        ) : (
-          ""
-        )}
-        <div className="mt-6 bg-white rounded-lg shadow-md">
-          <ServiceTable {...{ refresh }} />
-        </div>
-        <div className="mx-auto shadow-lg rounded-md p-3"></div> */}
+
       </Layout>
     </>
   );

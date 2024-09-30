@@ -13,15 +13,14 @@ import { DeleteOutline, EditOutlined, Visibility } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Tooltip } from "@mui/material";
+import { Box, Grid, Tooltip } from "@mui/material";
 
 import { toast } from "react-toastify";
 import { base_url } from "../../const";
-import ServiceModal from "../../components/services/models/ServiceModal";
-import EditCompanyForm from './../company/EditCompany';
 import SortableTableHeader from "../../components/table/SortableTableHeader";
 import Loader from "../../components/helpers/loader";
-
+import EditCompanyForm from './../company/EditCompany';
+import ServiceModal from "../../components/services/models/ServiceModal";
 
 //theme setting for table
 const theme = createTheme({
@@ -29,9 +28,6 @@ const theme = createTheme({
         fontFamily: "Work Sans, Arial",
     },
     components: {
-        MuiTable: {
-            styleOverrides: {},
-        },
         MuiTableCell: {
             styleOverrides: {
                 root: {
@@ -40,11 +36,9 @@ const theme = createTheme({
                     backgroundColor: "#fff",
                     "&:first-of-type": {
                         borderTopLeftRadius: "8px",
-                        borderBottomLeftRadius: "0px",
                     },
                     "&:last-of-type": {
                         borderTopRightRadius: "8px",
-                        borderBottomRightRadius: "0px",
                     },
                 },
                 head: {
@@ -64,67 +58,57 @@ const theme = createTheme({
         },
     },
 });
-//theme setting for table
 
 export default function AgencyTable({
-    setCompanyId,
-    companyRefresh,
+    agencyId,
+    setAgencyId,
+    agencyRefresh,
     name,
-    status,
-    setView,
 }) {
-
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('');
-
-    const [page, setPage] = useState(0);
+    const [agencies, setAgencies] = useState([]);
     const [loading, setLoading] = useState(false);
 
+
+
+    const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [auditData, setAuditData] = useState([]);
 
     const [editModal, setEditModal] = useState(false);
-    const [editCompanyId, setEditCompanyId] = useState(null);
-    const [companies, setCompanies] = useState([]);
-    const [clientStatuses, setClientStatuses] = useState([]);
-    const [open, setOpen] = useState(false);
 
-    const [mode, setMode] = useState(0);
+
+    // Fetch agencies
     useEffect(() => {
-        const fetchCompanies = async () => {
+        const fetchAgencies = async () => {
             setLoading(true);
             try {
-                const response = await axios.post(`${base_url}/companies/filter`, {
-                    status: status === "all" ? "" : status,
-                    name,
+                const response = await axios.post(`${base_url}/agencies/filter`, {
+                    name
                 });
+
+                console.log("filter response", response)
+                setAgencies(response.data);
                 setLoading(false);
 
                 const { data } = response;
+                console.log("data from  in table ", data);
 
-                // Extract company details and client statuses
-                const companyDetailsArray = data.map((item) => ({
-                    ...item.companyDetails,
+                const agencyDetailsArray = data.map((item) => ({
+                    ...item,
                     _id: item._id,
                 }));
 
-                // Extract client statuses into a separate array
-                const statusesArray = companyDetailsArray.map(
-                    (clientStatus) => clientStatus
-                );
+                setAgencies(agencyDetailsArray);
 
-                // Update state with company details and client statuses
-                setCompanies(companyDetailsArray);
-                setClientStatuses(statusesArray);
-
-                // Log client statuses
+                console.log("vishnu ! 0", agencyDetailsArray)
             } catch (error) {
+                setLoading(false);
                 console.error("Error fetching data:", error);
             }
         };
 
-        fetchCompanies();
-    }, [companyRefresh, name, status]);
+        fetchAgencies();
+    }, [agencyRefresh, name]);
+
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -137,287 +121,157 @@ export default function AgencyTable({
 
     const handleCloseModal = () => {
         setEditModal(false);
-        setEditCompanyId(null);
     };
 
     const handleDelete = async (id) => {
-        const token = localStorage.getItem("token");
 
-        if (!token) {
-            console.error("Token is missing. User may not be logged in.");
-            return;
-        }
 
         setLoading(true);
 
         try {
-            await axios.delete(`${base_url}/companies/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+            await axios.delete(`${base_url}/agencies/${id}`, {
+
             });
-            setCompanies(companies.filter((company) => company._id !== id));
-            toast.warn("Company Deleted successfully");
+            setAgencies(agencies.filter((agency) => agency._id !== id));
+            toast.warn("Agency Deleted successfully");
             setLoading(false);
         } catch (error) {
-            toast.warn("Failed to  Delete Company  ");
-
-            console.error("Error deleting company:", error);
+            toast.warn("Failed to Delete Agency");
+            console.error("Error deleting agency:", error);
         }
     };
 
-    const auditHistory = async (documentId) => {
-        try {
-            if (!documentId) {
-                throw new Error("Document ID is required to fetch the audit trail.");
-            }
-
-            console.log("Fetching audit trail for document ID:", documentId);
-
-            setLoading(true);
-            const response = await axios.post(`${base_url}/audit-history`, {
-                documentId,
-            });
-
-            setLoading(false);
-
-            console.log("Response from audit-history API:", response);
-
-            const { logs } = response.data;
-
-            if (logs && logs.length > 0) {
-                console.log("Audit logs received:", logs);
-                setAuditData(logs);
-                setOpen(true);
-            } else {
-                console.log("No audit logs found.");
-                toast.warn("No audit history found for this company.");
-            }
-        } catch (error) {
-            setLoading(false);
-            toast.error("Error fetching audit trail: " + error.message);
-            console.error("Error fetching audit trail:", error.message);
-        }
-    };
-
-    ///sort columns
-    const handleRequestSort = (property) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(property);
-    };
-    const sortedCompanies = companies.sort((a, b) => {
 
 
 
-        if (orderBy === 'companyName') {
-            return (order === 'asc' ? a.companyName.localeCompare(b.companyName) : b.companyName.localeCompare(a.companyName));
-        }
-        if (orderBy === 'clientStatus') {
-            return (order === 'asc' ? a.clientStatus.localeCompare(b.clientStatus) : b.clientStatus.localeCompare(a.clientStatus));
-        }
-        if (orderBy === 'phone') {
-            return (order === 'asc' ? a.phone.localeCompare(b.phone) : b.phone.localeCompare(a.phone));
-        }
-        if (orderBy === 'mailId') {
-            return (order === 'asc' ? a.mailId.localeCompare(b.mailId) : b.mailId.localeCompare(a.mailId));
-        }
-        return 0;
-    });
+
 
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-
-            {/*  {open && (
-                <CompanyAuditTrai
-                    companyAuditData={auditData}
-                    handleClose={() => setOpen(false)}
-                />
-            )} */}
-            <div className="mx-auto">
+            {/* <div className="mx-auto">
                 {editModal && (
                     <ServiceModal open={editModal} handleClose={handleCloseModal}>
                         <EditCompanyForm
-                            clientStatuses={clientStatuses}
-                            companyId={editCompanyId}
+                            agencyId={agencyId}
                             onClose={handleCloseModal}
                         />
                     </ServiceModal>
                 )}
-            </div>
+            </div> */}
 
-            <TableContainer
-                component={Paper}
-                className="container my-4 shadow-md rounded-lg"
-                sx={{ boxShadow: "none" }}
-            >
-                <Table
-                    className="table-auto"
-                    sx={{ minWidth: 650 }}
-                    aria-label="company table"
-                >
+            <TableContainer component={Paper} className="container my-4 shadow-md rounded-lg">
+                <Table sx={{ minWidth: 650 }} aria-label="agency table">
                     <TableHead>
                         <TableRow>
                             <TableCell align="left" padding="normal">
                                 S.NO
                             </TableCell>
 
+                            <SortableTableHeader
+                                columnId="AgencyName"
+                                label="Agency Name"
+                            //order={order}
+                            //orderBy={orderBy}
+                            //onSort={handleRequestSort}
+                            />
+                            <SortableTableHeader
+                                columnId="location"
+                                label="Location"
+                            //order={order}
+                            //orderBy={orderBy}
+                            //onSort={handleRequestSort}
+                            />
+                            <SortableTableHeader
+                                columnId="EffectiveFrom"
+                                label="Effective From"
+                            //order={order}
+                            //orderBy={orderBy}
+                            //onSort={handleRequestSort}
+                            />
+                            <SortableTableHeader
+                                columnId="DueDate"
+                                label="Due Date"
+                            //order={order}
+                            //orderBy={orderBy}
+                            //onSort={handleRequestSort}
+                            />
 
-                            <SortableTableHeader
-                                columnId="companyName"
-                                label="Company Name"
-                                order={order}
-                                orderBy={orderBy}
-                                onSort={handleRequestSort}
-                            />
-                            <SortableTableHeader
-                                columnId="clientStatus"
-                                label="Status"
-                                order={order}
-                                orderBy={orderBy}
-                                onSort={handleRequestSort}
-                            />
-                            <SortableTableHeader
-                                columnId="phone"
-                                label="Mobile"
-                                order={order}
-                                orderBy={orderBy}
-                                onSort={handleRequestSort}
-                            />
-                            <SortableTableHeader
-                                columnId="mailId"
-                                label="Email Id"
-                                order={order}
-                                orderBy={orderBy}
-                                onSort={handleRequestSort}
-                            />
                             <TableCell align="left" padding="normal">
                                 Actions
                             </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {loading && loading ? (
-                            <TableRow>
-                                <TableCell colSpan={6} align="center">
-                                    <div className="flex justify-center items-center py-4">
-                                        <Loader size={30} />
-                                    </div>
+                        {loading ? (
+                            <TableRow  >
+                                <TableCell colSpan={6}>
+                                    <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+                                        <Loader />
+                                    </Box>
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            sortedCompanies
+                            agencies
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((company, index) => (
-                                    <TableRow key={company._id || index} sx={{ height: "48px" }}>
+                                .map((agency, index) => (
+                                    <TableRow key={agency._id || index} sx={{ height: "48px" }}>
                                         <TableCell align="left" padding="normal">
                                             {page * rowsPerPage + index + 1}
                                         </TableCell>
                                         <TableCell align="left" padding="normal">
-                                            {company.companyName || "N/A"}
+                                            {agency.agencyName || "N/A"}
                                         </TableCell>
                                         <TableCell align="left" padding="normal">
-                                            {company.clientStatus || "N/A"}
+                                            {agency.agencyLocation || "N/A"}
                                         </TableCell>
                                         <TableCell align="left" padding="normal">
-                                            {company.phone || "N/A"}
+                                            {new Date(agency.effectiveEndDate).toLocaleDateString() || "N/A"}
                                         </TableCell>
                                         <TableCell align="left" padding="normal">
-                                            {company.mailId || "N/A"}
+                                            {new Date(agency.effectiveStartDate).toLocaleDateString() || "N/A"}
                                         </TableCell>
+
+
                                         <TableCell align="left" padding="normal">
-                                            <IconButton
-                                                aria-label="edit"
-                                                size="small"
-                                                onClick={() => {
-                                                    setCompanyId(company._id);
-                                                    setView(true);
-                                                }}
-                                            >
-                                                <Tooltip
-                                                    title="View"
-                                                    arrow
-                                                    variant="soft"
-                                                    placement="left"
-                                                >
-                                                    <Visibility
-                                                        fontSize="inherit"
-                                                        className="text-green-400 z-0 bg-gray-50 rounded"
-                                                    />
-                                                </Tooltip>
-                                            </IconButton>
-                                            <IconButton
-                                                aria-label="edit"
-                                                size="small"
-                                                onClick={() => setCompanyId(company._id)}
-                                            >
-                                                <Tooltip
-                                                    title="Edit"
-                                                    arrow
-                                                    variant="soft"
-                                                    placement="left"
+
+                                            <Tooltip title="Edit">
+                                                <IconButton
+
+                                                    onClick={() => {
+                                                        alert("Edit");
+                                                        setAgencyId(agency._id);
+                                                        setEditModal(true);
+                                                    }}
                                                 >
                                                     <EditOutlined
-                                                        fontSize="inherit"
                                                         className="text-green-400 z-0 bg-gray-50 rounded"
                                                     />
-                                                </Tooltip>
-                                            </IconButton>
-                                            <IconButton
-                                                aria-label="delete"
-                                                size="small"
-                                                onClick={() => handleDelete(company._id)}
-                                            >
-                                                <Tooltip
-                                                    title="Delete"
-                                                    arrow
-                                                    variant="soft"
-                                                    placement="right"
-                                                >
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Delete">
+                                                <IconButton onClick={() => handleDelete(agency._id)}>
                                                     <DeleteOutline
-                                                        fontSize="inherit"
-                                                        className="text-red-400 bg-gray-100 rounded"
+                                                        className="text-red-400 z-0 bg-gray-50 rounded"
                                                     />
-                                                </Tooltip>
-                                            </IconButton>
-                                            <IconButton
-                                                aria-label="audit"
-                                                size="small"
-                                                onClick={() => auditHistory(company._id)}
-                                            >
-                                                <Tooltip
-                                                    title="Audit History"
-                                                    arrow
-                                                    variant="soft"
-                                                    placement="right"
-                                                >
-                                                    <MoreVertIcon />
-                                                </Tooltip>
-                                            </IconButton>
+                                                </IconButton>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 ))
                         )}
                     </TableBody>
                 </Table>
-
                 <TablePagination
-                    rowsPerPageOptions={[5, 10, 15]}
+                    rowsPerPageOptions={[5, 10, 20]}
                     component="div"
-                    count={companies.length}
+                    count={agencies.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
-                    className="border-t border-gray-200"
-                    sx={{
-                        boxShadow: "none",
-                        border: "none",
-                    }}
                 />
             </TableContainer>
-            {/* <Accordian /> */}
         </ThemeProvider>
     );
 }
