@@ -67,20 +67,24 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   }, [filteredTasks]);
 
   const categories = [];
-  const colors = ["red", "yellow", "green"];
+  const colors = [];
+  const labelColors = ["#ff0000", "#FFFF00", "#008000"];
 
   if (data.overdue > 0) {
     categories.push(data.overdue);
-    colors.push("#f00");
+    colors.push("#ff0000"); // Hex code for red
   }
+
   if (data.inProgress > 0) {
     categories.push(data.inProgress);
-    colors.push("#ff0");
+    colors.push("#FFFF00"); // Hex code for yellow
   }
+
   if (data.completed > 0) {
     categories.push(data.completed);
-    colors.push("#0f0");
+    colors.push("#008000"); // Hex code for green
   }
+
 
   const completedCategories = categories[2];
 
@@ -209,9 +213,9 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                       arcPadding={0.01}
                       needleBaseColor="#000000"
                       needleShadowColor="#000000"
-                      formatTextValue={(averagePercentage) =>
-                        `${averagePercentage}%`
-                      }
+                    //formatTextValue={(averagePercentage) =>
+                    //`${averagePercentage}%`
+                    //}
                     />
                     {data?.overdue && (
                       <div
@@ -262,9 +266,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                         left: "-40px",
                       }}
                     >
-                      <span>
-                        {categories[Math.floor(categories.length / 2)]}
-                      </span>
+
                     </div>
                   </div>
                 </>
@@ -278,7 +280,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
               const count = [data.overdue, data.inProgress, data.completed][
                 index
               ];
-              const backgroundColor = colors[index];
+              const backgroundColor = labelColors[index];
 
               return count > 0 ? (
                 <div
@@ -290,13 +292,13 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                     {/* Color indicator */}
                     <div
                       style={{
-                        //backgroundColor: backgroundColor, // Apply color here
+                        backgroundColor: backgroundColor, // Apply color here
                         width: "2.2rem",
                         height: ".8rem",
                         marginRight: "10px"
                       }}
                     />
-                    <h6>{`${label}: ${count}`}</h6>
+                    <h6>{label}</h6>
                   </div>
                 </div>
               ) : null;
