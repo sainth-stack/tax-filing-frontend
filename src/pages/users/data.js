@@ -1,4 +1,10 @@
-export const GetUsers = ({ companies = [], agencies = [] }) => {
+// Update dynamicUserData function
+export const dynamicUserData = ({ companiesdata = [], agnciesdata = [] }) => {
+  return { companiesdata, agnciesdata }; // Return them as an object
+};
+
+// Update GetUsers function
+export const GetUsers = ({ companiesdata = [], agnciesdata = [] }) => {
   return [
     {
       title: "User Form",
@@ -60,7 +66,6 @@ export const GetUsers = ({ companies = [], agencies = [] }) => {
         {
           type: "checkbox",
           text: "Whatsapp Number",
-
           id: "sameAsWhatsappNumber",
           label: "Same as Mobile Number",
           checked: true,
@@ -76,7 +81,7 @@ export const GetUsers = ({ companies = [], agencies = [] }) => {
           type: "select",
           id: "company",
           label: "Company",
-          options: [...companies],
+          options: companiesdata, // Use dynamic companies data
           required: true,
         },
         {
@@ -94,9 +99,7 @@ export const GetUsers = ({ companies = [], agencies = [] }) => {
           type: "select",
           id: "agency",
           label: "Agency",
-          options: [
-            ...agencies
-          ],
+          options: agnciesdata, // Use dynamic agencies data
           required: true,
         },
       ],

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
-import { GetUsers } from "./data";
+import { dynamicUserData, GetUsers } from "./data";
 import SelectInput from "../../components/select";
 import CustomInput from "../../components/input";
 import CustomCheckbox from "../../components/Checkbox/Checkbox";
@@ -15,19 +15,21 @@ const UserForm = ({
   fetchUsers,
   companyId,
 }) => {
-  const users = GetUsers([]);
-  const [Users, setUsers] = useState(users);
-  const agencies = GetUsers([])
-  const [Agencies, setAgencies] = useState(agencies);
-
+  const { companiesdata, agnciesdata } = dynamicUserData([], []);
+  const [Users, setUsers] = useState([]);
+  const [Agencies, setAgencies] = useState([]);
   const [companies, setCompanies] = useState([]);
-  const defaultData = Users[0].fields.reduce((acc, field) => {
-    acc[field.id] = "";
-    return acc;
-  }, {});
-
-  const [formData, setFormData] = useState(defaultData);
+  const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
+  const defaultData = Users.length > 0 && Users[0].fields ?
+    Users[0].fields.reduce((acc, field) => {
+      acc[field.id] = "";
+      return acc;
+    }, {})
+    : {}; // Return an empty object if Users or fields are not available
+
+
+
 
   // Handle input change
   const handleInputChange = (e) => {
@@ -104,39 +106,31 @@ const UserForm = ({
       console.error("Error fetching companies:", error);
     }
   };
-
-  //vishnu
-  useEffect(() => {
-    fetchCompanies();
-  }, []);
-
   const fetchAgencies = async () => {
     try {
-      const response = await axios.get(`${base_url}/agencies/all`);
-      //console.log("agencies data", data)
-
-      const agencyName = response.data?.map((item) => ({
+      const response = await axios.get(`${base_url}/agencies/all`); // Adjust endpoint if needed
+      const data = response.data?.map((item) => ({
         value: item?.agencyName,
         label: item?.agencyName,
         ...item,
       }));
-      setAgencies(agencyName);
+      setAgencies(data);
     } catch (error) {
-      console.error("Error fetching companies:", error);
+      console.error("Error fetching agencies:", error);
     }
   };
 
-
-  console.log("agency state", Agencies)
-  //vishnu
   useEffect(() => {
+    fetchCompanies();
     fetchAgencies();
   }, []);
 
   useEffect(() => {
-    const updatedUsers = GetUsers({ companies });
+    const updatedUsers = GetUsers({ companiesdata: companies, agnciesdata: Agencies });
     setUsers(updatedUsers);
-  }, [companies]);
+    console.log("updates users", updatedUsers)
+    setAgencies(updatedUsers)
+  }, []);
 
   const mapDates = (data) => {
     if (Array.isArray(data)) {
@@ -174,9 +168,6 @@ const UserForm = ({
       }));
     }
   };
-
-  //getting agencies
-
 
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
@@ -273,3 +264,4 @@ const UserForm = ({
 };
 
 export default UserForm;
+
