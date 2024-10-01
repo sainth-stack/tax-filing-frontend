@@ -21,6 +21,7 @@ import SortableTableHeader from "../../components/table/SortableTableHeader";
 import Loader from "../../components/helpers/loader";
 import EditCompanyForm from './../company/EditCompany';
 import ServiceModal from "../../components/services/models/ServiceModal";
+import moment from "moment/moment";
 
 //theme setting for table
 const theme = createTheme({
@@ -61,12 +62,18 @@ const theme = createTheme({
 
 export default function AgencyTable({
     agencyId,
+    formData,
     setAgencyId,
     agencyRefresh,
-    name,
+    agencyName,
 }) {
+    console.log("for data verifying", formData.effectiveFrom)
     const [agencies, setAgencies] = useState([]);
     const [loading, setLoading] = useState(false);
+
+
+    const [order, setOrder] = useState('asc'); // Sorting order (asc/desc)
+    const [orderBy, setOrderBy] = useState('AgencyName'); // Column to sort by
 
 
 
@@ -82,32 +89,36 @@ export default function AgencyTable({
             setLoading(true);
             try {
                 const response = await axios.post(`${base_url}/agencies/filter`, {
-                    name
+
+                    agencyName: agencyName || '', // Use the name as agencyName or an empty string
+                    ...formData,
+
                 });
 
-                console.log("filter response", response)
-                setAgencies(response.data);
-                setLoading(false);
-
+                console.log("filter response", response);
                 const { data } = response;
-                console.log("data from  in table ", data);
+                setAgencies(data);
 
+                console.log("data from in table", data);
+
+                // Map through the data and add _id field
                 const agencyDetailsArray = data.map((item) => ({
                     ...item,
                     _id: item._id,
                 }));
 
                 setAgencies(agencyDetailsArray);
+                console.log("vishnu ! 0", agencyDetailsArray);
 
-                console.log("vishnu ! 0", agencyDetailsArray)
             } catch (error) {
-                setLoading(false);
                 console.error("Error fetching data:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchAgencies();
-    }, [agencyRefresh, name]);
+    }, [agencyRefresh, agencyName, formData]);
 
 
     const handleChangePage = (event, newPage) => {
@@ -142,8 +153,30 @@ export default function AgencyTable({
     };
 
 
+    const handleRequestSort = (columnId) => {
+        const isAsc = orderBy === columnId && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(columnId);
+    };
 
 
+
+    //sorting agencies 
+    const sortedAgencies = agencies.sort((a, b) => {
+        if (orderBy === 'AgencyName') {
+            return (order === 'asc' ? a.agencyName.localeCompare(b.agencyName) : b.agencyName.localeCompare(a.agencyName));
+        }
+        if (orderBy === 'location') {
+            return (order === 'asc' ? a.agencyLocation.localeCompare(b.agencyLocation) : b.agencyLocation.localeCompare(a.agencyLocation));
+        }
+        if (orderBy === 'EffectiveFrom') {
+            return (order === 'asc' ? new Date(a.effectiveFrom) - new Date(b.effectiveFrom) : new Date(b.effectiveFrom) - new Date(a.effectiveFrom));
+        }
+        if (orderBy === 'DueDate') {
+            return (order === 'asc' ? new Date(a.effectiveTo) - new Date(b.effectiveTo) : new Date(b.effectiveTo) - new Date(a.effectiveTo));
+        }
+        return 0;
+    });
 
 
     return (
@@ -168,33 +201,34 @@ export default function AgencyTable({
                                 S.NO
                             </TableCell>
 
+
                             <SortableTableHeader
                                 columnId="AgencyName"
                                 label="Agency Name"
-                            //order={order}
-                            //orderBy={orderBy}
-                            //onSort={handleRequestSort}
+                                order={order}
+                                orderBy={orderBy}
+                                onSort={handleRequestSort}
                             />
                             <SortableTableHeader
                                 columnId="location"
                                 label="Location"
-                            //order={order}
-                            //orderBy={orderBy}
-                            //onSort={handleRequestSort}
+                                order={order}
+                                orderBy={orderBy}
+                                onSort={handleRequestSort}
                             />
                             <SortableTableHeader
                                 columnId="EffectiveFrom"
                                 label="Effective From"
-                            //order={order}
-                            //orderBy={orderBy}
-                            //onSort={handleRequestSort}
+                                order={order}
+                                orderBy={orderBy}
+                                onSort={handleRequestSort}
                             />
                             <SortableTableHeader
                                 columnId="DueDate"
                                 label="Due Date"
-                            //order={order}
-                            //orderBy={orderBy}
-                            //onSort={handleRequestSort}
+                                order={order}
+                                orderBy={orderBy}
+                                onSort={handleRequestSort}
                             />
 
                             <TableCell align="left" padding="normal">
@@ -212,7 +246,7 @@ export default function AgencyTable({
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            agencies
+                            sortedAgencies
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((agency, index) => (
                                     <TableRow key={agency._id || index} sx={{ height: "48px" }}>
@@ -226,11 +260,27 @@ export default function AgencyTable({
                                             {agency.agencyLocation || "N/A"}
                                         </TableCell>
                                         <TableCell align="left" padding="normal">
-                                            {new Date(agency.effectiveEndDate).toLocaleDateString() || "N/A"}
+                                            {
+                                                agency.effectiveFrom
+                                                    ? moment(agency.effectiveFrom).isValid()
+                                                        ? moment(agency.effectiveFrom).format('MM/DD/YYYY')
+                                                        : "N/A"
+                                                    : "N/A"
+                                            }
+
                                         </TableCell>
                                         <TableCell align="left" padding="normal">
-                                            {new Date(agency.effectiveStartDate).toLocaleDateString() || "N/A"}
+
+                                            {
+                                                agency.effectiveTo
+                                                    ? moment(agency.effectiveTo).isValid()
+                                                        ? moment(agency.effectiveTo).format('MM/DD/YYYY')
+                                                        : "N/A"
+                                                    : "N/A"
+                                            }
+
                                         </TableCell>
+
 
 
                                         <TableCell align="left" padding="normal">

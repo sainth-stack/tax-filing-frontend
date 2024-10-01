@@ -15,7 +15,7 @@ const Company = () => {
     //const [editAgencyId, setEdiAgencyId] = useState(null);
 
     const [agencyId, setAgencyId] = useState(null);
-    const [name, setName] = useState("");
+    const [agencyName, setagencyName] = useState("");
     const [status, setStatus] = useState("");
 
 
@@ -26,6 +26,19 @@ const Company = () => {
 
     const [agencyRefresh, setAgencyRefresh] = useState(false);
 
+    const [formData, setFormData] = useState({
+        effectiveFrom: "",
+        effectiveTo: "",
+    });
+
+    // 
+    const handleInputChange = (e) => {
+        const { id, value } = e.target;
+        setFormData((prevValues) => ({
+            ...prevValues,
+            [id]: value,
+        }));
+    };
     return (
         <>
             <Layout>
@@ -36,31 +49,17 @@ const Company = () => {
                                 id="AgencyDetails.agencyName"
                                 label="Agency"
                                 className="shadow-sm"
-                                value={name}
+                                value={agencyName}
                                 type="text"
                                 placeholder="Agency Name"
-                                onChange={(e) => setName(e.target.value)}
+                                onChange={(e) => setagencyName(e.target.value)}
                                 labelStyles={{
                                     fontWeight: 500,
                                 }}
                             />
                         </div>
                         <div className="flex items-center">
-                            <SelectInput
-                                id="status"
-                                className="shadow-sm"
-                                label="Status"
-                                value={status}
-                                onChange={(e) => setStatus(e.target.value)}
-                                options={[
-                                    { value: "all", label: "All" },
-                                    { value: "active", label: "Active" },
-                                    { value: "inactive", label: "Inactive" },
-                                ]}
-                                labelStyles={{
-                                    fontWeight: 500,
-                                }}
-                            />
+
 
                             {/* Effective commented */}
                             {Dates[0].fields.map((field) => (
@@ -70,8 +69,8 @@ const Company = () => {
                                         id={field.id}
                                         className="shadow-sm"
                                         label={field.label}
-                                        value={"formData[field.id]"}
-                                        onChange={"handleInputChange"}
+                                        value={formData[field.id] || ""}
+                                        onChange={handleInputChange}
                                         required={field.required}
                                         labelStyles={{ fontWeight: 500 }}
                                     />
@@ -157,7 +156,8 @@ const Company = () => {
                                 setAgencyId,
                                 agencyRefresh,
                                 setAgencyRefresh,
-                                name,
+                                agencyName,
+                                formData,
                                 setView,
                                 //companyName,
                             }}

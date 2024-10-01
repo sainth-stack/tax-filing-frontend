@@ -150,6 +150,7 @@ export default function TasksTable({
               <TableCell align="left" padding="normal">
                 S.NO
               </TableCell>
+
               <SortableTableHeader columnId="company" label="Company" order={order} orderBy={orderBy} onSort={handleRequestSort} />
               <SortableTableHeader columnId="taskName" label="Task Name" order={order} orderBy={orderBy} onSort={handleRequestSort} />
               <SortableTableHeader columnId="dueDate" label="Due Date" order={order} orderBy={orderBy} onSort={handleRequestSort} />

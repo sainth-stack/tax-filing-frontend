@@ -19,13 +19,13 @@ export const sectionsData = (data) => {
                 },
                 {
                     type: "date",
-                    id: "AgencyDetails.effectiveStartDate", // Changed to camelCase
+                    id: "AgencyDetails.effectiveFrom", // Changed to camelCase
                     label: " Start Date",
                     required: true,
                 },
                 {
                     type: "date",
-                    id: "AgencyDetails.effectiveEndDate", // Changed to camelCase
+                    id: "AgencyDetails.effectiveTo", // Changed to camelCase
                     label: " End Date",
                     required: true,
                 },

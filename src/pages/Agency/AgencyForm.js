@@ -16,6 +16,7 @@ const AgencyForm = ({
     setView,
 }) => {
     const [formData, setFormData] = useState({});
+
     const sections = sectionsData(formData);
     const [error, setError] = useState("");
     const [expanded, setExpanded] = useState(sections ? ["Agency Details"] : []);

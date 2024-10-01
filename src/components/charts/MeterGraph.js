@@ -67,19 +67,19 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   }, [filteredTasks]);
 
   const categories = [];
-  const colors = ["#FF0000", "#FFBF00", "#008000"];
+  const colors = ["red", "yellow", "green"];
 
   if (data.overdue > 0) {
     categories.push(data.overdue);
-    ///colors.push("#FF0000");
+    colors.push("#f00");
   }
   if (data.inProgress > 0) {
     categories.push(data.inProgress);
-    ///colors.push("#FFBF00");
+    colors.push("#ff0");
   }
   if (data.completed > 0) {
     categories.push(data.completed);
-    ///colors.push("#008000");
+    colors.push("#0f0");
   }
 
   const completedCategories = categories[2];
@@ -290,7 +290,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                     {/* Color indicator */}
                     <div
                       style={{
-                        backgroundColor: colors[index], // Apply color here
+                        //backgroundColor: backgroundColor, // Apply color here
                         width: "2.2rem",
                         height: ".8rem",
                         marginRight: "10px"
