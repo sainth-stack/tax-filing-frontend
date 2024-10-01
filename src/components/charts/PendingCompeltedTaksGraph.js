@@ -38,6 +38,9 @@ const PendingCompletedTasksGraph = ({
   filteredTasks,
   loading,
 }) => {
+
+  console.log("filter tasks checking", filteredTasks)
+
   const navigate = useNavigate();
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [selectedTasks, setSelectedTasks] = useState([]);
@@ -56,7 +59,7 @@ const PendingCompletedTasksGraph = ({
         const completedTasksByPerson = {};
 
         filteredTasks.forEach((task) => {
-          const assignedTo = task.assignedTo || "Unassigned";
+          const assignedTo = task.assignedName || "Unassigned";
           const actualCompletionDate = task.actualCompletionDate
             ? new Date(task.actualCompletionDate)
             : null;
@@ -125,9 +128,8 @@ const PendingCompletedTasksGraph = ({
         : tasksData.completedTasksByPerson[assignedUser]?.tasks || [];
 
       setPopupContent({
-        title: `${
-          isPendingTasks ? "Pending" : "Completed"
-        } Tasks for ${assignedUser} (${tasks.length})`,
+        title: `${isPendingTasks ? "Pending" : "Completed"
+          } Tasks for ${assignedUser} (${tasks.length})`,
         tasks,
       });
 
@@ -212,81 +214,81 @@ const PendingCompletedTasksGraph = ({
                 }}
               />
 
-                {chartData.labels.length === 0 ? (
-                  <NoDataFound />
-                ) : (
-                   <>
+              {chartData.labels.length === 0 ? (
+                <NoDataFound />
+              ) : (
+                <>
 
-                     <Bar
-                data={chartData}
-                options={{
-                  indexAxis: "y",
-                  onClick: handleClick,
-                  scales: {
-                    x: {
-                      type: "linear", // Ensure x-axis is linear to handle integer values
-                      stacked: true,
-                      grid: {
-                        display: false,
-                      },
-                      ticks: {
-                        stepSize: 1, // Ensure the ticks are integers
-                        font: {
-                          size: 10,
-                          weight: "bold",
+                  <Bar
+                    data={chartData}
+                    options={{
+                      indexAxis: "y",
+                      onClick: handleClick,
+                      scales: {
+                        x: {
+                          type: "linear", // Ensure x-axis is linear to handle integer values
+                          stacked: true,
+                          grid: {
+                            display: false,
+                          },
+                          ticks: {
+                            stepSize: 1, // Ensure the ticks are integers
+                            font: {
+                              size: 10,
+                              weight: "bold",
+                            },
+                            color: "#333",
+                          },
                         },
-                        color: "#333",
-                      },
-                    },
-                    y: {
-                      stacked: true,
-                      grid: {
-                        display: false,
-                      },
-                      ticks: {
-                        font: {
-                          size: 14,
-                          weight: "bold",
+                        y: {
+                          stacked: true,
+                          grid: {
+                            display: false,
+                          },
+                          ticks: {
+                            font: {
+                              size: 14,
+                              weight: "bold",
+                            },
+                            color: "#333",
+                          },
                         },
-                        color: "#333",
                       },
-                    },
-                  },
-                  plugins: {
-                    legend: {
-                      position: "top",
-                      labels: {
-                        font: {
-                          size: 14,
-                          weight: "bold",
+                      plugins: {
+                        legend: {
+                          position: "top",
+                          labels: {
+                            font: {
+                              size: 14,
+                              weight: "bold",
+                            },
+                            color: "#333",
+                          },
                         },
-                        color: "#333",
+                        datalabels: {
+                          display: true,
+                          color: "white",
+                          anchor: "center",
+                          align: "center",
+                          formatter: (value) => value || "",
+                          font: {
+                            size: 22,
+                            weight: "bold",
+                          },
+                        },
                       },
-                    },
-                    datalabels: {
-                      display: true,
-                      color: "white",
-                      anchor: "center",
-                      align: "center",
-                      formatter: (value) => value || "",
-                      font: {
-                        size: 22,
-                        weight: "bold",
-                      },
-                    },
-                  },
-                  responsive: true,
-                  maintainAspectRatio: true,
-                }}
-              />
-                   </>
-                )
-              
-                  
-                
-                }
+                      responsive: true,
+                      maintainAspectRatio: true,
+                    }}
+                  />
+                </>
+              )
 
-             
+
+
+              }
+
+
 
               {popupVisible && (
                 <div

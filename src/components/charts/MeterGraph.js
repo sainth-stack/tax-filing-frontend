@@ -213,9 +213,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                       arcPadding={0.01}
                       needleBaseColor="#000000"
                       needleShadowColor="#000000"
-                    //formatTextValue={(averagePercentage) =>
-                    //`${averagePercentage}%`
-                    //}
+                      formatTextValue={(averagePercentage) => `${averagePercentage}%`}
                     />
                     {data?.overdue && (
                       <div
@@ -228,7 +226,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                           fontWeight: 500,
                         }}
                       >
-                        {data?.overdue}
+                        {data.overdue && data?.overdue}
                       </div>
                     )}
                     {data?.inProgress && (
@@ -242,7 +240,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                           fontWeight: 500,
                         }}
                       >
-                        {data?.inProgress}
+                        {data.inProgress && data?.inProgress}
                       </div>
                     )}
                     {data?.completed && (
@@ -256,7 +254,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                           fontWeight: 500,
                         }}
                       >
-                        {data?.completed}
+                        {data.completed && data?.completed}
                       </div>
                     )}
                     <div
@@ -298,7 +296,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                         marginRight: "10px"
                       }}
                     />
-                    <h6>{label}</h6>
+                    <h6> {label}: {count}</h6>
                   </div>
                 </div>
               ) : null;
