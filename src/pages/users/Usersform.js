@@ -17,6 +17,9 @@ const UserForm = ({
 }) => {
   const users = GetUsers([]);
   const [Users, setUsers] = useState(users);
+  const agencies = GetUsers([])
+  const [Agencies, setAgencies] = useState(agencies);
+
   const [companies, setCompanies] = useState([]);
   const defaultData = Users[0].fields.reduce((acc, field) => {
     acc[field.id] = "";
@@ -107,6 +110,29 @@ const UserForm = ({
     fetchCompanies();
   }, []);
 
+  const fetchAgencies = async () => {
+    try {
+      const response = await axios.get(`${base_url}/agencies/all`);
+      //console.log("agencies data", data)
+
+      const agencyName = response.data?.map((item) => ({
+        value: item?.agencyName,
+        label: item?.agencyName,
+        ...item,
+      }));
+      setAgencies(agencyName);
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+    }
+  };
+
+
+  console.log("agency state", Agencies)
+  //vishnu
+  useEffect(() => {
+    fetchAgencies();
+  }, []);
+
   useEffect(() => {
     const updatedUsers = GetUsers({ companies });
     setUsers(updatedUsers);
@@ -148,6 +174,9 @@ const UserForm = ({
       }));
     }
   };
+
+  //getting agencies
+
 
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">

@@ -1,4 +1,4 @@
-export const GetUsers = ({ companies = [] }) => {
+export const GetUsers = ({ companies = [], agencies = [] }) => {
   return [
     {
       title: "User Form",
@@ -95,8 +95,7 @@ export const GetUsers = ({ companies = [] }) => {
           id: "agency",
           label: "Agency",
           options: [
-            { value: "consultRight1", label: "Consult Right 1" },
-            { value: "consultRight2", label: "Consult Right 2" },
+            ...agencies
           ],
           required: true,
         },

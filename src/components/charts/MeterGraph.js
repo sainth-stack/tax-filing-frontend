@@ -68,7 +68,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
 
   const categories = [];
   const colors = [];
-  const labelColors = ["#ff0000", "#FFFF00", "#008000"];
+  const labelColors = ["#ff0000", "#ffcf57", "#008000"];
 
   if (data.overdue > 0) {
     categories.push(data.overdue);
@@ -77,7 +77,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
 
   if (data.inProgress > 0) {
     categories.push(data.inProgress);
-    colors.push("#FFFF00"); // Hex code for yellow
+    colors.push("#ffcf57"); // Hex code for yellow
   }
 
   if (data.completed > 0) {
@@ -215,35 +215,37 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                       needleShadowColor="#000000"
                       formatTextValue={(averagePercentage) => `${averagePercentage}%`}
                     />
-                    {data?.overdue && (
+                    {data?.overdue && data.overdue > 0 && (
                       <div
                         style={{
                           position: "absolute",
                           top: "45%",
                           left: "23%",
                           color: "#FFF",
-                          fontSize: "20px",
+                          fontSize: "15px",
                           fontWeight: 500,
                         }}
                       >
                         {data.overdue && data?.overdue}
                       </div>
                     )}
-                    {data?.inProgress && (
+                    {data?.inProgress && data.inProgress > 0 && (
                       <div
                         style={{
                           position: "absolute",
-                          top: "15%",
+                          top: "12%",
+
                           left: "48%",
-                          color: "#FFF",
-                          fontSize: "20px",
+                          color: "#fff",
+                          fontSize: "30px",
+
                           fontWeight: 500,
                         }}
                       >
                         {data.inProgress && data?.inProgress}
                       </div>
                     )}
-                    {data?.completed && (
+                    {data?.completed && data?.completed > 0 && (
                       <div
                         style={{
                           position: "absolute",
@@ -254,7 +256,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                           fontWeight: 500,
                         }}
                       >
-                        {data.completed && data?.completed}
+                        {data?.completed}
                       </div>
                     )}
                     <div
