@@ -1,10 +1,7 @@
-// Update dynamicUserData function
-export const dynamicUserData = ({ companiesdata = [], agnciesdata = [] }) => {
-  return { companiesdata, agnciesdata }; // Return them as an object
-};
+
 
 // Update GetUsers function
-export const GetUsers = ({ companiesdata = [], agnciesdata = [] }) => {
+export const GetUsers = (companiesdata = [], agnciesdata = []) => {
   return [
     {
       title: "User Form",

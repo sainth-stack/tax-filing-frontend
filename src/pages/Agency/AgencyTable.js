@@ -179,6 +179,14 @@ export default function AgencyTable({
     });
 
 
+    //edeit logic
+    const handleEditForm = (id) => {
+        setAgencyId(id);
+
+
+    };
+
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -289,9 +297,8 @@ export default function AgencyTable({
                                                 <IconButton
 
                                                     onClick={() => {
-                                                        alert("Edit");
-                                                        setAgencyId(agency._id);
-                                                        setEditModal(true);
+                                                        //alert("Edit");
+                                                        handleEditForm(agency._id);
                                                     }}
                                                 >
                                                     <EditOutlined

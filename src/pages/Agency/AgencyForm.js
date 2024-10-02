@@ -3,7 +3,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { sectionsData } from "./data";
 import { base_url } from "../../const";
-import Accordian from "../../components/Accordian";
 
 const AgencyForm = ({
     agencyId,
@@ -15,11 +14,11 @@ const AgencyForm = ({
     view,
     setView,
 }) => {
+    console.log("Agency ID:", agencyId);
     const [formData, setFormData] = useState({});
+    const [error, setError] = useState("");
 
     const sections = sectionsData(formData);
-    const [error, setError] = useState("");
-    const [expanded, setExpanded] = useState(sections ? ["Agency Details"] : []);
 
     // Initialize empty form data based on sections
     const initialFormData = sections.reduce((acc, section) => {
@@ -35,7 +34,42 @@ const AgencyForm = ({
 
     useEffect(() => {
         setFormData(initialFormData); // Initialize form data on mount
-    }, [agencyId]); // Only runs when agencyId changes
+    }, []); // Only runs on mount
+
+    // Fetch agency data when agencyId changes
+    useEffect(() => {
+        const fetchAgencyData = async () => {
+            if (agencyId) {
+                try {
+                    const response = await axios.get(`${base_url}/agencies/${agencyId}`);
+                    const agencyDetails = response.data;
+                    console.log("Agency details:", agencyDetails);
+
+                    // Populate formData based on fetched agency details
+                    const updatedFormData = sections.reduce((acc, section) => {
+                        section.fields.forEach((field) => {
+                            const [sectionKey, fieldKey] = field.id.split(".");
+                            if (!acc[sectionKey]) {
+                                acc[sectionKey] = {};
+                            }
+                            // Provide fallback for missing data
+                            acc[sectionKey][fieldKey] = agencyDetails[sectionKey]?.[fieldKey] || "";
+                        });
+                        return acc;
+                    }, {});
+
+                    setFormData(updatedFormData); // Update formData with fetched data
+                    toast.success("Agency data fetched successfully");
+                } catch (error) {
+                    console.error("Error fetching agency data:", error); // Log error for debugging
+                    toast.error("Error fetching agency data");
+                    setError("Error fetching agency data.");
+                }
+            }
+        };
+
+        fetchAgencyData();
+    }, [agencyId]); // Only re-run when agencyId changes
 
     // Input change handler
     const handleInputChange = (e) => {
@@ -48,15 +82,6 @@ const AgencyForm = ({
                 [field]: value,
             },
         }));
-    };
-
-    // Accordion toggle handler
-    const handleAccordian = (title) => {
-        setExpanded((prevExpanded) =>
-            prevExpanded.includes(title)
-                ? prevExpanded.filter((t) => t !== title)
-                : [...prevExpanded, title]
-        );
     };
 
     // Form submit handler
@@ -78,39 +103,6 @@ const AgencyForm = ({
         }
     };
 
-    // Fetch agency data when agencyId changes
-    useEffect(() => {
-        const fetchAgencyData = async () => {
-            if (agencyId) {
-                try {
-                    const response = await axios.get(`${base_url}/agencies/${agencyId}`);
-                    const agencyDetails = response.data;
-                    console.log("Agency details:", agencyDetails);
-
-                    // Populate formData based on fetched agency details
-                    const updatedFormData = sections.reduce((acc, section) => {
-                        section.fields.forEach((field) => {
-                            const [sectionKey, fieldKey] = field.id.split(".");
-                            if (!acc[sectionKey]) {
-                                acc[sectionKey] = {};
-                            }
-                            acc[sectionKey][fieldKey] = agencyDetails[sectionKey]?.[fieldKey] || "";
-                        });
-                        return acc;
-                    }, {});
-
-                    setFormData(updatedFormData); // Update formData with fetched data
-                    toast.success("Agency data fetched successfully");
-                } catch (error) {
-                    toast.error("Error fetching agency data");
-                    setError("Error fetching agency data.");
-                }
-            }
-        };
-
-        fetchAgencyData();
-    }, [agencyId]); // Only re-run when agencyId changes
-
     return (
         <div className="container mx-auto p-4 bg-gray rounded-lg shadow-md">
             <header className="text-black p-4 rounded-t-lg" style={{ background: "lightgrey" }}>
@@ -118,24 +110,33 @@ const AgencyForm = ({
                     {agencyId ? "Edit Agency" : "Create New Agency"}
                 </h1>
             </header>
-            <div className="p-6 ">
+            <div className="p-6">
+                {/* Render form fields directly */}
+                {sections.map((section) => (
+                    <div key={section.title} className="flex gap-5">
+                        {section.fields.map((field) => {
+                            const [sectionKey, fieldKey] = field.id.split(".");
+                            return (
+                                <div key={field.id} className="w-full">
+                                    <label htmlFor={field.id} className="block text-sm font-medium mb-2">
+                                        {field.label}
+                                    </label>
+                                    <input
+                                        type={field.type}
+                                        id={field.id}
+                                        value={formData[sectionKey]?.[fieldKey] || ""}
+                                        onChange={handleInputChange}
+                                        placeholder={field.placeholder || ""}
+                                        required={field.required}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
+                ))}
 
-                <Accordian
-                    agencyId={agencyId}
-                    view={view}
-                    sections={
-                        sections
-                            ? sections.map((section) => ({
-                                ...section,
-                                formData,
-                                handleInputChange,
-                            }))
-                            : []
-                    }
-                    expanded={expanded}
-                    handleAccordian={handleAccordian}
-                />
-                <div className="flex justify-end mt-4">
+                <div className="flex justify-end mt-2">
                     {!view && (
                         <button
                             onClick={handleFormSubmit}

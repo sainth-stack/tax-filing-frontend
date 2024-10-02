@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
-import { dynamicUserData, GetUsers } from "./data";
 import SelectInput from "../../components/select";
 import CustomInput from "../../components/input";
 import CustomCheckbox from "../../components/Checkbox/Checkbox";
 import { base_url } from "../../const";
+import { GetUsers } from "./data";
 
 const UserForm = ({
   setRefresh,
@@ -15,21 +15,50 @@ const UserForm = ({
   fetchUsers,
   companyId,
 }) => {
-  const { companiesdata, agnciesdata } = dynamicUserData([], []);
   const [Users, setUsers] = useState([]);
   const [Agencies, setAgencies] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
-  const defaultData = Users.length > 0 && Users[0].fields ?
-    Users[0].fields.reduce((acc, field) => {
-      acc[field.id] = "";
-      return acc;
-    }, {})
-    : {}; // Return an empty object if Users or fields are not available
 
+  useEffect(() => {
+    // Fetch companies and agencies before initializing form fields
+    const fetchInitialData = async () => {
+      try {
+        const [companiesRes, agenciesRes] = await Promise.all([
+          axios.get(`${base_url}/companies/all`),
+          axios.get(`${base_url}/agencies/all`),
+        ]);
 
+        const companiesData = companiesRes.data?.data.map((item) => ({
+          value: item?.companyDetails?.companyName,
+          label: item?.companyDetails?.companyName,
+          ...item,
+        }));
+        setCompanies(companiesData);
 
+        const agenciesData = agenciesRes.data?.map((item) => ({
+          value: item?.agencyName,
+          label: item?.agencyName,
+          ...item,
+        }));
+        setAgencies(agenciesData || "");
+
+        const formFields = GetUsers(companiesData, agenciesData);
+        const initialFormData = formFields.reduce((acc, field) => {
+          acc[field.id] = field.defaultValue || "";
+          return acc;
+        }, {});
+        setFormData(initialFormData);
+        setUsers(formFields);
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+        setError(error.message);
+      }
+    };
+
+    fetchInitialData();
+  }, []);
 
   // Handle input change
   const handleInputChange = (e) => {
@@ -45,43 +74,32 @@ const UserForm = ({
     e.preventDefault();
     try {
       if (companyId) {
-        await axios.put(
-          `${base_url}/users/${companyId}`, // Adjust endpoint if needed
-          formData
-        );
+        await axios.put(`${base_url}/users/${companyId}`, formData);
       } else {
-        await axios.post(
-          `${base_url}/users`, // Adjust endpoint if needed
-          formData
-        );
+        await axios.post(`${base_url}/users`, formData);
       }
 
       fetchUsers();
       setShowForm(false);
-
-      setFormData(defaultData);
+      setFormData({});
     } catch (error) {
       setError(error.message);
-      console.error(
-        "ERROR",
-        error.response ? error.response.data : error.message
-      );
+      console.error("ERROR", error.response ? error.response.data : error.message);
     }
   };
 
+  // Fetch existing user data if `companyId` is provided
   useEffect(() => {
-    // Fetch existing task data if `companyId` is provided
     const fetchUserData = async () => {
-      try {
-        const response = await axios.get(`${base_url}/users/${companyId}`);
-        const formattedData = mapDates(response.data);
-        setFormData(formattedData);
-      } catch (error) {
-        setError(error.message);
-        console.error(
-          "ERROR",
-          error.response ? error.response.data : error.message
-        );
+      if (companyId) {
+        try {
+          const response = await axios.get(`${base_url}/users/${companyId}`);
+          const formattedData = mapDates(response.data);
+          setFormData(formattedData);
+        } catch (error) {
+          setError(error.message);
+          console.error("ERROR", error.response ? error.response.data : error.message);
+        }
       }
     };
 
@@ -90,47 +108,6 @@ const UserForm = ({
       fetchUserData();
     }
   }, [companyId, setShowForm]);
-
-  //gettiing companies
-
-  const fetchCompanies = async () => {
-    try {
-      const response = await axios.get(`${base_url}/companies/all`);
-      const data = response.data?.data.map((item) => ({
-        value: item?.companyDetails?.companyName,
-        label: item?.companyDetails?.companyName,
-        ...item,
-      }));
-      setCompanies(data);
-    } catch (error) {
-      console.error("Error fetching companies:", error);
-    }
-  };
-  const fetchAgencies = async () => {
-    try {
-      const response = await axios.get(`${base_url}/agencies/all`); // Adjust endpoint if needed
-      const data = response.data?.map((item) => ({
-        value: item?.agencyName,
-        label: item?.agencyName,
-        ...item,
-      }));
-      setAgencies(data);
-    } catch (error) {
-      console.error("Error fetching agencies:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchCompanies();
-    fetchAgencies();
-  }, []);
-
-  useEffect(() => {
-    const updatedUsers = GetUsers({ companiesdata: companies, agnciesdata: Agencies });
-    setUsers(updatedUsers);
-    console.log("updates users", updatedUsers)
-    setAgencies(updatedUsers)
-  }, []);
 
   const mapDates = (data) => {
     if (Array.isArray(data)) {
@@ -152,29 +129,26 @@ const UserForm = ({
     return moment(value, moment.ISO_8601, true).isValid();
   };
 
-  const handleWatsappInputChange = (e) => {
+  const handleWhatsappInputChange = (e) => {
     const { id, value, type, checked } = e.target;
     if (checked) {
       setFormData((prev) => ({
         ...prev,
         whatsappNumber: prev["mobileNumber"],
-        [id]: type === "checkbox" ? checked : value,
+        [id]: checked,
       }));
     } else {
       setFormData((prev) => ({
         ...prev,
         whatsappNumber: "",
-        [id]: type === "checkbox" ? checked : value,
+        [id]: checked,
       }));
     }
   };
 
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
-      <header
-        className="text-black p-2 rounded-t-lg"
-        style={{ background: "#f5f5f5" }}
-      >
+      <header className="text-black p-2 rounded-t-lg" style={{ background: "#f5f5f5" }}>
         <h1 className="text-2xl font-bold">Create New User</h1>
       </header>
       {showForm && (
@@ -204,26 +178,22 @@ const UserForm = ({
                   }
                   if (field.type === "checkbox") {
                     return (
-                      <>
-                        <div className="grid ">
-                          <label htmlFor="">{field.text}</label>
-                          <CustomCheckbox
-                            key={index}
-                            id={field.id}
-                            label={field.label}
-                            checked={formData[field.id]}
-                            onChange={
-                              field.id == "sameAsWhatsappNumber"
-                                ? handleWatsappInputChange
-                                : handleInputChange
-                            }
-                            required={field.required}
-                          />
-                        </div>
-                      </>
+                      <div key={index} className="grid">
+                        <label htmlFor={field.id}>{field.text}</label>
+                        <CustomCheckbox
+                          id={field.id}
+                          label={field.label}
+                          checked={formData[field.id]}
+                          onChange={
+                            field.id === "sameAsWhatsappNumber"
+                              ? handleWhatsappInputChange
+                              : handleInputChange
+                          }
+                          required={field.required}
+                        />
+                      </div>
                     );
                   }
-
                   return (
                     <CustomInput
                       key={index}
@@ -248,9 +218,8 @@ const UserForm = ({
               Save
             </button>
             <button
-              onClick={() => {
-                setShowForm(false);
-              }}
+              type="button"
+              onClick={() => setShowForm(false)}
               className="px-4 ms-2 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-white hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               Cancel
@@ -264,4 +233,3 @@ const UserForm = ({
 };
 
 export default UserForm;
-
