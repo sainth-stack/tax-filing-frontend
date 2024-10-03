@@ -139,6 +139,7 @@ const Company = () => {
                                         setAgencyRefresh,
                                         view,
                                         setView,
+                                        formData
 
                                     }}
                                 />
