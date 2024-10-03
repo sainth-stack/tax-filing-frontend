@@ -6,7 +6,6 @@ import { base_url } from "../../const";
 
 const AgencyForm = ({
     agencyId,
-
     showForm,
     setAgencyId,
     setShowForm,
@@ -76,20 +75,17 @@ const AgencyForm = ({
                     const response = await axios.get(`${base_url}/agencies/${agencyId}`);
                     const agencyDetails = response.data;
 
-                    // Populate formData based on fetched agency details
-                    const updatedFormData = sections.reduce((acc, section) => {
-                        section.fields.forEach((field) => {
-                            const [sectionKey, fieldKey] = field.id.split(".");
-                            if (!acc[sectionKey]) {
-                                acc[sectionKey] = {};
-                            }
-                            // Provide fallback for missing data
-                            acc[sectionKey][fieldKey] = agencyDetails[sectionKey]?.[fieldKey] || "";
-                        });
-                        return acc;
-                    }, {});
+                    // Map flat agencyDetails response to match the formData structure
+                    const updatedFormData = {
+                        AgencyDetails: {
+                            agencyName: agencyDetails.agencyName || "",  // Map correctly
+                            agencyLocation: agencyDetails.agencyLocation || "",  // Map correctly
+                            effectiveFrom: agencyDetails.effectiveFrom?.slice(0, 10) || "",  // Date fields
+                            effectiveTo: agencyDetails.effectiveTo?.slice(0, 10) || ""  // Date fields
+                        }
+                    };
 
-                    setFormData(updatedFormData); // Update formData with fetched data
+                    setFormData(updatedFormData); // Update formData with the transformed data
                     toast.success("Agency data fetched successfully");
                 } catch (error) {
                     console.error("Error fetching agency data:", error);
@@ -100,7 +96,7 @@ const AgencyForm = ({
         };
 
         fetchAgencyData();
-    }, [agencyId]); // Only re-run when agencyId changes
+    }, [agencyId]);
 
     return (
         <div className="container mx-auto p-4 bg-gray rounded-lg shadow-md">
@@ -114,7 +110,7 @@ const AgencyForm = ({
                 {sections.map((section) => (
                     <div key={section.title} className="flex gap-5">
                         {section.fields.map((field) => {
-                            const [sectionKey, fieldKey] = field.id;
+                            const [sectionKey, fieldKey] = field.id.split("."); // Correctly split id here
                             return (
                                 <div key={field.id} className="">
                                     <label htmlFor={field.id} className="block text-sm font-medium mb-2">
@@ -123,7 +119,7 @@ const AgencyForm = ({
                                     <input
                                         type={field.type}
                                         id={field.id}
-                                        value={formData[sectionKey]?.[fieldKey] || ""} // Accessing formData correctly
+                                        value={formData[sectionKey]?.[fieldKey] || ""} // Correctly access formData here
                                         onChange={handleInputChange}
                                         placeholder={field.placeholder || ""}
                                         required={field.required}
