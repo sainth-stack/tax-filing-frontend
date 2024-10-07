@@ -63,6 +63,7 @@ const AgencyForm = ({
         } catch (error) {
             console.error("Error submitting agency form:", error);
             toast.error(`Error: ${error.response?.data?.message || error.message}`);
+
             setError("Error submitting agency data.");
         }
     };
