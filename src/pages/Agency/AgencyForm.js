@@ -58,8 +58,9 @@ const AgencyForm = ({
                 : await axios.post(`${base_url}/agencies`, cleanedFormData);
 
             toast.success(agencyId ? "Agency updated successfully" : "Agency created successfully");
-            setAgencyRefresh(!agencyRefresh);
             setShowForm(false);
+            setAgencyId('')
+            setAgencyRefresh(!agencyRefresh);
         } catch (error) {
             console.error("Error submitting agency form:", error);
             toast.error(`Error: ${error.response?.data?.message || error.message}`);
