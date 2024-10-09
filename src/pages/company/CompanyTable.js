@@ -209,19 +209,17 @@ export default function CompanyTable({
   };
   const sortedCompanies = companies.sort((a, b) => {
 
-
-
     if (orderBy === 'companyName') {
       return (order === 'asc' ? a.companyName.localeCompare(b.companyName) : b.companyName.localeCompare(a.companyName));
     }
     if (orderBy === 'clientStatus') {
-      return (order === 'asc' ? a.clientStatus.localeCompare(b.clientStatus) : b.clientStatus.localeCompare(a.clientStatus));
+      return (order === 'asc' ? a?.clientStatus?.localeCompare(b?.clientStatus) : b?.clientStatus?.localeCompare(a?.clientStatus));
     }
     if (orderBy === 'phone') {
-      return (order === 'asc' ? a.phone.localeCompare(b.phone) : b.phone.localeCompare(a.phone));
+      return (order === 'asc' ? a?.phone?.localeCompare(b?.phone) : b?.phone?.localeCompare(a?.phone));
     }
     if (orderBy === 'mailId') {
-      return (order === 'asc' ? a.mailId.localeCompare(b.mailId) : b.mailId.localeCompare(a.mailId));
+      return (order === 'asc' ? a?.mailId?.localeCompare(b?.mailId) : b?.mailId?.localeCompare(a?.mailId));
     }
     return 0;
   });
