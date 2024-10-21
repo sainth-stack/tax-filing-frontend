@@ -45,6 +45,7 @@ const UserForm = ({
         setAgencies(agenciesData || "");
 
         const formFields = GetUsers(companiesData, agenciesData);
+
         const initialFormData = formFields.reduce((acc, field) => {
           acc[field.id] = field.defaultValue || "";
           return acc;
@@ -84,7 +85,10 @@ const UserForm = ({
       setFormData({});
     } catch (error) {
       setError(error.message);
-      console.error("ERROR", error.response ? error.response.data : error.message);
+      console.error(
+        "ERROR",
+        error.response ? error.response.data : error.message
+      );
     }
   };
 
@@ -98,7 +102,10 @@ const UserForm = ({
           setFormData(formattedData);
         } catch (error) {
           setError(error.message);
-          console.error("ERROR", error.response ? error.response.data : error.message);
+          console.error(
+            "ERROR",
+            error.response ? error.response.data : error.message
+          );
         }
       }
     };
@@ -148,7 +155,10 @@ const UserForm = ({
 
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
-      <header className="text-black p-2 rounded-t-lg" style={{ background: "#f5f5f5" }}>
+      <header
+        className="text-black p-2 rounded-t-lg"
+        style={{ background: "#f5f5f5" }}
+      >
         <h1 className="text-2xl font-bold">Create New User</h1>
       </header>
       {showForm && (

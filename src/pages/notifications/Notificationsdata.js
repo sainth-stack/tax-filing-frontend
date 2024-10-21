@@ -1,4 +1,4 @@
-export const checkboxJson = [
+/* export const checkboxJson = [
   {
     id: "Company",
     label: "Company",
@@ -33,11 +33,7 @@ export const checkboxJson = [
         id: "deleteUser",
         label: "Delete User",
       },
-      /* {
-        id: "unlockObjectives",
-        label: "Unlock Objectives",
-      },
- */
+
       {
         id: "approval",
         label: "Approval",
@@ -71,4 +67,61 @@ export const checkboxJson = [
       },
     ],
   },
+];
+ */
+
+import SelectInput from "../../components/select";
+
+export const checkboxJson = [
+  {
+    id: "oneDayBeforeDueDate",
+    label: "1 Day Before Due Date",
+  },
+  {
+    id: "oneDayAfterDueDate",
+    label: "1 Day After Due Date",
+  },
+  {
+    id: "assignNewTask",
+    label: "Assign New Task",
+  },
+];
+// Export formFields as a function to accept dynamic options
+export const getFormFields = (toOptions = [], ccOptions = []) => [
+  {
+    id: "toAddress",
+    label: "To*",
+    placeholder: "--Select--",
+    type: "select",
+    options: toOptions, // Inject toOptions here
+    required: true,
+  },
+  {
+    id: "ccAddress",
+    label: "CC",
+    placeholder: "--Select--",
+    type: "select",
+    options: ccOptions, // Inject ccOptions here
+    required: false,
+  },
+  {
+    id: "subject",
+    label: "Subject*",
+    type: "text",
+    required: true,
+  },
+  {
+    id: "message",
+    label: "Message*",
+    type: "ckeditor",
+    placeholder: "Enter What You Want to Convey",
+
+    required: true,
+  },
+  /* {
+    id: "attachment",
+    label: "Attachment",
+    type: "attachment",
+    required: false,
+  }, */
 ];

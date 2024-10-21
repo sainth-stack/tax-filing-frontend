@@ -6,10 +6,11 @@ import { base_url } from "../../const";
 import CustomInput from "../../components/input";
 import UserFrom from "./Usersform";
 import UsersTable from "./UsersTable";
-import Loader from "../../components/helpers/loader";
+//import Loader from "../../components/helpers/loader";
 import { toast } from "react-toastify";
 
 const Users = () => {
+  //states
   const [showForm, setShowForm] = useState(false);
   const [companyId, setCompanyId] = useState("");
   const [name, setName] = useState("");
