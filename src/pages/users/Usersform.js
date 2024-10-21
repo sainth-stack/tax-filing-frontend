@@ -14,6 +14,7 @@ const UserForm = ({
   setShowForm,
   fetchUsers,
   companyId,
+  setCompanyId
 }) => {
   const [Users, setUsers] = useState([]);
   const [Agencies, setAgencies] = useState([]);
@@ -50,7 +51,7 @@ const UserForm = ({
           acc[field.id] = field.defaultValue || "";
           return acc;
         }, {});
-        setFormData(initialFormData);
+        // setFormData({...formData,...initialFormData});
         setUsers(formFields);
       } catch (error) {
         console.error("Error fetching initial data:", error);
@@ -81,6 +82,7 @@ const UserForm = ({
       }
 
       fetchUsers();
+      setCompanyId('')
       setShowForm(false);
       setFormData({});
     } catch (error) {
@@ -111,30 +113,36 @@ const UserForm = ({
     };
 
     if (companyId) {
-      setShowForm(true);
       fetchUserData();
     }
   }, [companyId, setShowForm]);
-
   const mapDates = (data) => {
-    if (Array.isArray(data)) {
-      return data.map((item) => mapDates(item));
-    } else if (data && typeof data === "object") {
-      return Object.keys(data).reduce((acc, key) => {
-        if (isDate(data[key])) {
-          acc[key] = moment(data[key]).format("YYYY-MM-DD");
-        } else {
-          acc[key] = mapDates(data[key]);
-        }
-        return acc;
-      }, {});
-    }
+    // if (Array.isArray(data)) {
+    //   return data.map((item) => mapDates(item));
+    // } else if (data && typeof data === "object") {
+    //   return Object.keys(data).reduce((acc, key) => {
+    //     // Remove undefined or empty string properties
+    //     if (key === "undefined" || data[key] === "") {
+    //       return acc;
+    //     }
+  
+    //     if (isDate(data[key])) {
+    //       acc[key] = moment(data[key]).format("YYYY-MM-DD");
+    //     } else {
+    //       acc[key] = mapDates(data[key]);
+    //     }
+  
+    //     return acc;
+    //   }, {});
+    // }
     return data;
   };
-
+  
   const isDate = (value) => {
-    return moment(value, moment.ISO_8601, true).isValid();
+    return value && typeof value === 'string' && moment(value, moment.ISO_8601, true).isValid();
   };
+
+  
 
   const handleWhatsappInputChange = (e) => {
     const { id, value, type, checked } = e.target;
@@ -153,6 +161,8 @@ const UserForm = ({
     }
   };
 
+  console.log(formData)
+
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
       <header
@@ -161,7 +171,7 @@ const UserForm = ({
       >
         <h1 className="text-2xl font-bold">Create New User</h1>
       </header>
-      {showForm && (
+      {
         <form onSubmit={handleSubmit} className="p-3">
           {Users.map((user, userIndex) => (
             <div
@@ -229,14 +239,14 @@ const UserForm = ({
             </button>
             <button
               type="button"
-              onClick={() => setShowForm(false)}
+              onClick={() => {setShowForm(false);setCompanyId('')}}
               className="px-4 ms-2 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-white hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               Cancel
             </button>
           </div>
         </form>
-      )}
+      }
       {error && <h3 className="text-red-500">{error}</h3>}
     </div>
   );
