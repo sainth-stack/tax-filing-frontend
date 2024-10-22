@@ -15,6 +15,7 @@ const TextArea = ({
   style,
   labelStyles,
   disabled,
+  name
 }) => {
   return (
     <div className={`flex flex-col relative ${className}`}>
@@ -26,6 +27,7 @@ const TextArea = ({
         <textarea
           id={id}
           value={value || ""}
+          name={name}
           onChange={onChange}
           placeholder={placeholder}
           className="border rounded p-[6px] focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
