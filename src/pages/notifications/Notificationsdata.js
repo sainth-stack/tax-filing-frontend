@@ -70,8 +70,6 @@
 ];
  */
 
-import SelectInput from "../../components/select";
-
 export const checkboxJson = [
   {
     id: "oneDayBeforeDueDate",
@@ -127,13 +125,13 @@ export const getFormFields = () => [
     label: "Message*",
     type: "ckeditor",
     placeholder: "Enter What You Want to Convey",
-
     required: true,
   },
-  /* {
-    id: "attachment",
-    label: "Attachment",
-    type: "attachment",
-    required: false,
-  }, */
+  // {
+  //   id: "attachment",
+  //   label: "Attachment",
+  //   type: "attachment",
+  //   required: false, // Attachment is optional
+  // },
 ];
+
