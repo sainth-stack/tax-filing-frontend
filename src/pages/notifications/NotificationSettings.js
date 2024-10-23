@@ -4,8 +4,10 @@ import Layout from "../../components/Layout/Layout";
 import { checkboxJson, getFormFields } from "./Notificationsdata";
 import axios from "axios";
 import { base_url } from "../../const";
+import SelectInput from "./../../components/select/index";
+import CKEditorContainer from "../../components/Checkbox/CKEditorContainer";
+import AttachmentInput from "./../../components/AttachmentInput/AttachmentInput";
 import CustomInput from "../../components/input";
-import TextArea from "../../components/text-area";
 import MultiSelectInput from "../../components/multi-select";
 
 const NotificationSettings = () => {
@@ -25,8 +27,9 @@ const NotificationSettings = () => {
     assignNewTask: false,
   });
 
-  const agency = JSON.parse(localStorage.getItem("user"))?.agency;
-  const formFields = getFormFields(toOptions, ccOptions);
+  const agency = JSON.parse(localStorage.getItem("user"))?._id;
+
+  //alert(agency);
 
   // Fetch user data from API
   useEffect(() => {
@@ -54,39 +57,54 @@ const NotificationSettings = () => {
         const response = await axios.get(`${base_url}/notifications/${agency}`);
         const notificationData = response.data;
 
-        // Update the form data based on the response
-        setRoleData({
-          toAddress: notificationData.toAddress || [],
-          ccAddress: notificationData.ccAddress || [],
-          subject: notificationData.subject,
-          message: notificationData.message,
-          attachment: notificationData.attachment || "",
-        });
-        setNotificationId(notificationData?._id);
+        // Log the response for debugging
+        console.log("API Response:", notificationData);
 
-        // Update checkbox states
-        setCheckboxData({
-          oneDayBeforeDueDate: notificationData.oneDayBeforeDueDate || false,
-          oneDayAfterDueDate: notificationData.oneDayAfterDueDate || false,
-          assignNewTask: notificationData.assignNewTask || false,
-        });
+        // Check if notificationData exists and is not an empty array
+        if (Array.isArray(notificationData) && notificationData.length > 0) {
+          const firstNotification = notificationData[0]; // Assuming you want the first object in the array
+
+          // Update the form data based on the response
+          setRoleData({
+            toAddress: firstNotification.toAddress || [],
+            ccAddress: firstNotification.ccAddress || [],
+            subject: firstNotification.subject || "",
+            message: firstNotification.message || "",
+            attachment: firstNotification.attachment || "",
+          });
+          setNotificationId(firstNotification._id || null);
+
+          // Update checkbox states
+          setCheckboxData({
+            oneDayBeforeDueDate: firstNotification.oneDayBeforeDueDate || false,
+            oneDayAfterDueDate: firstNotification.oneDayAfterDueDate || false,
+            assignNewTask: firstNotification.assignNewTask || false,
+          });
+        } else {
+          console.warn("No notification data found for the agency:", agency);
+        }
       } catch (error) {
-        console.error("Error fetching notification settings:", error);
+        console.error("Error fetching notification settings:", error.message);
       }
     };
 
     fetchNotificationSettings();
   }, [agency]);
 
-  // Handle form field change
-  const handleChange = (name) => (selectedOptions) => {
-    const values =
-      typeof selectedOptions !== "string"
-        ? selectedOptions?.map((option) => option.id)
-        : selectedOptions; // Use .id instead of .value
+  // Handle form field change for select and text inputs
+  const handleChange = (name) => (event) => {
+    const value = event.target?.value || event; // For text or CKEditor fields
     setRoleData((prevData) => ({
       ...prevData,
-      [name]: values,
+      [name]: value,
+    }));
+  };
+
+  // Handle CKEditor change
+  const handleCKEditorChange = (data) => {
+    setRoleData((prevData) => ({
+      ...prevData,
+      message: data.target.value, // Correctly updating the message content
     }));
   };
 
@@ -177,38 +195,34 @@ const NotificationSettings = () => {
                   <label htmlFor={section.id} style={{ marginLeft: "5px" }}>
                     {section.label}
                   </label>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    sx={{ marginLeft: 1, minWidth: "30px", padding: "0 6px" }} // Adjust size and margin
+                    onClick={() => console.log(`Edit ${section.label}`)}
+                  >
+                    Edit
+                  </Button>
                 </Box>
               ))}
-
-              <Button
-                variant="contained"
-                sx={{
-                  bgcolor: "#008080",
-                  marginLeft: "0rem",
-                  width: "fit-content",
-                }}
-                onClick={handleSave}
-              >
-                Save Settings
-              </Button>
             </Box>
           </Grid>
-
           {/* Form Section */}
           <Grid item xs={12} md={8} padding={4}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {formFields.map((field) => {
-                const { id, label, type, options, ...rest } = field;
+              {getFormFields().map((field) => {
+                const { id, label, type, ...rest } = field;
+
                 return (
                   <Box key={id}>
                     {type === "select" && (
                       <MultiSelectInput
                         label={label}
-                        options={options}
-                        value={options.filter((option) =>
-                          roleData[id].includes(option.id)
-                        )} // Use .id instead of .value
-                        onChange={handleChange(id)} // Pass id to handleChange
+                        placeholder={field.placeholder}
+                        name={id}
+                        options={field.options}
+                        value={roleData[id]}
+                        onChange={handleChange(id)}
                         {...rest}
                       />
                     )}
@@ -218,39 +232,54 @@ const NotificationSettings = () => {
                         label={label}
                         name={id}
                         value={roleData[id]}
-                        onChange={(e) => handleChange(id)(e.target.value)} // Update to directly use the input value
+                        onChange={handleChange(id)}
                         fullWidth
                         variant="outlined"
-                        InputProps={{ style: { borderRadius: 5 } }}
+                        InputProps={{
+                          style: { borderRadius: 5 },
+                        }}
                         {...rest}
                       />
                     )}
 
                     {type === "ckeditor" && (
                       <Box>
-                        <TextArea
-                          id={id}
-                          label={label}
-                          value={roleData[id] || ""}
-                          onChange={(e) => handleChange(id)(e.target.value)} // Update to directly use the input value
-                          style={{ height: "200px" }}
-                          name={id}
+                        <Typography variant="body2" sx={{ mb: 1 }}>
+                          {label}
+                        </Typography>
+                        <CKEditorContainer
+                          onChange={handleCKEditorChange}
+                          message={roleData.message}
                         />
                       </Box>
                     )}
 
-                    {/* Uncomment this if you want to handle attachment input */}
-                    {/* {type === "attachment" && (
+                    {type === "attachment" && (
                       <AttachmentInput
                         attachment={roleData.attachment}
                         onUpload={handleUpload}
                         onReUpload={reUpload}
                         {...rest}
                       />
-                    )} */}
+                    )}
                   </Box>
                 );
               })}
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: "2rem",
+              }}
+            >
+              <Button
+                variant="contained"
+                sx={{ bgcolor: "#008080" }}
+                onClick={handleSave}
+              >
+                Save Settings
+              </Button>
             </Box>
           </Grid>
         </Grid>
