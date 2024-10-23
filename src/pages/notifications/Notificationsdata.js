@@ -123,7 +123,7 @@ export const getFormFields = () => [
   {
     id: "message",
     label: "Message*",
-    type: "ckeditor",
+    type: "textarea",
     placeholder: "Enter What You Want to Convey",
     required: true,
   },
@@ -134,4 +134,3 @@ export const getFormFields = () => [
   //   required: false, // Attachment is optional
   // },
 ];
-

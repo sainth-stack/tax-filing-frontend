@@ -9,6 +9,7 @@ import CKEditorContainer from "../../components/Checkbox/CKEditorContainer";
 import AttachmentInput from "./../../components/AttachmentInput/AttachmentInput";
 import CustomInput from "../../components/input";
 import MultiSelectInput from "../../components/multi-select";
+import TextArea from "../../components/text-area";
 
 const NotificationSettings = () => {
   const [toOptions, setToOptions] = useState([]);
@@ -101,10 +102,12 @@ const NotificationSettings = () => {
   };
 
   // Handle CKEditor change
-  const handleCKEditorChange = (data) => {
+  const handleCKEditorChange = (event) => {
+    // Use the event to get the value from the TextArea
+    const { value } = event.target; // Extracting the value from the event
     setRoleData((prevData) => ({
       ...prevData,
-      message: data.target.value, // Correctly updating the message content
+      message: value, // Update message state with the new value
     }));
   };
 
@@ -242,14 +245,20 @@ const NotificationSettings = () => {
                       />
                     )}
 
-                    {type === "ckeditor" && (
+                    {type === "textarea" && (
                       <Box>
                         <Typography variant="body2" sx={{ mb: 1 }}>
                           {label}
                         </Typography>
-                        <CKEditorContainer
-                          onChange={handleCKEditorChange}
-                          message={roleData.message}
+                        <TextArea
+                          id={id}
+                          value={roleData.message} // Set the value from state
+                          onChange={handleCKEditorChange} // Pass the updated function
+                          placeholder={field.placeholder} // Placeholder from the field
+                          className="" // Add any class names if necessary
+                          style={{}} // Add any styles if necessary
+                          labelStyles={{}} // Add any label styles if necessary
+                          disabled={false} // Set disabled prop if needed
                         />
                       </Box>
                     )}
