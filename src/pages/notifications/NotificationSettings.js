@@ -67,12 +67,13 @@ const NotificationSettings = () => {
       // Log the response for debugging
       console.log("API Response:", notificationData);
 
-      // If notification data exists, populate the form with it
       if (Array.isArray(notificationData) && notificationData.length > 0) {
         const firstNotification = notificationData[0]; // Assume the first notification object
 
+        // Get the last notification
+        //  const lastNotification = notificationData[notificationData.length - 1];
+
         console.log("first not ", firstNotification.subject);
-        // Update the form fields with the fetched data
         setRoleData({
           toAddress: firstNotification.toAddress || [],
           ccAddress: firstNotification.ccAddress || [],
@@ -99,12 +100,11 @@ const NotificationSettings = () => {
   };
 
   const handleChange = (id) => (event) => {
-    const value = event.target?.value; // Directly use the event value
+    let value = event.target?.value || event; // Use 'let' so it can be modified
 
-    // Set roleData, ensuring value is always a string
     setRoleData((prevData) => ({
       ...prevData,
-      [id]: value || "", // Set to empty string if value is undefined or null
+      [id]: value,
     }));
   };
 
@@ -185,6 +185,22 @@ const NotificationSettings = () => {
         });
         console.log("Notification settings created successfully");
       }
+
+      setRoleData({
+        toAddress: [],
+        ccAddress: [],
+        subject: "",
+        message: "",
+        attachment: "",
+      }); // Reset roleData to its initial state
+      // Reset roleData to its initial state
+      // Reset agency to its initial state (if it's a string)
+      setCheckboxData({
+        // Reset checkboxData to its initial state
+        oneDayBeforeDueDate: false,
+        oneDayAfterDueDate: false,
+        assignNewTask: false,
+      });
     } catch (error) {
       if (error.response && error.response.data) {
         console.error(
