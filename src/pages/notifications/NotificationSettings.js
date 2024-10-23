@@ -28,9 +28,14 @@ const NotificationSettings = () => {
     assignNewTask: false,
   });
 
+  // Safely get agency from localStorage
   const agency = JSON.parse(localStorage.getItem("user"))?._id;
 
-  //alert(agency);
+  // If agency is not found, alert or handle it
+  if (!agency) {
+    console.error("Agency ID not found in localStorage.");
+    // You could also show a UI warning here or redirect the user to login
+  }
 
   // Fetch user data from API
   useEffect(() => {
@@ -50,97 +55,105 @@ const NotificationSettings = () => {
       }
     };
 
-    fetchUsers();
-
-    // Fetch notification settings by ID
-    const fetchNotificationSettings = async () => {
-      try {
-        const response = await axios.get(`${base_url}/notifications/${agency}`);
-        const notificationData = response.data;
-
-        // Log the response for debugging
-        console.log("API Response:", notificationData);
-
-        // Check if notificationData exists and is not an empty array
-        if (Array.isArray(notificationData) && notificationData.length > 0) {
-          const firstNotification = notificationData[0]; // Assuming you want the first object in the array
-
-          // Update the form data based on the response
-          setRoleData({
-            toAddress: firstNotification.toAddress || [],
-            ccAddress: firstNotification.ccAddress || [],
-            subject: firstNotification.subject || "",
-            message: firstNotification.message || "",
-            attachment: firstNotification.attachment || "",
-          });
-          setNotificationId(firstNotification._id || null);
-
-          // Update checkbox states
-          setCheckboxData({
-            oneDayBeforeDueDate: firstNotification.oneDayBeforeDueDate || false,
-            oneDayAfterDueDate: firstNotification.oneDayAfterDueDate || false,
-            assignNewTask: firstNotification.assignNewTask || false,
-          });
-        } else {
-          console.warn("No notification data found for the agency:", agency);
-        }
-      } catch (error) {
-        console.error("Error fetching notification settings:", error.message);
-      }
-    };
-
-    fetchNotificationSettings();
+    // Only fetch if agency is valid
   }, [agency]);
 
-  // Handle form field change for select and text inputs
-  const handleChange = (name) => (event) => {
-    const value = event.target?.value || event; // For text or CKEditor fields
+  // Fetch notification settings by agency ID
+  const fetchNotificationSettings = async (agency) => {
+    try {
+      const response = await axios.get(`${base_url}/notifications/${agency}`);
+      const notificationData = response.data;
+
+      // Log the response for debugging
+      console.log("API Response:", notificationData);
+
+      // If notification data exists, populate the form with it
+      if (Array.isArray(notificationData) && notificationData.length > 0) {
+        const firstNotification = notificationData[0]; // Assume the first notification object
+
+        console.log("first not ", firstNotification.subject);
+        // Update the form fields with the fetched data
+        setRoleData({
+          toAddress: firstNotification.toAddress || [],
+          ccAddress: firstNotification.ccAddress || [],
+          subject: firstNotification.subject || "",
+          message: firstNotification.message || "",
+          attachment: firstNotification.attachment || "",
+        });
+
+        // Set notification ID for updating
+        setNotificationId(firstNotification._id || null);
+
+        // Update checkbox states
+        setCheckboxData({
+          oneDayBeforeDueDate: firstNotification.oneDayBeforeDueDate || false,
+          oneDayAfterDueDate: firstNotification.oneDayAfterDueDate || false,
+          assignNewTask: firstNotification.assignNewTask || false,
+        });
+      } else {
+        console.warn("No notification data found for the agency:", agency);
+      }
+    } catch (error) {
+      console.error("Error fetching notification settings:", error.message);
+    }
+  };
+
+  const handleChange = (id) => (event) => {
+    const value = event.target?.value; // Directly use the event value
+
+    // Set roleData, ensuring value is always a string
     setRoleData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [id]: value || "", // Set to empty string if value is undefined or null
     }));
   };
 
-  // Handle CKEditor change
+  // Handle CKEditor change (or other text editor)
   const handleCKEditorChange = (event) => {
-    // Use the event to get the value from the TextArea
-    const { value } = event.target; // Extracting the value from the event
+    const { value } = event.target; // Extract the value
     setRoleData((prevData) => ({
       ...prevData,
-      message: value, // Update message state with the new value
+      message: value, // Update message state
     }));
   };
 
-  // Handle checkbox change
+  // Handle checkbox changes
   const handleCheckboxChange = (event) => {
     const { id, checked } = event.target;
     setCheckboxData((prevData) => ({
       ...prevData,
-      [id]: checked,
+      [id]: checked, // Dynamically update based on checkbox id
     }));
   };
 
-  // Handle file upload
+  // Handle file upload for attachments
   const handleUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setRoleData({
-        ...roleData,
-        attachment: file,
-      });
+      setRoleData((prevData) => ({
+        ...prevData,
+        attachment: file, // Set the uploaded file
+      }));
     }
   };
 
+  // Clear attachment
   const reUpload = () => {
-    setRoleData({
-      ...roleData,
-      attachment: "",
-    });
+    setRoleData((prevData) => ({
+      ...prevData,
+      attachment: "", // Clear attachment
+    }));
   };
 
-  // Save notification settings
+  // Save notification settings (create or update)
   const handleSave = async () => {
     try {
+      // Check if required fields are missing
+      if (!roleData || !agency) {
+        console.error("Missing required fields: roleData or agency");
+        return; // Stop execution if important data is missing
+      }
+
       const payload = {
         ...roleData,
         to: roleData.toAddress, // Already an array
@@ -151,6 +164,7 @@ const NotificationSettings = () => {
         assignNewTask: checkboxData.assignNewTask,
       };
 
+      // If notificationId exists, update; otherwise, create a new notification
       if (notificationId) {
         await axios.put(
           `${base_url}/notifications/${notificationId}`,
@@ -162,6 +176,7 @@ const NotificationSettings = () => {
           }
         );
         console.log("Notification settings updated successfully");
+        // You can also trigger a success toast or visual indicator here
       } else {
         await axios.post(`${base_url}/notifications`, payload, {
           headers: {
@@ -171,7 +186,14 @@ const NotificationSettings = () => {
         console.log("Notification settings created successfully");
       }
     } catch (error) {
-      console.error("Error saving notification settings:", error);
+      if (error.response && error.response.data) {
+        console.error(
+          "Error saving notification settings:",
+          error.response.data
+        );
+      } else {
+        console.error("Error saving notification settings:", error.message);
+      }
     }
   };
 
@@ -202,7 +224,8 @@ const NotificationSettings = () => {
                     variant="outlined"
                     size="small"
                     sx={{ marginLeft: 1, minWidth: "30px", padding: "0 6px" }} // Adjust size and margin
-                    onClick={() => console.log(`Edit ${section.label}`)}
+                    onClick={() => fetchNotificationSettings(agency)} // Pass the ID to the function
+                    //onClick={alert(agency)} // Pass the ID to the function
                   >
                     Edit
                   </Button>
@@ -234,8 +257,8 @@ const NotificationSettings = () => {
                       <CustomInput
                         label={label}
                         name={id}
-                        value={roleData[id]}
-                        onChange={handleChange(id)}
+                        value={roleData[id] || ""} // Ensure this is a string
+                        onChange={handleChange(id)} // Pass the handler that updates the state
                         fullWidth
                         variant="outlined"
                         InputProps={{

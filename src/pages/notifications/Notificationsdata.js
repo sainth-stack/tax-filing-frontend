@@ -116,6 +116,8 @@ export const getFormFields = () => [
   },
   {
     id: "subject",
+    placeholder: "--Subject Of Notification--",
+
     label: "Subject*",
     type: "text",
     required: true,
