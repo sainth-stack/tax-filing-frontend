@@ -86,8 +86,20 @@ export const checkboxJson = [
     label: "Assign New Task",
   },
 ];
+
+const toOptions = [
+  { value: "admin", label: "Admin" },
+  { value: "superadmin", label: "Superadmin" },
+  { value: "employee", label: "Employee" },
+];
+
+const ccOptions = [
+  { value: "admin", label: "Admin" },
+  { value: "superadmin", label: "Superadmin" },
+  { value: "employee", label: "Employee" },
+];
 // Export formFields as a function to accept dynamic options
-export const getFormFields = (toOptions = [], ccOptions = []) => [
+export const getFormFields = () => [
   {
     id: "toAddress",
     label: "To*",

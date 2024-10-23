@@ -13,7 +13,6 @@ const NotificationSettings = () => {
   const [toOptions, setToOptions] = useState([]);
   const [ccOptions, setCcOptions] = useState([]);
 
-  const formFields = getFormFields(toOptions, ccOptions);
   const [roleData, setRoleData] = useState({
     toAddress: "",
     ccAddress: "",
@@ -23,26 +22,6 @@ const NotificationSettings = () => {
   });
 
   // Fetch user data from API
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get("http://localhost:4500/api/users/all");
-
-        console.log("checking users", response.data.data);
-        const users = response.data.data.map((user) => ({
-          id: user._id, // Using '_id' as the identifier for each user
-          label: user.firstName || user.email, // Display user's first name, fallback to email if firstName is missing
-        }));
-
-        setToOptions(users); // Set options for 'toAddress'
-        setCcOptions(users); // Set options for 'ccAddress'
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUsers();
-  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -92,7 +71,19 @@ const NotificationSettings = () => {
                       style={{ marginRight: "10px", padding: "5px" }}
                     />
                     <label htmlFor={section.id} style={{ marginLeft: "5px" }}>
-                      {section.label}
+                      {section.label}{" "}
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        sx={{
+                          marginLeft: 1,
+                          minWidth: "30px",
+                          padding: "0 6px",
+                        }} // Adjust size and margin
+                        onClick={() => console.log(`Edit ${section.label}`)}
+                      >
+                        Edit
+                      </Button>
                     </label>
                     {/* Child Checkboxes */}
                     {section.items &&
@@ -116,15 +107,7 @@ const NotificationSettings = () => {
 
                 {/* Save Button */}
               </Box>
-              <Button
-                variant="contained"
-                sx={{ bgcolor: "#008080", marginLeft: "3rem" }}
-                onClick={() => console.log("Save Settings")}
-              >
-                Save Settings
-              </Button>
             </Grid>
-
             {/* Form Section */}
             <Grid item xs={12} md={8} padding={4}>
               <Box
@@ -134,7 +117,7 @@ const NotificationSettings = () => {
                   gap: 2,
                 }}
               >
-                {formFields.map((field) => {
+                {getFormFields().map((field) => {
                   const { id, label, type, ...rest } = field;
 
                   // Render fields based on their type
@@ -190,6 +173,23 @@ const NotificationSettings = () => {
                     </Box>
                   );
                 })}
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginTop: "2rem",
+                }}
+              >
+                <Button
+                  variant="contained"
+                  sx={{
+                    bgcolor: "#008080",
+                  }}
+                  onClick={() => console.log("Save Settings")}
+                >
+                  Save Settings
+                </Button>
               </Box>
             </Grid>
           </Grid>
