@@ -1,216 +1,147 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Box, Button, Typography } from "@mui/material";
+import { Grid, Box, Button, Typography, IconButton } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit"; // Import edit icon
 import Layout from "../../components/Layout/Layout";
 import { checkboxJson, getFormFields } from "./Notificationsdata";
 import axios from "axios";
 import { base_url } from "../../const";
-import SelectInput from "./../../components/select/index";
-import CKEditorContainer from "../../components/Checkbox/CKEditorContainer";
-import AttachmentInput from "./../../components/AttachmentInput/AttachmentInput";
+import AttachmentInput from "../../components/AttachmentInput/AttachmentInput";
 import CustomInput from "../../components/input";
 import MultiSelectInput from "../../components/multi-select";
 import TextArea from "../../components/text-area";
 
 const NotificationSettings = () => {
-  const [toOptions, setToOptions] = useState([]);
-  const [ccOptions, setCcOptions] = useState([]);
   const [notificationId, setNotificationId] = useState("");
-  const [roleData, setRoleData] = useState({
-    toAddress: [],
-    ccAddress: [],
-    subject: "",
-    message: "",
-    attachment: "",
-  });
+  const [activeForm, setActiveForm] = useState("oneDayBeforeDueDate"); // Track the currently active form
   const [checkboxData, setCheckboxData] = useState({
-    oneDayBeforeDueDate: false,
-    oneDayAfterDueDate: false,
-    assignNewTask: false,
+    oneDayBeforeDueDate: {
+      status: false,
+      name: "One Day Before DueDate",
+      roleData: { toAddress: [], ccAddress: [], subject: "", message: "", attachment: "" },
+    },
+    oneDayAfterDueDate: {
+      status: false,
+      name: "One Day After DueDate",
+      roleData: { toAddress: [], ccAddress: [], subject: "", message: "", attachment: "" },
+    },
+    assignNewTask: {
+      status: false,
+      name: "Assign New Task",
+      roleData: { toAddress: [], ccAddress: [], subject: "", message: "", attachment: "" },
+    },
   });
 
-  // Safely get agency from localStorage
-  const agency = JSON.parse(localStorage.getItem("user"))?._id;
+  const agency = JSON.parse(localStorage.getItem("user"))?.agency;
 
-  // If agency is not found, alert or handle it
-  if (!agency) {
-    console.error("Agency ID not found in localStorage.");
-    // You could also show a UI warning here or redirect the user to login
-  }
-
-  // Fetch user data from API
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.post(`${base_url}/users/filter`, {
-          agency,
-        });
-        const users = response?.data?.map((user) => ({
-          id: `${user.firstName} ${user.lastName}`,
-          label: `${user.firstName} ${user.lastName}` || user.email,
-        }));
-        setToOptions(users);
-        setCcOptions(users);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    // Only fetch if agency is valid
+    if (agency) fetchNotificationSettings(agency);
+    else console.error("Agency ID not found in localStorage.");
   }, [agency]);
 
-  // Fetch notification settings by agency ID
-  const fetchNotificationSettings = async (agency) => {
+  const fetchNotificationSettings = async (agencyId) => {
     try {
-      const response = await axios.get(`${base_url}/notifications/${agency}`);
-      const notificationData = response.data;
+      const { data } = await axios.get(`${base_url}/notifications/${agencyId}`);
+      console.log("API Response:", data);
 
-      // Log the response for debugging
-      console.log("API Response:", notificationData);
+      if (Array.isArray(data) && data.length > 0) {
+        const firstNotification = data[0];
+        setNotificationId(firstNotification._id || "");
 
-      if (Array.isArray(notificationData) && notificationData.length > 0) {
-        const firstNotification = notificationData[0]; // Assume the first notification object
-
-        // Get the last notification
-        //  const lastNotification = notificationData[notificationData.length - 1];
-
-        console.log("first not ", firstNotification.subject);
-        setRoleData({
-          toAddress: firstNotification.toAddress || [],
-          ccAddress: firstNotification.ccAddress || [],
-          subject: firstNotification.subject || "",
-          message: firstNotification.message || "",
-          attachment: firstNotification.attachment || "",
-        });
-
-        // Set notification ID for updating
-        setNotificationId(firstNotification._id || null);
-
-        // Update checkbox states
-        setCheckboxData({
-          oneDayBeforeDueDate: firstNotification.oneDayBeforeDueDate || false,
-          oneDayAfterDueDate: firstNotification.oneDayAfterDueDate || false,
-          assignNewTask: firstNotification.assignNewTask || false,
-        });
+        setCheckboxData((prev) => ({
+          ...prev,
+          oneDayBeforeDueDate: {
+            ...prev.oneDayBeforeDueDate,
+            status: firstNotification.oneDayBeforeDueDate?.status || false,
+            roleData: { ...firstNotification?.oneDayBeforeDueDate?.roleData },
+          },
+          oneDayAfterDueDate: {
+            ...prev.oneDayAfterDueDate,
+            status: firstNotification.oneDayAfterDueDate?.status || false,
+            roleData: { ...firstNotification?.oneDayAfterDueDate?.roleData },
+          },
+          assignNewTask: {
+            ...prev.assignNewTask,
+            status: firstNotification.assignNewTask?.status || false,
+            roleData: { ...firstNotification?.assignNewTask?.roleData },
+          },
+        }));
       } else {
-        console.warn("No notification data found for the agency:", agency);
+        console.warn("No notification data found for agency:", agencyId);
       }
     } catch (error) {
       console.error("Error fetching notification settings:", error.message);
     }
   };
 
-  const handleChange = (id) => (event) => {
-    let value = event.target?.value || event; // Use 'let' so it can be modified
-
-    setRoleData((prevData) => ({
-      ...prevData,
-      [id]: value,
+  const handleCheckboxChange = (id) => (event) => {
+    const { checked } = event.target;
+    setCheckboxData((prev) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        status: checked, // Update status properly
+      },
     }));
   };
+  const handleRoleDataChange = (id, field) => (event) => {
+    const value = event.target?.value ?? event; // Handle both input event and direct values
 
-  // Handle CKEditor change (or other text editor)
-  const handleCKEditorChange = (event) => {
-    const { value } = event.target; // Extract the value
-    setRoleData((prevData) => ({
-      ...prevData,
-      message: value, // Update message state
+    setCheckboxData((prev) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        roleData: {
+          ...prev[id].roleData,
+          [field]: value, // Update the specific field inside roleData
+        },
+      },
     }));
   };
+  const handleUpload = (id) => (event) => {
+    const file = event.target.files[0]; // Safely extract the first file
 
-  // Handle checkbox changes
-  const handleCheckboxChange = (event) => {
-    const { id, checked } = event.target;
-    setCheckboxData((prevData) => ({
-      ...prevData,
-      [id]: checked, // Dynamically update based on checkbox id
-    }));
-  };
-
-  // Handle file upload for attachments
-  const handleUpload = (e) => {
-    const file = e.target.files[0];
     if (file) {
-      setRoleData((prevData) => ({
-        ...prevData,
-        attachment: file, // Set the uploaded file
+      setCheckboxData((prev) => ({
+        ...prev,
+        [id]: {
+          ...prev[id],
+          roleData: {
+            ...prev[id].roleData,
+            attachment: file, // Update attachment field
+          },
+        },
       }));
     }
   };
 
-  // Clear attachment
-  const reUpload = () => {
-    setRoleData((prevData) => ({
-      ...prevData,
-      attachment: "", // Clear attachment
-    }));
-  };
 
-  // Save notification settings (create or update)
   const handleSave = async () => {
     try {
-      // Check if required fields are missing
-      if (!roleData || !agency) {
-        console.error("Missing required fields: roleData or agency");
-        return; // Stop execution if important data is missing
+      if (!agency) {
+        console.error("Missing agency ID.");
+        return;
       }
 
-      const payload = {
-        ...roleData,
-        to: roleData.toAddress, // Already an array
-        cc: roleData.ccAddress, // Already an array
-        agency: agency,
-        oneDayBeforeDueDate: checkboxData.oneDayBeforeDueDate,
-        oneDayAfterDueDate: checkboxData.oneDayAfterDueDate,
-        assignNewTask: checkboxData.assignNewTask,
-      };
+      const payload = { agency, ...checkboxData };
 
-      // If notificationId exists, update; otherwise, create a new notification
       if (notificationId) {
-        await axios.put(
-          `${base_url}/notifications/${notificationId}`,
-          payload,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        console.log("Notification settings updated successfully");
-        // You can also trigger a success toast or visual indicator here
+        await axios.put(`${base_url}/notifications/${notificationId}`, payload, {
+          headers: { "Content-Type": "application/json" },
+        });
+        console.log("Notification settings updated successfully.");
       } else {
         await axios.post(`${base_url}/notifications`, payload, {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         });
-        console.log("Notification settings created successfully");
+        console.log("Notification settings created successfully.");
       }
-
-      setRoleData({
-        toAddress: [],
-        ccAddress: [],
-        subject: "",
-        message: "",
-        attachment: "",
-      }); // Reset roleData to its initial state
-      // Reset roleData to its initial state
-      // Reset agency to its initial state (if it's a string)
-      setCheckboxData({
-        // Reset checkboxData to its initial state
-        oneDayBeforeDueDate: false,
-        oneDayAfterDueDate: false,
-        assignNewTask: false,
-      });
     } catch (error) {
-      if (error.response && error.response.data) {
-        console.error(
-          "Error saving notification settings:",
-          error.response.data
-        );
-      } else {
-        console.error("Error saving notification settings:", error.message);
-      }
+      console.error("Error saving notification settings:", error.message);
     }
+  };
+
+  const toggleEditForm = (key) => {
+    setActiveForm((prev) => (prev === key ? null : key)); // Toggle form visibility
   };
 
   return (
@@ -218,72 +149,73 @@ const NotificationSettings = () => {
       <Box sx={{ backgroundColor: "background.paper", borderRadius: 2 }}>
         <Typography variant="h6">Notification Settings</Typography>
         <Grid container spacing={3}>
-          <Grid item md={4}>
-            <Box
-              sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-              mx={4}
-            >
-              {checkboxJson.map((section) => (
-                <Box key={section.id} sx={{ mb: 2 }}>
-                  <input
-                    type="checkbox"
-                    id={section.id}
-                    checked={checkboxData[section.id]}
-                    onChange={handleCheckboxChange}
-                    className="m-2"
-                    style={{ marginRight: "10px", padding: "5px" }}
-                  />
-                  <label htmlFor={section.id} style={{ marginLeft: "5px" }}>
-                    {section.label}
-                  </label>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    sx={{ marginLeft: 1, minWidth: "30px", padding: "0 6px" }} // Adjust size and margin
-                    onClick={() => fetchNotificationSettings(agency)} // Pass the ID to the function
-                    //onClick={alert(agency)} // Pass the ID to the function
-                  >
-                    Edit
-                  </Button>
-                </Box>
-              ))}
+          <Grid item md={4} mt={2}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }} mx={4}>
+              {Object.keys(checkboxData).map((key) => {
+                return (
+                  <Box key={key} sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                    <input
+                      type="checkbox"
+                      id={key}
+                      checked={checkboxData[key].status}
+                      onChange={handleCheckboxChange(key)}
+                      style={{ marginRight: "10px", padding: "5px" }}
+                    />
+                    <label htmlFor={key} style={{ marginLeft: "5px" }}>
+                      {checkboxJson.find((section) => section.id === key)?.label}
+                    </label>
+                    <IconButton onClick={() => toggleEditForm(key)} size="small" sx={{ marginLeft: "10px" }}>
+                      <EditIcon />
+                    </IconButton>
+                  </Box>
+                )
+              })}
+              <Box sx={{ display: "flex", justifyContent: "flex-start", marginTop: "2rem" }}>
+                <Button variant="contained" sx={{ bgcolor: "#008080" }} onClick={handleSave}>
+                  Save Settings
+                </Button>
+              </Box>
             </Box>
           </Grid>
-          {/* Form Section */}
           <Grid item xs={12} md={8} padding={4}>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {getFormFields().map((field) => {
-                const { id, label, type, ...rest } = field;
+            {activeForm && (
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                {/* Display the name at the top right */}
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                  <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                    {checkboxData[activeForm].name}
+                  </Typography>
+                  <Button variant="outlined" onClick={() => setActiveForm(null)}>
+                    Close
+                  </Button>
+                </Box>
 
-                return (
-                  <Box key={id}>
+                {/* Render form fields dynamically */}
+                {console.log(checkboxData)}
+                {getFormFields().map(({ id, label, type, ...rest }) => (
+                  <Box key={`${activeForm}-${id}`} sx={{ mb: 2 }}>
                     {type === "select" && (
                       <MultiSelectInput
                         label={label}
-                        placeholder={field.placeholder}
                         name={id}
-                        options={field.options}
-                        value={roleData[id]}
-                        onChange={handleChange(id)}
+                        options={rest.options}
+                        value={checkboxData[activeForm].roleData[id]}
+                        onChange={handleRoleDataChange(activeForm, id)}
                         {...rest}
                       />
                     )}
-
                     {type === "text" && (
                       <CustomInput
                         label={label}
                         name={id}
-                        value={roleData[id] || ""} // Ensure this is a string
-                        onChange={handleChange(id)} // Pass the handler that updates the state
+                        value={checkboxData[activeForm].roleData[id] || ""}
+                        onChange={handleRoleDataChange(activeForm, id)}
                         fullWidth
                         variant="outlined"
-                        InputProps={{
-                          style: { borderRadius: 5 },
-                        }}
+                        InputProps={{ style: { borderRadius: 5 } }}
                         {...rest}
                       />
                     )}
-
                     {type === "textarea" && (
                       <Box>
                         <Typography variant="body2" sx={{ mb: 1 }}>
@@ -291,45 +223,29 @@ const NotificationSettings = () => {
                         </Typography>
                         <TextArea
                           id={id}
-                          value={roleData.message} // Set the value from state
-                          onChange={handleCKEditorChange} // Pass the updated function
-                          placeholder={field.placeholder} // Placeholder from the field
-                          className="" // Add any class names if necessary
-                          style={{}} // Add any styles if necessary
-                          labelStyles={{}} // Add any label styles if necessary
-                          disabled={false} // Set disabled prop if needed
+                          value={checkboxData[activeForm].roleData.message}
+                          onChange={handleRoleDataChange(activeForm, "message")}
+                          placeholder={rest.placeholder}
+                          style={{
+                            height: '170px'
+                          }}
                         />
+
                       </Box>
                     )}
-
                     {type === "attachment" && (
                       <AttachmentInput
-                        attachment={roleData.attachment}
-                        onUpload={handleUpload}
-                        onReUpload={reUpload}
+                        attachment={checkboxData[activeForm].roleData.attachment}
+                        onUpload={handleUpload(activeForm)}
                         {...rest}
                       />
                     )}
                   </Box>
-                );
-              })}
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginTop: "2rem",
-              }}
-            >
-              <Button
-                variant="contained"
-                sx={{ bgcolor: "#008080" }}
-                onClick={handleSave}
-              >
-                Save Settings
-              </Button>
-            </Box>
+                ))}
+              </Box>
+            )}
           </Grid>
+
         </Grid>
       </Box>
     </Layout>
