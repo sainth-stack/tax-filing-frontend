@@ -69,6 +69,8 @@ const CompanyForm = ({
       },
     }));
   };
+
+
   const handleSubmit = async (e) => {
     const token = localStorage.getItem("token");
 
@@ -77,12 +79,13 @@ const CompanyForm = ({
       return;
     }
     e.preventDefault();
+
     try {
       const cleanedFormData = { ...formData };
 
       // Replace empty objects with empty strings in each section
       Object.keys(cleanedFormData).forEach((sectionKey) => {
-        if (sectionKey === "attachments") {
+        if (sectionKey === "attachments" || cleanedFormData[sectionKey]?.approvalCertificate) {
           cleanedFormData[sectionKey] = replaceEmptyObjectsWithEmptyStrings(
             cleanedFormData[sectionKey]
           );
@@ -94,11 +97,13 @@ const CompanyForm = ({
         cleanedFormData,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Include your token here
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-      handleFiles(response.data);
+
+      // Call handleFiles with the company response data
+      await handleFiles(response.data);
       toast.success("Company created successfully");
     } catch (error) {
       toast.error(`Error: ${error.response?.data?.message || error.message}`);
@@ -106,34 +111,49 @@ const CompanyForm = ({
   };
 
   const handleFiles = async (data) => {
-    const token = localStorage.getItem("token"); // Retrieve the token
+    const token = localStorage.getItem("token");
 
     if (!token) {
       console.error("Token is missing. User may not be logged in.");
-      return; // Prevent making the request if the token is not available
+      return;
     }
+
     try {
       const form = new FormData();
-      // Append files
+      console.log(formData);
+
+      // 1. Append files from the "attachments" section
       for (const [key, file] of Object.entries(formData.attachments || {})) {
         if (file) {
           form.append(key, file);
         }
       }
 
+      Object.entries(formData).forEach(([sectionKey, sectionValue]) => {
+        if (sectionKey !== "attachments" && typeof sectionValue === "object" && sectionValue !== null) {
+          Object.entries(sectionValue).forEach(([key, value]) => {
+            if (value instanceof File) {
+              form.append(`${sectionKey}.${key}`, value); 
+            }
+          });
+        }
+      });
+
       form.append("companyId", data?._id);
 
       const response = await axios.post(`${base_url}/files`, form, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data", // If uploading files, set content type
+          "Content-Type": "multipart/form-data",
         },
       });
+
       setFormData(initialFormData);
       setCompanyId("");
       setView(false);
       setShowForm(false);
       setCompanyRefresh(!companyRefresh);
+
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -153,7 +173,7 @@ const CompanyForm = ({
 
       // Replace empty objects with empty strings in each section
       Object.keys(cleanedFormData).forEach((sectionKey) => {
-        if (sectionKey === "attachments") {
+        if (sectionKey === "attachments" || cleanedFormData[sectionKey]?.approvalCertificate) {
           cleanedFormData[sectionKey] = replaceEmptyObjectsWithEmptyStrings(
             cleanedFormData[sectionKey]
           );
