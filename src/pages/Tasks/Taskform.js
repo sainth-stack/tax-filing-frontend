@@ -385,12 +385,12 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                 <div className="col-span-4 flex justify-end mt-4">
                   <button
                     type="submit"
-                    className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+                    className="bg-blue-500 w-24 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
                   >
                     {loading ? (
                       <Loader color="#fff" thickness="4" />
                     ) : companyId ? (
-                      "Update"
+                      <Loader color="#fff" thickness="4" />
                     ) : (
                       "Save"
                     )}

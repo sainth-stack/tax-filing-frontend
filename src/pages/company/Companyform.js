@@ -292,7 +292,7 @@ const CompanyForm = ({
           {!view && (
             <button
               onClick={companyId ? handleUpdate : handleSubmit}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 w-24"
             >
               {loading ? (
                 <Loader color="#fff" thickness="4" />
@@ -309,7 +309,7 @@ const CompanyForm = ({
               setView(false);
               setShowForm(false);
             }}
-            className="px-4 ms-2 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="px-4 ms-2 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 w-24"
           >
             Cancel
           </button>

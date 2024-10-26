@@ -2,12 +2,11 @@ import * as React from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
-export default function Loader({ size = 35, color, thickness }) {
+export default function Loader({ size = 25, color, thickness, style }) {
   return (
     <Box
       sx={{
         display: "flex",
-        boxShadow: "1px 2px 3px  gray",
         borderRadius: "50%",
         alignItems: "center",
         justifyContent: "center",
@@ -15,7 +14,7 @@ export default function Loader({ size = 35, color, thickness }) {
     >
       <CircularProgress
         thickness={thickness}
-        sx={{ color: color ? color : "rgb(95, 70, 255)", margin: ".1em" }}
+        sx={{ color: color ? color : "rgb(95, 70, 255)" }}
         size={size}
       />
     </Box>
