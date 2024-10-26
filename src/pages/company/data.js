@@ -115,19 +115,19 @@ export const sectionsData = (data) => {
         {
           type: "text",
           id: "incomeTax.incomeTraceTaxUsername",
-          label: "Income Tax Traces Username",
+          label: "Traces Username",
           required: true,
         },
         {
           type: "text",
           id: "incomeTax.incomeTraceTaxPassword",
-          label: "Income Tax Traces Password",
+          label: "Traces Password",
           required: true,
         },
         {
           type: "password",
           id: "incomeTax.incomeTaxPassword",
-          label: "Income Tax Password",
+          label: "Password",
           required: true,
         },
         {
@@ -231,7 +231,6 @@ export const sectionsData = (data) => {
           label: "Approval Certificate",
           required: true,
         },
-        
       ],
       id: "gst",
     },

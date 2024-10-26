@@ -143,11 +143,15 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
         );
 
         setChartData({
-          labels: labels,
+          labels: labels.map(
+            (label) =>
+              label.charAt(0).toUpperCase() + label.slice(1).toLowerCase()
+          ),
           datasets: [
             {
               label: "Number of Active Companies",
               data: data,
+
               backgroundColor: barColors,
               borderColor: "#1E88E5",
               borderWidth: 0.5,
@@ -201,6 +205,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
       },
     },
     responsive: true,
+
     maintainAspectRatio: false,
     scales: {
       x: {
@@ -297,19 +302,27 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
               <NoDataFound />
             ) : (
               <>
-
                 <div className="">
-                  <ul className="flex flex-wrap w-full">
+                  <ul className="flex flex-wrap w-full capitalize">
                     {chartData.labels.length !== 0 &&
                       chartData.labels.map((label, index) => (
-                        <li key={index} className="flex items-center mb-2 mr-4">
+                        <li
+                          key={index}
+                          className="flex items-center mb-2 mr-4 capitalize"
+                        >
                           <span
-                            className="w-4 h-4 inline-block mr-2"
+                            className="w-4 h-4 inline-block mr-2 capitalize"
                             style={{
-                              backgroundColor: chartData.datasets[0].backgroundColor[index],
+                              backgroundColor:
+                                chartData.datasets[0].backgroundColor[index],
                             }}
                           ></span>
-                          <span style={{ fontSize: '12px', fontWeight: 600 }}>{label}</span>
+                          <span
+                            style={{ fontSize: "12px", fontWeight: 600 }}
+                            className="capitalize"
+                          >
+                            {label}
+                          </span>
                         </li>
                       ))}
                   </ul>
@@ -325,7 +338,6 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
                   </div>
                 </div>
               </>
-
             )}
           </>
         )}
