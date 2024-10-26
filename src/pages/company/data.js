@@ -145,7 +145,7 @@ export const sectionsData = (data) => {
         {
           type: "file",
           id: "incomeTax.approvalCertificate",
-          label: "Approval Certificate",
+          label: "PAN",
           required: true,
         },
       ],
@@ -228,7 +228,7 @@ export const sectionsData = (data) => {
         {
           type: "file",
           id: "gst.approvalCertificate",
-          label: "Approval Certificate",
+          label: "GST Certificate",
           required: true,
         },
       ],
@@ -280,7 +280,7 @@ export const sectionsData = (data) => {
         {
           type: "file",
           id: "esi.approvalCertificate",
-          label: "Approval Certificate",
+          label: "ESI Certificate",
           required: true,
         },
       ],
@@ -332,7 +332,7 @@ export const sectionsData = (data) => {
         {
           type: "file",
           id: "providentFund.approvalCertificate",
-          label: "Approval Certificate",
+          label: "PF Certificate",
           required: true,
         },
       ],
@@ -402,7 +402,7 @@ export const sectionsData = (data) => {
         {
           type: "file",
           id: "professionalTax.approvalCertificate",
-          label: "Approval Certificate",
+          label: "PT Certificate ",
           required: true,
         },
       ],
@@ -455,7 +455,7 @@ export const sectionsData = (data) => {
         {
           type: "file",
           id: "tds.approvalCertificate",
-          label: "Approval Certificate",
+          label: "TAN",
           required: true,
         },
       ],
@@ -513,7 +513,7 @@ export const sectionsData = (data) => {
         {
           type: "file",
           id: "shopCommercialEstablishment.approvalCertificate",
-          label: "Approval Certificate",
+          label: "Shop and Commercial Establishment",
           required: true,
         },
       ],
@@ -553,7 +553,7 @@ export const sectionsData = (data) => {
         {
           type: "file",
           id: "msme.approvalCertificate",
-          label: "Approval Certificate",
+          label: "Udyam Certificate",
           required: true,
         },
       ],
@@ -611,7 +611,7 @@ export const sectionsData = (data) => {
         {
           type: "file",
           id: "fssai.approvalCertificate",
-          label: "Approval Certificate",
+          label: "FSSAI Certificate",
           required: true,
         },
       ],
@@ -669,7 +669,7 @@ export const sectionsData = (data) => {
         {
           type: "file",
           id: "factoryLicense.approvalCertificate",
-          label: "Approval Certificate",
+          label: "Factory Licence",
           required: true,
         },
       ],
@@ -883,7 +883,7 @@ export const sectionsData = (data) => {
       ],
       id: "mca",
     },
-    {
+    /* {
       title: "Attachments",
       fields: [
         {
@@ -977,7 +977,7 @@ export const sectionsData = (data) => {
           required: true,
         },
       ],
-    },
+    }, */
   ];
 };
 
