@@ -4,6 +4,7 @@ import { sectionsData } from "./data";
 import Accordian from "../../components/Accordian";
 import { base_url } from "../../const";
 import { toast } from "react-toastify";
+import Loader from "../../components/helpers/loader";
 
 const CompanyForm = ({
   clientStatuses,
@@ -16,6 +17,7 @@ const CompanyForm = ({
   view,
   setView,
 }) => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({});
   const sections = sectionsData(formData);
   const [error, setError] = useState("");
@@ -70,8 +72,8 @@ const CompanyForm = ({
     }));
   };
 
-
   const handleSubmit = async (e) => {
+    setLoading(true);
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -85,7 +87,10 @@ const CompanyForm = ({
 
       // Replace empty objects with empty strings in each section
       Object.keys(cleanedFormData).forEach((sectionKey) => {
-        if (sectionKey === "attachments" || cleanedFormData[sectionKey]?.approvalCertificate) {
+        if (
+          sectionKey === "attachments" ||
+          cleanedFormData[sectionKey]?.approvalCertificate
+        ) {
           cleanedFormData[sectionKey] = replaceEmptyObjectsWithEmptyStrings(
             cleanedFormData[sectionKey]
           );
@@ -104,6 +109,7 @@ const CompanyForm = ({
 
       // Call handleFiles with the company response data
       await handleFiles(response.data);
+      setLoading(false);
       toast.success("Company created successfully");
     } catch (error) {
       toast.error(`Error: ${error.response?.data?.message || error.message}`);
@@ -130,10 +136,14 @@ const CompanyForm = ({
       }
 
       Object.entries(formData).forEach(([sectionKey, sectionValue]) => {
-        if (sectionKey !== "attachments" && typeof sectionValue === "object" && sectionValue !== null) {
+        if (
+          sectionKey !== "attachments" &&
+          typeof sectionValue === "object" &&
+          sectionValue !== null
+        ) {
           Object.entries(sectionValue).forEach(([key, value]) => {
             if (value instanceof File) {
-              form.append(`${sectionKey}.${key}`, value); 
+              form.append(`${sectionKey}.${key}`, value);
             }
           });
         }
@@ -153,13 +163,13 @@ const CompanyForm = ({
       setView(false);
       setShowForm(false);
       setCompanyRefresh(!companyRefresh);
-
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
 
   const handleUpdate = async () => {
+    setLoading(true);
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -173,7 +183,10 @@ const CompanyForm = ({
 
       // Replace empty objects with empty strings in each section
       Object.keys(cleanedFormData).forEach((sectionKey) => {
-        if (sectionKey === "attachments" || cleanedFormData[sectionKey]?.approvalCertificate) {
+        if (
+          sectionKey === "attachments" ||
+          cleanedFormData[sectionKey]?.approvalCertificate
+        ) {
           cleanedFormData[sectionKey] = replaceEmptyObjectsWithEmptyStrings(
             cleanedFormData[sectionKey]
           );
@@ -188,6 +201,7 @@ const CompanyForm = ({
         }
       );
       handleFiles(response.data);
+      setLoading(false);
       toast.success("Company updated successfully");
     } catch (error) {
       toast.error("Error updating company");
@@ -222,7 +236,6 @@ const CompanyForm = ({
           // Set client status
           const status = companyDetails.companyDetails.clientStatus || "";
           setClientStatus(status);
-          toast.success("Company data fetched successfully");
         }
       } catch (error) {
         toast.error("Error while fetching company data");
@@ -265,11 +278,11 @@ const CompanyForm = ({
           sections={
             sections
               ? sections.map((section) => ({
-                ...section,
-                formData,
-                handleInputChange,
-                handleFileChange,
-              }))
+                  ...section,
+                  formData,
+                  handleInputChange,
+                  handleFileChange,
+                }))
               : []
           }
           expanded={expanded}
@@ -281,7 +294,13 @@ const CompanyForm = ({
               onClick={companyId ? handleUpdate : handleSubmit}
               className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-              {companyId ? "Update" : "Save"}
+              {loading ? (
+                <Loader color="#fff" thickness="4" />
+              ) : companyId ? (
+                "Update"
+              ) : (
+                "Save"
+              )}
             </button>
           )}
           <button
