@@ -174,6 +174,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
             formDataToSubmit
           );
           setLoading(false);
+          setShowForm(false);
 
           toast.success("Task Updated Successfully");
         } catch (error) {
@@ -183,6 +184,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
         try {
           await axios.post(`${base_url}/tasks`, formDataToSubmit);
           toast.success("Task Created Successfully");
+          setShowForm(false);
         } catch (error) {
           toast.error("Failed to Create Task");
         }
@@ -306,91 +308,99 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
         <>{"Vishnu"}</>
       )} */}
 
-      <header
-        className="text-black p-2 rounded-t-lg"
-        style={{ background: "#f5f5f5" }}
-      >
-        <h1 className="text-2xl font-bold">Create New Task</h1>
-      </header>
       {showForm && (
-        <form onSubmit={handleSubmit} className="p-3">
-          <div
-            key={""}
-            className="mb-2 p-2 border border-gray-300 rounded-lg bg-gray-50 shadow-sm"
+        <>
+          <header
+            className="text-black p-2 rounded-t-lg"
+            style={{ background: "#f5f5f5" }}
           >
-            <h2 className="text-xl font-semibold mb-2 border-b border-gray-200 pb-2">
-              {"Task Form"}
-            </h2>
-            <div className="grid grid-cols-4 gap-5">
-              {taskData?.map((field, index) => {
-                if (field.type === "select") {
-                  return (
-                    <SelectInput
-                      key={index}
-                      id={field.id}
-                      label={field.label}
-                      options={getFields(field)}
-                      value={formData[field.id] || ""}
-                      onChange={handleInputChange}
-                      required={field.required}
-                      defaultValue={field?.defaultValue}
-                    />
-                  );
-                } else if (field.type === "textarea") {
-                  return (
-                    <TextArea
-                      key={index}
-                      id={field.id}
-                      label={field.label}
-                      options={getFields(field)}
-                      value={formData[field.id] || ""}
-                      onChange={handleInputChange}
-                      required={field.required}
-                      defaultValue={field?.defaultValue}
-                    />
-                  );
-                } else if (
-                  field.type === "text" ||
-                  field.type === "number" ||
-                  field.type === "date"
-                ) {
-                  return (
-                    <CustomInput
-                      key={index}
-                      id={field.id}
-                      type={field.type}
-                      label={field.label}
-                      value={formData[field.id] || ""}
-                      onChange={handleInputChange}
-                      required={field.required}
-                    />
-                  );
-                } else if (field.type === "file") {
-                  return (
-                    <CustomFileInput
-                      key={index}
-                      id={field.id}
-                      label={field.label}
-                      link={formData[field.id]}
-                      onChange={handleFileChange}
-                      readOnly={field?.readOnly}
-                    />
-                  );
-                }
-                return null;
-              })}
-              <div className="col-span-4 flex justify-end mt-4">
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
-                >
-                  Save
-                </button>
+            <h1 className="text-2xl font-bold">Create New Task</h1>
+          </header>
+          <form onSubmit={handleSubmit} className="p-3">
+            <div
+              key={""}
+              className="mb-2 p-2 border border-gray-300 rounded-lg bg-gray-50 shadow-sm"
+            >
+              <h2 className="text-xl font-semibold mb-2 border-b border-gray-200 pb-2">
+                {"Task Form"}
+              </h2>
+              <div className="grid grid-cols-4 gap-5">
+                {taskData?.map((field, index) => {
+                  if (field.type === "select") {
+                    return (
+                      <SelectInput
+                        key={index}
+                        id={field.id}
+                        label={field.label}
+                        options={getFields(field)}
+                        value={formData[field.id] || ""}
+                        onChange={handleInputChange}
+                        required={field.required}
+                        defaultValue={field?.defaultValue}
+                      />
+                    );
+                  } else if (field.type === "textarea") {
+                    return (
+                      <TextArea
+                        key={index}
+                        id={field.id}
+                        label={field.label}
+                        options={getFields(field)}
+                        value={formData[field.id] || ""}
+                        onChange={handleInputChange}
+                        required={field.required}
+                        defaultValue={field?.defaultValue}
+                      />
+                    );
+                  } else if (
+                    field.type === "text" ||
+                    field.type === "number" ||
+                    field.type === "date"
+                  ) {
+                    return (
+                      <CustomInput
+                        key={index}
+                        id={field.id}
+                        type={field.type}
+                        label={field.label}
+                        value={formData[field.id] || ""}
+                        onChange={handleInputChange}
+                        required={field.required}
+                      />
+                    );
+                  } else if (field.type === "file") {
+                    return (
+                      <CustomFileInput
+                        key={index}
+                        id={field.id}
+                        label={field.label}
+                        link={formData[field.id]}
+                        onChange={handleFileChange}
+                        readOnly={field?.readOnly}
+                      />
+                    );
+                  }
+                  return null;
+                })}
+                <div className="col-span-4 flex justify-end mt-4">
+                  <button
+                    type="submit"
+                    className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+                  >
+                    {loading ? (
+                      <Loader color="#fff" thickness="4" />
+                    ) : companyId ? (
+                      "Update"
+                    ) : (
+                      "Save"
+                    )}
+                  </button>
+                </div>
               </div>
+              {error && <div className="text-red-500 mt-2">{error}</div>}
             </div>
-            {error && <div className="text-red-500 mt-2">{error}</div>}
-          </div>
-        </form>
+          </form>
+        </>
       )}
     </div>
   );

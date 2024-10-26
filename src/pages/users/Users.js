@@ -24,11 +24,13 @@ const Users = () => {
   };
 
   const fetchUsers = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(`${base_url}/users/filter`, {
         name: name,
       });
       setUsers(response.data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching Users:", error);
     }
@@ -124,6 +126,8 @@ const Users = () => {
           <div className="justify-center">
             <UserFrom
               {...{
+                setLoading,
+                loading,
                 companyId,
                 setCompanyId,
                 setShowForm,
@@ -141,6 +145,8 @@ const Users = () => {
         <div className="bg-white rounded-lg shadow-md">
           <UsersTable
             {...{
+              setLoading,
+              loading,
               setCompanyId,
               companyRefresh,
               name,

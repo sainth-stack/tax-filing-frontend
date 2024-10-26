@@ -6,15 +6,18 @@ import CustomInput from "../../components/input";
 import CustomCheckbox from "../../components/Checkbox/Checkbox";
 import { base_url } from "../../const";
 import { GetUsers } from "./data";
+import Loader from "../../components/helpers/loader";
 
 const UserForm = ({
   setRefresh,
+  setLoading,
+  loading,
   refresh,
   showForm,
   setShowForm,
   fetchUsers,
   companyId,
-  setCompanyId
+  setCompanyId,
 }) => {
   const [Users, setUsers] = useState([]);
   const [Agencies, setAgencies] = useState([]);
@@ -73,6 +76,7 @@ const UserForm = ({
 
   // Handle form submission
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     try {
       if (companyId) {
@@ -82,15 +86,17 @@ const UserForm = ({
       }
 
       fetchUsers();
-      setCompanyId('')
+      setCompanyId("");
       setShowForm(false);
       setFormData({});
+      setLoading(false);
     } catch (error) {
       setError(error.message);
       console.error(
         "ERROR",
         error.response ? error.response.data : error.message
       );
+      setLoading(false);
     }
   };
 
@@ -125,24 +131,26 @@ const UserForm = ({
     //     if (key === "undefined" || data[key] === "") {
     //       return acc;
     //     }
-  
+
     //     if (isDate(data[key])) {
     //       acc[key] = moment(data[key]).format("YYYY-MM-DD");
     //     } else {
     //       acc[key] = mapDates(data[key]);
     //     }
-  
+
     //     return acc;
     //   }, {});
     // }
     return data;
   };
-  
-  const isDate = (value) => {
-    return value && typeof value === 'string' && moment(value, moment.ISO_8601, true).isValid();
-  };
 
-  
+  const isDate = (value) => {
+    return (
+      value &&
+      typeof value === "string" &&
+      moment(value, moment.ISO_8601, true).isValid()
+    );
+  };
 
   const handleWhatsappInputChange = (e) => {
     const { id, value, type, checked } = e.target;
@@ -161,7 +169,7 @@ const UserForm = ({
     }
   };
 
-  console.log(formData)
+  console.log(formData);
 
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
@@ -235,11 +243,20 @@ const UserForm = ({
               type="submit"
               className="px-4 p-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-              Save
+              {loading ? (
+                <Loader color="#fff" thickness="4" />
+              ) : companyId ? (
+                "Update"
+              ) : (
+                "Save"
+              )}
             </button>
             <button
               type="button"
-              onClick={() => {setShowForm(false);setCompanyId('')}}
+              onClick={() => {
+                setShowForm(false);
+                setCompanyId("");
+              }}
               className="px-4 ms-2 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-white hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               Cancel

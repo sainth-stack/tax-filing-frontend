@@ -13,7 +13,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Accordian from "../../components/Accordian";
 import Loader from "../../components/helpers/loader";
-import SortableTableHeader from './../../components/table/SortableTableHeader';
+import SortableTableHeader from "./../../components/table/SortableTableHeader";
 
 const theme = createTheme({
   typography: {
@@ -61,11 +61,10 @@ export default function UsersTable({
   handleDelete,
   setCompanyId,
   dataLoading,
+  loading,
 }) {
-
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('sno'); // default sorting by S.No
-
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("sno"); // default sorting by S.No
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -84,25 +83,29 @@ export default function UsersTable({
   };
 
   const handleRequestSort = (columnId) => {
-    const isAsc = orderBy === columnId && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+    const isAsc = orderBy === columnId && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
     setOrderBy(columnId);
   };
 
   const sortedUsers = users.sort((a, b) => {
-
-    if (orderBy === 'name') {
-      return order === 'asc' ? (a.firstName || '').localeCompare(b.firstName || '') : (b.firstName || '').localeCompare(a.firstName || '');
+    if (orderBy === "name") {
+      return order === "asc"
+        ? (a.firstName || "").localeCompare(b.firstName || "")
+        : (b.firstName || "").localeCompare(a.firstName || "");
     }
-    if (orderBy === 'email') {
-      return order === 'asc' ? (a.email || '').localeCompare(b.email || '') : (b.email || '').localeCompare(a.email || '');
+    if (orderBy === "email") {
+      return order === "asc"
+        ? (a.email || "").localeCompare(b.email || "")
+        : (b.email || "").localeCompare(a.email || "");
     }
-    if (orderBy === 'companyName') {
-      return order === 'asc' ? (a.company || '').localeCompare(b.company || '') : (b.company || '').localeCompare(a.company || '');
+    if (orderBy === "companyName") {
+      return order === "asc"
+        ? (a.company || "").localeCompare(b.company || "")
+        : (b.company || "").localeCompare(a.company || "");
     }
     return 0;
   });
-
 
   return (
     <ThemeProvider theme={theme}>
@@ -148,10 +151,9 @@ export default function UsersTable({
                 Actions
               </TableCell>
             </TableRow>
-
           </TableHead>
           <TableBody>
-            {dataLoading && dataLoading ? (
+            {loading && loading ? (
               <TableRow>
                 <TableCell colSpan={5} align="center">
                   <div className="flex justify-center items-center py-4">
