@@ -22,6 +22,8 @@ const Sidemenu = ({ user }) => {
       { name: "Dashboard", icon: <Dashboard />, path: "/dashboard" },
       { name: "Company", icon: <BusinessIcon />, path: "/company" },
       { name: "Manual Tasks", icon: <TaskOutlinedIcon />, path: "/tasks" },
+      { name: "Auto Tasks", icon: <TaskOutlinedIcon />, path: "/tasks/auto" },
+
       { name: "Users", icon: <PeopleAltOutlined />, path: "/users" },
       {
         name: "Notification Settings",
@@ -35,6 +37,8 @@ const Sidemenu = ({ user }) => {
       { name: "Dashboard", icon: <Dashboard />, path: "/dashboard" },
       { name: "Company", icon: <BusinessIcon />, path: "/company" },
       { name: "Manual Tasks", icon: <TaskOutlinedIcon />, path: "/tasks" },
+      { name: "Auto Tasks", icon: <TaskOutlinedIcon />, path: "/tasks/auto" },
+
       { name: "Users", icon: <PeopleAltOutlined />, path: "/users" },
       {
         name: "Notification Settings",
@@ -50,8 +54,7 @@ const Sidemenu = ({ user }) => {
   };
 
   useEffect(() => {
-    const path = location.pathname.split("/")[1];
-    setActiveItem(path || "dashboard");
+    setActiveItem(location.pathname || "/dashboard");
   }, [location]);
 
   const handleMenuClick = (item) => {
@@ -73,7 +76,7 @@ const Sidemenu = ({ user }) => {
                 to={item.path}
                 onClick={() => handleMenuClick(item.path.substring(1))}
                 className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${
-                  activeItem === item.path.substring(1)
+                  activeItem === item.path
                     ? "border-blue-500 bg-blue-50 text-blue-700"
                     : "border-transparent"
                 } border-l-4 transition-colors duration-200`}

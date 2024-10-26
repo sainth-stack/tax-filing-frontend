@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import SelectInput from "../../components/select";
-import CustomInput from "../../components/input";
-import CustomFileInput from "../../components/customFile";
 import moment from "moment";
 import {
   getEndTasks,
@@ -13,13 +10,16 @@ import {
   getTasks,
   providentFund,
   TDSTCS,
-} from "./data";
-import { base_url } from "../../const";
-import TextArea from "../../components/text-area";
+} from "./../Tasks/data";
 import { toast } from "react-toastify";
+import SelectInput from "../../components/select";
+import TextArea from "../../components/text-area";
+import CustomInput from "../../components/input";
+import CustomFileInput from "../../components/customFile";
 import Loader from "../../components/helpers/loader";
+import { base_url } from "../../const";
 
-const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
+const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -170,7 +170,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
         try {
           setLoading(true);
           await axios.put(
-            `${base_url}/tasks/${formData._id}`,
+            `${base_url}/tasks/auto/${formData._id}`,
             formDataToSubmit
           );
           setLoading(false);
@@ -182,7 +182,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
         }
       } else {
         try {
-          await axios.post(`${base_url}/tasks`, formDataToSubmit);
+          await axios.post(`${base_url}/tasks/auto`, formDataToSubmit);
           toast.success("Task Created Successfully");
           setShowForm(false);
         } catch (error) {
@@ -209,7 +209,9 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
       setShowForm(true);
       const fetchTaskData = async () => {
         try {
-          const response = await axios.get(`${base_url}/tasks/${companyId}`);
+          const response = await axios.get(
+            `${base_url}/tasks/auto/${companyId}`
+          );
           const formattedData = mapDates(response.data);
           setFormData(formattedData);
         } catch (error) {
@@ -406,4 +408,4 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   );
 };
 
-export default Taskform;
+export default AutoTaskForm;

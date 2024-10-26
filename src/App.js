@@ -12,6 +12,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NotificationSettings from "./pages/notifications/NotificationSettings";
 import Agency from "./pages/Agency/Agency";
+import AutoTasks from "./pages/AutoTaks/AutoTasks";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/tasks" element={<Tasks />} />
+        <Route path="/tasks/auto" element={<AutoTasks />} />
         <Route path="/users" element={<Users />} />
         <Route path="/company" element={<Company />} />
         <Route
