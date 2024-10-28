@@ -13,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import NotificationSettings from "./pages/notifications/NotificationSettings";
 import Agency from "./pages/Agency/Agency";
 import AutoTasks from "./pages/AutoTaks/AutoTasks";
+import ServiceCalendar from "./pages/ServiceCalendar/ServiceCalendar";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           element={<NotificationSettings />}
         />
         <Route path="/agency" element={<Agency />} />
+        <Route path="/service-calendar" element={<ServiceCalendar />} />
 
         <Route path="*" element={<Pagenotfound />} />
       </Routes>

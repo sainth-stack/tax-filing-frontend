@@ -7,6 +7,7 @@ import {
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import BusinessIcon from "@mui/icons-material/Business";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
 import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import AssuredWorkloadIcon from "@mui/icons-material/AssuredWorkload";
@@ -18,6 +19,7 @@ const Sidemenu = ({ user }) => {
 
   // Sidebar menu configuration based on role
   const sidebarConfig = {
+    //default routes
     default: [
       { name: "Dashboard", icon: <Dashboard />, path: "/dashboard" },
       { name: "Company", icon: <BusinessIcon />, path: "/company" },
@@ -30,9 +32,18 @@ const Sidemenu = ({ user }) => {
         icon: <NotificationsActiveOutlinedIcon />,
         path: "/notification-settings",
       },
-      { name: "Agency", icon: <AssuredWorkloadIcon />, path: "/agency" },
     ],
-    S: [{ name: "Agency", icon: <AssuredWorkloadIcon />, path: "/agency" }],
+
+    //super admin routes
+    S: [
+      { name: "Agency", icon: <AssuredWorkloadIcon />, path: "/agency" },
+      {
+        name: "Service Calendar",
+        icon: <CalendarMonthIcon />,
+        path: "/service-calendar",
+      },
+    ],
+    //admin routesa
     A: [
       { name: "Dashboard", icon: <Dashboard />, path: "/dashboard" },
       { name: "Company", icon: <BusinessIcon />, path: "/company" },
@@ -74,7 +85,7 @@ const Sidemenu = ({ user }) => {
             <li key={item.name}>
               <Link
                 to={item.path}
-                onClick={() => handleMenuClick(item.path.substring(1))}
+                onClick={() => handleMenuClick(item.path)}
                 className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${
                   activeItem === item.path
                     ? "border-blue-500 bg-blue-50 text-blue-700"
