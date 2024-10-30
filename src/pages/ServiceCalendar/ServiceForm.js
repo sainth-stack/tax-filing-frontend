@@ -1,26 +1,28 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Card,
-  CardContent,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, Button, Typography } from "@mui/material";
 import axios from "axios";
 import Heading from "../../components/Heading/Heading";
 import { initialTasks } from "./data"; // Ensure this path is correct
 import { base_url } from "./../../const"; // Ensure this path is correct
 import CustomInput from "../../components/input";
+import Loader from "../../components/helpers/loader";
 
 const ServiceForm = () => {
+  const [loading, setLoading] = useState({});
   const [tasks, setTasks] = useState(
-    initialTasks.map((task) => ({ ...task, date: "", id: null }))
+    initialTasks.map((task) => ({
+      ...task,
+      date: "",
+      id: null,
+      modified: false,
+    }))
   );
 
   const fetchTasks = async () => {
     try {
+      // Make an API request to fetch tasks from the backend
       const response = await axios.get(`${base_url}/service-calendar`);
-      const fetchedTasks = response.data.calendars;
+      const fetchedTasks = response.data.calendars; // Assign response data to fetchedTasks
 
       const updatedTasks = initialTasks.map((initialTask) => {
         const foundTask = fetchedTasks.find(
@@ -30,10 +32,11 @@ const ServiceForm = () => {
           ...initialTask,
           date: foundTask ? foundTask.date.split("T")[0] : "",
           id: foundTask ? foundTask._id : null,
+          modified: false, // Ensure modified flag is set to false initially
         };
       });
 
-      setTasks(updatedTasks);
+      setTasks(updatedTasks); // Update the tasks state with fetched data
     } catch (error) {
       console.log("Error fetching tasks:", error);
     }
@@ -45,7 +48,7 @@ const ServiceForm = () => {
 
   const handleDateChange = (index, date) => {
     const updatedTasks = tasks.map((task, i) =>
-      i === index ? { ...task, date } : task
+      i === index ? { ...task, date, modified: true } : task
     );
     setTasks(updatedTasks);
   };
@@ -65,6 +68,12 @@ const ServiceForm = () => {
       console.log("No tasks with selected dates to submit.");
       return;
     }
+    const newLoadingState = dataToSubmit.reduce((acc, task, index) => {
+      const key = task.id || `new-${index}`;
+      return { ...acc, [key]: true };
+    }, {});
+    setLoading(newLoadingState);
+
     try {
       const responses = await axios.post(
         `${base_url}/service-calendar`,
@@ -80,74 +89,86 @@ const ServiceForm = () => {
         updatedAt: taskResponse.updatedAt,
       }));
 
-      fetchTasks();
       console.log("Submitted data:", newTasks);
       setTasks(newTasks);
+      setLoading((prevLoading) => {
+        const clearedLoadingState = dataToSubmit.reduce((acc, task, index) => {
+          const key = task.id || `new-${index}`;
+          return { ...acc, [key]: false };
+        }, {});
+        return { ...prevLoading, ...clearedLoadingState };
+      });
     } catch (error) {
+      setLoading((prevLoading) => {
+        const clearedLoadingState = dataToSubmit.reduce((acc, task, index) => {
+          const key = task.id || `new-${index}`;
+          return { ...acc, [key]: false };
+        }, {});
+        return { ...prevLoading, ...clearedLoadingState };
+      });
       console.log("Error submitting data:", error);
     }
   };
 
   const handleUpdate = async (taskId, updatedData) => {
+    setLoading((prevLoading) => ({ ...prevLoading, [taskId]: true }));
     try {
       const response = await axios.put(
         `${base_url}/service-calendar/${taskId}`,
         updatedData
       );
-      fetchTasks();
+
+      setLoading((prevLoading) => ({ ...prevLoading, [taskId]: false }));
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
-          task.id === taskId ? { ...task, ...updatedData } : task
+          task.id === taskId
+            ? { ...task, ...updatedData, modified: false }
+            : task
         )
       );
+
       console.log("Updated task:", response.data);
     } catch (error) {
+      setLoading((prevLoading) => ({ ...prevLoading, [taskId]: false }));
       console.log("Error updating task:", error);
     }
   };
 
   const handleUpdateAll = async () => {
-    const updates = tasks
-      .filter((task) => task.id && task.date)
-      .map((task) => ({
-        ...task,
-        id: task.id,
-        name: task.name,
-        date: new Date(task.date).toISOString(),
-      }));
-
-    const creations = tasks
-      .filter((task) => !task.id && task.date)
-      .map((task) => ({
-        name: task.name,
-        date: new Date(task.date).toISOString(),
-      }));
+    const tasksToUpdate = tasks.filter((task) => task.id && task.modified);
+    const tasksToCreate = tasks.filter((task) => !task.id && task.date);
 
     try {
-      const updatePromises = updates.map((task) =>
-        handleUpdate(task.id, {
-          ...task,
-          name: task.name,
-          date: task.date,
-        })
+      // Only update modified tasks
+      const updatePromises = tasksToUpdate.map((task) =>
+        handleUpdate(task.id, { date: new Date(task.date).toISOString() })
       );
+
       await Promise.all(updatePromises);
 
-      if (creations.length > 0) {
+      // Handle creations as before
+      if (tasksToCreate.length > 0) {
         const creationResponses = await axios.post(
           `${base_url}/service-calendar`,
-          creations
+          tasksToCreate.map((task) => ({
+            name: task.name,
+            date: new Date(task.date).toISOString(),
+          }))
         );
+
+        setLoading((prevLoading) => ({ ...prevLoading }));
+
         const newTasks = creationResponses.data.map((taskResponse, index) => ({
-          name: creations[index].name,
-          date: creations[index].date,
+          ...taskResponse,
+          name: tasksToCreate[index].name,
+          date: tasksToCreate[index].date,
           id: taskResponse._id,
-          createdAt: taskResponse.createdAt,
-          updatedAt: taskResponse.updatedAt,
+          modified: false, // Ensure new tasks are not marked as modified
         }));
 
         setTasks((prevTasks) => [...prevTasks, ...newTasks]);
       }
+      fetchTasks();
     } catch (error) {
       console.log("Error updating or creating tasks:", error);
     }
@@ -176,6 +197,7 @@ const ServiceForm = () => {
                 gap: 4,
                 flexDirection: "row",
                 paddingRight: 3,
+                alignItems: "center",
               }}
             >
               <Typography
@@ -186,6 +208,11 @@ const ServiceForm = () => {
               >
                 {task.name}
               </Typography>
+              {loading[task.id] && (
+                <Typography variant="body2" color="primary">
+                  <Loader />
+                </Typography>
+              )}
               <CustomInput
                 key={index}
                 id={index}
