@@ -1876,7 +1876,7 @@ export const GstRevocationData = (data) => {
             options: [
               {
                 value: "automatic",
-                label: "Automatic Suspension (Need to File the Returns)",
+                label: "Automatic Suspension",
               },
               {
                 value: "showCauseNotice",
