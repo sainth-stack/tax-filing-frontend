@@ -18,9 +18,13 @@ import { base_url } from "../../const";
 import TextArea from "../../components/text-area";
 import { toast } from "react-toastify";
 import Loader from "../../components/helpers/loader";
+import CustomCheckbox from "../../components/Checkbox/Checkbox";
 
 const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   const [companies, setCompanies] = useState([]);
+  const [companyData, setCompanyData] = useState(null);
+  const [isChecked, setIsChecked] = useState(false);
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const tasks = getTasks([], []);
@@ -142,61 +146,87 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
     fetchUsers();
   }, []);
 
+  // Dependency array to rerun when isChecked or company changes
+
+  const fetchCompanyData = async (pan) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4500/api/companies/pan/${pan}`
+      );
+      setCompanyData(response.data); // Store the company data
+      console.log("Company Data:", response.data); // Log the company data
+      return response.data; // Return the fetched data
+    } catch (error) {
+      console.error(
+        "Error fetching company data:",
+        error.response ? error.response.data : error.message
+      );
+      setError("Failed to fetch company data."); // Set an error message
+      return null; // Return null on error
+    }
+  };
+  //vishnu
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Check for required fields
-    const requiredFields = ["startDate", "priority", "company"];
+    const requiredFields = ["company", "startDate", "priority", "dueDate"]; // Updated required fields
     for (const field of requiredFields) {
       if (!formData[field]) {
-        setError(`Field ${field} is required.`);
+        setError(`Field ${field} is required.`); // Fixed error message syntax
         return;
       }
     }
 
-    try {
-      // Prepare form data for API
-      const formDataToSubmit = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (formData[key] instanceof File) {
-          formDataToSubmit.append(key, formData[key]);
-        } else {
-          formDataToSubmit.append(key, formData[key]);
-        }
-      });
+    // Clear previous errors
+    setError(null); // Clear any existing error messages
 
-      // Submit form data
-      if (formData._id) {
-        try {
-          setLoading(true);
-          await axios.put(
-            `${base_url}/tasks/${formData._id}`,
-            formDataToSubmit
-          );
-          setLoading(false);
-          setShowForm(false);
-
-          toast.success("Task Updated Successfully");
-        } catch (error) {
-          toast.error("Failed to   Update Task");
-        }
-      } else {
-        try {
-          await axios.post(`${base_url}/tasks`, formDataToSubmit);
-          toast.success("Task Created Successfully");
-          setShowForm(false);
-        } catch (error) {
-          toast.error("Failed to Create Task");
-        }
+    // Check for additional required fields based on the customer type
+    if (isChecked) {
+      if (!formData.pan) {
+        setError("PAN is required for existing customers.");
+        return;
       }
 
-      // Fetch tasks and reset form data
+      // Fetch company data if the PAN is provided
+      const companyDataResponse = await fetchCompanyData(formData.pan);
+      if (!companyDataResponse) return; // Exit if fetch failed
+    } else {
+      // Check for required fields for new customers
+      const newCustomerFields = [
+        "pan",
+        "companyName",
+        "constitution",
+        "authorizedPerson",
+        "email",
+        "mobileNumber",
+        "address",
+      ];
+    }
+
+    // Submit the form data
+    try {
+      await axios.post(`${base_url}/tasks`, formData);
       fetchTasks();
-      setFormData(defaultData);
-      setError(null); // Clear error if submission is successful
+      toast.success("Customer data submitted successfully");
+
+      // Reset form data after submission
+      setFormData({
+        pan: "",
+        companyName: "",
+        constitution: "",
+        authorizedPerson: "",
+        email: "",
+        mobileNumber: "",
+        address: "",
+        startDate: "", // Reset added fields
+        priority: "",
+        company: "",
+        dueDate: "",
+      });
+      setCompanyData(null); // Clear company data
     } catch (error) {
       setError(error.message);
-
       console.error(
         "ERROR",
         error.response ? error.response.data : error.message
@@ -296,6 +326,10 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
     }));
   };
 
+  const handleCheckboxChange = (event) => {
+    //alert("checked");
+    setIsChecked(event.target.checked);
+  };
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
       {/* {loading && loading ? (
@@ -325,6 +359,42 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                 {"Task Form"}
               </h2>
               <div className="grid grid-cols-4 gap-5">
+                <CustomCheckbox
+                  id="Customer"
+                  label="Existing Customer ?"
+                  checked={isChecked}
+                  onChange={handleCheckboxChange}
+                  required={false}
+                  className="mb-2 items-center  font-bold shadow-md rounded-full justify-center"
+                  style={{ cursor: "pointer" }}
+                  labelStyles={{ fontSize: "16px", color: "#333" }}
+                />
+
+                {isChecked && (
+                  <div>
+                    <label>
+                      PAN:
+                      <input
+                        type="text"
+                        value={formData.pan}
+                        onChange={(e) =>
+                          setFormData({ ...formData, pan: e.target.value })
+                        }
+                        required
+                      />
+                    </label>
+                    {/* You could trigger fetching the company data after entering PAN */}
+                    <button
+                      type="button"
+                      onClick={() => fetchCompanyData(formData.pan)}
+                    >
+                      Fetch Company Data
+                    </button>
+                    {companyData && (
+                      <pre>{JSON.stringify(companyData, null, 2)}</pre>
+                    )}
+                  </div>
+                )}
                 {taskData?.map((field, index) => {
                   if (field.type === "select") {
                     return (

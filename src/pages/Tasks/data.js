@@ -1,5 +1,11 @@
 export const getTasks = ({ companies = [], users = [] }) => {
   return [
+    // {
+    //   type: "checkbox",
+    //   id: "isActive",
+    //   label: "Is Active",
+    //   value: false, // Optional default value
+    // },
     {
       type: "select",
       id: "company",
@@ -12,6 +18,7 @@ export const getTasks = ({ companies = [], users = [] }) => {
       label: "Assigned To",
       options: [...users],
       defaultValue: "all",
+      required:true
     },
     {
       type: "select",

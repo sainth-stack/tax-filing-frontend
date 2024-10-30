@@ -17,10 +17,15 @@ const CustomCheckbox = ({
         type="checkbox"
         id={id}
         checked={checked}
+        style={{
+          width: "18px", // Adjust size here
+          height: "18px", // Adjust size here
+          cursor: "pointer",
+          ...style,
+        }}
         onChange={onChange}
         className="border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2"
         required={required}
-        style={style}
       />
       <label htmlFor={id} className="mb-1" style={{ ...labelStyles }}>
         {label}
