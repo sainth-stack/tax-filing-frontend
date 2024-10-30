@@ -5,12 +5,12 @@ import {
   CardContent,
   Button,
   Typography,
-  TextField,
 } from "@mui/material";
 import axios from "axios";
 import Heading from "../../components/Heading/Heading";
 import { initialTasks } from "./data"; // Ensure this path is correct
 import { base_url } from "./../../const"; // Ensure this path is correct
+import CustomInput from "../../components/input";
 
 const ServiceForm = () => {
   const [tasks, setTasks] = useState(
@@ -56,6 +56,7 @@ const ServiceForm = () => {
     const dataToSubmit = tasks
       .filter((task) => task.date)
       .map((task) => ({
+        ...task,
         name: task.name,
         date: new Date(task.date).toISOString(),
       }));
@@ -64,7 +65,6 @@ const ServiceForm = () => {
       console.log("No tasks with selected dates to submit.");
       return;
     }
-
     try {
       const responses = await axios.post(
         `${base_url}/service-calendar`,
@@ -72,6 +72,7 @@ const ServiceForm = () => {
       );
 
       const newTasks = responses.data.map((taskResponse, index) => ({
+        ...taskResponse,
         name: dataToSubmit[index].name,
         date: dataToSubmit[index].date,
         id: taskResponse._id,
@@ -109,6 +110,7 @@ const ServiceForm = () => {
     const updates = tasks
       .filter((task) => task.id && task.date)
       .map((task) => ({
+        ...task,
         id: task.id,
         name: task.name,
         date: new Date(task.date).toISOString(),
@@ -124,6 +126,7 @@ const ServiceForm = () => {
     try {
       const updatePromises = updates.map((task) =>
         handleUpdate(task.id, {
+          ...task,
           name: task.name,
           date: task.date,
         })
@@ -179,26 +182,17 @@ const ServiceForm = () => {
                 variant="h6"
                 component="h3"
                 sx={{ flex: 1, paddingLeft: 2 }}
-                className="bg-slate-50 rounded-sm shadow-md"
+                className=""
               >
                 {task.name}
               </Typography>
-              <TextField
-                className="shadow-md"
-                label="Select Date"
-                type="date"
+              <CustomInput
+                key={index}
+                id={index}
+                type={"date"}
+                label={""}
                 value={task.date || ""}
                 onChange={(e) => handleDateChange(index, e.target.value)}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                sx={{
-                  "& .MuiInputBase-root": {
-                    height: "2.5rem",
-                  },
-                  minWidth: "200px",
-                }}
-                variant="outlined"
               />
             </Box>
           ))}
@@ -211,7 +205,7 @@ const ServiceForm = () => {
               sx={{ mt: 3 }}
               onClick={handleUpdateAll}
             >
-              Update / Save
+              Update
             </Button>
           </Box>
         </Box>

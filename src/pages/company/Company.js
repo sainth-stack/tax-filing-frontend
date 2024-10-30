@@ -7,8 +7,6 @@ import CompanyForm from "./Companyform";
 import CustomInput from "../../components/input";
 import SelectInput from "../../components/select";
 import { useLocation } from "react-router";
-import DateInput from "../../components/Date/DateInput";
-import { Dates } from "./data";
 
 const Company = () => {
   const [showForm, setShowForm] = useState("");
