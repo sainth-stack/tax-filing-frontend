@@ -85,13 +85,22 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
     colors.push("#008000"); // Hex code for green
   }
 
+  console.log("categories", categories);
 
-  const completedCategories = categories[2];
-
-  const totalCategories = categories[0] + categories[1] + categories[2];
+  const completedCategories =
+    categories.length > 2
+      ? categories[2]
+      : categories.length > 1
+      ? categories[1]
+      : 0;
+  const totalCategories =
+    categories.length > 2
+      ? categories[0] + categories[1] + categories[2]
+      : categories.length > 1
+      ? categories[0] + categories[1]
+      : categories[0] || 0;
   const averagePercentage =
-    totalCategories > 0 ? (completedCategories / totalCategories) * 100 : 1;
-
+    totalCategories > 0 ? (completedCategories / totalCategories) * 100 : 0;
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
   };
@@ -213,7 +222,9 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                       arcPadding={0.01}
                       needleBaseColor="#000000"
                       needleShadowColor="#000000"
-                      formatTextValue={(averagePercentage) => `${averagePercentage}%`}
+                      formatTextValue={(averagePercentage) =>
+                        `${averagePercentage}%`
+                      }
                     />
                     {data?.overdue && data.overdue > 0 && (
                       <div
@@ -265,9 +276,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                         top: "10%",
                         left: "-40px",
                       }}
-                    >
-
-                    </div>
+                    ></div>
                   </div>
                 </>
               )}
@@ -275,7 +284,6 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
           )}
 
           <div className="labels-overlay">
-
             {["overdue", "inProgress", "completed"].map((label, index) => {
               const count = [data.overdue, data.inProgress, data.completed][
                 index
@@ -295,10 +303,13 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                         backgroundColor: backgroundColor, // Apply color here
                         width: "2.2rem",
                         height: ".8rem",
-                        marginRight: "10px"
+                        marginRight: "10px",
                       }}
                     />
-                    <h6> {label}: {count}</h6>
+                    <h6>
+                      {" "}
+                      {label}: {count}
+                    </h6>
                   </div>
                 </div>
               ) : null;
