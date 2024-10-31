@@ -45,6 +45,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   const currentMonth = moment().format("MMMM");
 
   const handleInputChange = (e) => {
+    setFormData({ pan: "" });
     const { id, value } = e.target;
     setFormData((prev) => {
       const newData = { ...prev, [id]: value };
@@ -174,7 +175,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
 
   const closePopup = () => {
     setIsChecked(false); // Set isChecked to false to hide the popup
-    setFormData({ pan: "" }); // Clear the form data
+     // Clear the form data
     setCompanyData(null); // Clear the company data
     setError(""); // Clear any error messages
   };
