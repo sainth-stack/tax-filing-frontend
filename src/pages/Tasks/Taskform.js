@@ -19,6 +19,9 @@ import TextArea from "../../components/text-area";
 import { toast } from "react-toastify";
 import Loader from "../../components/helpers/loader";
 import CustomCheckbox from "../../components/Checkbox/Checkbox";
+import { Popup } from "@mui/base/Unstable_Popup/Popup";
+import { IconButton } from "@mui/material";
+import { CloseOutlined } from "@mui/icons-material";
 
 const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   const [companies, setCompanies] = useState([]);
@@ -34,6 +37,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
     return acc;
   }, {});
   const [formData, setFormData] = useState(defaultData);
+  const [showPopup, setShowPopup] = useState(false);
   const [error, setError] = useState(null);
   const [taskData, setTasks] = useState(tasks);
 
@@ -153,7 +157,8 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
       const response = await axios.get(
         `http://localhost:4500/api/companies/pan/${pan}`
       );
-      setCompanyData(response.data); // Store the company data
+      setCompanyData(response.data.companyDetails); // Extract company details
+      // Open the popup // Store the company data
       console.log("Company Data:", response.data); // Log the company data
       return response.data; // Return the fetched data
     } catch (error) {
@@ -164,6 +169,14 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
       setError("Failed to fetch company data."); // Set an error message
       return null; // Return null on error
     }
+  };
+  //close popup vishnu
+
+  const closePopup = () => {
+    setIsChecked(false); // Set isChecked to false to hide the popup
+    setFormData({ pan: "" }); // Clear the form data
+    setCompanyData(null); // Clear the company data
+    setError(""); // Clear any error messages
   };
   //vishnu
   const handleSubmit = async (e) => {
@@ -365,36 +378,128 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                   checked={isChecked}
                   onChange={handleCheckboxChange}
                   required={false}
-                  className="mb-2 items-center  font-bold shadow-md rounded-full justify-center"
+                  className="mb-2 items-center  font-bold  justify-center"
                   style={{ cursor: "pointer" }}
                   labelStyles={{ fontSize: "16px", color: "#333" }}
                 />
+                {/* hey */}
 
                 {isChecked && (
-                  <div>
-                    <label>
-                      PAN:
-                      <input
-                        type="text"
-                        value={formData.pan}
-                        onChange={(e) =>
-                          setFormData({ ...formData, pan: e.target.value })
-                        }
-                        required
-                      />
-                    </label>
-                    {/* You could trigger fetching the company data after entering PAN */}
-                    <button
-                      type="button"
-                      onClick={() => fetchCompanyData(formData.pan)}
+                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div
+                      style={{
+                        // Adjust as needed
+                        backgroundColor: "#fff",
+                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                        borderRadius: "12px",
+                        padding: "12px",
+                        zIndex: 1000,
+                        Width: "15rem",
+                        Height: "auto",
+                        overflow: "auto",
+                      }}
                     >
-                      Fetch Company Data
-                    </button>
-                    {companyData && (
-                      <pre>{JSON.stringify(companyData, null, 2)}</pre>
-                    )}
+                      <IconButton
+                        onClick={closePopup}
+                        style={{
+                          position: "relative",
+                          top: "-10px",
+                          right: "-10px",
+                          padding: "10px",
+                          float: "right",
+                          backgroundColor: "#f5f5f5",
+                          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+                        }}
+                      >
+                        <CloseOutlined />
+                      </IconButton>
+                      {loading ? (
+                        <div className="flex justify-center items-center p-4">
+                          <Loader size={30} />{" "}
+                          {/* You can replace this with your loading component */}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center space-y-4">
+                          {!companyData ? (
+                            <>
+                              <label className="flex items-center space-x-2">
+                                <span>PAN:</span>
+                                <input
+                                  type="text"
+                                  placeholder="Enter PAN Number"
+                                  value={formData.pan}
+                                  onChange={(e) =>
+                                    setFormData({
+                                      ...formData,
+                                      pan: e.target.value,
+                                    })
+                                  }
+                                  required
+                                  className="border p-2 rounded"
+                                />
+                              </label>
+                              {formData.pan && (
+                                <button
+                                  className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+                                  type="button"
+                                  onClick={() => fetchCompanyData(formData.pan)}
+                                >
+                                  Fetch Company Data
+                                </button>
+                              )}
+
+                              {error && <p className="text-red-500">{error}</p>}
+                            </>
+                          ) : (
+                            <div className="max-w-md">
+                              <h2 className="text-lg font-bold mb-4">
+                                Company Information
+                              </h2>
+                              <p>
+                                <strong>Company Name:</strong>{" "}
+                                {companyData.companyName}
+                              </p>
+                              <p>
+                                <strong>Constitution:</strong>{" "}
+                                {companyData.constitution}
+                              </p>
+                              <p>
+                                <strong>Sub Constitution:</strong>{" "}
+                                {companyData.subConstitution}
+                              </p>
+                              <p>
+                                <strong>Client Status:</strong>{" "}
+                                {companyData.clientStatus}
+                              </p>
+                              <p>
+                                <strong>Authorised Person:</strong>{" "}
+                                {companyData.authorisedPerson}
+                              </p>
+                              <p>
+                                <strong>Phone:</strong> {companyData.phone}
+                              </p>
+                              <p>
+                                <strong>Email:</strong> {companyData.mailId}
+                              </p>
+                              <p>
+                                <strong>PAN:</strong> {companyData.pan}
+                              </p>
+                              <p>
+                                <strong>Address:</strong>{" "}
+                                {companyData.companyAddress}
+                              </p>
+                              <p>
+                                <strong>Effective From:</strong>{" "}
+                                {companyData.effectiveFrom}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
+
                 {taskData?.map((field, index) => {
                   if (field.type === "select") {
                     return (
