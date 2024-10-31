@@ -1,3 +1,23 @@
+export const newCustomerData = [
+  { id: "pan", type: "text", label: "PAN", required: true },
+  {
+    id: "companyName",
+    type: "text",
+    label: "Name of the Company",
+    required: true,
+  },
+  { id: "constitution", type: "text", label: "Constitution", required: true },
+  {
+    id: "authorizedPerson",
+    type: "text",
+    label: "Authorized Person",
+    required: true,
+  },
+  { id: "email", type: "email", label: "E-Mail", required: true },
+  { id: "mobileNumber", type: "tel", label: "Mobile Number", required: true },
+  { id: "address", type: "text", label: "Address", required: true },
+];
+
 export const getTasks = ({ companies = [], users = [] }) => {
   return [
     // {
@@ -18,7 +38,7 @@ export const getTasks = ({ companies = [], users = [] }) => {
       label: "Assigned To",
       options: [...users],
       defaultValue: "all",
-      required:true
+      required: true,
     },
     {
       type: "select",

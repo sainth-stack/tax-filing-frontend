@@ -11,6 +11,7 @@ import {
   getIncomeTaxData,
   getProfessionalTaxData,
   getTasks,
+  newCustomerData,
   providentFund,
   TDSTCS,
 } from "./data";
@@ -26,7 +27,8 @@ import { CloseOutlined } from "@mui/icons-material";
 const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   const [companies, setCompanies] = useState([]);
   const [companyData, setCompanyData] = useState(null);
-  const [isChecked, setIsChecked] = useState(false);
+  const [ExistingCustomer, setExistingCustomer] = useState(false);
+  const [newCustomer, setNewCustomer] = useState(false);
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -38,11 +40,40 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   }, {});
   const [formData, setFormData] = useState(defaultData);
   const [showPopup, setShowPopup] = useState(false);
+  const [newCustomerFormData, setnewCustomerFormData] = useState({});
   const [error, setError] = useState(null);
   const [taskData, setTasks] = useState(tasks);
 
   const currentYear = moment().year();
   const currentMonth = moment().format("MMMM");
+
+  const handleNewCustomerInputChange = (e, id) => {
+    setnewCustomerFormData({
+      ...newCustomerFormData,
+      [id]: e.target.value,
+    });
+  };
+
+  const handleNewCustomerSubmit = async (e) => {
+    e.preventDefault();
+
+    // Combine existingData and newFieldsData for submission
+    const payload = {
+      ...formData,
+      ...newCustomerFormData,
+    };
+
+    // Make your POST request here using Axios
+    try {
+      const response = await axios.post(`${base_url}/companies`, payload);
+      console.log("Success:", response.data);
+    } catch (error) {
+      console.error(
+        "Error:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -180,7 +211,9 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   //close popup vishnu
 
   const closePopup = () => {
-    setIsChecked(false); // Set isChecked to false to hide the popup
+    setExistingCustomer(false);
+
+    // Set isChecked to false to hide the popup
     // Clear the form data
     // Clear the company data
     setError(""); // Clear any error messages
@@ -202,7 +235,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
     setError(null); // Clear any existing error messages
 
     // Check for additional required fields based on the customer type
-    if (isChecked) {
+    if (ExistingCustomer) {
       if (!formData.pan) {
         setError("PAN is required for existing customers.");
         return;
@@ -346,9 +379,12 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
     }));
   };
 
-  const handleCheckboxChange = (event) => {
-    //alert("checked");
-    setIsChecked(event.target.checked);
+  const handleExistingCustomerChange = (event) => {
+    setExistingCustomer(event.target.checked);
+  };
+
+  const handleNewCustomerChange = (event) => {
+    setNewCustomer(event.target.checked);
   };
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
@@ -382,16 +418,28 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                 <CustomCheckbox
                   id="Customer"
                   label="Existing Customer ?"
-                  checked={isChecked}
-                  onChange={handleCheckboxChange}
+                  checked={ExistingCustomer}
+                  onChange={handleExistingCustomerChange}
                   required={false}
                   className="mb-2 items-center  font-bold  justify-center"
                   style={{ cursor: "pointer" }}
                   labelStyles={{ fontSize: "16px", color: "#333" }}
                 />
+
+                <CustomCheckbox
+                  id="newCustomer"
+                  label="New Customer?"
+                  checked={newCustomer}
+                  onChange={handleNewCustomerChange}
+                  required={false}
+                  className="mb-2 items-center font-bold justify-center"
+                  style={{ cursor: "pointer" }}
+                  labelStyles={{ fontSize: "16px", color: "#333" }}
+                />
+
                 {/* hey */}
 
-                {isChecked && (
+                {ExistingCustomer && (
                   <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div
                       style={{
@@ -503,6 +551,64 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                           )}
                         </div>
                       )}
+                    </div>
+                  </div>
+                )}
+
+                {/* for new customer ben10 */}
+
+                {newCustomer && (
+                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 ">
+                    <div
+                      style={{
+                        backgroundColor: "#fff",
+                        padding: "20px",
+                        borderRadius: "8px",
+                        width: "50rem",
+                        maxHeight: "90vh",
+                        overflowY: "auto",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+                      }}
+                    >
+                      <IconButton
+                        onClick={() => setNewCustomer(false)}
+                        style={{
+                          position: "relative",
+                          top: "-10px",
+                          right: "-10px",
+                          padding: "10px",
+                          float: "right",
+                          backgroundColor: "#f5f5f5",
+                          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+                        }}
+                      >
+                        <CloseOutlined />
+                      </IconButton>
+
+                      <form onSubmit={() => handleNewCustomerSubmit}>
+                        <h2 className="text-lg font-semibold mb-4">
+                          New Customer Form
+                        </h2>
+                        {newCustomerData.map((field) => (
+                          <CustomInput
+                            key={field.id}
+                            id={field.id}
+                            type={field.type}
+                            label={field.label}
+                            value={newCustomerFormData[field.id] || ""}
+                            onChange={(e) =>
+                              handleNewCustomerInputChange(e, field.id)
+                            }
+                            required={field.required}
+                          />
+                        ))}
+                        <button
+                          type="submit"
+                          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                        >
+                          Submit
+                        </button>
+                      </form>
                     </div>
                   </div>
                 )}
