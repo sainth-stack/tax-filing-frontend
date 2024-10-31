@@ -45,10 +45,11 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   const currentMonth = moment().format("MMMM");
 
   const handleInputChange = (e) => {
-    setFormData({ pan: "" });
     const { id, value } = e.target;
+
+    setCompanyData(null);
     setFormData((prev) => {
-      const newData = { ...prev, [id]: value };
+      const newData = { ...prev, [id]: value, pan: "" };
       if (id === "typeOfInactive") {
         newData.cancellationStatus = "";
         newData.volApplicationStatus = "";
@@ -158,10 +159,15 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
       const response = await axios.get(
         `http://localhost:4500/api/companies/pan/${pan}`
       );
-      setCompanyData(response.data.companyDetails); // Extract company details
+      console.log("Company Data:", response.data.companyDetails.companyName); // Log the company data
+
+      setCompanyData(response.data.companyDetails);
+
+      // Extract company details
       // Open the popup // Store the company data
-      console.log("Company Data:", response.data); // Log the company data
-      return response.data; // Return the fetched data
+      return response.data;
+
+      // Return the fetched data
     } catch (error) {
       console.error(
         "Error fetching company data:",
@@ -175,8 +181,8 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
 
   const closePopup = () => {
     setIsChecked(false); // Set isChecked to false to hide the popup
-     // Clear the form data
-    setCompanyData(null); // Clear the company data
+    // Clear the form data
+    // Clear the company data
     setError(""); // Clear any error messages
   };
   //vishnu
@@ -503,13 +509,18 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
 
                 {taskData?.map((field, index) => {
                   if (field.type === "select") {
+                    const value =
+                      field.id === "company" && companyData
+                        ? companyData.companyName // Get companyName
+                        : formData[field.id] || "";
+
                     return (
                       <SelectInput
                         key={index}
                         id={field.id}
                         label={field.label}
                         options={getFields(field)}
-                        value={formData[field.id] || ""}
+                        value={value || formData[field.id]}
                         onChange={handleInputChange}
                         required={field.required}
                         defaultValue={field?.defaultValue}
