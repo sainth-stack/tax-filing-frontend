@@ -37,11 +37,6 @@ const Sidemenu = ({ user }) => {
     //super admin routes
     S: [
       { name: "Agency", icon: <AssuredWorkloadIcon />, path: "/agency" },
-      {
-        name: "Service Calendar",
-        icon: <CalendarMonthIcon />,
-        path: "/service-calendar",
-      },
     ],
     //admin routesa
     A: [
@@ -51,6 +46,11 @@ const Sidemenu = ({ user }) => {
       { name: "Auto Tasks", icon: <TaskOutlinedIcon />, path: "/tasks/auto" },
 
       { name: "Users", icon: <PeopleAltOutlined />, path: "/users" },
+      {
+        name: "Service Calendar",
+        icon: <CalendarMonthIcon />,
+        path: "/service-calendar",
+      },
       {
         name: "Notification Settings",
         icon: <NotificationsActiveOutlinedIcon />,
@@ -86,11 +86,10 @@ const Sidemenu = ({ user }) => {
               <Link
                 to={item.path}
                 onClick={() => handleMenuClick(item.path)}
-                className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${
-                  activeItem === item.path
+                className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${activeItem === item.path
                     ? "border-blue-500 bg-blue-50 text-blue-700"
                     : "border-transparent"
-                } border-l-4 transition-colors duration-200`}
+                  } border-l-4 transition-colors duration-200`}
               >
                 {item.icon}
                 {isOpen && (

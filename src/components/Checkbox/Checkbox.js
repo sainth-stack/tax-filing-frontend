@@ -10,6 +10,7 @@ const CustomCheckbox = ({
   className,
   style,
   labelStyles,
+  name
 }) => {
   return (
     <div className={`flex items-center ${className}`}>
@@ -23,6 +24,7 @@ const CustomCheckbox = ({
           cursor: "pointer",
           ...style,
         }}
+        name
         onChange={onChange}
         className="border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2"
         required={required}

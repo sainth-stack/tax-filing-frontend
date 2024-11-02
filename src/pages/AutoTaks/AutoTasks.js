@@ -291,7 +291,7 @@ const AutoTasks = () => {
           >
             Auto Tasks
           </label>
-          <div>
+          {/* <div>
             <Button
               variant="text"
               sx={{
@@ -330,7 +330,7 @@ const AutoTasks = () => {
                 Cancel
               </Button>
             )}
-          </div>
+          </div> */}
         </div>
 
         {showtasks && showtasks.length > 0 && (

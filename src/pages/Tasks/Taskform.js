@@ -11,7 +11,6 @@ import {
   getIncomeTaxData,
   getProfessionalTaxData,
   getTasks,
-  newCustomerData,
   providentFund,
   TDSTCS,
 } from "./data";
@@ -20,16 +19,14 @@ import TextArea from "../../components/text-area";
 import { toast } from "react-toastify";
 import Loader from "../../components/helpers/loader";
 import CustomCheckbox from "../../components/Checkbox/Checkbox";
-import { Popup } from "@mui/base/Unstable_Popup/Popup";
-import { IconButton } from "@mui/material";
-import { CloseOutlined } from "@mui/icons-material";
+import ExistingCustomer from "./popups/existingCostomer";
+import NewCustomer from "./popups/newCostomer";
 
 const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   const [companies, setCompanies] = useState([]);
   const [companyData, setCompanyData] = useState(null);
-  const [ExistingCustomer, setExistingCustomer] = useState(false);
-  const [newCustomer, setNewCustomer] = useState(false);
-
+  const [customer, setCustomer] = useState('')
+  const [showModel, setShowModel] = useState(false)
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const tasks = getTasks([], []);
@@ -39,41 +36,11 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
     return acc;
   }, {});
   const [formData, setFormData] = useState(defaultData);
-  const [showPopup, setShowPopup] = useState(false);
-  const [newCustomerFormData, setnewCustomerFormData] = useState({});
   const [error, setError] = useState(null);
   const [taskData, setTasks] = useState(tasks);
 
   const currentYear = moment().year();
   const currentMonth = moment().format("MMMM");
-
-  const handleNewCustomerInputChange = (e, id) => {
-    setnewCustomerFormData({
-      ...newCustomerFormData,
-      [id]: e.target.value,
-    });
-  };
-
-  const handleNewCustomerSubmit = async (e) => {
-    e.preventDefault();
-
-    // Combine existingData and newFieldsData for submission
-    const payload = {
-      ...formData,
-      ...newCustomerFormData,
-    };
-
-    // Make your POST request here using Axios
-    try {
-      const response = await axios.post(`${base_url}/companies`, payload);
-      console.log("Success:", response.data);
-    } catch (error) {
-      console.error(
-        "Error:",
-        error.response ? error.response.data : error.message
-      );
-    }
-  };
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -179,85 +146,24 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
 
   useEffect(() => {
     fetchCompanies();
-
     fetchUsers();
   }, []);
 
   // Dependency array to rerun when isChecked or company changes
 
-  const fetchCompanyData = async (pan) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4500/api/companies/pan/${pan}`
-      );
-      console.log("Company Data:", response.data.companyDetails.companyName); // Log the company data
 
-      setCompanyData(response.data.companyDetails);
 
-      // Extract company details
-      // Open the popup // Store the company data
-      return response.data;
-
-      // Return the fetched data
-    } catch (error) {
-      console.error(
-        "Error fetching company data:",
-        error.response ? error.response.data : error.message
-      );
-      setError("Failed to fetch company data."); // Set an error message
-      return null; // Return null on error
-    }
-  };
-  //close popup vishnu
-
-  const closePopup = () => {
-    setExistingCustomer(false);
-
-    // Set isChecked to false to hide the popup
-    // Clear the form data
-    // Clear the company data
-    setError(""); // Clear any error messages
-  };
-  //vishnu
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check for required fields
     const requiredFields = ["company", "startDate", "priority", "dueDate"]; // Updated required fields
     for (const field of requiredFields) {
       if (!formData[field]) {
-        setError(`Field ${field} is required.`); // Fixed error message syntax
+        setError(`Field ${field} is required.`);
         return;
       }
     }
-
-    // Clear previous errors
-    setError(null); // Clear any existing error messages
-
-    // Check for additional required fields based on the customer type
-    if (ExistingCustomer) {
-      if (!formData.pan) {
-        setError("PAN is required for existing customers.");
-        return;
-      }
-
-      // Fetch company data if the PAN is provided
-      const companyDataResponse = await fetchCompanyData(formData.pan);
-      if (!companyDataResponse) return; // Exit if fetch failed
-    } else {
-      // Check for required fields for new customers
-      const newCustomerFields = [
-        "pan",
-        "companyName",
-        "constitution",
-        "authorizedPerson",
-        "email",
-        "mobileNumber",
-        "address",
-      ];
-    }
-
-    // Submit the form data
+    setError(null);
     try {
       await axios.post(`${base_url}/tasks`, formData);
       fetchTasks();
@@ -379,13 +285,6 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
     }));
   };
 
-  const handleExistingCustomerChange = (event) => {
-    setExistingCustomer(event.target.checked);
-  };
-
-  const handleNewCustomerChange = (event) => {
-    setNewCustomer(event.target.checked);
-  };
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
       {/* {loading && loading ? (
@@ -397,6 +296,9 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
       ) : (
         <>{"Vishnu"}</>
       )} */}
+
+      {customer === 'Exist' && showModel && <ExistingCustomer {...{ setCustomer, setFormData, formData,setShowModel }} />}
+      {customer === 'New' && showModel && <NewCustomer {...{ setCustomer, setFormData, formData,setShowModel ,fetchCompanies}}/>}
 
       {showForm && (
         <>
@@ -415,203 +317,35 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                 {"Task Form"}
               </h2>
               <div className="grid grid-cols-4 gap-5">
-                <CustomCheckbox
-                  id="Customer"
-                  label="Existing Customer ?"
-                  checked={ExistingCustomer}
-                  onChange={handleExistingCustomerChange}
-                  required={false}
-                  className="mb-2 items-center  font-bold  justify-center"
-                  style={{ cursor: "pointer" }}
-                  labelStyles={{ fontSize: "16px", color: "#333" }}
-                />
+                <div>
+                  <h4 className="text-[16px] flex-col gap-3">Customer</h4>
+                  <div className="flex items-center gap-5 mt-2">
+                    <CustomCheckbox
+                      id="Customer"
+                      label="Existing"
+                      name={"customer"}
+                      checked={customer == "Exist"}
+                      onChange={() => { setCustomer("Exist"); setShowModel(true) }}
+                      required={false}
+                      className="mb-2 items-center  font-bold  justify-center"
+                      style={{ cursor: "pointer" }}
+                      labelStyles={{ fontSize: "16px", color: "#333" }}
+                    />
 
-                <CustomCheckbox
-                  id="newCustomer"
-                  label="New Customer?"
-                  checked={newCustomer}
-                  onChange={handleNewCustomerChange}
-                  required={false}
-                  className="mb-2 items-center font-bold justify-center"
-                  style={{ cursor: "pointer" }}
-                  labelStyles={{ fontSize: "16px", color: "#333" }}
-                />
-
-                {/* hey */}
-
-                {ExistingCustomer && (
-                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div
-                      style={{
-                        // Adjust as needed
-                        backgroundColor: "#fff",
-                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                        borderRadius: "12px",
-                        padding: "12px",
-                        zIndex: 1000,
-                        Width: "15rem",
-                        Height: "auto",
-                        overflow: "auto",
-                      }}
-                    >
-                      <IconButton
-                        onClick={closePopup}
-                        style={{
-                          position: "relative",
-                          top: "-10px",
-                          right: "-10px",
-                          padding: "10px",
-                          float: "right",
-                          backgroundColor: "#f5f5f5",
-                          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-                        }}
-                      >
-                        <CloseOutlined />
-                      </IconButton>
-                      {loading ? (
-                        <div className="flex justify-center items-center p-4">
-                          <Loader size={30} />{" "}
-                          {/* You can replace this with your loading component */}
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center space-y-4">
-                          {!companyData ? (
-                            <>
-                              <label className="flex items-center space-x-2">
-                                <span>PAN:</span>
-                                <input
-                                  type="text"
-                                  placeholder="Enter PAN Number"
-                                  value={formData.pan}
-                                  onChange={(e) =>
-                                    setFormData({
-                                      ...formData,
-                                      pan: e.target.value,
-                                    })
-                                  }
-                                  required
-                                  className="border p-2 rounded"
-                                />
-                              </label>
-                              {formData.pan && (
-                                <button
-                                  className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
-                                  type="button"
-                                  onClick={() => fetchCompanyData(formData.pan)}
-                                >
-                                  Fetch Company Data
-                                </button>
-                              )}
-
-                              {error && <p className="text-red-500">{error}</p>}
-                            </>
-                          ) : (
-                            <div className="max-w-md">
-                              <h2 className="text-lg font-bold mb-4">
-                                Company Information
-                              </h2>
-                              <p>
-                                <strong>Company Name:</strong>{" "}
-                                {companyData.companyName}
-                              </p>
-                              <p>
-                                <strong>Constitution:</strong>{" "}
-                                {companyData.constitution}
-                              </p>
-                              <p>
-                                <strong>Sub Constitution:</strong>{" "}
-                                {companyData.subConstitution}
-                              </p>
-                              <p>
-                                <strong>Client Status:</strong>{" "}
-                                {companyData.clientStatus}
-                              </p>
-                              <p>
-                                <strong>Authorised Person:</strong>{" "}
-                                {companyData.authorisedPerson}
-                              </p>
-                              <p>
-                                <strong>Phone:</strong> {companyData.phone}
-                              </p>
-                              <p>
-                                <strong>Email:</strong> {companyData.mailId}
-                              </p>
-                              <p>
-                                <strong>PAN:</strong> {companyData.pan}
-                              </p>
-                              <p>
-                                <strong>Address:</strong>{" "}
-                                {companyData.companyAddress}
-                              </p>
-                              <p>
-                                <strong>Effective From:</strong>{" "}
-                                {companyData.effectiveFrom}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                    <CustomCheckbox
+                      id="newCustomer"
+                      label="New"
+                      name={"customer"}
+                      checked={customer == "New"}
+                      onChange={() => { setCustomer("New"); setShowModel(true) }}
+                      required={false}
+                      className="mb-2 items-center font-bold justify-center"
+                      style={{ cursor: "pointer" }}
+                      labelStyles={{ fontSize: "16px", color: "#333" }}
+                    />
                   </div>
-                )}
+                </div>
 
-                {/* for new customer ben10 */}
-
-                {newCustomer && (
-                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 ">
-                    <div
-                      style={{
-                        backgroundColor: "#fff",
-                        padding: "20px",
-                        borderRadius: "8px",
-                        width: "50rem",
-                        maxHeight: "90vh",
-                        overflowY: "auto",
-                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-                      }}
-                    >
-                      <IconButton
-                        onClick={() => setNewCustomer(false)}
-                        style={{
-                          position: "relative",
-                          top: "-10px",
-                          right: "-10px",
-                          padding: "10px",
-                          float: "right",
-                          backgroundColor: "#f5f5f5",
-                          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-                        }}
-                      >
-                        <CloseOutlined />
-                      </IconButton>
-
-                      <form onSubmit={() => handleNewCustomerSubmit}>
-                        <h2 className="text-lg font-semibold mb-4">
-                          New Customer Form
-                        </h2>
-                        {newCustomerData.map((field) => (
-                          <CustomInput
-                            key={field.id}
-                            id={field.id}
-                            type={field.type}
-                            label={field.label}
-                            value={newCustomerFormData[field.id] || ""}
-                            onChange={(e) =>
-                              handleNewCustomerInputChange(e, field.id)
-                            }
-                            required={field.required}
-                          />
-                        ))}
-                        <button
-                          type="submit"
-                          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-                        >
-                          Submit
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                )}
 
                 {taskData?.map((field, index) => {
                   if (field.type === "select") {

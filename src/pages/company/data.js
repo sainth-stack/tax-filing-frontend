@@ -91,7 +91,6 @@ export const sectionsData = (data) => {
       ],
       id: "companyDetails",
     },
-
     {
       title: "Income Tax",
       fields: [
