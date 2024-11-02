@@ -1,5 +1,5 @@
-export const getTasks = ({ companies = [], users = [],formData }) => {
-  console.log(formData)
+export const getTasks = ({ companies = [], users = [], data }) => {
+  console.log(data)
   return [
     // {
     //   type: "checkbox",
@@ -41,12 +41,16 @@ export const getTasks = ({ companies = [], users = [],formData }) => {
       id: "dueDate",
       label: "Due Date",
     },
-     {
-      type: "date",
-      id: "actualCompletionDate",
-      label: "Actual Completion Date",
-      required: false,
-    },
+    ...(data?.taskName !== "gstNewRegistration"
+      ? [
+        {
+          type: "date",
+          id: "actualCompletionDate",
+          label: "Actual Completion Date",
+          required: false,
+        },
+      ]
+      : []),
     {
       type: "select",
       id: "taskType",
