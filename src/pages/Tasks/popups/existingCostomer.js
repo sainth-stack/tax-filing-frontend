@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { IconButton, CircularProgress } from "@mui/material";
 import { CloseOutlined } from "@mui/icons-material";
+import { base_url } from "../../../const";
 
 const ExistingCustomer = ({setCustomer,formData,setFormData,setShowModel}) => {
     const [formData2, setFormData2] = useState({ pan: "" });
@@ -12,7 +13,7 @@ const ExistingCustomer = ({setCustomer,formData,setFormData,setShowModel}) => {
     const fetchCompanyData = async (pan) => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4500/api/companies/pan/${pan}`);
+            const response = await axios.get(`${base_url}/companies/pan/${pan}`);
             setCompanyData(response.data.companyDetails);
             setFormData({...formData,company:response?.data?.companyDetails?.companyName})
             setShowModel(false)
