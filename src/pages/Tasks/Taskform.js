@@ -18,28 +18,38 @@ import { base_url } from "../../const";
 import TextArea from "../../components/text-area";
 import { toast } from "react-toastify";
 import Loader from "../../components/helpers/loader";
+import CustomCheckbox from "../../components/Checkbox/Checkbox";
+import ExistingCustomer from "./popups/existingCostomer";
+import NewCustomer from "./popups/newCostomer";
 
 const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   const [companies, setCompanies] = useState([]);
+  const [companyData, setCompanyData] = useState(null);
+  const [customer, setCustomer] = useState('')
+  const [showModel, setShowModel] = useState(false)
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const tasks = getTasks([], []);
+const tasks=(data)=>{
+  return getTasks({companies:[], users:[],data})
+}
   const endTask = getEndTasks();
-  const defaultData = tasks.reduce((acc, field) => {
+  const defaultData = tasks().reduce((acc, field) => {
     acc[field.id] = "";
     return acc;
   }, {});
   const [formData, setFormData] = useState(defaultData);
   const [error, setError] = useState(null);
-  const [taskData, setTasks] = useState(tasks);
+  const [taskData, setTasks] = useState(tasks());
 
   const currentYear = moment().year();
   const currentMonth = moment().format("MMMM");
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
+
+    setCompanyData(null);
     setFormData((prev) => {
-      const newData = { ...prev, [id]: value };
+      const newData = { ...prev, [id]: value, pan: "" };
       if (id === "typeOfInactive") {
         newData.cancellationStatus = "";
         newData.volApplicationStatus = "";
@@ -138,65 +148,46 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
 
   useEffect(() => {
     fetchCompanies();
-
     fetchUsers();
   }, []);
+
+  // Dependency array to rerun when isChecked or company changes
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check for required fields
-    const requiredFields = ["startDate", "priority", "company"];
+    const requiredFields = ["company", "startDate", "priority", "dueDate"]; // Updated required fields
     for (const field of requiredFields) {
       if (!formData[field]) {
         setError(`Field ${field} is required.`);
         return;
       }
     }
-
+    setError(null);
     try {
-      // Prepare form data for API
-      const formDataToSubmit = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (formData[key] instanceof File) {
-          formDataToSubmit.append(key, formData[key]);
-        } else {
-          formDataToSubmit.append(key, formData[key]);
-        }
-      });
-
-      // Submit form data
-      if (formData._id) {
-        try {
-          setLoading(true);
-          await axios.put(
-            `${base_url}/tasks/${formData._id}`,
-            formDataToSubmit
-          );
-          setLoading(false);
-          setShowForm(false);
-
-          toast.success("Task Updated Successfully");
-        } catch (error) {
-          toast.error("Failed to   Update Task");
-        }
-      } else {
-        try {
-          await axios.post(`${base_url}/tasks`, formDataToSubmit);
-          toast.success("Task Created Successfully");
-          setShowForm(false);
-        } catch (error) {
-          toast.error("Failed to Create Task");
-        }
-      }
-
-      // Fetch tasks and reset form data
+      await axios.post(`${base_url}/tasks`, formData);
       fetchTasks();
-      setFormData(defaultData);
-      setError(null); // Clear error if submission is successful
+      toast.success("Customer data submitted successfully");
+
+      // Reset form data after submission
+      setFormData({
+        pan: "",
+        companyName: "",
+        constitution: "",
+        authorizedPerson: "",
+        email: "",
+        mobileNumber: "",
+        address: "",
+        startDate: "", // Reset added fields
+        priority: "",
+        company: "",
+        dueDate: "",
+      });
+      setCompanyData(null); // Clear company data
     } catch (error) {
       setError(error.message);
-
       console.error(
         "ERROR",
         error.response ? error.response.data : error.message
@@ -246,32 +237,32 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   useEffect(() => {
     if (formData?.taskType === "gst") {
       const gstData = getGstData(formData, companies);
-      const gstdata = [...tasks, ...gstData, ...endTask];
+      const gstdata = [...tasks(formData), ...gstData, ...endTask];
       setTasks(gstdata);
     } else if (formData?.taskType === "providentFund") {
       /* for PF */
       const pfData = providentFund(formData);
-      const finalpfdata = [...tasks, ...pfData, ...endTask];
+      const finalpfdata = [...tasks(), ...pfData, ...endTask];
       setTasks(finalpfdata);
     } else if (formData?.taskType === "tds") {
       /* for PF */
       const TdsTcsData = TDSTCS(formData);
-      const finalpfdata = [...tasks, ...TdsTcsData, ...endTask];
+      const finalpfdata = [...tasks(), ...TdsTcsData, ...endTask];
       setTasks(finalpfdata);
     } else if (formData?.taskType === "incomeTax") {
       /* for Income - Tax */
       const IncomeTax = getIncomeTaxData(formData);
-      const IncomeTaxData = [...tasks, ...IncomeTax, ...endTask];
+      const IncomeTaxData = [...tasks(), ...IncomeTax, ...endTask];
       setTasks(IncomeTaxData);
     } else if (formData?.taskType === "esi") {
       /* for Income - Tax */
       const esi = getEsiData(formData);
-      const GetEsiData = [...tasks, ...esi, ...endTask];
+      const GetEsiData = [...tasks(), ...esi, ...endTask];
       setTasks(GetEsiData);
     } else if (formData?.taskType === "professionalTax") {
       /* for Income - professionalTax */
       const professionalTax = getProfessionalTaxData(formData);
-      const professionalTaxData = [...tasks, ...professionalTax, ...endTask];
+      const professionalTaxData = [...tasks(), ...professionalTax, ...endTask];
       setTasks(professionalTaxData);
     }
   }, [formData]);
@@ -308,6 +299,9 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
         <>{"Vishnu"}</>
       )} */}
 
+      {customer === 'Exist' && showModel && <ExistingCustomer {...{ setCustomer, setFormData, formData,setShowModel }} />}
+      {customer === 'New' && showModel && <NewCustomer {...{ setCustomer, setFormData, formData,setShowModel ,fetchCompanies}}/>}
+
       {showForm && (
         <>
           <header
@@ -325,15 +319,50 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                 {"Task Form"}
               </h2>
               <div className="grid grid-cols-4 gap-5">
+                <div>
+                  <h4 className="text-[16px] flex-col gap-3">Customer</h4>
+                  <div className="flex items-center gap-5 mt-2">
+                    <CustomCheckbox
+                      id="Customer"
+                      label="Existing"
+                      name={"customer"}
+                      checked={customer == "Exist"}
+                      onChange={() => { setCustomer("Exist"); setShowModel(true) }}
+                      required={false}
+                      className="mb-2 items-center  font-bold  justify-center"
+                      style={{ cursor: "pointer" }}
+                      labelStyles={{ fontSize: "16px", color: "#333" }}
+                    />
+
+                    <CustomCheckbox
+                      id="newCustomer"
+                      label="New"
+                      name={"customer"}
+                      checked={customer == "New"}
+                      onChange={() => { setCustomer("New"); setShowModel(true) }}
+                      required={false}
+                      className="mb-2 items-center font-bold justify-center"
+                      style={{ cursor: "pointer" }}
+                      labelStyles={{ fontSize: "16px", color: "#333" }}
+                    />
+                  </div>
+                </div>
+
+
                 {taskData?.map((field, index) => {
                   if (field.type === "select") {
+                    const value =
+                      field.id === "company" && companyData
+                        ? companyData.companyName // Get companyName
+                        : formData[field.id] || "";
+
                     return (
                       <SelectInput
                         key={index}
                         id={field.id}
                         label={field.label}
                         options={getFields(field)}
-                        value={formData[field.id] || ""}
+                        value={value || formData[field.id]}
                         onChange={handleInputChange}
                         required={field.required}
                         defaultValue={field?.defaultValue}

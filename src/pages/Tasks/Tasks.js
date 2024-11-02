@@ -109,7 +109,6 @@ const Tasks = () => {
       });
       setLoading(false);
 
-      console.log("filtrede users", data);
       setTasks(data);
     } catch (error) {
       toast.error("Error While Tasks Filtering");
@@ -353,11 +352,12 @@ const Tasks = () => {
                 setCompanyId,
                 setShowForm,
                 showForm,
+                fetchTasks,
                 view,
 
                 setCompanyRefresh,
                 companyRefresh,
-                fetchTasks,
+                fetchAllTasks,
               }}
             />
           </div>
@@ -373,6 +373,7 @@ const Tasks = () => {
               handleDelete,
               tasks,
               formData,
+              fetchAllTasks,
             }}
             dataLoading={loading}
           />
