@@ -1,4 +1,4 @@
-export const getTasks = ({ companies = [], users = [], data }) => {
+export const getTasks = ({ companies = [], users = [], data,noAct }) => {
   console.log(data)
   return [
     // {
@@ -21,16 +21,21 @@ export const getTasks = ({ companies = [], users = [], data }) => {
       defaultValue: "all",
       required: true,
     },
-    {
-      type: "select",
-      id: "priority",
-      label: "Priority",
-      options: [
-        { value: "high", label: "High" },
-        { value: "medium", label: "Medium" },
-        { value: "low", label: "Low" },
-      ],
-    },
+    ...((data?.taskName !== "gstMonthly" && data?.taskName !== "gstMonthlyPayment")
+      ? [
+        {
+          type: "select",
+          id: "priority",
+          label: "Priority",
+          options: [
+            { value: "high", label: "High" },
+            { value: "medium", label: "Medium" },
+            { value: "low", label: "Low" },
+          ],
+        },
+      ]
+      : []),
+
     {
       type: "date",
       id: "startDate",
@@ -41,7 +46,7 @@ export const getTasks = ({ companies = [], users = [], data }) => {
       id: "dueDate",
       label: "Due Date",
     },
-    ...(data?.taskName !== "gstNewRegistration"
+    ...((data?.taskName !== "gstNewRegistration" && !noAct)
       ? [
         {
           type: "date",

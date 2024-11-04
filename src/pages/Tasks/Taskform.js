@@ -169,7 +169,7 @@ const tasks=(data)=>{
     try {
       await axios.post(`${base_url}/tasks`, formData);
       fetchTasks();
-      toast.success("Customer data submitted successfully");
+      toast.success("Task created successfully");
 
       // Reset form data after submission
       setFormData({
