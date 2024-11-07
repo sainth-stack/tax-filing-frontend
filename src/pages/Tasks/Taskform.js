@@ -29,9 +29,9 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   const [showModel, setShowModel] = useState(false)
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-const tasks=(data)=>{
-  return getTasks({companies:[], users:[],data})
-}
+  const tasks = (data) => {
+    return getTasks({ companies: [], users: [], data })
+  }
   const endTask = getEndTasks();
   const defaultData = tasks().reduce((acc, field) => {
     acc[field.id] = "";
@@ -158,34 +158,46 @@ const tasks=(data)=>{
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const requiredFields = ["company", "startDate", "priority", "dueDate"]; // Updated required fields
-    for (const field of requiredFields) {
-      if (!formData[field]) {
-        setError(`Field ${field} is required.`);
-        return;
-      }
-    }
     setError(null);
     try {
-      await axios.post(`${base_url}/tasks`, formData);
-      fetchTasks();
-      toast.success("Task created successfully");
-
-      // Reset form data after submission
-      setFormData({
-        pan: "",
-        companyName: "",
-        constitution: "",
-        authorizedPerson: "",
-        email: "",
-        mobileNumber: "",
-        address: "",
-        startDate: "", // Reset added fields
-        priority: "",
-        company: "",
-        dueDate: "",
+      const formDataToSubmit = new FormData();
+      Object.keys(formData).forEach((key) => {
+        if (formData[key] instanceof File) {
+          formDataToSubmit.append(key, formData[key]);
+        } else {
+          formDataToSubmit.append(key, formData[key]);
+        }
       });
-      setCompanyData(null); // Clear company data
+
+      // Submit form data
+      if (formData._id) {
+        try {
+          setLoading(true);
+          await axios.put(
+            `${base_url}/tasks/${formData._id}`,
+            formDataToSubmit
+          );
+          setLoading(false);
+          setShowForm(false);
+
+          toast.success("Task Updated Successfully");
+        } catch (error) {
+          toast.error("Failed to   Update Task");
+        }
+      } else {
+        try {
+          await axios.post(`${base_url}/tasks`, formDataToSubmit);
+          toast.success("Task Created Successfully");
+          setShowForm(false);
+        } catch (error) {
+          toast.error("Failed to Create Task");
+        }
+      }
+
+      // Fetch tasks and reset form data
+      fetchTasks();
+      setFormData(defaultData);
+      setError(null);
     } catch (error) {
       setError(error.message);
       console.error(
@@ -299,8 +311,8 @@ const tasks=(data)=>{
         <>{"Vishnu"}</>
       )} */}
 
-      {customer === 'Exist' && showModel && <ExistingCustomer {...{ setCustomer, setFormData, formData,setShowModel }} />}
-      {customer === 'New' && showModel && <NewCustomer {...{ setCustomer, setFormData, formData,setShowModel ,fetchCompanies}}/>}
+      {customer === 'Exist' && showModel && <ExistingCustomer {...{ setCustomer, setFormData, formData, setShowModel }} />}
+      {customer === 'New' && showModel && <NewCustomer {...{ setCustomer, setFormData, formData, setShowModel, fetchCompanies }} />}
 
       {showForm && (
         <>

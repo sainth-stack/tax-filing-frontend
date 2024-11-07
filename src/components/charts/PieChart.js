@@ -250,7 +250,6 @@ const PieChart = ({ companyDetails, loading }) => {
     doc.save("company_details.pdf");
   };
 
-  console.log("company Details: ", companyDetails)
 
   return (
     <div className="container ">
