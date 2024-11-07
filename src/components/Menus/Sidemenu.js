@@ -52,6 +52,11 @@ const Sidemenu = ({ user }) => {
     //super admin routes
     S: [
       { name: "Agency", icon: <AssuredWorkloadIcon />, path: "/agency" },
+      {
+        name: "Service Calendar",
+        icon: <CalendarMonthIcon />,
+        path: "/service-calendar",
+      },
     ],
     //admin routesa
     A: [
@@ -61,11 +66,6 @@ const Sidemenu = ({ user }) => {
       { name: "Auto Tasks", icon: <TaskOutlinedIcon />, path: "/tasks/auto" },
 
       { name: "Users", icon: <PeopleAltOutlined />, path: "/users" },
-      {
-        name: "Service Calendar",
-        icon: <CalendarMonthIcon />,
-        path: "/service-calendar",
-      },
       {
         name: "Notification Settings",
         icon: <NotificationsActiveOutlinedIcon />,
