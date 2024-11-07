@@ -17,7 +17,6 @@ const Charts = () => {
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
   const [clientStatuses, setClientStatuses] = useState([]);
-console.log(filteredTasks,'dsfsd')
   useEffect(() => {
     const fetchCompanies = async () => {
       setLoading(true);
@@ -61,7 +60,12 @@ console.log(filteredTasks,'dsfsd')
         month,
       });
 
-      setfilteredTasks(data);
+      const response = await axios.post(`${base_url}/tasks/auto/filter`, {
+        year,
+        month,
+      });
+      console.log(data)
+      setfilteredTasks([...data, ...response?.data]);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching filtered tasks:", error);
@@ -127,7 +131,7 @@ console.log(filteredTasks,'dsfsd')
         <PendingCompeltedTaksGraph
           PendingCompeltedTaksGraphDetails={companies}
           filteredTasks={filteredTasks}
-                 loading={loading}
+          loading={loading}
 
         />
       </div>

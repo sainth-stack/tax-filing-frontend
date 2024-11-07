@@ -39,7 +39,6 @@ const PendingCompletedTasksGraph = ({
   loading,
 }) => {
 
-  console.log("filter tasks checking", filteredTasks)
 
   const navigate = useNavigate();
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });

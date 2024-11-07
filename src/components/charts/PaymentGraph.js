@@ -145,12 +145,10 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
       } else if (isNotCompletedSection) {
         selectedTasks = filterTime?.filter(
           (task) => {
-            console.log(task?.actualCompletionDate)
             return task?.taskType === label && (task?.actualCompletionDate === null || task?.actualCompletionDate === '' || task?.actualCompletionDate === 'null')
           }
         );
       }
-      console.log(selectedTasks)
       setTaskDetails(selectedTasks);
       setPopupVisible(true);
     }
