@@ -85,7 +85,6 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
     colors.push("#008000"); // Hex code for green
   }
 
-  console.log("categories", categories);
 
   const completedCategories =
     categories.length > 2

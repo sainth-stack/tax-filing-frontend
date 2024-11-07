@@ -238,7 +238,6 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
     navigate("/company", { state: { companyName: taskId } });
   };
 
-  //console.log("hey clicked", clickedCompanies);
 
   const handleExportAsCSV = () => {
     const csvContent = chartData.labels

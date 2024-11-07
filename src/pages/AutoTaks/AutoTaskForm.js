@@ -23,15 +23,17 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const tasks = getTasks([], []);
+  const tasks = (data) => {
+    return getTasks({ companies: [], users: [], data, noAct: true })
+  }
   const endTask = getEndTasks();
-  const defaultData = tasks.reduce((acc, field) => {
+  const defaultData = tasks().reduce((acc, field) => {
     acc[field.id] = "";
     return acc;
   }, {});
   const [formData, setFormData] = useState(defaultData);
   const [error, setError] = useState(null);
-  const [taskData, setTasks] = useState(tasks);
+  const [taskData, setTasks] = useState(tasks());
 
   const currentYear = moment().year();
   const currentMonth = moment().format("MMMM");
@@ -248,32 +250,32 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   useEffect(() => {
     if (formData?.taskType === "gst") {
       const gstData = getGstData(formData, companies);
-      const gstdata = [...tasks, ...gstData, ...endTask];
+      const gstdata = [...tasks(formData), ...gstData, ...endTask];
       setTasks(gstdata);
     } else if (formData?.taskType === "providentFund") {
       /* for PF */
       const pfData = providentFund(formData);
-      const finalpfdata = [...tasks, ...pfData, ...endTask];
+      const finalpfdata = [...tasks(), ...pfData, ...endTask];
       setTasks(finalpfdata);
     } else if (formData?.taskType === "tds") {
       /* for PF */
       const TdsTcsData = TDSTCS(formData);
-      const finalpfdata = [...tasks, ...TdsTcsData, ...endTask];
+      const finalpfdata = [...tasks(), ...TdsTcsData, ...endTask];
       setTasks(finalpfdata);
     } else if (formData?.taskType === "incomeTax") {
       /* for Income - Tax */
       const IncomeTax = getIncomeTaxData(formData);
-      const IncomeTaxData = [...tasks, ...IncomeTax, ...endTask];
+      const IncomeTaxData = [...tasks(), ...IncomeTax, ...endTask];
       setTasks(IncomeTaxData);
     } else if (formData?.taskType === "esi") {
       /* for Income - Tax */
       const esi = getEsiData(formData);
-      const GetEsiData = [...tasks, ...esi, ...endTask];
+      const GetEsiData = [...tasks(), ...esi, ...endTask];
       setTasks(GetEsiData);
     } else if (formData?.taskType === "professionalTax") {
       /* for Income - professionalTax */
       const professionalTax = getProfessionalTaxData(formData);
-      const professionalTaxData = [...tasks, ...professionalTax, ...endTask];
+      const professionalTaxData = [...tasks(), ...professionalTax, ...endTask];
       setTasks(professionalTaxData);
     }
   }, [formData]);

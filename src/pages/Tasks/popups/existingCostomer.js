@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { IconButton, CircularProgress } from "@mui/material";
 import { CloseOutlined } from "@mui/icons-material";
+import { base_url } from "../../../const";
 
 const ExistingCustomer = ({
   setCustomer,
@@ -14,28 +15,20 @@ const ExistingCustomer = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchCompanyData = async (pan) => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `http://localhost:4500/api/companies/pan/${pan}`
-      );
-      setCompanyData(response.data.companyDetails);
-      setFormData({
-        ...formData,
-        company: response?.data?.companyDetails?.companyName,
-      });
-      setShowModel(false);
-    } catch (error) {
-      console.error(
-        "Error fetching company data:",
-        error.response ? error.response.data : error.message
-      );
-      setError("Failed to fetch company data.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchCompanyData = async (pan) => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`${base_url}/companies/pan/${pan}`);
+            setCompanyData(response.data.companyDetails);
+            setFormData({...formData,company:response?.data?.companyDetails?.companyName})
+            setShowModel(false)
+        } catch (error) {
+            console.error("Error fetching company data:", error.response ? error.response.data : error.message);
+            setError("Failed to fetch company data.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
