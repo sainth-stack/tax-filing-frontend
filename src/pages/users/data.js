@@ -56,7 +56,7 @@ export const GetUsers = (companiesdata = [], agnciesdata = []) => {
           required: true,
         },
         {
-          type: "text",
+          type: "password",
           id: "password",
           label: "Password",
           required: true,
