@@ -49,7 +49,11 @@ const Login = () => {
 
       if (token && user.role == 'A') {
         navigate("/dashboard");
-      } else if (user.role == "S") {
+      }
+      else if (user.role == "U") {
+        navigate("/dashboard");
+      }
+      else if (user.role == "S") {
         navigate("/agency");
       }
     } catch (error) {

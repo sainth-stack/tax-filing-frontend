@@ -18,6 +18,7 @@ export const GetUsers = (companiesdata = [], agnciesdata = []) => {
           label: "Last Name",
           required: true,
         },
+
         {
           type: "date",
           id: "hireDate",
@@ -55,6 +56,12 @@ export const GetUsers = (companiesdata = [], agnciesdata = []) => {
           required: true,
         },
         {
+          type: "text",
+          id: "password",
+          label: "Password",
+          required: true,
+        },
+        {
           type: "number",
           id: "mobileNumber",
           label: "Mobile Number",
@@ -86,9 +93,11 @@ export const GetUsers = (companiesdata = [], agnciesdata = []) => {
           id: "role",
           label: "Role",
           options: [
-            { value: "admin", label: "Admin" },
-            { value: "superAdmin", label: "Super Admin" },
-            { value: "customer", label: "Customer" },
+            { value: "A", label: "Admin" },
+            { value: "S", label: "Super Admin" },
+            //{ value: "C", label: "Customer" },
+            { value: "U", label: "Basic" },
+
           ],
           required: true,
         },
