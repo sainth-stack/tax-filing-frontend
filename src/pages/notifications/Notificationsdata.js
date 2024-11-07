@@ -86,15 +86,15 @@ export const checkboxJson = [
 ];
 
 const toOptions = [
-  { value: "admin", label: "Admin" },
-  { value: "superadmin", label: "Superadmin" },
-  { value: "employee", label: "Employee" },
+  { value: "A", label: "Admin" },
+  { value: "S", label: "Superadmin" },
+  { value: "E", label: "Employee" },
 ];
 
 const ccOptions = [
-  { value: "admin", label: "Admin" },
-  { value: "superadmin", label: "Superadmin" },
-  { value: "employee", label: "Employee" },
+  { value: "A", label: "Admin" },
+  { value: "S", label: "Superadmin" },
+  { value: "E", label: "Employee" },
 ];
 // Export formFields as a function to accept dynamic options
 export const getFormFields = () => [

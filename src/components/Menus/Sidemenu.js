@@ -13,6 +13,21 @@ import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsAc
 import AssuredWorkloadIcon from "@mui/icons-material/AssuredWorkload";
 
 const Sidemenu = ({ user }) => {
+
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    const storedUserRole = localStorage.getItem("user");
+
+    if (storedUserRole) {
+      const user = JSON.parse(storedUserRole);
+      console.log("local", user.role)
+      setUserRole(user.role);
+
+    } else {
+      console.log("No user role found in localStorage");
+    }
+  }, []);
   const location = useLocation();
   const [activeItem, setActiveItem] = useState("");
   const [isOpen, setIsOpen] = useState(true);
@@ -61,7 +76,12 @@ const Sidemenu = ({ user }) => {
 
   const getUserSidebarItems = () => {
     // Default to all items if no specific role
-    return sidebarConfig[user?.role] || sidebarConfig.default;
+    let items = sidebarConfig[user?.role] || sidebarConfig.default;
+    if (user?.role === "U") {
+      items = items.filter((item) => item.name !== "Users");
+    }
+
+    return items;
   };
 
   useEffect(() => {
@@ -87,8 +107,8 @@ const Sidemenu = ({ user }) => {
                 to={item.path}
                 onClick={() => handleMenuClick(item.path)}
                 className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${activeItem === item.path
-                    ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-transparent"
+                  ? "border-blue-500 bg-blue-50 text-blue-700"
+                  : "border-transparent"
                   } border-l-4 transition-colors duration-200`}
               >
                 {item.icon}
