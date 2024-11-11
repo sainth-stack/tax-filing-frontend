@@ -174,7 +174,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
     if (elements.length > 0) {
       const index = elements[0].index;
       const label = chartData.labels[index];
-      const companies = companyGroupsByTask[label]?.idsWithNames || [];
+      const companies = companyGroupsByTask[label.toLowerCase()]?.idsWithNames || [];
 
       const chartContainer = event.chart.canvas.parentNode;
       const chartRect = chartContainer.getBoundingClientRect();

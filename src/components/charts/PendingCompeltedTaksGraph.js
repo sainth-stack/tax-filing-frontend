@@ -59,8 +59,8 @@ const PendingCompletedTasksGraph = ({
 
         filteredTasks.forEach((task) => {
           const assignedTo = task.assignedName || "Unassigned";
-          const actualCompletionDate = task.actualCompletionDate
-            ? new Date(task.actualCompletionDate)
+          const actualCompletionDate = (task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate)
+            ? new Date((task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate))
             : null;
 
           if (actualCompletionDate) {

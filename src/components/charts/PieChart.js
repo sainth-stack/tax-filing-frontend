@@ -139,7 +139,6 @@ const PieChart = ({ companyDetails, loading }) => {
         display: false,
         position: "top",
       },
-      responsive: true,
       tooltip: {
         enabled: true,
         callbacks: {
@@ -150,7 +149,6 @@ const PieChart = ({ companyDetails, loading }) => {
           },
         },
       },
-
       datalabels: {
         display: true,
         color: "#fff",
@@ -172,6 +170,34 @@ const PieChart = ({ companyDetails, loading }) => {
     },
     onClick: onChartClick,
   };
+
+  // Create a custom plugin to draw text in the center of the Doughnut chart
+  ChartJS.register({
+    id: 'centerText', // unique identifier for the plugin
+    beforeDraw: (chart) => {
+      const ctx = chart.ctx;
+      const width = chart.width;
+      const height = chart.height;
+      const fontSize = 24; // Set font size for the text
+      const fontStyle = 'bold';
+      const fontFamily = 'Arial'; // Font family can be adjusted
+
+      // Calculate the total value of the data
+      const total = chart.data.datasets[0].data.reduce((acc, curr) => acc + curr, 0);
+
+      // Set up the text styles
+      ctx.save();
+      ctx.font = `${fontStyle} ${fontSize}px ${fontFamily}`;
+      ctx.fillStyle = '#000'; // Set text color
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Display the total value in the center
+      ctx.fillText(`${total||100}`, width / 2, height / 1.8);
+
+      ctx.restore();
+    },
+  });
 
   const handleExportAsCSV = () => {
     const csvContent = companyDetails

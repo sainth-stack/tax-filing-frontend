@@ -33,8 +33,8 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
         const categorizedTasks = filteredTasks.reduce(
           (acc, task) => {
             const dueDate = new Date(task.dueDate);
-            const actualCompletionDate = task.actualCompletionDate
-              ? new Date(task.actualCompletionDate)
+            const actualCompletionDate = (task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate)
+              ? new Date((task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate))
               : null;
 
             if (actualCompletionDate) {
@@ -90,14 +90,14 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
     categories.length > 2
       ? categories[2]
       : categories.length > 1
-      ? categories[1]
-      : 0;
+        ? categories[1]
+        : 0;
   const totalCategories =
     categories.length > 2
       ? categories[0] + categories[1] + categories[2]
       : categories.length > 1
-      ? categories[0] + categories[1]
-      : categories[0] || 0;
+        ? categories[0] + categories[1]
+        : categories[0] || 0;
   const averagePercentage =
     totalCategories > 0 ? (completedCategories / totalCategories) * 100 : 0;
   const handleCategoryClick = (category) => {
@@ -225,7 +225,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                         `${averagePercentage}%`
                       }
                     />
-                    {data?.overdue && data.overdue > 0 && (
+                    {data?.overdue > 0 && (
                       <div
                         style={{
                           position: "absolute",
@@ -236,10 +236,10 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                           fontWeight: 500,
                         }}
                       >
-                        {data.overdue && data?.overdue}
+                        {data?.overdue}
                       </div>
                     )}
-                    {data?.inProgress && data.inProgress > 0 && (
+                    {data?.inProgress > 0 && (
                       <div
                         style={{
                           position: "absolute",
@@ -255,7 +255,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                         {data.inProgress && data?.inProgress}
                       </div>
                     )}
-                    {data?.completed && data?.completed > 0 && (
+                    {data?.completed > 0 && (
                       <div
                         style={{
                           position: "absolute",
@@ -266,7 +266,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                           fontWeight: 500,
                         }}
                       >
-                        {data?.completed}
+                        {parseInt(data?.completed) > 0 && data?.completed}
                       </div>
                     )}
                     <div

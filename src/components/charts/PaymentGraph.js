@@ -76,8 +76,8 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
         const notCompletedCounts = {};
         // Collect counts of completed and not completed tasks based on `actualCompletionDate`
         filterTime?.forEach((task) => {
-          const taskType = task.taskType || "Unknown";
-          const isCompleted = (task?.actualCompletionDate !==null && task?.actualCompletionDate !== '' && task?.actualCompletionDate !== 'null');
+          const taskType = task.taskType || "others";
+          const isCompleted = (task?.actualCompletionDate && task?.actualCompletionDate !==null && task?.actualCompletionDate !== '' && task?.actualCompletionDate !== 'null') || (task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate);
 
           if (!taskTypes.includes(taskType)) {
             taskTypes.push(taskType);
@@ -140,12 +140,12 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
       if (isCompletedSection) {
         selectedTasks = filterTime?.filter(
           (task) =>
-            task?.taskType === label && (task?.actualCompletionDate && task?.actualCompletionDate !== '' && task?.actualCompletionDate !== 'null')
+            task?.taskType === label && ((task?.actualCompletionDate && task?.actualCompletionDate !== '' && task?.actualCompletionDate !== 'null')|| (task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate))
         );
       } else if (isNotCompletedSection) {
         selectedTasks = filterTime?.filter(
           (task) => {
-            return task?.taskType === label && (task?.actualCompletionDate === null || task?.actualCompletionDate === '' || task?.actualCompletionDate === 'null')
+            return task?.taskType === label && ((!task.actualCompletionDate ||task?.actualCompletionDate === null || task?.actualCompletionDate === '' || task?.actualCompletionDate === 'null') || (task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate))
           }
         );
       }
