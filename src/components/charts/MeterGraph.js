@@ -38,11 +38,9 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
               : null;
 
             if (actualCompletionDate) {
-              if (actualCompletionDate <= dueDate) {
-                acc.completed.push(task);
-              } else {
-                acc.overdue.push(task);
-              }
+              acc.completed.push(task);
+            } else if (new Date() > dueDate) {
+              acc.overdue.push(task);
             } else {
               acc.inProgress.push(task);
             }
@@ -71,33 +69,23 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   const labelColors = ["#ff0000", "#ffcf57", "#008000"];
 
   if (data.overdue > 0) {
-    categories.push(data.overdue);
+    categories.push({ name: 'overDue', valu: data.overdue });
     colors.push("#ff0000"); // Hex code for red
   }
 
   if (data.inProgress > 0) {
-    categories.push(data.inProgress);
+    categories.push({ name: 'inProgress', value: data.inProgress });
     colors.push("#ffcf57"); // Hex code for yellow
   }
 
   if (data.completed > 0) {
-    categories.push(data.completed);
+    categories.push({ name: 'completed', value: data.completed });
     colors.push("#008000"); // Hex code for green
   }
+  console.log(categories)
 
-
-  const completedCategories =
-    categories.length > 2
-      ? categories[2]
-      : categories.length > 1
-        ? categories[1]
-        : 0;
-  const totalCategories =
-    categories.length > 2
-      ? categories[0] + categories[1] + categories[2]
-      : categories.length > 1
-        ? categories[0] + categories[1]
-        : categories[0] || 0;
+  const completedCategories = categories.find(item => item.name === "completed")?.value || 0;
+  const totalCategories = categories.reduce((sum, item) => sum + item.value, 0);
   const averagePercentage =
     totalCategories > 0 ? (completedCategories / totalCategories) * 100 : 0;
   const handleCategoryClick = (category) => {
