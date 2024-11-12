@@ -413,7 +413,7 @@ const PieChart = ({ companyDetails, loading }) => {
                 className="hover:bg-gray-100"
                 onClick={() => handleCompanyClick(company?._id)}
               >
-                <strong style={{ color: "#555" }}>Company:</strong>
+                {/* <strong style={{ color: "#555" }}>Company:</strong> */}
                 <span style={{ color: "#007BFF" }}>{company?.companyName}</span>
               </li>
             ))}

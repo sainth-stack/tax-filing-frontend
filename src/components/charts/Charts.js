@@ -64,8 +64,13 @@ const Charts = () => {
         year,
         month,
       });
+      const finData1 = response.data.map((item) => {
+        return {
+          ...item, auto: true
+        }
+      })
       console.log(data)
-      setfilteredTasks([...data, ...response?.data]);
+      setfilteredTasks([...data, ...finData1]);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching filtered tasks:", error);

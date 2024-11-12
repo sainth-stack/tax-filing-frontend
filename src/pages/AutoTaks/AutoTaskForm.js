@@ -19,7 +19,7 @@ import CustomFileInput from "../../components/customFile";
 import Loader from "../../components/helpers/loader";
 import { base_url } from "../../const";
 
-const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId }) => {
+const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompanyId }) => {
   const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -177,7 +177,7 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId }) => {
           );
           setLoading(false);
           setShowForm(false);
-
+          setCompanyId('')
           toast.success("Task Updated Successfully");
         } catch (error) {
           toast.error("Failed to   Update Task");

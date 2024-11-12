@@ -145,7 +145,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
         setChartData({
           labels: labels.map(
             (label) =>
-              label.charAt(0).toUpperCase() + label.slice(1).toLowerCase()
+              label
           ),
           datasets: [
             {
@@ -174,7 +174,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
     if (elements.length > 0) {
       const index = elements[0].index;
       const label = chartData.labels[index];
-      const companies = companyGroupsByTask[label.toLowerCase()]?.idsWithNames || [];
+      const companies = companyGroupsByTask[label]?.idsWithNames || [];
 
       const chartContainer = event.chart.canvas.parentNode;
       const chartRect = chartContainer.getBoundingClientRect();
@@ -205,7 +205,6 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
       },
     },
     responsive: true,
-
     maintainAspectRatio: false,
     scales: {
       x: {
@@ -238,6 +237,12 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
     navigate("/company", { state: { companyName: taskId } });
   };
 
+  function formatString(str) {
+    return str
+      .replace(/([A-Z])/g, ' $1') // Add space before each uppercase letter
+      .replace(/^./, str => str.toUpperCase()) // Capitalize the first letter
+      .trim(); // Remove any leading/trailing whitespace
+  }
 
   const handleExportAsCSV = () => {
     const csvContent = chartData.labels
@@ -329,7 +334,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
                   <div className="w-full">
                     <div style={{ width: "auto", height: "300px" }}>
                       <Bar
-                        data={chartData}
+                        data={{ ...chartData, labels: chartData.labels.map((item) => formatString(item)) }}
                         options={options}
                         style={{ width: "250px", height: "250px" }}
                       />
@@ -393,7 +398,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
                   className="hover:bg-gray-100"
                   onClick={() => handleCompanyClick(companyId)} // Pass companyId on click
                 >
-                  <strong style={{ color: "#555" }}>Company:</strong>{" "}
+                  {/* <strong style={{ color: "#555" }}>Company:</strong>{" "} */}
                   <span style={{ color: "#007BFF" }}>{companyName}</span>
                 </li>
               ))}

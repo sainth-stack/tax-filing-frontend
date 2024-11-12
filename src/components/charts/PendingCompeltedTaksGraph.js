@@ -50,7 +50,6 @@ const PendingCompletedTasksGraph = ({
     pendingTasksByPerson: {},
     completedTasksByPerson: {},
   });
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -58,6 +57,7 @@ const PendingCompletedTasksGraph = ({
         const completedTasksByPerson = {};
 
         filteredTasks.forEach((task) => {
+
           const assignedTo = task.assignedName || "Unassigned";
           const actualCompletionDate = (task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate)
             ? new Date((task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate))
@@ -143,9 +143,13 @@ const PendingCompletedTasksGraph = ({
     }
   };
 
-  const handleTaskClick = (taskId) => {
-    navigate(`/tasks`, { state: { taskId } });
-    setPopupVisible(false); // Hide the popup after navigation
+  const handleTaskClick = (taskId, auto) => {
+    if (auto) {
+      navigate(`/tasks/auto`, { state: { taskId } });
+    } else {
+      navigate(`/tasks`, { state: { taskId } });
+    }
+    setPopupVisible(false);
   };
 
   const handleExportAsCSV = () => {
@@ -324,7 +328,7 @@ const PendingCompletedTasksGraph = ({
                       popupContent?.tasks?.map((task) => (
                         <div
                           key={task._id}
-                          onClick={() => handleTaskClick(task._id)} // Task click handler
+                          onClick={() => handleTaskClick(task._id, task?.auto)} // Task click handler
                           style={{
                             marginBottom: "8px",
                             padding: "8px",

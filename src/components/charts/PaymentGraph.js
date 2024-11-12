@@ -21,6 +21,7 @@ import { saveAs } from "file-saver";
 import Header from "../../pages/Dashboard/card-container";
 import Loader from "../helpers/loader";
 import NoDataFound from "./NoDataFound";
+import { isTaskCompleted } from "../../utils/const";
 
 ChartJS.register(
 
@@ -77,7 +78,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
         // Collect counts of completed and not completed tasks based on `actualCompletionDate`
         filterTime?.forEach((task) => {
           const taskType = task.taskType || "others";
-          const isCompleted = (task?.actualCompletionDate && task?.actualCompletionDate !==null && task?.actualCompletionDate !== '' && task?.actualCompletionDate !== 'null') || (task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate);
+          const isCompleted = isTaskCompleted(task)
 
           if (!taskTypes.includes(taskType)) {
             taskTypes.push(taskType);
@@ -140,12 +141,12 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
       if (isCompletedSection) {
         selectedTasks = filterTime?.filter(
           (task) =>
-            task?.taskType === label && ((task?.actualCompletionDate && task?.actualCompletionDate !== '' && task?.actualCompletionDate !== 'null')|| (task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate))
+            task?.taskType === label && isTaskCompleted(task)
         );
       } else if (isNotCompletedSection) {
         selectedTasks = filterTime?.filter(
           (task) => {
-            return task?.taskType === label && ((!task.actualCompletionDate ||task?.actualCompletionDate === null || task?.actualCompletionDate === '' || task?.actualCompletionDate === 'null') || (task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate))
+            return task?.taskType === label && !isTaskCompleted(task)
           }
         );
       }
@@ -154,10 +155,16 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
     }
   };
 
-  const handleTaskClick = (taskId) => {
-    navigate(`/tasks`, { state: { taskId } });
-    setPopupVisible(false); // Hide the popup after navigation
+  const handleTaskClick = (taskId, auto) => {
+    if (auto) {
+      navigate(`/tasks/auto`, { state: { taskId } });
+    } else {
+      navigate(`/tasks`, { state: { taskId } });
+    }
+    setPopupVisible(false);
   };
+
+
 
   const options = {
     indexAxis: "x",
@@ -314,7 +321,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
                   taskDetails.map((task) => (
                     <div
                       key={task._id}
-                      onClick={() => handleTaskClick(task._id)} // Task click handler
+                      onClick={() => handleTaskClick(task._id, task?.auto)} // Task click handler
                       style={{
                         marginBottom: "8px",
                         padding: "8px",
@@ -352,11 +359,11 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
                         style={{
                           margin: "0",
                           fontSize: "14px",
-                          color: task.actualCompletionDate ? "green" : "red",
+                          color: isTaskCompleted(task) ? "green" : "red",
                         }}
                       >
                         Status:{" "}
-                        {task.actualCompletionDate
+                        {isTaskCompleted(task)
                           ? "Completed"
                           : "Not Completed"}
                       </p>
