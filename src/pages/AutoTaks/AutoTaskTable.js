@@ -15,7 +15,10 @@ import CssBaseline from "@mui/material/CssBaseline";
 import SortableTableHeader from "../../components/table/SortableTableHeader";
 import Accordian from "../../components/Accordian";
 import Loader from "../../components/helpers/loader";
-
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import axios from "axios";
+import { toast } from "react-toastify";
+import { base_url } from "../../const";
 const theme = createTheme({
   typography: {
     fontFamily: "Work Sans, Arial",
@@ -63,6 +66,7 @@ export default function AutoTasksTable({
   setCompanyId,
   formData,
   dataLoading,
+  fetchTasks
 }) {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("sno"); // default sorting by S.No
@@ -72,6 +76,37 @@ export default function AutoTasksTable({
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+  };
+
+
+  const handleAssignToMe = async (task) => {
+    try {
+      const finalDate = { ...task, assignedName: userId?.firstName, assignedTo: userId?._id }
+      // Prepare form data for API
+      const formDataToSubmit = new FormData();
+      Object.keys(finalDate).forEach((key) => {
+        formDataToSubmit.append(key, finalDate[key]);
+      });
+
+      // Submit form data
+      if (finalDate._id) {
+        try {
+          await axios.put(
+            `${base_url}/tasks/auto/${finalDate._id}`,
+            formDataToSubmit
+          );
+          toast.success("Task Assigned Successfully");
+        } catch (error) {
+          toast.error("Failed to Assigned Task");
+        }
+      }
+      fetchTasks();
+    } catch (error) {
+      console.error(
+        "ERROR",
+        error.response ? error.response.data : error.message
+      );
+    }
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -118,14 +153,15 @@ export default function AutoTasksTable({
     if (orderBy === "applicationSubStatus") {
       return order === "asc"
         ? (a.applicationSubStatus || "").localeCompare(
-            b.applicationSubStatus || ""
-          )
+          b.applicationSubStatus || ""
+        )
         : (b.applicationSubStatus || "").localeCompare(
-            a.applicationSubStatus || ""
-          );
+          a.applicationSubStatus || ""
+        );
     }
     return 0; // Default case, no sorting
   });
+  const userId = JSON.parse(localStorage.getItem('user'));
 
   return (
     <ThemeProvider theme={theme}>
@@ -215,7 +251,7 @@ export default function AutoTasksTable({
                       {task.company || "N/A"}
                     </TableCell>
                     <TableCell align="left" padding="normal">
-                      {task.taskName || "N/A"}
+                      {task?.taskName === "gstMonthly" ? (task?.taskName + "-" + task?.gstMonthly_gstType) : (task.taskName || "N/A")}
                     </TableCell>
                     <TableCell align="left" padding="normal">
                       {new Date(task.dueDate).toLocaleDateString() || "N/A"}
@@ -230,6 +266,21 @@ export default function AutoTasksTable({
                       {task.applicationSubStatus || "N/A"}
                     </TableCell>
                     <TableCell align="left" padding="normal">
+                      {
+                        userId?._id !== task.assignedTo &&
+
+                        <IconButton
+                          title="Assign to me"
+                          aria-label="edit"
+                          size="small"
+                          onClick={() => handleAssignToMe(task)}
+                        >
+                          <ControlPointIcon
+                            fontSize="inherit"
+                            className="text-grey-400 z-0 bg-gray-50 rounded"
+                          />
+                        </IconButton>
+                      }
                       <IconButton
                         aria-label="edit"
                         size="small"

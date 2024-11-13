@@ -78,7 +78,7 @@ const Sidemenu = ({ user }) => {
     // Default to all items if no specific role
     let items = sidebarConfig[user?.role] || sidebarConfig.default;
     if (user?.role === "U") {
-      items = items.filter((item) => item.name !== "Users");
+      items = items.filter((item) => (item.name !== "Users" && item.name !== "Notification Settings"));
     }
 
     return items;

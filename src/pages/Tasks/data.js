@@ -1741,77 +1741,76 @@ export const professionalTaxInactiveForm = (data) => {
   return fields;
 };
 
-const statusOptions = [
-  { value: "", label: "All" },
-  { value: "Pending for Apply", label: "Pending for Apply" },
-  { value: "applied", label: "Applied" },
-];
+const statusOptions = () => {
+  return [
+    { value: "", label: "All" },
+    { value: "filed", label: "Filed" },
+    { value: "notFiled", label: "Not Filed" },
+  ]
+};
 
-const applicationSubstatusOptions = [
-  { value: "", label: "All" },
+const applicationSubstatusOptions = (formData) => {
+  return formData.taskType === 'gst'
+    ? [
+      { value: "", label: "All" },
+      { value: "gstr1", label: "GSTR1" },
+      { value: "gstr3b", label: "GSTR3B" }
+    ]
+    : [{ value: "", label: "All" }];
+};
 
-  {
-    value: "pendingForApproval",
-    label: "Pending for Approval",
-  },
-  {
-    value: "pendingForClarification",
-    label: "Pending for Clarification",
-  },
-  { value: "rejected", label: "Rejected" },
-  { value: "approved", label: "Approved" },
-];
 
-export const taskSearch = [
-  {
-    type: "text",
-    id: "company",
-    label: "Company",
-    placeholder: "Search Company",
-    required: true,
-  },
-  {
-    type: "select",
-    id: "assignedTo",
-    label: "Assigned To",
-    options: { value: "All", label: "All" },
-    defaultValue: "All",
-    required: false,
-  },
-  {
-    type: "select",
-    id: "taskType",
-    label: "Task Type",
-    options: [
-      { value: "all", label: "All" },
+export const taskSearch = (formData) => {
+  return [
+    {
+      type: "text",
+      id: "company",
+      label: "Company",
+      placeholder: "Search Company",
+      required: true,
+    },
+    {
+      type: "select",
+      id: "assignedTo",
+      label: "Assigned To",
+      options: { value: "All", label: "All" },
+      defaultValue: "All",
+      required: false,
+    },
+    {
+      type: "select",
+      id: "taskType",
+      label: "Task Type",
+      options: [
+        { value: "all", label: "All" },
+        { value: "gst", label: "GST" },
+        { value: "providentFund", label: "Provident Fund" },
+        { value: "incomeTax", label: "Income Tax" },
+        { value: "tds", label: "TDS and TCS" },
+        { value: "esi", label: "ESI" },
+        { value: "professionalTax", label: "Professional Tax" },
+      ],
+    },
+    {
+      type: "select",
+      id: "status",
+      label: "Status",
+      options: statusOptions(formData),
+      defaultValue: "All",
 
-      { value: "gst", label: "GST" },
-      { value: "providentFund", label: "Provident Fund" },
-      { value: "incomeTax", label: "Income Tax" },
-      { value: "tds", label: "TDS and TCS" },
-      { value: "esi", label: "ESI" },
-      { value: "professionalTax", label: "Professional Tax" },
-    ],
-  },
-  {
-    type: "select",
-    id: "status",
-    label: "Status",
-    options: statusOptions,
-    defaultValue: "All",
+      required: false,
+    },
+    {
+      type: "select",
+      id: "applicationSubStatus",
+      label: "Application Substatus",
+      defaultValue: "All",
 
-    required: false,
-  },
-  {
-    type: "select",
-    id: "applicationSubStatus",
-    label: "Application Substatus",
-    defaultValue: "All",
-
-    options: applicationSubstatusOptions, // Add the options here
-    required: false,
-  },
-];
+      options: applicationSubstatusOptions(formData), // Add the options here
+      required: false,
+    },
+  ]
+};
 
 //revocations data condotions
 export const GstRevocationData = (data) => {

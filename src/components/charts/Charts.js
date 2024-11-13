@@ -24,7 +24,7 @@ const Charts = () => {
         const response = await axios.post(`${base_url}/companies/filter`, {
           status: status === "all" ? "" : status,
           year,
-          month,
+          month:month==='0' ? '':month,
         });
         setLoading(false);
 
@@ -57,12 +57,12 @@ const Charts = () => {
     try {
       const { data } = await axios.post(`${base_url}/tasks/filter`, {
         year,
-        month,
+        month:month==='0' ? '':month,
       });
 
       const response = await axios.post(`${base_url}/tasks/auto/filter`, {
         year,
-        month,
+        month:month==='0' ? '':month,
       });
       const finData1 = response.data.map((item) => {
         return {

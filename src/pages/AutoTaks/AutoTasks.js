@@ -3,20 +3,9 @@ import {
   Button,
   Modal,
   Box,
-  Typography,
-  MenuItem,
-  Dialog,
-  DialogTitle,
-  IconButton,
-  DialogContent,
+  Typography
 } from "@mui/material";
-
-import { CloseOutlined } from "@mui/icons-material";
-
 import axios from "axios";
-
-import { WidthFull } from "@mui/icons-material";
-import Loader from "../../components/helpers/loader";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router";
 import Layout from "../../components/Layout/Layout";
@@ -24,7 +13,6 @@ import { taskSearch } from "../Tasks/data";
 import SelectInput from "../../components/select";
 import CustomInput from "../../components/input";
 import DateInput from "../../components/Date/DateInput";
-import Taskform from "../Tasks/Taskform";
 import AutoTasksTable from "./AutoTaskTable";
 import { base_url } from "../../const";
 import { Dates } from "../company/data";
@@ -36,7 +24,6 @@ const AutoTasks = () => {
   const [showtasks, setShowTasks] = useState(false);
   const [companyId, setCompanyId] = useState("");
   const [users, setUsers] = useState([]);
-  const [open, setOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     company: "",
@@ -71,13 +58,6 @@ const AutoTasks = () => {
       setCompanyId(taskId);
     }
   }, [taskId]);
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleShowForm = () => {
-    setShowForm(!showForm);
-  };
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -124,7 +104,7 @@ const AutoTasks = () => {
     try {
       const response = await axios.get(`${base_url}/users/all`);
       const data = response.data?.data.map((item) => ({
-        value: item?.firstName,
+        value: item?._id,
         label: item?.firstName,
       }));
       setLoading(false);
@@ -236,7 +216,7 @@ const AutoTasks = () => {
       <div className="container mx-auto my-6">
         <div className="flex flex-row my-3 gap-4">
           <div className="flex items-center gap-4">
-            {taskSearch?.map((field, index) => {
+            {taskSearch(formData)?.map((field, index) => {
               if (field?.type === "select") {
                 return (
                   <SelectInput
@@ -291,46 +271,6 @@ const AutoTasks = () => {
           >
             Auto Tasks
           </label>
-          {/* <div>
-            <Button
-              variant="text"
-              sx={{
-                margin: ".7em",
-                bgcolor: "teal",
-                color: "white",
-                "&:hover": {
-                  bgcolor: "teal",
-                  color: "white",
-                  boxShadow: "1px 2px 3px gray",
-                },
-              }}
-              onClick={handleShowForm}
-            >
-              Add Auto Tasks
-            </Button>
-
-            {(showForm || companyId) && (
-              <Button
-                variant="text"
-                sx={{
-                  margin: ".7em",
-                  bgcolor: "red",
-                  color: "white",
-                  "&:hover": {
-                    bgcolor: "white",
-                    boxShadow: "1px 2px 3px gray",
-                    color: "red",
-                  },
-                }}
-                onClick={() => {
-                  setCompanyId("");
-                  setShowForm(false);
-                }}
-              >
-                Cancel
-              </Button>
-            )}
-          </div> */}
         </div>
 
         {showtasks && showtasks.length > 0 && (
@@ -373,6 +313,7 @@ const AutoTasks = () => {
               handleDelete,
               tasks,
               formData,
+              fetchTasks
             }}
             dataLoading={loading}
           />
