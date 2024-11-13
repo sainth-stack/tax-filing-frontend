@@ -16,6 +16,7 @@ import SortableTableHeader from "../../components/table/SortableTableHeader";
 import Accordian from "../../components/Accordian";
 import Loader from "../../components/helpers/loader";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
 import axios from "axios";
 import { toast } from "react-toastify";
 import { base_url } from "../../const";
@@ -70,10 +71,13 @@ export default function AutoTasksTable({
 }) {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("sno"); // default sorting by S.No
-
+  const [openDialog, setOpenDialog] = useState(false);  // State to control the dialog visibility
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  const [selectedTask, setSelectedTask] = useState(null);  // Store the selected task for confirmation
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -162,6 +166,16 @@ export default function AutoTasksTable({
     return 0; // Default case, no sorting
   });
   const userId = JSON.parse(localStorage.getItem('user'));
+  const handleConfirmAssign = () => {
+    if (selectedTask) {
+      handleAssignToMe(selectedTask);  // Pass the selected task to the handler
+    }
+    setOpenDialog(false);  // Close the dialog after confirming
+  };
+  const handleClickOpen = (task) => {
+    setSelectedTask(task);
+    setOpenDialog(true);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -273,8 +287,7 @@ export default function AutoTasksTable({
                           title="Assign to me"
                           aria-label="edit"
                           size="small"
-                          onClick={() => handleAssignToMe(task)}
-                        >
+                          onClick={() => handleClickOpen(task)}                        >
                           <ControlPointIcon
                             fontSize="inherit"
                             className="text-grey-400 z-0 bg-gray-50 rounded"
@@ -324,6 +337,20 @@ export default function AutoTasksTable({
         />
       </TableContainer>
       <Accordian />
+      <Dialog open={openDialog} onClose={handleClose}>
+        <DialogTitle>Confirm Assignment</DialogTitle>
+        <DialogContent>
+          <p>Are you sure you want to assign this task to yourself?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmAssign} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </ThemeProvider>
   );
 }
