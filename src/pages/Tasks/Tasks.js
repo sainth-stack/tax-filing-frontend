@@ -234,7 +234,7 @@ const Tasks = () => {
       <div className="container mx-auto my-6">
         <div className="flex flex-row my-3 gap-4">
           <div className="flex items-center gap-4">
-            {taskSearch?.map((field, index) => {
+            {taskSearch(formData)?.map((field, index) => {
               if (field?.type === "select") {
                 return (
                   <SelectInput

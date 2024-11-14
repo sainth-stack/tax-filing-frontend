@@ -52,17 +52,14 @@ const ServiceForm = () => {
     );
     setTasks(updatedTasks);
   };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const dataToSubmit = tasks
-      .filter((task) => task.date)
-      .map((task) => ({
-        ...task,
-        name: task.name,
-        date: new Date(task.date).toISOString(),
-      }));
+    const dataToSubmit = tasks?.filter((task) => task?.date)?.map((task) => ({
+      ...task,
+      name: task?.name,
+      date: new Date(task?.date).toISOString(),
+    }));
+    console.log(dataToSubmit)
 
     if (dataToSubmit.length === 0) {
       console.log("No tasks with selected dates to submit.");
@@ -113,6 +110,7 @@ const ServiceForm = () => {
   const handleUpdate = async (taskId, updatedData) => {
     setLoading((prevLoading) => ({ ...prevLoading, [taskId]: true }));
     try {
+      console.log(updatedData)
       const response = await axios.put(
         `${base_url}/service-calendar/${taskId}`,
         updatedData
@@ -137,11 +135,10 @@ const ServiceForm = () => {
   const handleUpdateAll = async () => {
     const tasksToUpdate = tasks.filter((task) => task.id && task.modified);
     const tasksToCreate = tasks.filter((task) => !task.id && task.date);
-
     try {
       // Only update modified tasks
       const updatePromises = tasksToUpdate.map((task) =>
-        handleUpdate(task.id, { date: new Date(task.date).toISOString() })
+        handleUpdate(task.id, { ...task, date: new Date(task.date).toISOString() })
       );
 
       await Promise.all(updatePromises);
@@ -151,6 +148,7 @@ const ServiceForm = () => {
         const creationResponses = await axios.post(
           `${base_url}/service-calendar`,
           tasksToCreate.map((task) => ({
+            ...task,
             name: task.name,
             date: new Date(task.date).toISOString(),
           }))
