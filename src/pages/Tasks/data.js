@@ -1791,6 +1791,18 @@ export const taskSearch = (formData) => {
         { value: "professionalTax", label: "Professional Tax" },
       ],
     },
+    ...(formData.taskType === 'gst'
+      ? [
+        {
+          type: "select",
+          id: "applicationSubStatus",
+          label: "Type of GST",
+          defaultValue: "All",
+          options: applicationSubstatusOptions(formData), // Add the options here
+          required: false,
+        }
+      ]
+      : []),
     {
       type: "select",
       id: "status",
@@ -1799,16 +1811,7 @@ export const taskSearch = (formData) => {
       defaultValue: "All",
 
       required: false,
-    },
-    {
-      type: "select",
-      id: "applicationSubStatus",
-      label: "Application Substatus",
-      defaultValue: "All",
-
-      options: applicationSubstatusOptions(formData), // Add the options here
-      required: false,
-    },
+    }
   ]
 };
 

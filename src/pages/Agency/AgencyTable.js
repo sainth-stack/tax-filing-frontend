@@ -12,16 +12,14 @@ import TablePagination from "@mui/material/TablePagination";
 import { DeleteOutline, EditOutlined, Visibility } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Box, Grid, Tooltip } from "@mui/material";
 
 import { toast } from "react-toastify";
 import { base_url } from "../../const";
 import SortableTableHeader from "../../components/table/SortableTableHeader";
 import Loader from "../../components/helpers/loader";
-import EditCompanyForm from './../company/EditCompany';
-import ServiceModal from "../../components/services/models/ServiceModal";
 import moment from "moment/moment";
+import ConfirmationPopup from "../../components/confirmation-popup";
 
 //theme setting for table
 const theme = createTheme({
@@ -70,7 +68,7 @@ export default function AgencyTable({
     console.log("for data verifying", formData.effectiveFrom)
     const [agencies, setAgencies] = useState([]);
     const [loading, setLoading] = useState(false);
-
+    const [id, setId] = useState('')
 
     const [order, setOrder] = useState('asc'); // Sorting order (asc/desc)
     const [orderBy, setOrderBy] = useState('AgencyName'); // Column to sort by
@@ -79,8 +77,7 @@ export default function AgencyTable({
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-
-    const [editModal, setEditModal] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
 
 
     // Fetch agencies
@@ -128,10 +125,6 @@ export default function AgencyTable({
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
-    };
-
-    const handleCloseModal = () => {
-        setEditModal(false);
     };
 
     const handleDelete = async (id) => {
@@ -182,24 +175,18 @@ export default function AgencyTable({
     //edeit logic
     const handleEditForm = (id) => {
         setAgencyId(id);
-
-
     };
+
+
+    const handleConfirmAssign = () => {
+        handleDelete(id)
+        setOpenDialog(false);
+    }
 
 
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            {/* <div className="mx-auto">
-                {editModal && (
-                    <ServiceModal open={editModal} handleClose={handleCloseModal}>
-                        <EditCompanyForm
-                            agencyId={agencyId}
-                            onClose={handleCloseModal}
-                        />
-                    </ServiceModal>
-                )}
-            </div> */}
 
             <TableContainer component={Paper} className="container my-4 shadow-md rounded-lg">
                 <Table sx={{ minWidth: 650 }} aria-label="agency table">
@@ -289,10 +276,7 @@ export default function AgencyTable({
 
                                         </TableCell>
 
-
-
                                         <TableCell align="left" padding="normal">
-
                                             <Tooltip title="Edit">
                                                 <IconButton
 
@@ -307,7 +291,7 @@ export default function AgencyTable({
                                                 </IconButton>
                                             </Tooltip>
                                             <Tooltip title="Delete">
-                                                <IconButton onClick={() => handleDelete(agency._id)}>
+                                                <IconButton onClick={() => { setOpenDialog(true); setId(agency?._id) }}>
                                                     <DeleteOutline
                                                         className="text-red-400 z-0 bg-gray-50 rounded"
                                                     />
@@ -329,6 +313,7 @@ export default function AgencyTable({
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </TableContainer>
+            <ConfirmationPopup {...{ openDialog, handleConfirmAssign, handleClose: () => { setOpenDialog(false) }, title: 'Confirm Agency Deletion', desc: 'Are you sure you want to delete this agency?' }} />
         </ThemeProvider>
     );
 }

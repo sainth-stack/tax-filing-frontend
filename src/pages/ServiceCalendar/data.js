@@ -1,6 +1,6 @@
 export const initialTasks = [
-  { name: "GST", date: "", taskId: "gstMonthly" },
-  { name: "GST Payment", date: "", taskId: "gstMonthlyPayment" },
+  { name: "GST - GSTR1", date: "", taskId: "gstMonthly",subTask:'gstr1' },
+  { name: "GST - GSTR3B", date: "", taskId: "gstMonthly",subTask:'gstr3b' },
   { name: "Employee State Insurance", date: "", taskId: "esiRegularMonthlyActivity" },
   { name: "Provident Fund", date: "", taskId: "pfMonthly" },
   { name: "Professional Tax", date: "", taskId: "professionalTaxRegularMonthlyActivity" },

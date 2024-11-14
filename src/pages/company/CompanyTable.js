@@ -25,6 +25,7 @@ import Loader from "../../components/helpers/loader";
 import { toast } from "react-toastify";
 import Company from "./Company";
 import SortableTableHeader from "../../components/table/SortableTableHeader";
+import ConfirmationPopup from "../../components/confirmation-popup";
 
 const theme = createTheme({
   typography: {
@@ -89,8 +90,9 @@ export default function CompanyTable({
   const [companies, setCompanies] = useState([]);
   const [clientStatuses, setClientStatuses] = useState([]);
   const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
-  const [mode, setMode] = useState(0);
+  const [id, setId] = useState('');
   useEffect(() => {
     const fetchCompanies = async () => {
       setLoading(true);
@@ -223,6 +225,11 @@ export default function CompanyTable({
     }
     return 0;
   });
+
+  const handleConfirmAssign = () => {
+    handleDelete(id)
+    setOpenDialog(false);
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -366,7 +373,7 @@ export default function CompanyTable({
                       <IconButton
                         aria-label="delete"
                         size="small"
-                        onClick={() => handleDelete(company._id)}
+                        onClick={() => { setId(company._id); setOpenDialog(true) }}
                       >
                         <Tooltip
                           title="Delete"
@@ -417,6 +424,7 @@ export default function CompanyTable({
         />
       </TableContainer>
       <Accordian />
+      <ConfirmationPopup {...{ openDialog, handleConfirmAssign, handleClose: () => { setOpenDialog(false) }, title: 'Confirm Company Deletion', desc: 'Are you sure you want to delete this Company?' }} />
     </ThemeProvider>
   );
 }

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -20,6 +19,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/
 import axios from "axios";
 import { toast } from "react-toastify";
 import { base_url } from "../../const";
+import ConfirmationPopup from "../../components/confirmation-popup";
 const theme = createTheme({
   typography: {
     fontFamily: "Work Sans, Arial",
@@ -75,6 +75,8 @@ export default function AutoTasksTable({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedTask, setSelectedTask] = useState(null);  // Store the selected task for confirmation
+  const [openDialog2, setOpenDialog2] = useState(false);  // State to control the dialog visibility
+  const [id, setId] = useState('')
   const handleClose = () => {
     setOpenDialog(false);
   };
@@ -176,6 +178,11 @@ export default function AutoTasksTable({
     setSelectedTask(task);
     setOpenDialog(true);
   };
+
+  const handleConfirmAssign2=()=>{
+    handleDelete(id)
+    setOpenDialog2(false);
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -307,7 +314,7 @@ export default function AutoTasksTable({
                       <IconButton
                         aria-label="delete"
                         size="small"
-                        onClick={() => handleDelete(task._id)}
+                        onClick={() => {setId(task?._id);setOpenDialog2(true)}}
                       >
                         <DeleteOutline
                           fontSize="inherit"
@@ -351,6 +358,8 @@ export default function AutoTasksTable({
           </Button>
         </DialogActions>
       </Dialog>
+      <ConfirmationPopup {...{ openDialog:openDialog2, handleConfirmAssign:handleConfirmAssign2, handleClose: () => { setOpenDialog2(false) }, title: 'Confirm Task Deletion', desc: 'Are you sure you want to delete this task?' }} />
+
     </ThemeProvider>
   );
 }
