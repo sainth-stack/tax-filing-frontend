@@ -14,7 +14,7 @@ const Charts = () => {
   const [status, setStatus] = useState("all");
   const [companies, setCompanies] = useState([]);
   const [filteredTasks, setfilteredTasks] = useState([]);
-  const [month, setMonth] = useState(new Date().getMonth() + 1);
+  const [month, setMonth] = useState('0');
   const [year, setYear] = useState(new Date().getFullYear());
   const [clientStatuses, setClientStatuses] = useState([]);
   useEffect(() => {

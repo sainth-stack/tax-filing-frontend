@@ -242,7 +242,7 @@ const PieChart = ({ companyDetails, loading }) => {
       phone: company.phone || " --",
       mailId: company.mailId || " --",
       pan: company.pan || " --",
-      companyAddress: company.companyAddress || " --",
+      // companyAddress: company.companyAddress || " --",
     }));
 
     doc.autoTable({
@@ -256,7 +256,7 @@ const PieChart = ({ companyDetails, loading }) => {
           "Phone",
           "MailId",
           "PAN",
-          "Company Address",
+          // "Company Address",
         ],
       ],
       body: tableData.map((item) => [

@@ -3,7 +3,6 @@ import axios from "axios";
 import GaugeChart from "react-gauge-chart";
 import { base_url } from "./../../const";
 import "./MeterGraph.css";
-
 import { useNavigate } from "react-router";
 import jsPDF from "jspdf"; // PDF export
 import "jspdf-autotable"; // Required for table formatting
@@ -50,9 +49,9 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
         );
 
         setData({
+          completed: categorizedTasks.completed.length,
           inProgress: categorizedTasks.inProgress.length,
           overdue: categorizedTasks.overdue.length,
-          completed: categorizedTasks.completed.length,
         });
 
         setTaskDetails(categorizedTasks);
@@ -66,11 +65,11 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
 
   const categories = [];
   const colors = [];
-  const labelColors = ["#ff0000", "#ffcf57", "#008000"];
+  const labelColors = ["#008000","#ffcf57", "#ff0000" ];
 
-  if (data.overdue > 0) {
-    categories.push({ name: 'overDue', valu: data.overdue });
-    colors.push("#ff0000"); // Hex code for red
+  if (data.completed > 0) {
+    categories.push({ name: 'completed', value: data.completed });
+    colors.push("#008000"); // Hex code for green
   }
 
   if (data.inProgress > 0) {
@@ -78,11 +77,12 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
     colors.push("#ffcf57"); // Hex code for yellow
   }
 
-  if (data.completed > 0) {
-    categories.push({ name: 'completed', value: data.completed });
-    colors.push("#008000"); // Hex code for green
+  if (data.overdue > 0) {
+    categories.push({ name: 'overDue', value: data.overdue });
+    colors.push("#ff0000"); // Hex code for red
   }
-  console.log(categories)
+
+
 
   const completedCategories = categories.find(item => item.name === "completed")?.value || 0;
   const totalCategories = categories.reduce((sum, item) => sum + item.value, 0);
@@ -199,7 +199,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                       id="gauge-chart"
                       nrOfLevels={(categories && categories.length) || 1}
                       percent={
-                        parseFloat((averagePercentage / 100).toFixed(1)) || 0
+                        (averagePercentage / 100).toFixed(3)
                       }
                       textColor="#000"
                       fontSize="20px"
@@ -217,8 +217,9 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                       <div
                         style={{
                           position: "absolute",
+
                           top: "45%",
-                          left: "23%",
+                          right: "23%",
                           color: "#FFF",
                           fontSize: "15px",
                           fontWeight: 500,
@@ -248,7 +249,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                         style={{
                           position: "absolute",
                           top: "45%",
-                          right: "23%",
+                          left: "23%",
                           color: "#FFF",
                           fontSize: "20px",
                           fontWeight: 500,
@@ -271,8 +272,8 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
           )}
 
           <div className="labels-overlay">
-            {["overdue", "inProgress", "completed"].map((label, index) => {
-              const count = [data.overdue, data.inProgress, data.completed][
+            {["completed", "inProgress","overdue"].map((label, index) => {
+              const count = [data.completed,data.inProgress, data.overdue][
                 index
               ];
               const backgroundColor = labelColors[index];
@@ -322,7 +323,6 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
               }}
               className="container shadow-md"
             >
-              {/* Header */}
               <div
                 style={{
                   display: "flex",
@@ -345,7 +345,6 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                 </button>
               </div>
 
-              {/* Task List */}
               <ul
                 style={{
                   listStyle: "none",

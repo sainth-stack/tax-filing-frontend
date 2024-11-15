@@ -21,6 +21,7 @@ import { useNavigate } from "react-router";
 import Header from "../../pages/Dashboard/card-container";
 import Loader from "../helpers/loader";
 import NoDataFound from "./NoDataFound";
+import { isTaskCompleted } from "../../utils/const";
 
 // Register Chart.js components
 ChartJS.register(
@@ -89,20 +90,20 @@ const PendingCompletedTasksGraph = ({
           labels,
           datasets: [
             {
-              label: "Pending Tasks",
-              data: labels.map(
-                (label) => pendingTasksByPerson[label]?.count || 0
-              ),
-
-              backgroundColor: "#FF0000",
-            },
-            {
               label: "Completed Tasks",
               data: labels.map(
                 (label) => completedTasksByPerson[label]?.count || 0
               ),
               backgroundColor: "#008000", // Green for completed
             },
+            {
+              label: "Pending Tasks",
+              data: labels.map(
+                (label) => pendingTasksByPerson[label]?.count || 0
+              ),
+
+              backgroundColor: "#FF0000",
+            }
           ],
         };
 
@@ -121,7 +122,7 @@ const PendingCompletedTasksGraph = ({
       const { index } = elements[0];
       const assignedUser = chartData.labels[index];
       const datasetIndex = elements[0].datasetIndex;
-      const isPendingTasks = datasetIndex === 0;
+      const isPendingTasks = datasetIndex === 1;
       const tasks = isPendingTasks
         ? tasksData.pendingTasksByPerson[assignedUser]?.tasks || []
         : tasksData.completedTasksByPerson[assignedUser]?.tasks || [];
@@ -366,13 +367,13 @@ const PendingCompletedTasksGraph = ({
                             style={{
                               margin: "0",
                               fontSize: "14px",
-                              color: task.actualCompletionDate
+                              color: isTaskCompleted(task)
                                 ? "green"
                                 : "red",
                             }}
                           >
                             Status:{" "}
-                            {task.actualCompletionDate
+                            {isTaskCompleted(task)
                               ? "Completed"
                               : "Not Completed"}
                           </p>

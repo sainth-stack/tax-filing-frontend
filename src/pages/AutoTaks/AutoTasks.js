@@ -29,7 +29,7 @@ const AutoTasks = () => {
     company: "",
     assignedTo: "",
     applicationSubstatus: "",
-    status: "",
+    status: "notFiled",
     effectiveFrom: "",
     effectiveTo: "",
     defaultValue: "",

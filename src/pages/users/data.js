@@ -94,7 +94,7 @@ export const GetUsers = (companiesdata = [], agnciesdata = []) => {
           label: "Role",
           options: [
             { value: "A", label: "Admin" },
-            { value: "S", label: "Super Admin" },
+            // { value: "S", label: "Super Admin" },
             //{ value: "C", label: "Customer" },
             { value: "U", label: "Basic" },
 
