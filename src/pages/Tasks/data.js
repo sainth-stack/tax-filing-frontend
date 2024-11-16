@@ -59,6 +59,7 @@ export const getTasks = ({ companies = [], users = [], data, noAct }) => {
     {
       type: "select",
       id: "taskType",
+      disable: data?.taskType === 'gst' ? true : false,
       label: "Task Type",
       options: [
         { value: "all", label: "All" },
@@ -180,6 +181,7 @@ export const getGstData = (data, companies) => {
       type: "select",
       id: "taskName",
       label: "Task Name",
+      disable: data?.taskType === 'gst' ? true : false,
       options: [
         { value: "gstNewRegistration", label: "GST - New Registration" },
         { value: "gstInactive", label: "GST - Closure" },
@@ -316,6 +318,7 @@ export const getGstMonthlyData = (data) => {
           type: "select",
           id: "gstMonthly_gstType",
           label: "Type of GST Form",
+          disable: true,
           options: [
             { value: "gstr1", label: "GSTR1" },
 

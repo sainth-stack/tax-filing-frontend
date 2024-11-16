@@ -34,10 +34,8 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
   const [formData, setFormData] = useState(defaultData);
   const [error, setError] = useState(null);
   const [taskData, setTasks] = useState(tasks());
-
   const currentYear = moment().year();
   const currentMonth = moment().format("MMMM");
-
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => {
@@ -130,7 +128,7 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
       const response = await axios.get(`${base_url}/users/all`);
       const data = response.data?.data.map((item) => ({
         value: item?._id,
-        label: item?.firstName,
+        label: item?.firstName + " " + item?.lastName,
       }));
       setUsers(data);
     } catch (error) {
@@ -340,6 +338,7 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
                         value={formData[field.id] || ""}
                         onChange={handleInputChange}
                         required={field.required}
+                        disabled={field?.disable}
                         defaultValue={field?.defaultValue}
                       />
                     );

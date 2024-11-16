@@ -16,7 +16,35 @@ const Charts = () => {
   const [filteredTasks, setfilteredTasks] = useState([]);
   const [month, setMonth] = useState('0');
   const [year, setYear] = useState(new Date().getFullYear());
-  const [clientStatuses, setClientStatuses] = useState([]);
+  const [cps, setcps] = useState([])
+  const [company, setCompany] = useState('0');
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.post(`${base_url}/companies/filter`);
+        setLoading(false);
+
+        const { data } = response;
+
+        const companyDetailsArray = data.map((item) => ({
+          ...item.companyDetails,
+          ...item,
+          _id: item._id,
+          label: item.companyDetails?.companyName,
+          value: item.companyDetails?.companyName
+        }));
+
+        setcps(companyDetailsArray);
+
+        // Log client statuses
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchCompanies()
+  }, [])
   useEffect(() => {
     const fetchCompanies = async () => {
       setLoading(true);
@@ -24,7 +52,8 @@ const Charts = () => {
         const response = await axios.post(`${base_url}/companies/filter`, {
           status: status === "all" ? "" : status,
           year,
-          month:month==='0' ? '':month,
+          month: month === '0' ? '' : month,
+          name: company === '0' ? '' : company
         });
         setLoading(false);
 
@@ -36,12 +65,7 @@ const Charts = () => {
           _id: item._id,
         }));
 
-        const statusesArray = companyDetailsArray.map(
-          ({ clientStatus }) => clientStatus
-        );
-
         setCompanies(companyDetailsArray);
-        setClientStatuses(statusesArray);
 
         // Log client statuses
       } catch (error) {
@@ -50,19 +74,21 @@ const Charts = () => {
     };
 
     fetchCompanies();
-  }, [status, year, month]);
+  }, [status, year, month, company]);
 
   const handleFilterChange = async () => {
     setLoading(true);
     try {
       const { data } = await axios.post(`${base_url}/tasks/filter`, {
         year,
-        month:month==='0' ? '':month,
+        month: month === '0' ? '' : month,
+        company: company === '0' ? '' : company
       });
 
       const response = await axios.post(`${base_url}/tasks/auto/filter`, {
         year,
-        month:month==='0' ? '':month,
+        month: month === '0' ? '' : month,
+        company: company === '0' ? '' : company
       });
       const finData1 = response.data.map((item) => {
         return {
@@ -80,7 +106,7 @@ const Charts = () => {
 
   useEffect(() => {
     handleFilterChange();
-  }, [year, month]);
+  }, [year, month, company]);
   return (
     <>
       <div className="flex items-center m-3 p-3">
@@ -115,6 +141,15 @@ const Charts = () => {
           value={month}
           onChange={(e) => setMonth(e.target.value)}
           options={monthsJson}
+          labelStyles={{ fontWeight: 500 }}
+        />
+        <SelectInput
+          id="company"
+          className="shadow-sm ml-2"
+          label="Company"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+          options={[{ label: 'All', value: '0' }, ...cps]}
           labelStyles={{ fontWeight: 500 }}
         />
       </div>

@@ -13,7 +13,6 @@ const SelectInput = ({
   labelStyles,
   default1,
   disabled,
-  readOnly,
   name,
   isMultiple // New prop to control multiple selection
 }) => {
@@ -26,7 +25,7 @@ const SelectInput = ({
         id={id}
         value={value || defaultValue || (isMultiple ? [] : "")} // Handle value for multiple selection
         onChange={onChange}
-        disabled={readOnly}
+        disabled={disabled}
         name={name}
         className="border rounded p-[9px] focus:outline-none focus:ring-2 focus:ring-blue-500"
         multiple={isMultiple} // Enable multiple selection based on prop

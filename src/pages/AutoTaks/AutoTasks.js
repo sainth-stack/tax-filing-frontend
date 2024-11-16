@@ -105,7 +105,7 @@ const AutoTasks = () => {
       const response = await axios.get(`${base_url}/users/all`);
       const data = response.data?.data.map((item) => ({
         value: item?._id,
-        label: item?.firstName,
+        label: item?.firstName + " "+ item?.lastName,
       }));
       setLoading(false);
 
@@ -116,7 +116,6 @@ const AutoTasks = () => {
       console.error("Error fetching users:", error);
     }
   };
-  console.log("users ", users);
 
   useEffect(() => {
     fetchTasks();
