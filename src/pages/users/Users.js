@@ -18,7 +18,7 @@ const Users = () => {
   const [loading, setLoading] = useState(false);
 
   const [companyRefresh, setCompanyRefresh] = useState(false);
-
+  const agency = JSON.parse(localStorage.getItem('user'))?.agency
   const handleShowForm = () => {
     setShowForm(!showForm);
   };
@@ -28,6 +28,7 @@ const Users = () => {
     try {
       const response = await axios.post(`${base_url}/users/filter`, {
         name: name,
+        agency:agency
       });
       setUsers(response.data);
       setLoading(false);

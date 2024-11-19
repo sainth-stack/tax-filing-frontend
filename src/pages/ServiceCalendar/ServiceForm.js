@@ -6,9 +6,13 @@ import { initialTasks } from "./data"; // Ensure this path is correct
 import { base_url } from "./../../const"; // Ensure this path is correct
 import CustomInput from "../../components/input";
 import Loader from "../../components/helpers/loader";
+import ReactDatePicker from 'react-datepicker'; // Assuming you're using react-datepicker
+import "react-datepicker/dist/react-datepicker.css";
 
 const ServiceForm = () => {
   const [loading, setLoading] = useState({});
+  const [visibleDatePicker, setVisibleDatePicker] = useState(null);
+
   const [tasks, setTasks] = useState(
     initialTasks.map((task) => ({
       ...task,
@@ -20,16 +24,15 @@ const ServiceForm = () => {
 
   const fetchTasks = async () => {
     try {
-      // Make an API request to fetch tasks from the backend
       const response = await axios.get(`${base_url}/service-calendar`);
       const fetchedTasks = response.data.calendars; // Assign response data to fetchedTasks
-
       const updatedTasks = initialTasks.map((initialTask) => {
         const foundTask = fetchedTasks.find(
           (task) => task.name === initialTask.name
         );
         return {
           ...initialTask,
+          ...foundTask,
           date: foundTask ? foundTask.date.split("T")[0] : "",
           id: foundTask ? foundTask._id : null,
           modified: false, // Ensure modified flag is set to false initially
@@ -59,10 +62,8 @@ const ServiceForm = () => {
       name: task?.name,
       date: new Date(task?.date).toISOString(),
     }));
-    console.log(dataToSubmit)
 
     if (dataToSubmit.length === 0) {
-      console.log("No tasks with selected dates to submit.");
       return;
     }
     const newLoadingState = dataToSubmit.reduce((acc, task, index) => {
@@ -86,7 +87,6 @@ const ServiceForm = () => {
         updatedAt: taskResponse.updatedAt,
       }));
 
-      console.log("Submitted data:", newTasks);
       setTasks(newTasks);
       setLoading((prevLoading) => {
         const clearedLoadingState = dataToSubmit.reduce((acc, task, index) => {
@@ -110,7 +110,6 @@ const ServiceForm = () => {
   const handleUpdate = async (taskId, updatedData) => {
     setLoading((prevLoading) => ({ ...prevLoading, [taskId]: true }));
     try {
-      console.log(updatedData)
       const response = await axios.put(
         `${base_url}/service-calendar/${taskId}`,
         updatedData
@@ -125,7 +124,6 @@ const ServiceForm = () => {
         )
       );
 
-      console.log("Updated task:", response.data);
     } catch (error) {
       setLoading((prevLoading) => ({ ...prevLoading, [taskId]: false }));
       console.log("Error updating task:", error);
@@ -168,10 +166,8 @@ const ServiceForm = () => {
       }
       fetchTasks();
     } catch (error) {
-      console.log("Error updating or creating tasks:", error);
     }
   };
-
   return (
     <Card
       sx={{ mx: "auto", mt: 1, boxShadow: 3, borderRadius: 2, maxWidth: 700 }}
@@ -187,40 +183,75 @@ const ServiceForm = () => {
             gap: 2,
           }}
         >
-          {tasks.map((task, index) => (
-            <Box
-              key={task.id || index}
-              sx={{
-                display: "flex",
-                gap: 4,
-                flexDirection: "row",
-                paddingRight: 3,
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                variant="h6"
-                component="h3"
-                sx={{ flex: 1, paddingLeft: 2 }}
-                className=""
-              >
-                {task.name}
-              </Typography>
-              {loading[task.id] && (
-                <Typography variant="body2" color="primary">
-                  <Loader />
-                </Typography>
-              )}
-              <CustomInput
-                key={index}
-                id={index}
-                type={"date"}
-                label={""}
-                value={task.date || ""}
-                onChange={(e) => handleDateChange(index, e.target.value)}
-              />
-            </Box>
-          ))}
+          {tasks.map((task, index) => {
+            console.log(task?.prevDates?.length > 0 ? task?.prevDates[0]?.history : '')
+            const historyDates = task?.prevDates?.length > 0
+              ? task?.prevDates[0]?.history
+              : [];
+
+            return (
+              (
+                <Box
+                  key={task.id || index}
+                  sx={{
+                    display: "flex",
+                    gap: 4,
+                    flexDirection: "row",
+                    paddingRight: 3,
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    component="h3"
+                    sx={{ flex: 1, paddingLeft: 2, cursor: 'pointer' }}
+                    className=""
+                  >
+                    <span onClick={() => setVisibleDatePicker(visibleDatePicker === index ? null : index)}
+                    >
+                      {task.name}
+                    </span>
+                    {visibleDatePicker === index && (
+                      <div style={{ position: 'absolute', zIndex: 10 }}>
+                        <ReactDatePicker
+                          selected={task.date ? new Date(task.date) : null}
+                          // onChange={(date) => handleDateChange(index, date)}
+                          multiple
+                          inline // Keep inline to show calendar, not just text input
+                          minDate={new Date()}
+                          showYearDropdown
+                          dateFormat="yyyy-MM-dd"
+                          placeholderText="Select a date"
+                          dayClassName={(date) =>
+                            historyDates.some((d) => new Date(d).toDateString() === date.toDateString())
+                              ? 'selected'
+                              : ''
+                          }
+                          highlightDates={historyDates.map((date) => new Date(date))}
+                          calendarClassName="custom-calendar" // Optional: for custom styles
+                        />
+                      </div>
+                    )}
+
+                  </Typography>
+
+                  {loading[task.id] && (
+                    <Typography variant="body2" color="primary">
+                      <Loader />
+                    </Typography>
+                  )}
+                  <CustomInput
+                    key={index}
+                    id={index}
+                    type={"date"}
+                    label={""}
+                    value={task.date || ""}
+                    onChange={(e) => handleDateChange(index, e.target.value)}
+                  />
+                </Box>
+              )
+            )
+          })}
 
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
