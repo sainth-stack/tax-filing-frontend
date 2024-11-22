@@ -34,6 +34,8 @@ const AutoTasks = () => {
     effectiveTo: "",
     defaultValue: "",
     taskType: "",
+    month:'',
+    year:new Date().getFullYear()
   });
   const [view, setView] = useState(false);
 
@@ -87,6 +89,8 @@ const AutoTasks = () => {
         applicationSubStatus: formData?.applicationSubStatus,
         effectiveFrom: formData?.effectiveFrom,
         effectiveTo: formData?.effectiveTo,
+        month:formData?.month,
+        year:formData?.year
       });
       setLoading(false);
 

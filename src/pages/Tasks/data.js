@@ -1,3 +1,5 @@
+import { monthsJson, yearsJson } from "../../components/charts/FilterData";
+
 export const getTasks = ({ companies = [], users = [], data, noAct }) => {
   console.log(data)
   return [
@@ -1812,7 +1814,22 @@ export const taskSearch = (formData) => {
       label: "Status",
       options: statusOptions(formData),
       defaultValue: "All",
-
+      required: false,
+    },
+    {
+      type: "select",
+      id: "month",
+      label: "Month",
+      options: monthsJson,
+      defaultValue: "All",
+      required: false,
+    },
+    {
+      type: "select",
+      id: "year",
+      label: "Year",
+      options: yearsJson,
+      defaultValue: "All",
       required: false,
     }
   ]

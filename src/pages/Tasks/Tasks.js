@@ -46,6 +46,8 @@ const Tasks = () => {
     effectiveTo: "",
     defaultValue: "",
     taskType: "",
+    month:'',
+    year:new Date().getFullYear()
   });
   const [view, setView] = useState(false);
 
@@ -106,6 +108,8 @@ const Tasks = () => {
         applicationSubStatus: formData?.applicationSubStatus,
         effectiveFrom: formData?.effectiveFrom,
         effectiveTo: formData?.effectiveTo,
+        month:formData?.month,
+        year:formData?.year
       });
       setLoading(false);
 
