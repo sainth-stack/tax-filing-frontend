@@ -179,7 +179,7 @@ export default function AutoTasksTable({
     setOpenDialog(true);
   };
 
-  const handleConfirmAssign2=()=>{
+  const handleConfirmAssign2 = () => {
     handleDelete(id)
     setOpenDialog2(false);
   }
@@ -289,7 +289,6 @@ export default function AutoTasksTable({
                     <TableCell align="left" padding="normal">
                       {
                         userId?._id !== task.assignedTo &&
-
                         <IconButton
                           title="Assign to me"
                           aria-label="edit"
@@ -311,16 +310,16 @@ export default function AutoTasksTable({
                           className="text-green-400 z-0 bg-gray-50 rounded"
                         />
                       </IconButton>
-                      <IconButton
+                      {userId?.role == 'A' && <IconButton
                         aria-label="delete"
                         size="small"
-                        onClick={() => {setId(task?._id);setOpenDialog2(true)}}
+                        onClick={() => { setId(task?._id); setOpenDialog2(true) }}
                       >
                         <DeleteOutline
                           fontSize="inherit"
                           className="text-red-400 bg-gray-100 rounded"
                         />
-                      </IconButton>
+                      </IconButton>}
                     </TableCell>
                   </TableRow>
                 ))
@@ -358,7 +357,7 @@ export default function AutoTasksTable({
           </Button>
         </DialogActions>
       </Dialog>
-      <ConfirmationPopup {...{ openDialog:openDialog2, handleConfirmAssign:handleConfirmAssign2, handleClose: () => { setOpenDialog2(false) }, title: 'Confirm Task Deletion', desc: 'Are you sure you want to delete this task?' }} />
+      <ConfirmationPopup {...{ openDialog: openDialog2, handleConfirmAssign: handleConfirmAssign2, handleClose: () => { setOpenDialog2(false) }, title: 'Confirm Task Deletion', desc: 'Are you sure you want to delete this task?' }} />
 
     </ThemeProvider>
   );

@@ -112,6 +112,7 @@ const CompanyForm = ({
       setLoading(false);
       toast.success("Company created successfully");
     } catch (error) {
+      setLoading(false);
       toast.error(`Error: ${error.response?.data?.message || error.message}`);
     }
   };
@@ -164,6 +165,7 @@ const CompanyForm = ({
       setShowForm(false);
       setCompanyRefresh(!companyRefresh);
     } catch (error) {
+      setLoading(false);
       console.error("Error submitting form:", error);
     }
   };
@@ -204,6 +206,7 @@ const CompanyForm = ({
       setLoading(false);
       toast.success("Company updated successfully");
     } catch (error) {
+      setLoading(false);
       toast.error("Error updating company");
       setError("Error updating company data.");
       console.error("Error updating form:", error);

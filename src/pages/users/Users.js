@@ -18,7 +18,7 @@ const Users = () => {
   const [loading, setLoading] = useState(false);
 
   const [companyRefresh, setCompanyRefresh] = useState(false);
-  const agency = JSON.parse(localStorage.getItem('user'))?.agency
+  const agency = JSON.parse(localStorage?.getItem('user'))?.agency
   const handleShowForm = () => {
     setShowForm(!showForm);
   };

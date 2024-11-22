@@ -18,7 +18,7 @@ const Charts = () => {
   const [year, setYear] = useState(new Date().getFullYear());
   const [cps, setcps] = useState([])
   const [company, setCompany] = useState('0');
-
+  const user = JSON.parse(localStorage.getItem('user'))
   useEffect(() => {
     const fetchCompanies = async () => {
       setLoading(true);
@@ -82,13 +82,15 @@ const Charts = () => {
       const { data } = await axios.post(`${base_url}/tasks/filter`, {
         year,
         month: month === '0' ? '' : month,
-        company: company === '0' ? '' : company
+        company: company === '0' ? '' : company,
+        user: user.role !== "A" ? user?._id : ''
       });
 
       const response = await axios.post(`${base_url}/tasks/auto/filter`, {
         year,
         month: month === '0' ? '' : month,
-        company: company === '0' ? '' : company
+        company: company === '0' ? '' : company,
+        user: user.role !== "A" ? user?._id : ''
       });
       const finData1 = response.data.map((item) => {
         return {
