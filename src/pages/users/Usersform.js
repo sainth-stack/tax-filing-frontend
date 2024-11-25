@@ -7,13 +7,11 @@ import CustomCheckbox from "../../components/Checkbox/Checkbox";
 import { base_url } from "../../const";
 import { GetUsers } from "./data";
 import Loader from "../../components/helpers/loader";
+import MultiSelectInput from "../../components/multi-select";
 
 const UserForm = ({
-  setRefresh,
   setLoading,
   loading,
-  refresh,
-  showForm,
   setShowForm,
   fetchUsers,
   companyId,
@@ -190,7 +188,30 @@ const UserForm = ({
                 {user.title}
               </h2>
               <div className="grid grid-cols-4 gap-5">
-                {user.fields.map((field, index) => {
+                {user?.fields?.map((field, index) => {
+                  if (field.multiple) {
+                    return (
+                      <MultiSelectInput
+                        key={index}
+                        label={field.label}
+                        options={field.options}
+                        value={formData[field.id] || []}
+                        onChange={(selectedOptions) => {
+                          // Transform the selected options to only include _id and companyName
+                          const simplifiedOptions = selectedOptions.map(option => ({
+                            _id: option._id,
+                            label: option.companyDetails?.companyName || option?.label,
+                            value: option.companyDetails?.companyName || option?.value,
+                          }));
+
+                          setFormData(prev => ({
+                            ...prev,
+                            [field.id]: simplifiedOptions
+                          }));
+                        }}
+                      />
+                    );
+                  }
                   if (field.type === "select") {
                     return (
                       <SelectInput
@@ -200,13 +221,13 @@ const UserForm = ({
                         options={field.options}
                         value={formData[field.id]}
                         onChange={handleInputChange}
-                        required={field.required}
+                      // required={field.required}
                       />
                     );
                   }
                   if (field.type === "checkbox") {
                     return (
-                      <div key={index} className="grid">
+                      <div key={index} className="grid" style={{ display: 'flex', justifyContent: 'start', flexDirection: 'column', gap: '10px' }}>
                         <label htmlFor={field.id}>{field.text}</label>
                         <CustomCheckbox
                           id={field.id}
@@ -217,7 +238,7 @@ const UserForm = ({
                               ? handleWhatsappInputChange
                               : handleInputChange
                           }
-                          required={field.required}
+                        // required={field.required}
                         />
                       </div>
                     );

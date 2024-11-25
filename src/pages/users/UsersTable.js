@@ -175,8 +175,10 @@ export default function UsersTable({
                     <TableCell align="left" padding="normal">
                       {user.email || "N/A"}
                     </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {user.company || "N/A"}
+                    <TableCell align="left" padding="normal" style={{width:'250px'}}>
+                      {user.company?.length > 0 
+                        ? user.company.map(comp => comp.label).join(', ')
+                        : (user?.company || "N/A")}
                     </TableCell>
                     <TableCell align="left" padding="normal">
                       <IconButton

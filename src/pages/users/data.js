@@ -87,6 +87,7 @@ export const GetUsers = (companiesdata = [], agnciesdata = []) => {
           label: "Company",
           options: companiesdata, // Use dynamic companies data
           required: true,
+          multiple: true,
         },
         {
           type: "select",

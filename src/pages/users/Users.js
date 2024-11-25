@@ -28,7 +28,7 @@ const Users = () => {
     try {
       const response = await axios.post(`${base_url}/users/filter`, {
         name: name,
-        agency:agency
+        agency: agency
       });
       setUsers(response.data);
       setLoading(false);
