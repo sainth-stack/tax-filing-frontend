@@ -46,8 +46,8 @@ const Tasks = () => {
     effectiveTo: "",
     defaultValue: "",
     taskType: "",
-    month:'',
-    year:new Date().getFullYear()
+    month: '',
+    year: new Date().getFullYear()
   });
   const [view, setView] = useState(false);
 
@@ -108,8 +108,8 @@ const Tasks = () => {
         applicationSubStatus: formData?.applicationSubStatus,
         effectiveFrom: formData?.effectiveFrom,
         effectiveTo: formData?.effectiveTo,
-        month:formData?.month,
-        year:formData?.year
+        month: formData?.month,
+        year: formData?.year
       });
       setLoading(false);
 
@@ -148,11 +148,14 @@ const Tasks = () => {
   //for  model
   const fetchCompanies = async () => {
     setLoading(true);
+    const user = JSON.parse(localStorage.getItem('user'))
 
     try {
-      const response = await axios.get(`${base_url}/companies/all`);
-
-      const data = response.data?.data.map((item) => ({
+      const response = await axios.post(`${base_url}/companies/filter`, {
+        userId: user.role !== "A" ? user?._id : undefined
+      });
+      console.log(response)
+      const data = response.data?.map((item) => ({
         value: item?.companyDetails?.TaskId,
         label: item?.companyDetails?.TaskId,
       }));

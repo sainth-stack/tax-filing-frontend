@@ -23,7 +23,9 @@ const Charts = () => {
     const fetchCompanies = async () => {
       setLoading(true);
       try {
-        const response = await axios.post(`${base_url}/companies/filter`);
+        const response = await axios.post(`${base_url}/companies/filter`, {
+          userId: user.role !== "A" ? user?._id : ''
+        });
         setLoading(false);
 
         const { data } = response;
@@ -53,7 +55,8 @@ const Charts = () => {
           status: status === "all" ? "" : status,
           year,
           month: month === '0' ? '' : month,
-          name: company === '0' ? '' : company
+          name: company === '0' ? '' : company,
+          userId: user.role !== "A" ? user?._id : ''
         });
         setLoading(false);
 
