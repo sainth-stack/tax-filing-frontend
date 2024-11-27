@@ -86,14 +86,16 @@ const Charts = () => {
         year,
         month: month === '0' ? '' : month,
         company: company === '0' ? '' : company,
-        user: user.role !== "A" ? user?._id : ''
+        user: user.role !== "A" ? user?._id : '',
+        list: user.role !== "A" ? user?._id : '',
       });
 
       const response = await axios.post(`${base_url}/tasks/auto/filter`, {
         year,
         month: month === '0' ? '' : month,
         company: company === '0' ? '' : company,
-        user: user.role !== "A" ? user?._id : ''
+        user: user.role !== "A" ? user?._id : '',
+        list: user.role !== "A" ? user?._id : '',
       });
       const finData1 = response.data.map((item) => {
         return {
