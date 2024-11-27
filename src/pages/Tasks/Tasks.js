@@ -54,6 +54,7 @@ const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
+  const user = JSON.parse(localStorage.getItem('user'))
 
   const [companyRefresh, setCompanyRefresh] = useState(false);
   const [showAutoGenModal, setShowAutoGenModal] = useState(false); // For modal visibility
@@ -109,7 +110,8 @@ const Tasks = () => {
         effectiveFrom: formData?.effectiveFrom,
         effectiveTo: formData?.effectiveTo,
         month: formData?.month,
-        year: formData?.year
+        year: formData?.year,
+        list: user.role !== "A" ? user?._id : '',
       });
       setLoading(false);
 

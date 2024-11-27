@@ -1766,6 +1766,7 @@ const applicationSubstatusOptions = (formData) => {
 
 
 export const taskSearch = (formData) => {
+  const user = JSON.parse(localStorage.getItem('user'))
   return [
     {
       type: "text",
@@ -1774,14 +1775,19 @@ export const taskSearch = (formData) => {
       placeholder: "Search Company",
       required: true,
     },
-    {
-      type: "select",
-      id: "assignedTo",
-      label: "Assigned To",
-      options: { value: "All", label: "All" },
-      defaultValue: "All",
-      required: false,
-    },
+
+    ...(user.role === 'A'
+      ? [
+        {
+          type: "select",
+          id: "assignedTo",
+          label: "Assigned To",
+          options: { value: "All", label: "All" },
+          defaultValue: "All",
+          required: false,
+        },
+      ]
+      : []),
     {
       type: "select",
       id: "taskType",

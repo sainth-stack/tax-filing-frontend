@@ -24,18 +24,19 @@ const AutoTasks = () => {
   const [showtasks, setShowTasks] = useState(false);
   const [companyId, setCompanyId] = useState("");
   const [users, setUsers] = useState([]);
+  const user = JSON.parse(localStorage.getItem('user'))
 
   const [formData, setFormData] = useState({
     company: "",
-    assignedTo: "",
+    assignedTo: '',
     applicationSubstatus: "",
     status: "notFiled",
     effectiveFrom: "",
     effectiveTo: "",
     defaultValue: "",
     taskType: "",
-    month:'',
-    year:new Date().getFullYear()
+    month: '',
+    year: new Date().getFullYear()
   });
   const [view, setView] = useState(false);
 
@@ -89,8 +90,9 @@ const AutoTasks = () => {
         applicationSubStatus: formData?.applicationSubStatus,
         effectiveFrom: formData?.effectiveFrom,
         effectiveTo: formData?.effectiveTo,
-        month:formData?.month,
-        year:formData?.year
+        month: formData?.month,
+        year: formData?.year,
+        list: user.role !== "A" ? user?._id : '',
       });
       setLoading(false);
 
@@ -109,7 +111,7 @@ const AutoTasks = () => {
       const response = await axios.get(`${base_url}/users/all`);
       const data = response.data?.data.map((item) => ({
         value: item?._id,
-        label: item?.firstName + " "+ item?.lastName,
+        label: item?.firstName + " " + item?.lastName,
       }));
       setLoading(false);
 
@@ -131,9 +133,11 @@ const AutoTasks = () => {
     setLoading(true);
 
     try {
-      const response = await axios.get(`${base_url}/companies/all`);
+      const response = await axios.post(`${base_url}/companies/filter`, {
+        userId: user.role !== "A" ? user?._id : ''
+      });
 
-      const data = response.data?.data.map((item) => ({
+      const data = response.data?.map((item) => ({
         value: item?.companyDetails?.TaskId,
         label: item?.companyDetails?.TaskId,
       }));
