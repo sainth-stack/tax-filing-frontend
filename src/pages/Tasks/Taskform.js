@@ -118,11 +118,14 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
       return newData;
     });
   };
+  const user = JSON.parse(localStorage.getItem('user'))
 
   const fetchCompanies = async () => {
     try {
-      const response = await axios.get(`${base_url}/companies/all`);
-      const data = response.data?.data.map((item) => ({
+      const response = await axios.post(`${base_url}/companies/filter`, {
+        userId: user.role !== "A" ? user?._id : ''
+      });
+      const data = response.data?.map((item) => ({
         value: item?.companyDetails?.companyName,
         label: item?.companyDetails?.companyName,
         ...item,
@@ -298,7 +301,6 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
       [id]: files[0],
     }));
   };
-
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
       {/* {loading && loading ? (
