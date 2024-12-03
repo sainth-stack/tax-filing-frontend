@@ -20,8 +20,8 @@ export const getTasks = ({ companies = [], users = [], data, noAct }) => {
       id: "assignedTo",
       label: "Assigned To",
       options: [...users],
-      defaultValue: "all",
       required: true,
+      defaultValue: "",
     },
     ...((data?.taskName !== "gstMonthly" && data?.taskName !== "gstMonthlyPayment")
       ? [
@@ -54,7 +54,6 @@ export const getTasks = ({ companies = [], users = [], data, noAct }) => {
           type: "date",
           id: "actualCompletionDate",
           label: "Actual Completion Date",
-          required: false,
         },
       ]
       : []),
@@ -100,8 +99,7 @@ const GetCommonFields = (data) => {
             type: "date",
             id: "actualCompletionDate",
             label: "Actual Completion Date",
-            required: false,
-          },
+            },
         ]
       : []), */
     {
@@ -120,13 +118,11 @@ const GetCommonFields = (data) => {
           id: "arn",
           label: "ARN",
           placeholder: "ARN",
-          required: false,
         },
         {
           type: "date",
           id: "arnDate",
           label: "ARN Date",
-          required: false,
         },
         {
           type: "select",
@@ -141,7 +137,6 @@ const GetCommonFields = (data) => {
               label: "Pending for Clarification",
             },
           ],
-          required: false,
         },
       ]
       : []),
@@ -151,7 +146,6 @@ const GetCommonFields = (data) => {
           type: "date",
           id: "dateOfApproval",
           label: "Date Of Approval",
-          required: false,
         },
         {
           type: "select",
@@ -818,13 +812,11 @@ export const pfRegistration = (data) => {
           type: "text",
           id: "pfRegistration_applicationNumber",
           label: "Application Number",
-          required: false,
         },
         {
           type: "date",
           id: "pfRegistration_applicationDate",
           label: "Application Date",
-          required: false,
         },
         {
           type: "select",
@@ -851,7 +843,6 @@ export const pfRegistration = (data) => {
           type: "date",
           id: "pfRegistration_approval",
           label: "Date of Approval",
-          required: false,
         },
       ]
       : []),
@@ -877,7 +868,6 @@ export const pfMonthly = (data) => {
           type: "date",
           id: "pfMonthly_filedate",
           label: "File Date",
-          required: false,
         },
         // ...GetMonthlyCommonFields("TRRN"),
         ...GetAttachmentFields(data),
@@ -889,7 +879,6 @@ export const pfMonthly = (data) => {
           type: "text",
           id: "pfMonthly_prevNotfiled",
           label: "Previous Month Not filed",
-          required: false,
         },
         {
           type: "select",
@@ -1258,7 +1247,6 @@ export const incomeTaxNonAuditForm = (data) => {
           type: "date",
           id: "tax_verifiedDate", // Updated with common prefix 'tax_'
           label: "Verified Date",
-          required: false,
         },
         {
           type: "date",
@@ -1759,7 +1747,14 @@ const applicationSubstatusOptions = (formData) => {
     ? [
       { value: "", label: "All" },
       { value: "gstr1", label: "GSTR1" },
-      { value: "gstr3b", label: "GSTR3B" }
+      { value: "gstr3b", label: "GSTR3B" },
+      { value: "gstNewRegistration", label: "GST - New Registration" },
+      { value: "gstInactive", label: "GST - Closure" },
+      { value: "gstRefund", label: "GST - Refund" },
+      { value: "gstAmendments", label: "GST - Amendments" },
+      { value: "gstMonthly", label: "GST - Monthly Filing" },
+      { value: "gstMonthlyPayment", label: "GST - Monthly Payment" },
+      { value: "gstRevocations", label: "GST - Revocations" },
     ]
     : [{ value: "", label: "All" }];
 };
@@ -1773,7 +1768,6 @@ export const taskSearch = (formData) => {
       id: "company",
       label: "Company",
       placeholder: "Search Company",
-      required: true,
     },
 
     ...(user.role === 'A'
@@ -1784,7 +1778,6 @@ export const taskSearch = (formData) => {
           label: "Assigned To",
           options: { value: "All", label: "All" },
           defaultValue: "All",
-          required: false,
         },
       ]
       : []),
@@ -1810,7 +1803,6 @@ export const taskSearch = (formData) => {
           label: "Type of GST",
           defaultValue: "All",
           options: applicationSubstatusOptions(formData), // Add the options here
-          required: false,
         }
       ]
       : []),
@@ -1852,7 +1844,6 @@ export const GstRevocationData = (data) => {
         { value: "suspended", label: "Suspended" },
         { value: "cancelled", label: "Cancelled" },
       ],
-      required: true,
     },
     ...(data?.currentStatus === "suspended"
       ? [
@@ -1870,7 +1861,6 @@ export const GstRevocationData = (data) => {
               label: "Show Cause Notice Suspension",
             },
           ],
-          required: true,
         },
         ...(data?.suspensionReason === "showCauseNotice"
           ? [
@@ -1882,7 +1872,6 @@ export const GstRevocationData = (data) => {
                 { value: "replied", label: "Replied" },
                 { value: "notReplied", label: "Not Replied" },
               ],
-              required: true,
             },
             ...(data?.replyStatus === "replied"
               ? [
@@ -1890,7 +1879,6 @@ export const GstRevocationData = (data) => {
                   type: "date",
                   id: "replyDate",
                   label: "Reply Date",
-                  required: true,
                 },
               ]
               : []),
@@ -1919,7 +1907,6 @@ export const companydata = (data) => {
         type: "text",
         id: "companyDetails.companyName",
         label: "Company",
-        required: true,
       },
       {
         type: "select",
@@ -1931,7 +1918,6 @@ export const companydata = (data) => {
           { value: "PrivateLimited", label: "Private Limited" },
           { value: "LLP", label: "LLP" },
         ],
-        required: true,
       },
       ...(data?.constitution === "Partnership"
         ? [
@@ -1944,7 +1930,6 @@ export const companydata = (data) => {
               { value: "unregistered", label: "UnRegistered" },
               { value: "llp", label: "LLP" },
             ],
-            required: true,
           },
         ]
         : []),
@@ -1956,49 +1941,41 @@ export const companydata = (data) => {
           { value: "active", label: "Active" },
           { value: "inactive", label: "Inactive" },
         ],
-        required: true,
       },
       {
         type: "text",
         id: "companyDetails.authorisedPerson",
         label: "Authorised Person",
-        required: true,
       },
       {
         type: "text",
         id: "companyDetails.phone",
         label: "Phone",
-        required: true,
       },
       {
         type: "text",
         id: "companyDetails.mailId",
         label: "Mail ID",
-        required: true,
       },
       {
         type: "text",
         id: "companyDetails.pan",
         label: "PAN",
-        required: true,
       },
       {
         type: "date",
         id: "companyDetails.effectiveFrom",
         label: "Effective From",
-        required: true,
       },
       {
         type: "date",
         id: "companyDetails.effectiveTo",
         label: "Effective To",
-        required: true,
       },
       {
         type: "textarea",
         id: "companyDetails.companyAddress",
         label: "Company Address",
-        required: true,
       },
     ],
     id: "companyDetails",

@@ -129,7 +129,7 @@ const Tasks = () => {
       const response = await axios.get(`${base_url}/users/all`);
       const data = response.data?.data.map((item) => ({
         value: item?._id,
-        label: item?.firstName + " " + item?.lastName,
+        label: item?.firstName + " " + (item?.lastName || ''),
       }));
       setLoading(false);
 

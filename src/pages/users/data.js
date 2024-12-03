@@ -10,20 +10,17 @@ export const GetUsers = (companiesdata = [], agnciesdata = []) => {
           type: "text",
           id: "firstName",
           label: "First Name",
-          required: true,
         },
         {
           type: "text",
           id: "lastName",
           label: "Last Name",
-          required: true,
         },
 
         {
           type: "date",
           id: "hireDate",
           label: "Hire Date",
-          required: true,
         },
         {
           type: "select",
@@ -33,7 +30,6 @@ export const GetUsers = (companiesdata = [], agnciesdata = []) => {
             { value: "male", label: "Male" },
             { value: "female", label: "Female" },
           ],
-          required: true,
         },
         {
           type: "checkbox",
@@ -41,31 +37,26 @@ export const GetUsers = (companiesdata = [], agnciesdata = []) => {
           id: "status",
           label: "Active",
           checked: true,
-          required: true,
         },
         {
           type: "date",
           id: "inactiveDate",
           label: "Inactive Date",
-          required: false,
         },
         {
           type: "email",
           id: "email",
           label: "Email Address",
-          required: true,
         },
         {
           type: "text",
           id: "password",
           label: "Password",
-          required: true,
         },
         {
           type: "number",
           id: "mobileNumber",
           label: "Mobile Number",
-          required: true,
         },
         {
           type: "checkbox",
@@ -73,20 +64,17 @@ export const GetUsers = (companiesdata = [], agnciesdata = []) => {
           id: "sameAsWhatsappNumber",
           label: "Same as Mobile Number",
           checked: true,
-          required: true,
         },
         {
           type: "number",
           id: "whatsappNumber",
           label: "Whatsapp Number",
-          required: true,
         },
         {
           type: "select",
           id: "company",
           label: "Company",
           options: companiesdata, // Use dynamic companies data
-          required: true,
           multiple: true,
         },
         {
@@ -100,14 +88,12 @@ export const GetUsers = (companiesdata = [], agnciesdata = []) => {
             { value: "U", label: "Basic" },
 
           ],
-          required: true,
         },
         {
           type: "select",
           id: "agency",
           label: "Agency",
           options: agnciesdata, // Use dynamic agencies data
-          required: true,
         },
       ],
     },

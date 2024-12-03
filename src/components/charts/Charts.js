@@ -7,13 +7,15 @@ import { base_url } from "../../const";
 import PaymentGraph from "./PaymentGraph";
 import MeterGraph from "./MeterGraph";
 import PendingCompeltedTaksGraph from "./PendingCompeltedTaksGraph";
-import { monthsJson, yearsJson } from "./FilterData";
+import { applicationSubstatusOptions, monthsJson, taskTypeOptions, yearsJson } from "./FilterData";
 
 const Charts = () => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("all");
   const [companies, setCompanies] = useState([]);
+  const [taskType, setTaskType] = useState('0');
   const [filteredTasks, setfilteredTasks] = useState([]);
+  const [applicationSubStatus, setApplicationSubStatus] = useState('0');
   const [month, setMonth] = useState('0');
   const [year, setYear] = useState(new Date().getFullYear());
   const [cps, setcps] = useState([])
@@ -25,6 +27,7 @@ const Charts = () => {
       try {
         const response = await axios.post(`${base_url}/companies/filter`, {
           userId: user.role !== "A" ? user?._id : ''
+
         });
         setLoading(false);
 
@@ -56,12 +59,11 @@ const Charts = () => {
           year,
           month: month === '0' ? '' : month,
           name: company === '0' ? '' : company,
-          userId: user.role !== "A" ? user?._id : ''
+          userId: user.role !== "A" ? user?._id : '',
+          taskType: taskType !== "0" ? taskType : undefined,
         });
         setLoading(false);
-
         const { data } = response;
-
         const companyDetailsArray = data.map((item) => ({
           ...item.companyDetails,
           ...item,
@@ -77,7 +79,7 @@ const Charts = () => {
     };
 
     fetchCompanies();
-  }, [status, year, month, company]);
+  }, [status, year, month, company, taskType, applicationSubStatus]);
 
   const handleFilterChange = async () => {
     setLoading(true);
@@ -88,6 +90,8 @@ const Charts = () => {
         company: company === '0' ? '' : company,
         user: user.role !== "A" ? user?._id : '',
         list: user.role !== "A" ? user?._id : '',
+        taskType: taskType !== "0" ? taskType : undefined,
+        applicationSubStatus:applicationSubStatus !== "0" ? applicationSubStatus :'',
       });
 
       const response = await axios.post(`${base_url}/tasks/auto/filter`, {
@@ -96,13 +100,14 @@ const Charts = () => {
         company: company === '0' ? '' : company,
         user: user.role !== "A" ? user?._id : '',
         list: user.role !== "A" ? user?._id : '',
+        taskType: taskType !== "0" ? taskType : undefined,
+        applicationSubStatus:applicationSubStatus !== "0" ? applicationSubStatus :'',
       });
       const finData1 = response.data.map((item) => {
         return {
           ...item, auto: true
         }
       })
-      console.log(data)
       setfilteredTasks([...data, ...finData1]);
       setLoading(false);
     } catch (error) {
@@ -113,7 +118,8 @@ const Charts = () => {
 
   useEffect(() => {
     handleFilterChange();
-  }, [year, month, company]);
+  }, [year, month, company, taskType,applicationSubStatus]);
+
   return (
     <>
       <div className="flex items-center m-3 p-3">
@@ -159,12 +165,29 @@ const Charts = () => {
           options={[{ label: 'All', value: '0' }, ...cps]}
           labelStyles={{ fontWeight: 500 }}
         />
+        <SelectInput
+          id="taskType"
+          className="shadow-sm ml-2"
+          label="Task Type"
+          value={taskType}
+          onChange={(e) => setTaskType(e.target.value)}
+          options={[{ label: 'All', value: '0' }, ...taskTypeOptions.options]}
+          labelStyles={{ fontWeight: 500 }}
+        />
+        {taskType === 'gst' && <SelectInput
+          id="applicationSubStatus"
+          className="shadow-sm ml-2"
+          label="Type of GST"
+          value={applicationSubStatus}
+          onChange={(e) => setApplicationSubStatus(e.target.value)}
+          options={[{ label: 'All', value: '0' }, ...applicationSubstatusOptions]}
+          labelStyles={{ fontWeight: 500 }}
+        />}
       </div>
 
       <div className="grid grid-cols-2 gap-4  container">
         <PieChart companyDetails={companies} loading={loading} />
         <BarChart barDetails={companies} loading={loading} />
-
         <PaymentGraph
           paymentGraphDetails={companies}
           filterTime2={filteredTasks}

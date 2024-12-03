@@ -111,7 +111,7 @@ const AutoTasks = () => {
       const response = await axios.get(`${base_url}/users/all`);
       const data = response.data?.data.map((item) => ({
         value: item?._id,
-        label: item?.firstName + " " + item?.lastName,
+        label: item?.firstName + " " + (item?.lastName || ''),
       }));
       setLoading(false);
 
@@ -196,7 +196,7 @@ const AutoTasks = () => {
 
   const getFields = (field) => {
     if (field.id === "assignedTo") {
-      return [{ label: "All", value: "all" }, ...users];
+      return [...users];
     } else {
       return field?.options;
     }

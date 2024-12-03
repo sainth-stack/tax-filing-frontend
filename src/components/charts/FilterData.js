@@ -26,3 +26,31 @@ export const monthsJson = [
   { value: 11, label: "November" },
   { value: 12, label: "December" },
 ];
+
+
+export const taskTypeOptions = {
+  type: "select",
+  id: "taskType",
+  label: "Task Type",
+  options: [
+    { value: "gst", label: "GST" },
+    { value: "providentFund", label: "Provident Fund" },
+    { value: "incomeTax", label: "Income Tax" },
+    { value: "tds", label: "TDS and TCS" },
+    { value: "esi", label: "ESI" },
+    { value: "professionalTax", label: "Professional Tax" },
+  ],
+}
+
+
+export const applicationSubstatusOptions = [
+  { value: "gstr1", label: "GSTR1" },
+  { value: "gstr3b", label: "GSTR3B" },
+  { value: "gstNewRegistration", label: "GST - New Registration" },
+  { value: "gstInactive", label: "GST - Closure" },
+  { value: "gstRefund", label: "GST - Refund" },
+  { value: "gstAmendments", label: "GST - Amendments" },
+  { value: "gstMonthly", label: "GST - Monthly Filing" },
+  { value: "gstMonthlyPayment", label: "GST - Monthly Payment" },
+  { value: "gstRevocations", label: "GST - Revocations" },
+];

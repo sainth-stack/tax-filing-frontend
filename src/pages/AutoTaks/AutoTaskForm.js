@@ -26,7 +26,7 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
   const tasks = (data) => {
     return getTasks({ companies: [], users: [], data, noAct: true })
   }
-  
+
   const endTask = getEndTasks();
   const defaultData = tasks().reduce((acc, field) => {
     acc[field.id] = "";
@@ -132,7 +132,7 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
       const response = await axios.get(`${base_url}/users/all`);
       const data = response.data?.data.map((item) => ({
         value: item?._id,
-        label: item?.firstName + " " + item?.lastName,
+        label: item?.firstName + " " + (item?.lastName || ''),
       }));
       setUsers(data);
     } catch (error) {
@@ -150,10 +150,11 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
     e.preventDefault();
 
     // Check for required fields
-    const requiredFields = ["startDate", "priority", "company"];
+    const requiredFields = ["assignedTo"];
     for (const field of requiredFields) {
       if (!formData[field]) {
         setError(`Field ${field} is required.`);
+        toast.error(`Field ${field} is required.`);
         return;
       }
     }
@@ -286,7 +287,7 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
     if (field.id === "company") {
       return companies;
     } else if (field.id === "assignedTo") {
-      return [{ label: "All", value: "all" }, ...users];
+      return [...users];
     } else if (field.id === "monthlyMonth") {
       return [{ value: currentMonth, label: currentMonth }, ...field?.options];
     } else if (field.id === "year") {
@@ -302,17 +303,9 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
     }));
   };
 
+
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
-      {/* {loading && loading ? (
-        <>
-          <div className="flex justify-center items-center  p-4">
-            <Loader size={30} />{" "}
-          </div>
-        </>
-      ) : (
-        <>{"Vishnu"}</>
-      )} */}
 
       {showForm && (
         <>
