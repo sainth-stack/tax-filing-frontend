@@ -2,16 +2,12 @@ import { components } from "react-select";
 
 const CustomOption = (props) => {
   const handleCheckboxChange = (e) => {
-    // Get the value of the option
     const { value } = props.data;
     const isSelected = e.target.checked;
 
-    // Update the selected values based on checkbox status
     const updatedValue = isSelected
-      ? [...props.selectProps.value, value] // Add to selected options
-      : props.selectProps.value.filter((item) => item !== value); // Remove from selected options
-
-    // Pass the updated value back to the parent component
+      ? [...props.selectProps.value, value] 
+      : props.selectProps.value.filter((item) => item !== value); 
     props.selectProps.onChange(updatedValue);
   };
 

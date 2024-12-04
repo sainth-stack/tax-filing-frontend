@@ -68,31 +68,26 @@ const UserForm = ({
 
   // Handle input change
 const handleInputChange = (e, isMultiSelect = false) => {
-  // Check if the event has a target property (standard form elements)
   if (e.target) {
     if (isMultiSelect) {
-      // For multi-select (react-select or similar components)
       const selectedCompanies = e.map((option) => option.value);
       setFormData((prev) => ({
         ...prev,
-        selectedCompanies: selectedCompanies, // Ensure the key is meaningful
+        selectedCompanies: selectedCompanies, 
       }));
     } else {
-      // Destructure target properties only if e.target is available
       const { id, value, type, checked, multiple } = e.target;
 
       if (multiple) {
-        // For multi-select with the `multiple` attribute (e.g., <select multiple>)
         const selectedCompanies = Array.from(
           e.target.selectedOptions,
           (option) => option.value
         );
         setFormData((prev) => ({
           ...prev,
-          [id]: selectedCompanies, // Store selected options as an array
+          [id]: selectedCompanies,
         }));
       } else {
-        // For checkboxes or other inputs (text, number, etc.)
         setFormData((prev) => ({
           ...prev,
           [id]: type === "checkbox" ? checked : value,
@@ -102,9 +97,7 @@ const handleInputChange = (e, isMultiSelect = false) => {
   } else {
     
     console.warn("Event target is undefined. This might be caused by a custom component like react-select.");
-    // Handle your custom components here (like react-select)
     if (isMultiSelect && e && Array.isArray(e)) {
-      // In case of react-select or similar custom multi-select components
       const selectedCompanies = e.map((option) => option.value);
       setFormData((prev) => ({
         ...prev,
