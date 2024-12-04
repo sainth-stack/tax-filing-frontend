@@ -23,7 +23,9 @@ const UserForm = ({
   const [Users, setUsers] = useState([]);
   const [Agencies, setAgencies] = useState([]);
   const [companies, setCompanies] = useState([]);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+   
+      });
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -68,44 +70,34 @@ const UserForm = ({
 
   // Handle input change
 const handleInputChange = (e, isMultiSelect = false) => {
-  if (e.target) {
-    if (isMultiSelect) {
-      const selectedCompanies = e.map((option) => option.value);
+  if (isMultiSelect) {
+   
+    const selectedCompanies = e.map((option) => option); // Full object, not just value
+    setFormData((prev) => ({
+      ...prev,
+      company: selectedCompanies, // Store full object details in 'company' field
+    }));
+  } else {
+    const { id, value, type, checked, multiple } = e.target;
+
+    if (multiple) {
+      const selectedCompanies = Array.from(
+        e.target.selectedOptions,
+        (option) => option // Full object, not just value
+      );
       setFormData((prev) => ({
         ...prev,
-        selectedCompanies: selectedCompanies, 
+        company: selectedCompanies, // Store full object details in 'company' field
       }));
     } else {
-      const { id, value, type, checked, multiple } = e.target;
-
-      if (multiple) {
-        const selectedCompanies = Array.from(
-          e.target.selectedOptions,
-          (option) => option.value
-        );
-        setFormData((prev) => ({
-          ...prev,
-          [id]: selectedCompanies,
-        }));
-      } else {
-        setFormData((prev) => ({
-          ...prev,
-          [id]: type === "checkbox" ? checked : value,
-        }));
-      }
-    }
-  } else {
-    
-    console.warn("Event target is undefined. This might be caused by a custom component like react-select.");
-    if (isMultiSelect && e && Array.isArray(e)) {
-      const selectedCompanies = e.map((option) => option.value);
       setFormData((prev) => ({
         ...prev,
-        selectedCompanies: selectedCompanies,
+        [id]: type === "checkbox" ? checked : value,
       }));
     }
   }
 };
+
 
 
 
@@ -236,8 +228,8 @@ const handleInputChange = (e, isMultiSelect = false) => {
                           id={field.id}
                           label={field.label}
                           options={field.options}
-                          value={formData[field.id]}
-                          onChange={handleInputChange} // This function handles the change
+                          value={formData.company} 
+                          onChange={handleInputChange} 
                           required={field.required}
                         />
                       );

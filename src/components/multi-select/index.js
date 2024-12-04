@@ -6,8 +6,8 @@ const MultiSelectInput = ({
   id,
   label,
   options,
-  value,
-  onChange,
+  value, // Value passed down from parent (formData)
+  onChange, // onChange handler passed down from parent
   isDisabled,
 }) => {
   // Custom styles for the Select component
@@ -71,13 +71,13 @@ const MultiSelectInput = ({
         isMulti
         id={id}
         options={options}
-        value={value}
-        onChange={onChange}
+        value={value} // Dynamically linked to formData[field.id]
+        onChange={onChange} // Handle changes via handleInputChange
         isDisabled={isDisabled}
         styles={customStyles}
         classNamePrefix="select"
+        components={{ Option: CustomOption }} // Custom checkbox option
         placeholder="Select options..."
-        components={{ Option: CustomOption }} // Use CustomOption with checkbox
       />
     </div>
   );
