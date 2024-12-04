@@ -26,9 +26,7 @@ const Users = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(`${base_url}/users/filter`, {
-        name: name,
-      });
+      const response = await axios.post(`${base_url}/users/filter`, { name });
       setUsers(response.data);
       setLoading(false);
     } catch (error) {
@@ -64,7 +62,7 @@ const Users = () => {
               id="company"
               label="Name"
               className="shadow-sm"
-              value={name}
+              value={name?.label || ""}
               type="text"
               placeholder="Name"
               onChange={(e) => setName(e.target.value)}

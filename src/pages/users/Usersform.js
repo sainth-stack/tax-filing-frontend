@@ -7,6 +7,7 @@ import CustomCheckbox from "../../components/Checkbox/Checkbox";
 import { base_url } from "../../const";
 import { GetUsers } from "./data";
 import Loader from "../../components/helpers/loader";
+import MultiSelectInput from "../../components/multi-select";
 
 const UserForm = ({
   setRefresh,
@@ -66,13 +67,55 @@ const UserForm = ({
   }, []);
 
   // Handle input change
-  const handleInputChange = (e) => {
-    const { id, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [id]: type === "checkbox" ? checked : value,
-    }));
-  };
+const handleInputChange = (e, isMultiSelect = false) => {
+  // Check if the event has a target property (standard form elements)
+  if (e.target) {
+    if (isMultiSelect) {
+      // For multi-select (react-select or similar components)
+      const selectedCompanies = e.map((option) => option.value);
+      setFormData((prev) => ({
+        ...prev,
+        selectedCompanies: selectedCompanies, // Ensure the key is meaningful
+      }));
+    } else {
+      // Destructure target properties only if e.target is available
+      const { id, value, type, checked, multiple } = e.target;
+
+      if (multiple) {
+        // For multi-select with the `multiple` attribute (e.g., <select multiple>)
+        const selectedCompanies = Array.from(
+          e.target.selectedOptions,
+          (option) => option.value
+        );
+        setFormData((prev) => ({
+          ...prev,
+          [id]: selectedCompanies, // Store selected options as an array
+        }));
+      } else {
+        // For checkboxes or other inputs (text, number, etc.)
+        setFormData((prev) => ({
+          ...prev,
+          [id]: type === "checkbox" ? checked : value,
+        }));
+      }
+    }
+  } else {
+    
+    console.warn("Event target is undefined. This might be caused by a custom component like react-select.");
+    // Handle your custom components here (like react-select)
+    if (isMultiSelect && e && Array.isArray(e)) {
+      // In case of react-select or similar custom multi-select components
+      const selectedCompanies = e.map((option) => option.value);
+      setFormData((prev) => ({
+        ...prev,
+        selectedCompanies: selectedCompanies,
+      }));
+    }
+  }
+};
+
+
+
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -192,6 +235,20 @@ const UserForm = ({
               <div className="grid grid-cols-4 gap-5">
                 {user.fields.map((field, index) => {
                   if (field.type === "select") {
+
+                    if (field.id === "company") {
+                      return (
+                        <MultiSelectInput
+                          key={index}
+                          id={field.id}
+                          label={field.label}
+                          options={field.options}
+                          value={formData[field.id]}
+                          onChange={handleInputChange} // This function handles the change
+                          required={field.required}
+                        />
+                      );
+                    }
                     return (
                       <SelectInput
                         key={index}

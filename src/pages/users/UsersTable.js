@@ -63,6 +63,9 @@ export default function UsersTable({
   dataLoading,
   loading,
 }) {
+
+  console.log("Fetched users:", users);
+
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("sno"); // default sorting by S.No
 
@@ -101,9 +104,10 @@ export default function UsersTable({
     }
     if (orderBy === "companyName") {
       return order === "asc"
-        ? (a.company || "").localeCompare(b.company || "")
-        : (b.company || "").localeCompare(a.company || "");
+        ? (a.company[0]?.label || "").localeCompare(b.company[0]?.label || "")
+        : (b.company[0]?.label || "").localeCompare(a.company[0]?.label || "");
     }
+
     return 0;
   });
 
@@ -161,46 +165,53 @@ export default function UsersTable({
                   </div>
                 </TableCell>
               </TableRow>
-            ) : (
-              sortedUsers
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((user, index) => (
-                  <TableRow key={user._id || index} sx={{ height: "48px" }}>
-                    <TableCell align="left" padding="normal">
-                      {page * rowsPerPage + index + 1}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {user.firstName + " " + user.lastName || "N/A"}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {user.email || "N/A"}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {user.company || "N/A"}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      <IconButton
-                        aria-label="edit"
-                        size="small"
-                        onClick={() => handleEditForm(user._id)}
-                      >
-                        <EditOutlined
-                          fontSize="inherit"
-                          className="text-green-400 z-0 bg-gray-50 rounded"
-                        />
-                      </IconButton>
-                      <IconButton
-                        aria-label="delete"
-                        size="small"
-                        onClick={() => handleDelete(user._id)}
-                      >
-                        <DeleteOutline
-                          fontSize="inherit"
-                          className="text-red-400 bg-gray-100 rounded"
-                        />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
+            ) :
+              
+              
+              (
+                
+             sortedUsers
+  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+  .map((user, index) => (
+    <TableRow key={user?._id || index} sx={{ height: "48px" }}>
+      <TableCell align="left" padding="normal">
+        {page * rowsPerPage + index + 1}
+      </TableCell>
+      <TableCell align="left" padding="normal">
+        {user?.firstName && user?.lastName
+          ? `${user.firstName} ${user.lastName}`
+          : "N/A"}
+      </TableCell>
+      <TableCell align="left" padding="normal">
+        {user?.email || "N/A"}
+      </TableCell>
+      <TableCell align="left" padding="normal">
+        {typeof user?.company === "string" ? user.company : "N/A"}
+      </TableCell>
+      <TableCell align="left" padding="normal">
+        <IconButton
+          aria-label="edit"
+          size="small"
+          onClick={() => handleEditForm(user?._id)}
+        >
+          <EditOutlined
+            fontSize="inherit"
+            className="text-green-400 z-0 bg-gray-50 rounded"
+          />
+        </IconButton>
+        <IconButton
+          aria-label="delete"
+          size="small"
+          onClick={() => handleDelete(user?._id)}
+        >
+          <DeleteOutline
+            fontSize="inherit"
+            className="text-red-400 bg-gray-100 rounded"
+          />
+        </IconButton>
+      </TableCell>
+    </TableRow>
+
                 ))
             )}
           </TableBody>
