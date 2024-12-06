@@ -63,6 +63,9 @@ export default function UsersTable({
   dataLoading,
   loading,
 }) {
+
+  console.log("Fetched users:", users);
+
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("sno"); // default sorting by S.No
 
@@ -101,9 +104,10 @@ export default function UsersTable({
     }
     if (orderBy === "companyName") {
       return order === "asc"
-        ? (a.company || "").localeCompare(b.company || "")
-        : (b.company || "").localeCompare(a.company || "");
+        ? (a.company[0]?.label || "").localeCompare(b.company[0]?.label || "")
+        : (b.company[0]?.label || "").localeCompare(a.company[0]?.label || "");
     }
+
     return 0;
   });
 
@@ -175,9 +179,10 @@ export default function UsersTable({
                     <TableCell align="left" padding="normal">
                       {user.email || "N/A"}
                     </TableCell>
-                    <TableCell align="left" padding="normal" style={{maxWidth:'250px'}}>
-                      {user.company?.length > 0 
-                        ? user.company.map(comp => comp.label).join(', ')
+                    <TableCell align="left" padding="normal" style={{ maxWidth: '250px' }}>
+                      {user.company?.length > 0
+                        ? user.company.slice(0, 2).map(comp => comp.label).join(', ') + 
+                          (user.company.length > 2 ? `, + ${user.company.length - 2} more` : '')
                         : (user?.company || "N/A")}
                     </TableCell>
                     <TableCell align="left" padding="normal">

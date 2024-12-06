@@ -49,7 +49,7 @@ export const GetUsers = (companiesdata = [], agnciesdata = []) => {
           label: "Email Address",
         },
         {
-          type: "text",
+          type: "password",
           id: "password",
           label: "Password",
         },

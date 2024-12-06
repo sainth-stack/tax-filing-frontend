@@ -65,7 +65,7 @@ const Users = () => {
               id="company"
               label="Name"
               className="shadow-sm"
-              value={name}
+              value={name?.label || ""}
               type="text"
               placeholder="Name"
               onChange={(e) => setName(e.target.value)}

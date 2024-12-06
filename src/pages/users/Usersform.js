@@ -20,7 +20,9 @@ const UserForm = ({
   const [Users, setUsers] = useState([]);
   const [Agencies, setAgencies] = useState([]);
   const [companies, setCompanies] = useState([]);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+   
+      });
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -64,13 +66,38 @@ const UserForm = ({
   }, []);
 
   // Handle input change
-  const handleInputChange = (e) => {
-    const { id, value, type, checked } = e.target;
+const handleInputChange = (e, isMultiSelect = false) => {
+  if (isMultiSelect) {
+   
+    const selectedCompanies = e.map((option) => option); // Full object, not just value
     setFormData((prev) => ({
       ...prev,
-      [id]: type === "checkbox" ? checked : value,
+      company: selectedCompanies, // Store full object details in 'company' field
     }));
-  };
+  } else {
+    const { id, value, type, checked, multiple } = e.target;
+
+    if (multiple) {
+      const selectedCompanies = Array.from(
+        e.target.selectedOptions,
+        (option) => option // Full object, not just value
+      );
+      setFormData((prev) => ({
+        ...prev,
+        company: selectedCompanies, // Store full object details in 'company' field
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [id]: type === "checkbox" ? checked : value,
+      }));
+    }
+  }
+};
+
+
+
+
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -189,19 +216,20 @@ const UserForm = ({
               </h2>
               <div className="grid grid-cols-4 gap-5">
                 {user?.fields?.map((field, index) => {
-                  if (field.multiple) {
+                  if (field.multiple || field.id === "company") {
                     return (
                       <MultiSelectInput
                         key={index}
+                        id={field.id}
                         label={field.label}
                         options={field.options}
                         value={formData[field.id] || []}
                         onChange={(selectedOptions) => {
-                          // Transform the selected options to only include _id and companyName
                           const simplifiedOptions = selectedOptions.map(option => ({
                             _id: option._id,
                             label: option.companyDetails?.companyName || option?.label,
                             value: option.companyDetails?.companyName || option?.value,
+                            isSelected: true
                           }));
 
                           setFormData(prev => ({
@@ -213,6 +241,20 @@ const UserForm = ({
                     );
                   }
                   if (field.type === "select") {
+
+                    if (field.id === "company") {
+                      return (
+                        <MultiSelectInput
+                          key={index}
+                          id={field.id}
+                          label={field.label}
+                          options={field.options}
+                          value={formData.company} 
+                          onChange={handleInputChange} 
+                          required={field.required}
+                        />
+                      );
+                    }
                     return (
                       <SelectInput
                         key={index}

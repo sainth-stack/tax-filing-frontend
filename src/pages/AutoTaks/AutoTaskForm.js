@@ -142,8 +142,15 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
 
   useEffect(() => {
     fetchCompanies();
-
-    fetchUsers();
+    if (user.role !== "A") {
+      const data = {
+        value: user?._id,
+        label: user?.firstName + " " + (user?.lastName || ''),
+      };
+      setUsers([data]);
+    } else {
+      fetchUsers();
+    }
   }, []);
 
   const handleSubmit = async (e) => {

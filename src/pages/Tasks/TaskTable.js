@@ -12,6 +12,7 @@ import TablePagination from "@mui/material/TablePagination";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import moment from "moment";
 
 import Accordian from "../../components/Accordian";
 import Loader from "../../components/helpers/loader";
@@ -120,11 +121,11 @@ export default function TasksTable({
     if (orderBy === "applicationSubStatus") {
       return order === "asc"
         ? (a.applicationSubStatus || "").localeCompare(
-            b.applicationSubStatus || ""
-          )
+          b.applicationSubStatus || ""
+        )
         : (b.applicationSubStatus || "").localeCompare(
-            a.applicationSubStatus || ""
-          );
+          a.applicationSubStatus || ""
+        );
     }
     return 0; // Default case, no sorting
   });
@@ -220,7 +221,9 @@ export default function TasksTable({
                       {task.taskName || "N/A"}
                     </TableCell>
                     <TableCell align="left" padding="normal">
-                      {new Date(task.dueDate).toLocaleDateString() || "N/A"}
+                      <TableCell align="left" padding="normal">
+                        {task.dueDate ? moment(task.dueDate).format('DD-MMM-YYYY') : 'N/A'}
+                      </TableCell>
                     </TableCell>
                     <TableCell align="left" padding="normal">
                       {task.applicationStatus || "N/A"}

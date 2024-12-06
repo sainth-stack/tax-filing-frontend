@@ -20,6 +20,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { base_url } from "../../const";
 import ConfirmationPopup from "../../components/confirmation-popup";
+import moment from "moment";
 const theme = createTheme({
   typography: {
     fontFamily: "Work Sans, Arial",
@@ -275,7 +276,7 @@ export default function AutoTasksTable({
                       {task?.taskName === "gstMonthly" ? (task?.taskName + "-" + task?.gstMonthly_gstType) : (task.taskName || "N/A")}
                     </TableCell>
                     <TableCell align="left" padding="normal">
-                      {new Date(task.dueDate).toLocaleDateString() || "N/A"}
+                      {task.dueDate ? moment(task.dueDate).format('DD-MMM-YYYY') : 'N/A'}
                     </TableCell>
                     <TableCell align="left" padding="normal">
                       {task.applicationStatus || "N/A"}
