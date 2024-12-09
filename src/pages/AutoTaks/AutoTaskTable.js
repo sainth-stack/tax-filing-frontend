@@ -123,6 +123,7 @@ export default function AutoTasksTable({
 
   const handleEditForm = (id) => {
     setCompanyId(id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleRequestSort = (columnId) => {

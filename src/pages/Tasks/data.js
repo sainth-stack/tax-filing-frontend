@@ -22,6 +22,7 @@ export const getTasks = ({ companies = [], users = [], data, noAct }) => {
       options: [...users],
       required: true,
       defaultValue: "",
+      
     },
     ...((data?.taskName !== "gstMonthly" && data?.taskName !== "gstMonthlyPayment")
       ? [
@@ -1776,7 +1777,7 @@ export const taskSearch = (formData) => {
           type: "select",
           id: "assignedTo",
           label: "Assigned To",
-          options: { value: "All", label: "All" },
+          options: { value: "all", label: "All" },
           defaultValue: "All",
         },
       ]

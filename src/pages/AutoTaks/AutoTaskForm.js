@@ -368,6 +368,7 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
                       <CustomInput
                         key={index}
                         id={field.id}
+                        name={field.id}
                         type={field.type}
                         label={field.label}
                         value={formData[field.id] || ""}
@@ -384,6 +385,7 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
                         link={formData[field.id]}
                         onChange={handleFileChange}
                         readOnly={field?.readOnly}
+                        required={field.required}
                       />
                     );
                   }

@@ -146,7 +146,6 @@ const AutoTasks = () => {
       setCompanies(data);
     } catch (error) {
       toast.error("Error While Companies Fetching ");
-
       console.error("Error fetching companies:", error);
     }
   };
@@ -196,7 +195,7 @@ const AutoTasks = () => {
 
   const getFields = (field) => {
     if (field.id === "assignedTo") {
-      return [...users];
+      return [field?.options, ...users];
     } else {
       return field?.options;
     }

@@ -20,6 +20,7 @@ const SelectInput = ({
     <div className={`flex flex-col ${className}`} style={style}>
       <label htmlFor={id} className="mb-1" style={{ ...labelStyles }}>
         {label}
+        {required && <span className="text-red-500">*</span>}
       </label>
       <select
         id={id}
