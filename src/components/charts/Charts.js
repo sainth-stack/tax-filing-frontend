@@ -28,7 +28,7 @@ const Charts = () => {
         });
         setLoading(false);
 
-        const { data } = response;
+        const { data } = response.data;
 
         const companyDetailsArray = data.map((item) => ({
           ...item.companyDetails,
@@ -43,6 +43,9 @@ const Charts = () => {
         setCompanies(companyDetailsArray);
         setClientStatuses(statusesArray);
 
+         console.log("Fetched company data:", companyDetailsArray);
+        console.log("Fetched statuses:", statusesArray);
+        
         // Log client statuses
       } catch (error) {
         console.error("Error fetching data:", error);

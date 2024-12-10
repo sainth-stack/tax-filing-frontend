@@ -317,12 +317,12 @@ export default function CompanyTable({
               </TableRow>
             ) : (
               sortedCompanies
-                .slice((page - 1) * rowsPerPage, page * rowsPerPage) // Correct slicing for the current page
+               // Correct slicing for the current page
                 .map((company, index) => (
                   <TableRow key={company._id} sx={{ height: "48px" }}>
                     {/* Correct row numbering */}
                     <TableCell align="left" padding="normal">
-                      {(page - 1) * rowsPerPage + index + 1}
+                      {(page ) * rowsPerPage + index + 1}
                     </TableCell>
 
                     {/* Company Name */}
