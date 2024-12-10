@@ -22,6 +22,7 @@ import { base_url } from "../../const";
 const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
+  const [totalPages,setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
   const tasks = (data) => {
     return getTasks({ companies: [], users: [], data, noAct: true })
@@ -125,14 +126,17 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId }) => {
     }
   };
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (page, pageSize) => {
     try {
-      const response = await axios.get(`${base_url}/users/all`);
+      const response = await axios.get(`${base_url}/users/all`, {
+        params: { page, pageSize },
+      });
       const data = response.data?.data.map((item) => ({
         value: item?._id,
         label: item?.firstName,
       }));
-      setUsers(data);
+      setUsers(response.data.totalUsers);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error("Error fetching users:", error);
     }

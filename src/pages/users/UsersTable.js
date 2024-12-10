@@ -64,7 +64,7 @@ export default function UsersTable({
   loading,
 }) {
 
-  console.log("Fetched users:", users);
+  // console.log("Fetched users:", users);
 
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("sno"); // default sorting by S.No

@@ -43,8 +43,8 @@ const Charts = () => {
         setCompanies(companyDetailsArray);
         setClientStatuses(statusesArray);
 
-         console.log("Fetched company data:", companyDetailsArray);
-        console.log("Fetched statuses:", statusesArray);
+        //  console.log("Fetched company data:", companyDetailsArray);
+        // console.log("Fetched statuses:", statusesArray);
         
         // Log client statuses
       } catch (error) {
@@ -67,7 +67,7 @@ const Charts = () => {
         year,
         month,
       });
-      console.log(data)
+      // console.log(data)
       setfilteredTasks([...data, ...response?.data]);
       setLoading(false);
     } catch (error) {

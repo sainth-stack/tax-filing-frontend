@@ -33,6 +33,12 @@ const Tasks = () => {
   const [showForm, setShowForm] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
   const [showtasks, setShowTasks] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const [page, setPage] = useState(0); // Default page 1
+  const [pageSize, setPageSize] = useState(1); 
+const [totalTasks, setTotalTasks] = useState(0);
+
   const [companyId, setCompanyId] = useState("");
   const [users, setUsers] = useState([]);
   const [open, setOpen] = useState(false);
@@ -116,30 +122,31 @@ const Tasks = () => {
     }
   };
 
-  const fetchUsers = async () => {
-    setLoading(true);
-
+  const fetchUsers = async (page, pageSize) => {
     try {
+      // Pass page and pageSize as query parameters
       const response = await axios.get(`${base_url}/users/all`);
+
       const data = response.data?.data.map((item) => ({
-        value: item?.firstName,
+        value: item?._id,
         label: item?.firstName,
       }));
-      setLoading(false);
 
+      // Optionally, you can also store pagination info (totalUsers, totalPages) if needed
       setUsers(data);
+      setTotalPages(data.length);
+     
     } catch (error) {
-      toast.error("Error While  Fetching ");
-
       console.error("Error fetching users:", error);
     }
   };
-  console.log("users ", users);
+
+  // console.log("users Paginations] ", users);
 
   useEffect(() => {
     fetchTasks();
-    fetchUsers();
-  }, [formData]);
+    fetchUsers(page, pageSize);
+  }, [page, pageSize, formData]);
 
   //for  model
   const fetchCompanies = async () => {
@@ -162,20 +169,21 @@ const Tasks = () => {
     }
   };
 
-  const fetchAllTasks = async () => {
+  const fetchAllTasks = async (page,pageSize) => {
     setLoading(true);
 
     try {
-      const response = await axios.get(`${base_url}/tasks/all`);
+      const response = await axios.get(`${base_url}/tasks/all`, {
+        params: { page: page+1, pageSize: pageSize },
+      });
 
-      /* const data = response.data?.data.map((item) => ({
-        value: item?._id,
-        label: item?.firstName,
-      })); */
-      /* const { data } = response; */
+     const { data } = response.data;
       setLoading(false);
+      
 
-      setAllUsers(response);
+      setTasks(data);
+       setTotalTasks(response.data.totalTasks);
+      console.log(allUsers, "about taks for paginations")
     } catch (error) {
       toast.error("Error While  Fetching Tasks ");
 
@@ -186,8 +194,8 @@ const Tasks = () => {
   useEffect(() => {
     fetchCompanies();
     fetchUsers();
-    fetchAllTasks();
-  }, []);
+    fetchAllTasks(page, pageSize);
+  }, [page, pageSize]);
 
   const handleDelete = async (id) => {
     setLoading(true);
@@ -368,12 +376,18 @@ const Tasks = () => {
         <div className="bg-white rounded-lg shadow-md">
           <TasksTable
             {...{
+              totalTasks,
               setCompanyId,
               companyRefresh,
               handleDelete,
               tasks,
+              setPage,
+              page,
               formData,
+              setPageSize,
+              pageSize,
               fetchAllTasks,
+              fetchUsers
             }}
             dataLoading={loading}
           />

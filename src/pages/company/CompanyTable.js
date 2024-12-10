@@ -107,7 +107,7 @@ export default function CompanyTable({
         setLoading(false);
 
         const { data, totalCount } = response.data; // Get data and total count
-        console.log("Fetched companies From Logic:", data);
+        // console.log("Fetched companies From Logic:", data);
 
         if (data && data.length > 0) {
           // Map company data to extract necessary fields
@@ -427,7 +427,7 @@ export default function CompanyTable({
         </Table>
 
         <TablePagination
-          rowsPerPageOptions={[5, 10, 15]}
+          rowsPerPageOptions={[5]}
           component="div"
           count={totalCount} // Total items count (totalPages * rowsPerPage)
           rowsPerPage={rowsPerPage}
