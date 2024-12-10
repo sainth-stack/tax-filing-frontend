@@ -62,24 +62,29 @@ export default function UsersTable({
   setCompanyId,
   dataLoading,
   loading,
+  totalCount,
+  page,
+  setPage,
+  pageSize,
+  
 }) {
 
+  alert(totalCount);
   // console.log("Fetched users:", users);
 
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("sno"); // default sorting by S.No
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  
+const handleChangePage = (event, newPage) => {
+  setPage(newPage);
+};
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+const handleChangeRowsPerPage = (event, newPage) => {
+  pageSize(parseInt(event.target.value, 5));
+  setPage(newPage);
+};
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
 
   const handleEditForm = (id) => {
     setCompanyId(id);
@@ -165,63 +170,56 @@ export default function UsersTable({
                   </div>
                 </TableCell>
               </TableRow>
-            ) :
-              
-              
-              (
-                
-             sortedUsers
-  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-  .map((user, index) => (
-    <TableRow key={user?._id || index} sx={{ height: "48px" }}>
-      <TableCell align="left" padding="normal">
-        {page * rowsPerPage + index + 1}
-      </TableCell>
-      <TableCell align="left" padding="normal">
-        {user?.firstName && user?.lastName
-          ? `${user.firstName} ${user.lastName}`
-          : "N/A"}
-      </TableCell>
-      <TableCell align="left" padding="normal">
-        {user?.email || "N/A"}
-      </TableCell>
-      <TableCell align="left" padding="normal">
-        {typeof user?.company === "string" ? user.company : "N/A"}
-      </TableCell>
-      <TableCell align="left" padding="normal">
-        <IconButton
-          aria-label="edit"
-          size="small"
-          onClick={() => handleEditForm(user?._id)}
-        >
-          <EditOutlined
-            fontSize="inherit"
-            className="text-green-400 z-0 bg-gray-50 rounded"
-          />
-        </IconButton>
-        <IconButton
-          aria-label="delete"
-          size="small"
-          onClick={() => handleDelete(user?._id)}
-        >
-          <DeleteOutline
-            fontSize="inherit"
-            className="text-red-400 bg-gray-100 rounded"
-          />
-        </IconButton>
-      </TableCell>
-    </TableRow>
-
-                ))
+            ) : (
+              sortedUsers.map((user, index) => (
+                <TableRow key={user?._id || index} sx={{ height: "48px" }}>
+                  <TableCell align="left" padding="normal">
+                    {page * pageSize + index + 1}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    {user?.firstName && user?.lastName
+                      ? `${user.firstName} ${user.lastName}`
+                      : "N/A"}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    {user?.email || "N/A"}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    {typeof user?.company === "string" ? user.company : "N/A"}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    <IconButton
+                      aria-label="edit"
+                      size="small"
+                      onClick={() => handleEditForm(user?._id)}
+                    >
+                      <EditOutlined
+                        fontSize="inherit"
+                        className="text-green-400 z-0 bg-gray-50 rounded"
+                      />
+                    </IconButton>
+                    <IconButton
+                      aria-label="delete"
+                      size="small"
+                      onClick={() => handleDelete(user?._id)}
+                    >
+                      <DeleteOutline
+                        fontSize="inherit"
+                        className="text-red-400 bg-gray-100 rounded"
+                      />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
             )}
           </TableBody>
         </Table>
 
         <TablePagination
-          rowsPerPageOptions={[5, 10, 15]}
+          rowsPerPageOptions={[1,5]}
           component="div"
-          count={users.length}
-          rowsPerPage={rowsPerPage}
+          count={totalCount}
+          rowsPerPage={pageSize}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
