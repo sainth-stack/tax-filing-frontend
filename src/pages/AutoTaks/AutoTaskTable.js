@@ -63,20 +63,33 @@ export default function AutoTasksTable({
   setCompanyId,
   formData,
   dataLoading,
+  page,
+  pageSize,
+  setPageSize,
+  setPage,
+  totalTasks,
+  fetchAllTasks,
 }) {
+   console.log(
+     "chekign total tasks ",
+     totalTasks,
+     "total page size",
+     pageSize,
+     "Page :",
+     page
+   );
+
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("sno"); // default sorting by S.No
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    fetchAllTasks(newPage, pageSize);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setPageSize(parseInt(event.target.value, 5)); // Convert to number
+    setPage(0); // Reset to the first page when rows per page changes
   };
 
   const handleEditForm = (id) => {
@@ -204,64 +217,62 @@ export default function AutoTasksTable({
                 </TableCell>
               </TableRow>
             ) : (
-              sortedTasks
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((task, index) => (
-                  <TableRow key={task._id || index} sx={{ height: "48px" }}>
-                    <TableCell align="left" padding="normal">
-                      {page * rowsPerPage + index + 1}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {task.company || "N/A"}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {task.taskName || "N/A"}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {new Date(task.dueDate).toLocaleDateString() || "N/A"}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {task.applicationStatus || "N/A"}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {task.assignedName || "N/A"}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {task.applicationSubStatus || "N/A"}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      <IconButton
-                        aria-label="edit"
-                        size="small"
-                        onClick={() => handleEditForm(task._id)}
-                      >
-                        <EditOutlined
-                          fontSize="inherit"
-                          className="text-green-400 z-0 bg-gray-50 rounded"
-                        />
-                      </IconButton>
-                      <IconButton
-                        aria-label="delete"
-                        size="small"
-                        onClick={() => handleDelete(task._id)}
-                      >
-                        <DeleteOutline
-                          fontSize="inherit"
-                          className="text-red-400 bg-gray-100 rounded"
-                        />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))
+              sortedTasks.map((task, index) => (
+                <TableRow key={task._id || index} sx={{ height: "48px" }}>
+                  <TableCell align="left" padding="normal">
+                    {page * pageSize + index + 1}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    {task.company || "N/A"}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    {task.taskName || "N/A"}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    {new Date(task.dueDate).toLocaleDateString() || "N/A"}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    {task.applicationStatus || "N/A"}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    {task.assignedName || "N/A"}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    {task.applicationSubStatus || "N/A"}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    <IconButton
+                      aria-label="edit"
+                      size="small"
+                      onClick={() => handleEditForm(task._id)}
+                    >
+                      <EditOutlined
+                        fontSize="inherit"
+                        className="text-green-400 z-0 bg-gray-50 rounded"
+                      />
+                    </IconButton>
+                    <IconButton
+                      aria-label="delete"
+                      size="small"
+                      onClick={() => handleDelete(task._id)}
+                    >
+                      <DeleteOutline
+                        fontSize="inherit"
+                        className="text-red-400 bg-gray-100 rounded"
+                      />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
             )}
           </TableBody>
         </Table>
 
         <TablePagination
-          rowsPerPageOptions={[5, 10, 15]}
+          rowsPerPageOptions={[1, 5]}
           component="div"
-          count={tasks.length}
-          rowsPerPage={rowsPerPage}
+          count={totalTasks}
+          rowsPerPage={pageSize}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}

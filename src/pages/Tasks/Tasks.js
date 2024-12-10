@@ -36,7 +36,7 @@ const Tasks = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const [page, setPage] = useState(0); // Default page 1
-  const [pageSize, setPageSize] = useState(1); 
+  const [pageSize, setPageSize] = useState(5); 
 const [totalTasks, setTotalTasks] = useState(0);
 
   const [companyId, setCompanyId] = useState("");
@@ -383,10 +383,10 @@ const [totalTasks, setTotalTasks] = useState(0);
               tasks,
               setPage,
               page,
-              formData,
-              setPageSize,
               pageSize,
               fetchAllTasks,
+              setPageSize,
+              formData,
               fetchUsers
             }}
             dataLoading={loading}
