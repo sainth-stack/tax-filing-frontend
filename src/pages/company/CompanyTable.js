@@ -317,24 +317,35 @@ export default function CompanyTable({
               </TableRow>
             ) : (
               sortedCompanies
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) // Ensure sortedCompanies is sorted
-                .map((company) => (
+                .slice((page - 1) * rowsPerPage, page * rowsPerPage) // Correct slicing for the current page
+                .map((company, index) => (
                   <TableRow key={company._id} sx={{ height: "48px" }}>
+                    {/* Correct row numbering */}
                     <TableCell align="left" padding="normal">
-                      {page * rowsPerPage + 1}
+                      {(page - 1) * rowsPerPage + index + 1}
                     </TableCell>
+
+                    {/* Company Name */}
                     <TableCell align="left" padding="normal">
                       {company.companyName || "N/A"}
                     </TableCell>
+
+                    {/* Client Status */}
                     <TableCell align="left" padding="normal">
                       {company.clientStatus || "N/A"}
                     </TableCell>
+
+                    {/* Phone */}
                     <TableCell align="left" padding="normal">
                       {company.phone || "N/A"}
                     </TableCell>
+
+                    {/* Mail ID */}
                     <TableCell align="left" padding="normal">
                       {company.mailId || "N/A"}
                     </TableCell>
+
+                    {/* Actions */}
                     <TableCell align="left" padding="normal">
                       <IconButton
                         aria-label="view"
@@ -356,6 +367,7 @@ export default function CompanyTable({
                           />
                         </Tooltip>
                       </IconButton>
+
                       <IconButton
                         aria-label="edit"
                         size="small"
@@ -373,6 +385,7 @@ export default function CompanyTable({
                           />
                         </Tooltip>
                       </IconButton>
+
                       <IconButton
                         aria-label="delete"
                         size="small"
@@ -390,6 +403,7 @@ export default function CompanyTable({
                           />
                         </Tooltip>
                       </IconButton>
+
                       <IconButton
                         aria-label="audit"
                         size="small"
@@ -408,6 +422,7 @@ export default function CompanyTable({
                   </TableRow>
                 ))
             )}
+
           </TableBody>
         </Table>
 
