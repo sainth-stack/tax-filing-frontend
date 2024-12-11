@@ -31,7 +31,7 @@ const Charts = () => {
         });
         setLoading(false);
 
-        const { data } = response;
+        const { data } = response?.data;
 
         const companyDetailsArray = data.map((item) => ({
           ...item.companyDetails,
@@ -63,7 +63,7 @@ const Charts = () => {
           taskType: taskType !== "0" ? taskType : undefined,
         });
         setLoading(false);
-        const { data } = response;
+        const { data } = response?.data;
         const companyDetailsArray = data.map((item) => ({
           ...item.companyDetails,
           ...item,
@@ -71,6 +71,9 @@ const Charts = () => {
         }));
 
         setCompanies(companyDetailsArray);
+
+        //  console.log("Fetched company data:", companyDetailsArray);
+        // console.log("Fetched statuses:", statusesArray);
 
         // Log client statuses
       } catch (error) {
@@ -91,7 +94,7 @@ const Charts = () => {
         user: user.role !== "A" ? user?._id : '',
         list: user.role !== "A" ? user?._id : '',
         taskType: taskType !== "0" ? taskType : undefined,
-        applicationSubStatus:applicationSubStatus !== "0" ? applicationSubStatus :'',
+        applicationSubStatus: applicationSubStatus !== "0" ? applicationSubStatus : '',
       });
 
       const response = await axios.post(`${base_url}/tasks/auto/filter`, {
@@ -101,14 +104,14 @@ const Charts = () => {
         user: user.role !== "A" ? user?._id : '',
         list: user.role !== "A" ? user?._id : '',
         taskType: taskType !== "0" ? taskType : undefined,
-        applicationSubStatus:applicationSubStatus !== "0" ? applicationSubStatus :'',
+        applicationSubStatus: applicationSubStatus !== "0" ? applicationSubStatus : '',
       });
-      const finData1 = response.data.map((item) => {
+      const finData1 = response?.data?.tasks?.map((item) => {
         return {
           ...item, auto: true
         }
       })
-      setfilteredTasks([...data, ...finData1]);
+      setfilteredTasks([...data?.data, ...finData1]);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching filtered tasks:", error);
@@ -118,7 +121,8 @@ const Charts = () => {
 
   useEffect(() => {
     handleFilterChange();
-  }, [year, month, company, taskType,applicationSubStatus]);
+  }, [year, month, company, taskType, applicationSubStatus]);
+
 
   return (
     <>

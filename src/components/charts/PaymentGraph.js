@@ -10,9 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { base_url } from "../../const";
-import { Grid, IconButton, Menu, MenuItem } from "@mui/material";
-import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
+
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useNavigate } from "react-router";
 import jsPDF from "jspdf";
@@ -22,6 +20,7 @@ import Header from "../../pages/Dashboard/card-container";
 import Loader from "../helpers/loader";
 import NoDataFound from "./NoDataFound";
 import { isTaskCompleted } from "../../utils/const";
+import TaskDetailsPopup from "../common/TaskDetailsPopup";
 
 ChartJS.register(
 
@@ -41,6 +40,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
   const [type, setType] = useState("");
   const navigate = useNavigate();
   const [filterTime, setFilterData] = useState([]);
+  const [popupContent, setPopupContent] = useState({ title: '', tasks: [] });
 
   useEffect(() => {
     let filtered = [...filterTime2]; // Ensure it starts with filterTime2
@@ -131,26 +131,23 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
       const datasetIndex = elements[0].datasetIndex;
       const index = elements[0].index;
       const label = chartData.labels[index];
-
-      // Determine whether the user clicked on the "Completed" or "Not Completed" section
-      const isCompletedSection = datasetIndex === 0; // Index 0 is for "Completed"
-      const isNotCompletedSection = datasetIndex === 1; // Index 1 is for "Not Completed"
+      const status = datasetIndex === 0 ? "Completed" : "Not Completed";
 
       let selectedTasks = [];
-
-      if (isCompletedSection) {
+      if (datasetIndex === 0) {
         selectedTasks = filterTime?.filter(
-          (task) =>
-            task?.taskType === label && isTaskCompleted(task)
+          (task) => task?.taskType === label && isTaskCompleted(task)
         );
-      } else if (isNotCompletedSection) {
+      } else {
         selectedTasks = filterTime?.filter(
-          (task) => {
-            return task?.taskType === label && !isTaskCompleted(task)
-          }
+          (task) => task?.taskType === label && !isTaskCompleted(task)
         );
       }
-      setTaskDetails(selectedTasks);
+
+      setPopupContent({
+        title: `${status} Tasks - ${label}`,
+        tasks: selectedTasks
+      });
       setPopupVisible(true);
     }
   };
@@ -244,137 +241,49 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
   return (
     <>
       <div className="container">
-        <div
-          className="bar_chart p-2"
-          style={{
-            width: "100%",
-            height: "450px",
-            border: "1px solid #e0e0e0",
-            borderRadius: "8px",
-            backgroundColor: "#fff",
-            padding: "16px",
-            position: "relative",
-          }}
-        >
+        <div className="bar_chart p-2" style={{
+          width: "100%",
+          height: "450px",
+          border: "1px solid #e0e0e0",
+          borderRadius: "8px",
+          backgroundColor: "#fff",
+          padding: "16px",
+          position: "relative",
+        }}>
           {loading ? (
-            <div className="flex justify-center   items-center m-2">
+            <div className="flex justify-center items-center m-2">
               <Loader />
             </div>
           ) : (
             <>
-              <Header
-                {...{
-                  title: "Monthly Filing/Payment status by task by company",
-                  handleExportAsCSV,
-                  handleExportAsPDF,
-                  payment: true,
-                  type,
-                  setType,
-                }}
-              />
+              <Header {...{
+                title: "Monthly Filing/Payment status by task by company",
+                handleExportAsCSV,
+                handleExportAsPDF,
+                payment: true,
+                type,
+                setType,
+              }} />
 
-              <div className="w-full  ">
+              <div className="w-full">
                 <div style={{ width: "auto", height: "340px" }}>
-                  {chartData.labels.length === 0 ? ( // Change to `===` for proper check
+                  {chartData.labels.length === 0 ? (
                     <NoDataFound />
                   ) : (
-                    <>
-                      <Bar data={chartData} options={options} />
-                    </>
+                    <Bar data={chartData} options={options} />
                   )}
                 </div>
               </div>
             </>
           )}
-          {popupVisible && (
-            <div
-              style={{
-                position: "absolute",
-                top: 100,
-                left: 100,
-                backgroundColor: "#fff",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                borderRadius: "12px",
-                padding: "16px",
-                zIndex: 1000,
-                width: "250px",
-                maxHeight: "300px",
-                overflowY: "auto",
-              }}
-            >
-              <IconButton
-                onClick={() => setPopupVisible(false)}
-                style={{
-                  position: "absolute",
-                  top: "-10px",
-                  right: "-10px",
-                  backgroundColor: "#fff",
-                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                  borderRadius: "50%",
-                }}
-              >
-                <CloseOutlined />
-              </IconButton>
-
-              <div>
-                {taskDetails.length > 0 ? (
-                  taskDetails.map((task) => (
-                    <div
-                      key={task._id}
-                      onClick={() => handleTaskClick(task._id, task?.auto)} // Task click handler
-                      style={{
-                        marginBottom: "8px",
-                        padding: "8px",
-                        cursor: "pointer",
-                        borderRadius: "6px",
-                        backgroundColor: "#f5f5f5",
-                        transition: "background-color 0.3s ease",
-                      }}
-                      onMouseOver={(e) =>
-                        (e.currentTarget.style.backgroundColor = "#e0e0e0")
-                      }
-                      onMouseOut={(e) =>
-                        (e.currentTarget.style.backgroundColor = "#f5f5f5")
-                      }
-                    >
-                      <h4
-                        style={{
-                          margin: "0 0 4px 0",
-                          fontSize: "16px",
-                          fontWeight: "500",
-                        }}
-                      >
-                        {task.taskName || "No Name"}
-                      </h4>
-                      <p
-                        style={{
-                          margin: "0",
-                          fontSize: "14px",
-                          color: "#666",
-                        }}
-                      >
-                        Task Type: {task.taskType || "Unknown"}
-                      </p>
-                      <p
-                        style={{
-                          margin: "0",
-                          fontSize: "14px",
-                          color: isTaskCompleted(task) ? "green" : "red",
-                        }}
-                      >
-                        Status:{" "}
-                        {isTaskCompleted(task)
-                          ? "Completed"
-                          : "Not Completed"}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p>No tasks available</p>
-                )}
-              </div>
-            </div>
-          )}
+          
+          <TaskDetailsPopup
+            visible={popupVisible}
+            onClose={() => setPopupVisible(false)}
+            title={popupContent.title}
+            tasks={popupContent.tasks}
+            onTaskClick={handleTaskClick}
+          />
         </div>
       </div>
     </>

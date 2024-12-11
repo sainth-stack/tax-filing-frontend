@@ -22,6 +22,7 @@ import Header from "../../pages/Dashboard/card-container";
 import Loader from "../helpers/loader";
 import NoDataFound from "./NoDataFound";
 import { isTaskCompleted } from "../../utils/const";
+import TaskDetailsPopup from "../common/TaskDetailsPopup";
 
 // Register Chart.js components
 ChartJS.register(
@@ -40,7 +41,6 @@ const PendingCompletedTasksGraph = ({
   loading,
 }) => {
 
-
   const navigate = useNavigate();
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [selectedTasks, setSelectedTasks] = useState([]);
@@ -56,51 +56,54 @@ const PendingCompletedTasksGraph = ({
       try {
         const pendingTasksByPerson = {};
         const completedTasksByPerson = {};
+        const nameMapping = {};
 
         filteredTasks.forEach((task) => {
-          const assignedTo = task.assignedName || "Unassigned";
+          const assignedTo = task.assignedTo || "Unassigned";
+          const assignedName = task.assignedName || "Unassigned";
+          nameMapping[assignedTo] = assignedName;
+
           const actualCompletionDate = (task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate)
             ? new Date((task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate))
             : null;
 
           if (actualCompletionDate) {
             if (!completedTasksByPerson[assignedTo]) {
-              completedTasksByPerson[assignedTo] = { count: 0, tasks: [] };
+              completedTasksByPerson[assignedTo] = { count: 0, tasks: [], assignedName: assignedName };
             }
             completedTasksByPerson[assignedTo].count += 1;
             completedTasksByPerson[assignedTo].tasks.push(task);
           } else {
             if (!pendingTasksByPerson[assignedTo]) {
-              pendingTasksByPerson[assignedTo] = { count: 0, tasks: [] };
+              pendingTasksByPerson[assignedTo] = { count: 0, tasks: [], assignedName: assignedName };
             }
             pendingTasksByPerson[assignedTo].count += 1;
             pendingTasksByPerson[assignedTo].tasks.push(task);
           }
         });
 
-        const labels = [
-          ...new Set([
-            ...Object.keys(pendingTasksByPerson),
-            ...Object.keys(completedTasksByPerson),
-          ]),
-        ].sort();
+        const uniqueIds = [...new Set([
+          ...Object.keys(pendingTasksByPerson),
+          ...Object.keys(completedTasksByPerson),
+        ])].sort();
+
+        const labels = uniqueIds.map(id => nameMapping[id]);
 
         const data = {
           labels,
           datasets: [
             {
               label: "Completed Tasks",
-              data: labels.map(
-                (label) => completedTasksByPerson[label]?.count || 0
+              data: uniqueIds.map(
+                (id) => completedTasksByPerson[id]?.count || 0
               ),
-              backgroundColor: "#008000", // Green for completed
+              backgroundColor: "#008000",
             },
             {
               label: "Pending Tasks",
-              data: labels.map(
-                (label) => pendingTasksByPerson[label]?.count || 0
+              data: uniqueIds.map(
+                (id) => pendingTasksByPerson[id]?.count || 0
               ),
-
               backgroundColor: "#FF0000",
             }
           ],
@@ -119,16 +122,22 @@ const PendingCompletedTasksGraph = ({
   const handleClick = (event, elements) => {
     if (elements.length > 0) {
       const { index } = elements[0];
-      const assignedUser = chartData.labels[index];
+      const uniqueIds = [...new Set([
+        ...Object.keys(tasksData.pendingTasksByPerson),
+        ...Object.keys(tasksData.completedTasksByPerson),
+      ])].sort();
+
+      const assignedId = uniqueIds[index];
+      const assignedName = chartData.labels[index];
       const datasetIndex = elements[0].datasetIndex;
       const isPendingTasks = datasetIndex === 1;
+
       const tasks = isPendingTasks
-        ? tasksData.pendingTasksByPerson[assignedUser]?.tasks || []
-        : tasksData.completedTasksByPerson[assignedUser]?.tasks || [];
+        ? tasksData.pendingTasksByPerson[assignedId]?.tasks || []
+        : tasksData.completedTasksByPerson[assignedId]?.tasks || [];
 
       setPopupContent({
-        title: `${isPendingTasks ? "Pending" : "Completed"
-          } Tasks for ${assignedUser} (${tasks.length})`,
+        title: `${isPendingTasks ? "Pending" : "Completed"} Tasks for ${assignedName} (${tasks.length})`,
         tasks,
       });
 
@@ -286,104 +295,14 @@ const PendingCompletedTasksGraph = ({
                   />
                 </>
               )
-
-
-
               }
-
-
-
-              {popupVisible && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 100,
-                    left: 100,
-                    backgroundColor: "#fff",
-                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                    borderRadius: "12px",
-                    padding: "16px",
-                    zIndex: 1000,
-                    width: "250px",
-                    maxHeight: "300px",
-                    overflowY: "auto",
-                  }}
-                >
-                  <IconButton
-                    onClick={() => setPopupVisible(false)}
-                    style={{
-                      position: "absolute",
-                      top: "-10px",
-                      right: "-10px",
-                      backgroundColor: "#fff",
-                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                      borderRadius: "50%",
-                    }}
-                  >
-                    <CloseOutlined />
-                  </IconButton>
-
-                  <div>
-                    {popupContent?.tasks?.length > 0 ? (
-                      popupContent?.tasks?.map((task) => (
-                        <div
-                          key={task._id}
-                          onClick={() => handleTaskClick(task._id, task?.auto)} // Task click handler
-                          style={{
-                            marginBottom: "8px",
-                            padding: "8px",
-                            cursor: "pointer",
-                            borderRadius: "6px",
-                            backgroundColor: "#f5f5f5",
-                            transition: "background-color 0.3s ease",
-                          }}
-                          onMouseOver={(e) =>
-                            (e.currentTarget.style.backgroundColor = "#e0e0e0")
-                          }
-                          onMouseOut={(e) =>
-                            (e.currentTarget.style.backgroundColor = "#f5f5f5")
-                          }
-                        >
-                          <h4
-                            style={{
-                              margin: "0 0 4px 0",
-                              fontSize: "16px",
-                              fontWeight: "500",
-                            }}
-                          >
-                            {task.taskName || "No Name"}
-                          </h4>
-                          <p
-                            style={{
-                              margin: "0",
-                              fontSize: "14px",
-                              color: "#666",
-                            }}
-                          >
-                            Task Type: {task.taskType || "Unknown"}
-                          </p>
-                          <p
-                            style={{
-                              margin: "0",
-                              fontSize: "14px",
-                              color: isTaskCompleted(task)
-                                ? "green"
-                                : "red",
-                            }}
-                          >
-                            Status:{" "}
-                            {isTaskCompleted(task)
-                              ? "Completed"
-                              : "Not Completed"}
-                          </p>
-                        </div>
-                      ))
-                    ) : (
-                      <NoDataFound />
-                    )}
-                  </div>
-                </div>
-              )}
+              <TaskDetailsPopup
+                visible={popupVisible}
+                onClose={() => setPopupVisible(false)}
+                title={popupContent.title}
+                tasks={popupContent.tasks}
+                onTaskClick={handleTaskClick}
+              />
             </>
           )}
         </div>

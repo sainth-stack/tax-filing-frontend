@@ -15,7 +15,8 @@ const CustomInput = ({
   labelStyles,
   readOnly,
   name,
-  required
+  required,
+  disabled
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
@@ -34,6 +35,7 @@ const CustomInput = ({
               : type
           }
           id={id}
+          disabled={disabled}
           name={name}
           value={value || ""}
           onChange={onChange}

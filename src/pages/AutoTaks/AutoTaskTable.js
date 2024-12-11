@@ -68,12 +68,20 @@ export default function AutoTasksTable({
   setCompanyId,
   formData,
   dataLoading,
-  fetchTasks
+  fetchTasks,
+  page,
+  pageSize,
+  setPageSize,
+  setPage,
+  totalTasks,
+  fetchAllTasks,
 }) {
+
+
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("sno"); // default sorting by S.No
   const [openDialog, setOpenDialog] = useState(false);  // State to control the dialog visibility
-  const [page, setPage] = useState(0);
+  // const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedTask, setSelectedTask] = useState(null);  // Store the selected task for confirmation
   const [openDialog2, setOpenDialog2] = useState(false);  // State to control the dialog visibility
@@ -81,8 +89,10 @@ export default function AutoTasksTable({
   const handleClose = () => {
     setOpenDialog(false);
   };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    fetchAllTasks(newPage, pageSize);
   };
 
 
@@ -117,8 +127,8 @@ export default function AutoTasksTable({
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setPageSize(parseInt(event.target.value, 5)); // Convert to number
+    setPage(0); // Reset to the first page when rows per page changes
   };
 
   const handleEditForm = (id) => {
@@ -264,11 +274,10 @@ export default function AutoTasksTable({
               </TableRow>
             ) : (
               sortedTasks
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((task, index) => (
                   <TableRow key={task._id || index} sx={{ height: "48px" }}>
                     <TableCell align="left" padding="normal">
-                      {page * rowsPerPage + index + 1}
+                      {page * pageSize + index + 1}
                     </TableCell>
                     <TableCell align="left" padding="normal">
                       {task.company || "N/A"}
@@ -330,10 +339,10 @@ export default function AutoTasksTable({
         </Table>
 
         <TablePagination
-          rowsPerPageOptions={[5, 10, 15]}
+          rowsPerPageOptions={[1, 5]}
           component="div"
-          count={tasks.length}
-          rowsPerPage={rowsPerPage}
+          count={totalTasks}
+          rowsPerPage={pageSize}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}

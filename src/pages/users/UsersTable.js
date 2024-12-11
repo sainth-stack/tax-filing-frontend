@@ -62,24 +62,26 @@ export default function UsersTable({
   setCompanyId,
   dataLoading,
   loading,
-}) {
+  totalCount,
+  page,
+  setPage,
+  pageSize,
 
-  console.log("Fetched users:", users);
+}) {
 
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("sno"); // default sorting by S.No
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const handleChangeRowsPerPage = (event, newPage) => {
+    pageSize(parseInt(event.target.value, 5));
+    setPage(newPage);
   };
+
 
   const handleEditForm = (id) => {
     setCompanyId(id);
@@ -167,11 +169,10 @@ export default function UsersTable({
               </TableRow>
             ) : (
               sortedUsers
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((user, index) => (
                   <TableRow key={user._id || index} sx={{ height: "48px" }}>
                     <TableCell align="left" padding="normal">
-                      {page * rowsPerPage + index + 1}
+                      {page * pageSize + index + 1}
                     </TableCell>
                     <TableCell align="left" padding="normal">
                       {user.firstName + " " + user.lastName || "N/A"}
@@ -181,8 +182,8 @@ export default function UsersTable({
                     </TableCell>
                     <TableCell align="left" padding="normal" style={{ maxWidth: '250px' }}>
                       {user.company?.length > 0
-                        ? user.company.slice(0, 2).map(comp => comp.label).join(', ') + 
-                          (user.company.length > 2 ? `, + ${user.company.length - 2} more` : '')
+                        ? user.company.slice(0, 2).map(comp => comp.label).join(', ') +
+                        (user.company.length > 2 ? `, + ${user.company.length - 2} more` : '')
                         : (user?.company || "N/A")}
                     </TableCell>
                     <TableCell align="left" padding="normal">
@@ -214,10 +215,10 @@ export default function UsersTable({
         </Table>
 
         <TablePagination
-          rowsPerPageOptions={[5, 10, 15]}
+          rowsPerPageOptions={[1, 5]}
           component="div"
-          count={users.length}
-          rowsPerPage={rowsPerPage}
+          count={totalCount}
+          rowsPerPage={pageSize}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}

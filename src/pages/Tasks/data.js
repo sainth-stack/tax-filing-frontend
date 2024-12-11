@@ -13,6 +13,7 @@ export const getTasks = ({ companies = [], users = [], data, noAct }) => {
       type: "select",
       id: "company",
       label: "Company",
+      disable: true,
       options: [...companies],
     },
     {
@@ -22,7 +23,7 @@ export const getTasks = ({ companies = [], users = [], data, noAct }) => {
       options: [...users],
       required: true,
       defaultValue: "",
-      
+
     },
     ...((data?.taskName !== "gstMonthly" && data?.taskName !== "gstMonthlyPayment")
       ? [
@@ -30,6 +31,7 @@ export const getTasks = ({ companies = [], users = [], data, noAct }) => {
           type: "select",
           id: "priority",
           label: "Priority",
+          disable: true,
           options: [
             { value: "high", label: "High" },
             { value: "medium", label: "Medium" },
@@ -42,11 +44,13 @@ export const getTasks = ({ companies = [], users = [], data, noAct }) => {
     {
       type: "date",
       id: "startDate",
+      disable: true,
       label: "Start Date",
     },
     {
       type: "date",
       id: "dueDate",
+      disable: true,
       label: "Due Date",
     },
     ...((data?.taskName !== "gstNewRegistration" && !noAct)
@@ -61,7 +65,7 @@ export const getTasks = ({ companies = [], users = [], data, noAct }) => {
     {
       type: "select",
       id: "taskType",
-      disable: data?.taskType === 'gst' ? true : false,
+      disable: true,
       label: "Task Type",
       options: [
         { value: "all", label: "All" },
@@ -178,7 +182,7 @@ export const getGstData = (data, companies) => {
       type: "select",
       id: "taskName",
       label: "Task Name",
-      disable: data?.taskType === 'gst' ? true : false,
+      disable: true,
       options: [
         { value: "gstNewRegistration", label: "GST - New Registration" },
         { value: "gstInactive", label: "GST - Closure" },
@@ -777,6 +781,7 @@ export const providentFund = (data) => {
       type: "select",
       id: "taskName",
       label: "Task Name",
+      disable: true,
       options: [
         { value: "pfRegistration", label: "PF - New Registration" },
         { value: "pfMonthly", label: "PF - Regular Monthly Filing" },
@@ -912,6 +917,7 @@ export const TDSTCS = (data) => {
       type: "select",
       id: "taskName",
       label: "Task Name",
+      disable: true,
       options: [
         { value: "tdsTcs", label: "TDS/TCS" },
         { value: "tdsTcsMonthly", label: "TDS/TCS - Monthly Payment" },
@@ -936,6 +942,7 @@ export const tdsTcsForm = (data) => {
       type: "select",
       id: "tdstcs_taskName",
       label: "TDS TCS Task Name",
+      disable: true,
       options: [
         { value: "TDS-24Q", label: "TDS-24Q" },
         { value: "TDS-26Q", label: "TDS-26Q" },
@@ -1093,6 +1100,7 @@ export const getIncomeTaxData = (data) => {
       type: "select",
       id: "taskName", // Added common prefix 'tax_' for unique ids
       label: "Task Name",
+      disable: true,
       options: [
         { value: "incomeTaxAuditCases", label: "Income Tax - Audit Cases" },
         {
@@ -1331,6 +1339,7 @@ export const getEsiData = (data) => {
       type: "select",
       id: "taskName",
       label: "Task Name",
+      disable: true,
       options: [
         { value: "esiNewRegistration", label: "ESI - New Registration" },
         {
@@ -1544,6 +1553,7 @@ export const getProfessionalTaxData = (data) => {
       type: "select",
       id: "pft_taskName",
       label: "Task Name",
+      disable: true,
       options: [
         {
           value: "professionalTaxNewRegistration",

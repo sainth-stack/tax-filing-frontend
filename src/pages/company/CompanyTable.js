@@ -75,14 +75,11 @@ export default function CompanyTable({
   status,
   setView,
 }) {
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("");
 
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('');
-
-  const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [auditData, setAuditData] = useState([]);
 
   const [editModal, setEditModal] = useState(false);
@@ -93,6 +90,12 @@ export default function CompanyTable({
   const [openDialog, setOpenDialog] = useState(false);
 
   const [id, setId] = useState('');
+  const [mode, setMode] = useState(0);
+
+  /* pagination */
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [totalCount, setTotalCount] = useState(0);
   useEffect(() => {
     const fetchCompanies = async () => {
       setLoading(true);
@@ -100,42 +103,43 @@ export default function CompanyTable({
         const response = await axios.post(`${base_url}/companies/filter`, {
           status: status === "all" ? "" : status,
           name,
+          page: page + 1, 
+          pageSize: rowsPerPage,
         });
+
         setLoading(false);
 
-        const { data } = response;
+        const { data, totalCount } = response.data; // Get data and total count
+        // console.log("Fetched companies From Logic:", data);
 
-        // Extract company details and client statuses
-        const companyDetailsArray = data.map((item) => ({
-          ...item.companyDetails,
-          _id: item._id,
-        }));
-
-        // Extract client statuses into a separate array
-        const statusesArray = companyDetailsArray.map(
-          (clientStatus) => clientStatus
-        );
-
-        // Update state with company details and client statuses
-        setCompanies(companyDetailsArray);
-        setClientStatuses(statusesArray);
-
-        // Log client statuses
+        if (data && data.length > 0) {
+          // Map company data to extract necessary fields
+          const companyDetailsArray = data.map((item) => ({
+            ...item.companyDetails,
+            _id: item._id,
+          }));
+console.log(companyDetailsArray)
+          setCompanies(companyDetailsArray);
+          setTotalCount(totalCount); // Update the total count for pagination
+        } else {
+          setCompanies([]); // If no data, clear the company list
+        }
       } catch (error) {
+        setLoading(false);
         console.error("Error fetching data:", error);
       }
     };
 
     fetchCompanies();
-  }, [companyRefresh, name, status]);
+  }, [companyRefresh, name, status, page, rowsPerPage]);
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage); 
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const handleChangeRowsPerPage = (event, newPage) => {
+    setRowsPerPage(parseInt(event.target.value, 5));
+    setPage(newPage); 
   };
 
   const handleCloseModal = () => {
@@ -205,23 +209,30 @@ export default function CompanyTable({
 
   ///sort columns
   const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
   const sortedCompanies = companies.sort((a, b) => {
-
-    if (orderBy === 'companyName') {
-      return (order === 'asc' ? a.companyName.localeCompare(b.companyName) : b.companyName.localeCompare(a.companyName));
+    if (orderBy === "companyName") {
+      return order === "asc"
+        ? a.companyName.localeCompare(b.companyName)
+        : b.companyName.localeCompare(a.companyName);
     }
-    if (orderBy === 'clientStatus') {
-      return (order === 'asc' ? a?.clientStatus?.localeCompare(b?.clientStatus) : b?.clientStatus?.localeCompare(a?.clientStatus));
+    if (orderBy === "clientStatus") {
+      return order === "asc"
+        ? a?.clientStatus?.localeCompare(b?.clientStatus)
+        : b?.clientStatus?.localeCompare(a?.clientStatus);
     }
-    if (orderBy === 'phone') {
-      return (order === 'asc' ? a?.phone?.localeCompare(b?.phone) : b?.phone?.localeCompare(a?.phone));
+    if (orderBy === "phone") {
+      return order === "asc"
+        ? a?.phone?.localeCompare(b?.phone)
+        : b?.phone?.localeCompare(a?.phone);
     }
-    if (orderBy === 'mailId') {
-      return (order === 'asc' ? a?.mailId?.localeCompare(b?.mailId) : b?.mailId?.localeCompare(a?.mailId));
+    if (orderBy === "mailId") {
+      return order === "asc"
+        ? a?.mailId?.localeCompare(b?.mailId)
+        : b?.mailId?.localeCompare(a?.mailId);
     }
     return 0;
   });
@@ -269,7 +280,6 @@ export default function CompanyTable({
                 S.NO
               </TableCell>
 
-
               <SortableTableHeader
                 columnId="companyName"
                 label="Company Name"
@@ -303,8 +313,9 @@ export default function CompanyTable({
               </TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {loading && loading ? (
+            {loading ? (
               <TableRow>
                 <TableCell colSpan={6} align="center">
                   <div className="flex justify-center items-center py-4">
@@ -314,27 +325,37 @@ export default function CompanyTable({
               </TableRow>
             ) : (
               sortedCompanies
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((company, index) => (
-                  <TableRow key={company._id || index} sx={{ height: "48px" }}>
+                  <TableRow key={company._id} sx={{ height: "48px" }}>
+                    {/* Correct row numbering */}
                     <TableCell align="left" padding="normal">
-                      {page * rowsPerPage + index + 1}
+                      {(page ) * rowsPerPage + index + 1}
                     </TableCell>
+
+                    {/* Company Name */}
                     <TableCell align="left" padding="normal">
                       {company.companyName || "N/A"}
                     </TableCell>
+
+                    {/* Client Status */}
                     <TableCell align="left" padding="normal">
                       {company.clientStatus || "N/A"}
                     </TableCell>
+
+                    {/* Phone */}
                     <TableCell align="left" padding="normal">
                       {company.phone || "N/A"}
                     </TableCell>
+
+                    {/* Mail ID */}
                     <TableCell align="left" padding="normal">
                       {company.mailId || "N/A"}
                     </TableCell>
+
+                    {/* Actions */}
                     <TableCell align="left" padding="normal">
                       <IconButton
-                        aria-label="edit"
+                        aria-label="view"
                         size="small"
                         onClick={() => {
                           setCompanyId(company._id);
@@ -353,6 +374,7 @@ export default function CompanyTable({
                           />
                         </Tooltip>
                       </IconButton>
+
                       <IconButton
                         aria-label="edit"
                         size="small"
@@ -370,6 +392,7 @@ export default function CompanyTable({
                           />
                         </Tooltip>
                       </IconButton>
+
                       <IconButton
                         aria-label="delete"
                         size="small"
@@ -387,6 +410,7 @@ export default function CompanyTable({
                           />
                         </Tooltip>
                       </IconButton>
+
                       <IconButton
                         aria-label="audit"
                         size="small"
@@ -405,13 +429,14 @@ export default function CompanyTable({
                   </TableRow>
                 ))
             )}
+
           </TableBody>
         </Table>
 
         <TablePagination
-          rowsPerPageOptions={[5, 10, 15]}
+          rowsPerPageOptions={[5]}
           component="div"
-          count={companies.length}
+          count={totalCount} // Total items count (totalPages * rowsPerPage)
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

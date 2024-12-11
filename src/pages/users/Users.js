@@ -19,6 +19,10 @@ const Users = () => {
 
   const [companyRefresh, setCompanyRefresh] = useState(false);
   const agency = JSON.parse(localStorage?.getItem('user'))?.agency
+  /* pagination */
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
+  const [totalCount, setTotalCount] = useState(0);
   const handleShowForm = () => {
     setShowForm(!showForm);
   };
@@ -27,11 +31,17 @@ const Users = () => {
     setLoading(true);
     try {
       const response = await axios.post(`${base_url}/users/filter`, {
-        name: name,
-        agency: agency
+        name,
+        page: page + 1,
+        agency: agency,
+        pageSize: pageSize,
       });
-      setUsers(response.data);
       setLoading(false);
+
+      const { data, totalCount } = response.data;
+      setUsers(data);
+      setTotalCount(totalCount);
+      console.log("users and total count form users componetn", users, totalCount)
     } catch (error) {
       console.error("Error fetching Users:", error);
     }
@@ -39,7 +49,7 @@ const Users = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [name]);
+  }, [name, page, pageSize]);
 
   const handleDelete = async (id) => {
     setLoading(true);
@@ -148,6 +158,11 @@ const Users = () => {
             {...{
               setLoading,
               loading,
+              page,
+              pageSize,
+              setPageSize,
+              setPage,
+              totalCount,
               setCompanyId,
               companyRefresh,
               name,

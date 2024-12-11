@@ -105,7 +105,7 @@ export default function AgencyTable({
                 }));
 
                 setAgencies(agencyDetailsArray);
-                console.log("vishnu ! 0", agencyDetailsArray);
+                // console.log("vishnu ! 0", agencyDetailsArray);
 
             } catch (error) {
                 console.error("Error fetching data:", error);

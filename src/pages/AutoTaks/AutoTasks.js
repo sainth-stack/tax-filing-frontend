@@ -55,6 +55,12 @@ const AutoTasks = () => {
   const location = useLocation();
   const taskId = location.state?.taskId;
 
+
+  /* pagination */
+  const [page, setPage] = useState(0); // Default page 1
+  const [pageSize, setPageSize] = useState(5);
+  const [totalTasks, setTotalTasks] = useState(0);
+
   useEffect(() => {
     if (taskId) {
       setShowForm(true);
@@ -93,11 +99,14 @@ const AutoTasks = () => {
         month: formData?.month,
         year: formData?.year,
         list: user.role !== "A" ? user?._id : '',
+        page: page + 1,
+        pageSize: pageSize
       });
       setLoading(false);
+      // console.log("filtrede users", data);
+      setTasks(data?.tasks);
+      setTotalTasks(data?.totalTasks);
 
-      console.log("filtrede users", data);
-      setTasks(data);
     } catch (error) {
       toast.error("Error While Tasks Filtering");
       console.error("Error fetching tasks:", error);
@@ -114,7 +123,6 @@ const AutoTasks = () => {
         label: item?.firstName + " " + (item?.lastName || ''),
       }));
       setLoading(false);
-
       setUsers(data);
     } catch (error) {
       toast.error("Error While  Fetching ");
@@ -136,8 +144,7 @@ const AutoTasks = () => {
       const response = await axios.post(`${base_url}/companies/filter`, {
         userId: user.role !== "A" ? user?._id : ''
       });
-
-      const data = response.data?.map((item) => ({
+      const data = response?.data?.data?.map((item) => ({
         value: item?.companyDetails?.TaskId,
         label: item?.companyDetails?.TaskId,
       }));
@@ -150,20 +157,20 @@ const AutoTasks = () => {
     }
   };
 
-  const fetchAllTasks = async () => {
+  const fetchAllTasks = async (page, pageSize) => {
     setLoading(true);
 
     try {
-      const response = await axios.get(`${base_url}/tasks/auto/all`);
+      const response = await axios.get(`${base_url}/tasks/auto/all`, {
+        params: { page: page + 1, pageSize: pageSize },
+      });
 
-      /* const data = response.data?.data.map((item) => ({
-        value: item?._id,
-        label: item?.firstName,
-      })); */
-      /* const { data } = response; */
+      const { data } = response.data;
       setLoading(false);
 
-      setAllUsers(response);
+
+      setTasks(data);
+
     } catch (error) {
       toast.error("Error While  Fetching Tasks ");
 
@@ -174,8 +181,8 @@ const AutoTasks = () => {
   useEffect(() => {
     fetchCompanies();
     fetchUsers();
-    fetchAllTasks();
-  }, []);
+    fetchAllTasks(page, pageSize);
+  }, [page, pageSize]);
 
   const handleDelete = async (id) => {
     setLoading(true);
@@ -319,7 +326,13 @@ const AutoTasks = () => {
               handleDelete,
               tasks,
               formData,
-              fetchTasks
+              fetchTasks,
+              setPage,
+              page,
+              totalTasks,
+              pageSize,
+              fetchAllTasks,
+              setPageSize,
             }}
             dataLoading={loading}
           />

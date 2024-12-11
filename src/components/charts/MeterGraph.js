@@ -9,6 +9,7 @@ import "jspdf-autotable"; // Required for table formatting
 import Header from "../../pages/Dashboard/card-container";
 import Loader from "../helpers/loader";
 import NoDataFound from "./NoDataFound";
+import TaskDetailsPopup from "../common/TaskDetailsPopup";
 
 const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   const [data, setData] = useState({
@@ -25,6 +26,8 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
     completed: [],
   });
   const navigate = useNavigate();
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [popupContent, setPopupContent] = useState({ title: '', tasks: [] });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,7 +68,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
 
   const categories = [];
   const colors = [];
-  const labelColors = ["#008000","#ffcf57", "#ff0000" ];
+  const labelColors = ["#008000", "#ffcf57", "#ff0000"];
 
   if (data.completed > 0) {
     categories.push({ name: 'completed', value: data.completed });
@@ -89,7 +92,11 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   const averagePercentage =
     totalCategories > 0 ? (completedCategories / totalCategories) * 100 : 0;
   const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
+    setPopupContent({
+      title: category,
+      tasks: taskDetails[category] || []
+    });
+    setPopupVisible(true);
   };
 
   const handleTaskClick = (taskId) => {
@@ -272,8 +279,8 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
           )}
 
           <div className="labels-overlay">
-            {["completed", "inProgress","overdue"].map((label, index) => {
-              const count = [data.completed,data.inProgress, data.overdue][
+            {["completed", "inProgress", "overdue"].map((label, index) => {
+              const count = [data.completed, data.inProgress, data.overdue][
                 index
               ];
               const backgroundColor = labelColors[index];
@@ -303,81 +310,15 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
               ) : null;
             })}
           </div>
-
-          {/* Popup for Selected Category */}
-          {selectedCategory && (
-            <div
-              style={{
-                position: "absolute",
-                top: "70px",
-                right: "10px",
-                backgroundColor: "#fff",
-                padding: "10px",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                maxHeight: "80vh",
-                overflowY: "auto",
-                width: "300px",
-                zIndex: 1000,
-              }}
-              className="container shadow-md"
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <h3 style={{ margin: "0" }}>{selectedCategory}</h3>
-                <button
-                  onClick={() => setSelectedCategory("")}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  &times;
-                </button>
-              </div>
-
-              <ul
-                style={{
-                  listStyle: "none",
-                  padding: "0",
-                  margin: "10px 0 0 0",
-                }}
-              >
-                {(taskDetails[selectedCategory] || []).length > 0 ? (
-                  taskDetails[selectedCategory].map((task) => (
-                    <li
-                      key={task._id}
-                      onClick={() => handleTaskClick(task._id)}
-                      style={{
-                        padding: "5px 0",
-                        borderBottom: "1px solid #ddd",
-                        margin: "1px 3px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <strong>Name:</strong> {task.taskName}
-                      <br />
-                      <strong>Type:</strong> {task.taskType}
-                    </li>
-                  ))
-                ) : (
-                  <li style={{ padding: "10px", textAlign: "center" }}>
-                    No tasks found.
-                  </li>
-                )}
-              </ul>
-            </div>
-          )}
         </div>
+
+        <TaskDetailsPopup
+          visible={popupVisible}
+          onClose={() => setPopupVisible(false)}
+          title={popupContent.title}
+          tasks={popupContent.tasks}
+          onTaskClick={handleTaskClick}
+        />
       </div>
     </>
   );

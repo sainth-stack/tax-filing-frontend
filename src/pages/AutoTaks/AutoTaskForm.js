@@ -22,6 +22,7 @@ import { base_url } from "../../const";
 const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompanyId }) => {
   const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
+  const [totalPages,setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
   const tasks = (data) => {
     return getTasks({ companies: [], users: [], data, noAct: true })
@@ -116,7 +117,7 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
       const response = await axios.post(`${base_url}/companies/filter`, {
         userId: user.role !== "A" ? user?._id : ''
       });
-      const data = response.data?.map((item) => ({
+      const data = response?.data?.data?.map((item) => ({
         value: item?.companyDetails?.companyName,
         label: item?.companyDetails?.companyName,
         ...item,
@@ -127,14 +128,17 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
     }
   };
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (page, pageSize) => {
     try {
-      const response = await axios.get(`${base_url}/users/all`);
+      const response = await axios.get(`${base_url}/users/all`, {
+        params: { page, pageSize },
+      });
       const data = response.data?.data.map((item) => ({
         value: item?._id,
         label: item?.firstName + " " + (item?.lastName || ''),
       }));
       setUsers(data);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -374,6 +378,7 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
                         value={formData[field.id] || ""}
                         onChange={handleInputChange}
                         required={field.required}
+                        disabled={field?.disable}
                       />
                     );
                   } else if (field.type === "file") {

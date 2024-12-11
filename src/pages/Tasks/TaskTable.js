@@ -64,23 +64,34 @@ export default function TasksTable({
   handleDelete,
   setCompanyId,
   formData,
+  page,
+  pageSize,
+  setPageSize,
+  setPage,
+  totalTasks,
   fetchAllTasks,
   dataLoading,
 }) {
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("sno"); // default sorting by S.No
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  console.log("chekign total tasks ", totalTasks, 'total page size', pageSize, "Page :", page);
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("sno");
+
+  // 0 is the default starting page
+  // Default rows per page
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    fetchAllTasks(newPage, pageSize);
+
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setPageSize(parseInt(event.target.value, 5)); // Convert to number
+    setPage(0); // Reset to the first page when rows per page changes
   };
+
 
   const handleEditForm = (id) => {
     setCompanyId(id);
@@ -208,11 +219,10 @@ export default function TasksTable({
               </TableRow>
             ) : (
               sortedTasks
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((task, index) => (
                   <TableRow key={task._id || index} sx={{ height: "48px" }}>
                     <TableCell align="left" padding="normal">
-                      {page * rowsPerPage + index + 1}
+                      {page * pageSize + index + 1}
                     </TableCell>
                     <TableCell align="left" padding="normal">
                       {task.company || "N/A"}
@@ -263,13 +273,13 @@ export default function TasksTable({
         </Table>
 
         <TablePagination
-          rowsPerPageOptions={[5, 10, 15]}
+          rowsPerPageOptions={[5]} // Options for the number of rows per page
           component="div"
-          count={tasks.length}
-          rowsPerPage={rowsPerPage}
+          count={totalTasks} // Total number of tasks
+          rowsPerPage={pageSize} // Number of rows per page
           page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+          onPageChange={handleChangePage} // Update the page
+          onRowsPerPageChange={handleChangeRowsPerPage} // Update the rows per page
           className="border-t border-gray-200"
           sx={{
             boxShadow: "none",
