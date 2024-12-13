@@ -3,6 +3,7 @@ import { IconButton } from "@mui/material";
 import { CloseOutlined } from "@mui/icons-material";
 import NoDataFound from "../charts/NoDataFound";
 import { isTaskCompleted } from "../../utils/const";
+import { getTaskDisplayName, GetTaskLabel } from "../../utils/TaskTypeMap";
 
 const TaskDetailsPopup = ({ 
   visible, 
@@ -30,20 +31,26 @@ const TaskDetailsPopup = ({
         overflowY: "auto",
       }}
     >
-      <IconButton
-        onClick={onClose}
-        style={{
-          position: "absolute",
-          top: "12px",
-          right: "12px",
-          backgroundColor: "#f5f5f5",
-        }}
-      >
-        <CloseOutlined />
-      </IconButton>
+      <div className="flex items-end justify-end sticky top-0 z-50  -left-4">
+        <IconButton
+          onClick={onClose}
+          className="-left-4"
+          style={{
+            position: "sticky",
 
+            top: "12px",
+            left: "0",
+            backgroundColor: "#f5f5f5",
+            boxShadow: "10px 4px 24px rgba(0, 0, 0, 0.15)",
+          }}
+        >
+          <CloseOutlined />
+        </IconButton>
+      </div>
       <div>
-        <h3 style={{ marginBottom: "20px", fontSize: "20px", fontWeight: "600" }}>
+        <h3
+          style={{ marginBottom: "20px", fontSize: "20px", fontWeight: "600" }}
+        >
           {title}
         </h3>
         {tasks?.length > 0 ? (
@@ -70,90 +77,128 @@ const TaskDetailsPopup = ({
               }}
             >
               {/* Task content grid */}
-              <div style={{ 
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: '16px',
-                alignItems: 'center'
-              }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, 1fr)",
+                  gap: "16px",
+                  alignItems: "center",
+                }}
+              >
                 {/* Left column */}
                 <div>
-                  <div style={{ marginBottom: '8px' }}>
-                    <span style={{ 
-                      fontSize: "12px", 
-                      color: "#666",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px"
-                    }}>Company</span>
-                    <h4 style={{
-                      margin: 0,
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color: "#2c3e50"
-                    }}>
+                  <div style={{ marginBottom: "8px" }}>
+                    <span
+                      style={{
+                        fontSize: "12px",
+                        color: "#666",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                      }}
+                    >
+                      Company
+                    </span>
+                    <h4
+                      style={{
+                        margin: 0,
+                        fontSize: "16px",
+                        fontWeight: "600",
+                        color: "#2c3e50",
+                      }}
+                    >
                       {task.company || "No Company Name"}
                     </h4>
                   </div>
-                  <div style={{ 
-                    display: 'flex',
-                    gap: '8px',
-                    flexWrap: 'wrap'
-                  }}>
-                    <span style={{
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      backgroundColor: '#e9ecef',
-                      fontSize: '13px'
-                    }}>
-                      <strong>PAN:</strong> {task.pan || "N/A"}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "8px",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <span
+                      style={{
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        backgroundColor: "#e9ecef",
+                        fontSize: "13px",
+                      }}
+                    >
+                      <strong>
+                        {getTaskDisplayName(
+                          task.taskName,
+                          task.taskType,
+                          task.gstMonthly_gstType
+                        )}
+                      </strong>{" "}
+                      {GetTaskLabel(task.taskType) || "N/A"}
                     </span>
-                    <span style={{
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      backgroundColor: '#e9ecef',
-                      fontSize: '13px'
-                    }}>
-                      <strong>Type:</strong> {task.taskType || "Unknown"}
-                    </span>
+                    {/* <span
+                      style={{
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        backgroundColor: "#e9ecef",
+                        fontSize: "13px",
+                      }}
+                    >
+                    <strong>Type:</strong> {task.taskType || "Unknown"}
+                    </span> */}
                   </div>
                 </div>
                 {/* Right column */}
                 <div>
-                  <div style={{ 
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '8px'
-                  }}>
-                    <span style={{
-                      padding: '4px 12px',
-                      borderRadius: '20px',
-                      backgroundColor: isTaskCompleted(task) ? '#e8f5e9' : '#ffebee',
-                      color: isTaskCompleted(task) ? '#2e7d32' : '#c62828',
-                      fontSize: '13px',
-                      fontWeight: '500',
-                      alignSelf: 'flex-start'
-                    }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "8px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        padding: "4px 12px",
+                        borderRadius: "20px",
+                        backgroundColor: isTaskCompleted(task)
+                          ? "#e8f5e9"
+                          : "#ffebee",
+                        color: isTaskCompleted(task) ? "#2e7d32" : "#c62828",
+                        fontSize: "13px",
+                        fontWeight: "500",
+                        alignSelf: "flex-start",
+                      }}
+                    >
                       {isTaskCompleted(task) ? "Completed" : "Not Completed"}
                     </span>
-                    <span style={{
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      backgroundColor: '#e9ecef',
-                      fontSize: '13px'
-                    }}>
-                      <strong>Month:</strong> {
-                        task.startDate 
-                          ? new Date(task.startDate).toLocaleString('default', { month: 'long', year: 'numeric' })
-                          : task.month || task.taskMonth || "N/A"
-                      }
+                    <span
+                      style={{
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        backgroundColor: "#e9ecef",
+                        fontSize: "13px",
+                      }}
+                    >
+                      <strong>Month:</strong>{" "}
+                      {task.startDate
+                        ? new Date(task.startDate).toLocaleString("default", {
+                            month: "long",
+                            year: "numeric",
+                          })
+                        : task.month || task.taskMonth || "N/A"}
                     </span>
-                    <span style={{
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      backgroundColor: '#e9ecef',
-                      fontSize: '13px'
-                    }}>
-                      <strong>Task:</strong> {task.taskName || "N/A"}
+                    <span
+                      style={{
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        backgroundColor: "#e9ecef",
+                        fontSize: "13px",
+                      }}
+                    >
+                      <strong>Task:</strong>{" "}
+                      {getTaskDisplayName(
+                        task.taskName,
+                        task.taskType,
+                        task.gstMonthly_gstType
+                      ) || "N/A"}
                     </span>
                   </div>
                 </div>

@@ -21,7 +21,7 @@ import { toast } from "react-toastify";
 import { base_url } from "../../const";
 import ConfirmationPopup from "../../components/confirmation-popup";
 import moment from "moment";
-import { taskTypeMap } from "../../utils/TaskTypeMap";
+import { getTaskDisplayName, taskTypeMap } from "../../utils/TaskTypeMap";
 const theme = createTheme({
   typography: {
     fontFamily: "Work Sans, Arial",
@@ -222,12 +222,7 @@ export default function AutoTasksTable({
 
   
 
-const getTaskDisplayName = (taskName, taskType, gstMonthly_gstType) => {
-  if (taskType === "gst") {
-    return taskTypeMap[gstMonthly_gstType] || `${taskName} - Other Type`;
-  }
-  return taskTypeMap[taskName] || taskTypeMap.default;
-};
+
   
   return (
     <ThemeProvider theme={theme}>
