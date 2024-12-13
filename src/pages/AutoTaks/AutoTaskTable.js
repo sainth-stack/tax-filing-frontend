@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import { base_url } from "../../const";
 import ConfirmationPopup from "../../components/confirmation-popup";
 import moment from "moment";
+import { taskTypeMap } from "../../utils/TaskTypeMap";
 const theme = createTheme({
   typography: {
     fontFamily: "Work Sans, Arial",
@@ -76,16 +77,14 @@ export default function AutoTasksTable({
   totalTasks,
   fetchAllTasks,
 }) {
-
-
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("sno"); // default sorting by S.No
-  const [openDialog, setOpenDialog] = useState(false);  // State to control the dialog visibility
+  const [openDialog, setOpenDialog] = useState(false); // State to control the dialog visibility
   // const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [selectedTask, setSelectedTask] = useState(null);  // Store the selected task for confirmation
-  const [openDialog2, setOpenDialog2] = useState(false);  // State to control the dialog visibility
-  const [id, setId] = useState('')
+  const [selectedTask, setSelectedTask] = useState(null); // Store the selected task for confirmation
+  const [openDialog2, setOpenDialog2] = useState(false); // State to control the dialog visibility
+  const [id, setId] = useState("");
   const handleClose = () => {
     setOpenDialog(false);
   };
@@ -95,10 +94,13 @@ export default function AutoTasksTable({
     fetchAllTasks(newPage, pageSize);
   };
 
-
   const handleAssignToMe = async (task) => {
     try {
-      const finalDate = { ...task, assignedName: userId?.firstName, assignedTo: userId?._id }
+      const finalDate = {
+        ...task,
+        assignedName: userId?.firstName,
+        assignedTo: userId?._id,
+      };
       // Prepare form data for API
       const formDataToSubmit = new FormData();
       Object.keys(finalDate).forEach((key) => {
@@ -133,7 +135,7 @@ export default function AutoTasksTable({
 
   const handleEditForm = (id) => {
     setCompanyId(id);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleRequestSort = (columnId) => {
@@ -141,6 +143,13 @@ export default function AutoTasksTable({
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(columnId);
   };
+
+  //  const Dummytasks = [
+  //    { _id: "1", company: "Company A", startDate: "2024-12-01T00:00:00.000Z" }, // December
+  //    { _id: "2", company: "Company B", startDate: "2023-11-01T00:00:00.000Z" }, // November
+  //    { _id: "3", company: "Company C", startDate: "2024-09-01T00:00:00.000Z" }, // September
+  //    { _id: "4", company: "Company D", startDate: "2024-10-01T00:00:00.000Z" }, // October
+  //  ];
 
   const sortedTasks = tasks.sort((a, b) => {
     if (orderBy === "company") {
@@ -171,20 +180,35 @@ export default function AutoTasksTable({
     if (orderBy === "applicationSubStatus") {
       return order === "asc"
         ? (a.applicationSubStatus || "").localeCompare(
-          b.applicationSubStatus || ""
-        )
+            b.applicationSubStatus || ""
+          )
         : (b.applicationSubStatus || "").localeCompare(
-          a.applicationSubStatus || ""
-        );
+            a.applicationSubStatus || ""
+          );
     }
+
+    if (orderBy === "month") {
+      const monthA = new Date(a.startDate).getMonth(); // Get the month (0-indexed)
+      const monthB = new Date(b.startDate).getMonth();
+
+      console.log("month cheking", monthA, monthB);
+      return order === "asc" ? monthA - monthB : monthB - monthA;
+    }
+
+    if (orderBy === "year") {
+      const yearA = new Date(a.startDate).getFullYear(); // Get the full year
+      const yearB = new Date(b.startDate).getFullYear();
+      return order === "asc" ? yearA - yearB : yearB - yearA;
+    }
+
     return 0; // Default case, no sorting
   });
-  const userId = JSON.parse(localStorage.getItem('user'));
+  const userId = JSON.parse(localStorage.getItem("user"));
   const handleConfirmAssign = () => {
     if (selectedTask) {
-      handleAssignToMe(selectedTask);  // Pass the selected task to the handler
+      handleAssignToMe(selectedTask); // Pass the selected task to the handler
     }
-    setOpenDialog(false);  // Close the dialog after confirming
+    setOpenDialog(false); // Close the dialog after confirming
   };
   const handleClickOpen = (task) => {
     setSelectedTask(task);
@@ -192,10 +216,19 @@ export default function AutoTasksTable({
   };
 
   const handleConfirmAssign2 = () => {
-    handleDelete(id)
+    handleDelete(id);
     setOpenDialog2(false);
-  }
+  };
 
+  
+
+const getTaskDisplayName = (taskName, taskType, gstMonthly_gstType) => {
+  if (taskType === "gst") {
+    return taskTypeMap[gstMonthly_gstType] || `${taskName} - Other Type`;
+  }
+  return taskTypeMap[taskName] || taskTypeMap.default;
+};
+  
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -206,7 +239,7 @@ export default function AutoTasksTable({
       >
         <Table
           className="table-auto"
-          sx={{ minWidth: 650 }}
+          sx={{ minWidth: 700 }}
           aria-label="tasks table"
         >
           <TableHead>
@@ -222,6 +255,23 @@ export default function AutoTasksTable({
                 orderBy={orderBy}
                 onSort={handleRequestSort}
               />
+
+              <SortableTableHeader
+                columnId="month"
+                label="Month"
+                order={order}
+                orderBy={orderBy}
+                onSort={handleRequestSort}
+              />
+
+              <SortableTableHeader
+                columnId="year"
+                label="Year"
+                order={order}
+                orderBy={orderBy}
+                onSort={handleRequestSort}
+              />
+
               <SortableTableHeader
                 columnId="taskName"
                 label="Task Name"
@@ -229,6 +279,7 @@ export default function AutoTasksTable({
                 orderBy={orderBy}
                 onSort={handleRequestSort}
               />
+
               <SortableTableHeader
                 columnId="dueDate"
                 label="Due Date"
@@ -273,67 +324,95 @@ export default function AutoTasksTable({
                 </TableCell>
               </TableRow>
             ) : (
-              sortedTasks
-                .map((task, index) => (
-                  <TableRow key={task._id || index} sx={{ height: "48px" }}>
-                    <TableCell align="left" padding="normal">
-                      {page * pageSize + index + 1}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {task.company || "N/A"}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {task?.taskName === "gstMonthly" ? (task?.taskName + "-" + task?.gstMonthly_gstType) : (task.taskName || "N/A")}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {task.dueDate ? moment(task.dueDate).format('DD-MMM-YYYY') : 'N/A'}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {task.applicationStatus || "N/A"}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {task.assignedName || "N/A"}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {task.applicationSubStatus || "N/A"}
-                    </TableCell>
-                    <TableCell align="left" padding="normal">
-                      {
-                        userId?._id !== task.assignedTo &&
-                        <IconButton
-                          title="Assign to me"
-                          aria-label="edit"
-                          size="small"
-                          onClick={() => handleClickOpen(task)}                        >
-                          <ControlPointIcon
-                            fontSize="inherit"
-                            className="text-grey-400 z-0 bg-gray-50 rounded"
-                          />
-                        </IconButton>
-                      }
+              sortedTasks.map((task, index) => (
+                <TableRow key={task._id || index} sx={{ height: "48px" }}>
+                  <TableCell align="left" padding="normal">
+                    {page * pageSize + index + 1}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    {task.company || "N/A"}
+                  </TableCell>
+
+                  <TableCell align="left" padding="normal">
+                    {task.startDate
+                      ? new Date(task.startDate).toLocaleDateString("en-US", {
+                          month: "long",
+                        }) // e.g., "December"
+                      : "N/A"}
+                  </TableCell>
+
+                  <TableCell align="left" padding="normal">
+                    {task.startDate
+                      ? new Date(task.startDate).toLocaleDateString("en-US", {
+                          year: "numeric", // Show the year
+                        })
+                      : "N/A"}
+                  </TableCell>
+
+                  <TableCell align="left" padding="normal">
+                    {getTaskDisplayName(
+                      task.taskName,
+                      task.taskType,
+                      task.gstMonthly_gstType
+                    )}
+                  </TableCell>
+
+                  <TableCell align="left" padding="normal">
+                    {task.dueDate
+                      ? moment(task.dueDate).format("DD-MMM-YYYY")
+                      : "N/A"}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    {task.applicationStatus || "N/A"}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    {task.assignedName || "N/A"}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    {task.applicationSubStatus || "N/A"}
+                  </TableCell>
+                  <TableCell align="left" padding="normal">
+                    {userId?._id !== task.assignedTo && (
                       <IconButton
+                        title="Assign to me"
                         aria-label="edit"
                         size="small"
-                        onClick={() => handleEditForm(task._id)}
+                        onClick={() => handleClickOpen(task)}
                       >
-                        <EditOutlined
+                        <ControlPointIcon
                           fontSize="inherit"
-                          className="text-green-400 z-0 bg-gray-50 rounded"
+                          className="text-grey-400 z-0 bg-gray-50 rounded"
                         />
                       </IconButton>
-                      {userId?.role == 'A' && <IconButton
+                    )}
+                    <IconButton
+                      aria-label="edit"
+                      size="small"
+                      onClick={() => handleEditForm(task._id)}
+                    >
+                      <EditOutlined
+                        fontSize="inherit"
+                        className="text-green-400 z-0 bg-gray-50 rounded"
+                      />
+                    </IconButton>
+                    {userId?.role == "A" && (
+                      <IconButton
                         aria-label="delete"
                         size="small"
-                        onClick={() => { setId(task?._id); setOpenDialog2(true) }}
+                        onClick={() => {
+                          setId(task?._id);
+                          setOpenDialog2(true);
+                        }}
                       >
                         <DeleteOutline
                           fontSize="inherit"
                           className="text-red-400 bg-gray-100 rounded"
                         />
-                      </IconButton>}
-                    </TableCell>
-                  </TableRow>
-                ))
+                      </IconButton>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))
             )}
           </TableBody>
         </Table>
@@ -368,8 +447,17 @@ export default function AutoTasksTable({
           </Button>
         </DialogActions>
       </Dialog>
-      <ConfirmationPopup {...{ openDialog: openDialog2, handleConfirmAssign: handleConfirmAssign2, handleClose: () => { setOpenDialog2(false) }, title: 'Confirm Task Deletion', desc: 'Are you sure you want to delete this task?' }} />
-
+      <ConfirmationPopup
+        {...{
+          openDialog: openDialog2,
+          handleConfirmAssign: handleConfirmAssign2,
+          handleClose: () => {
+            setOpenDialog2(false);
+          },
+          title: "Confirm Task Deletion",
+          desc: "Are you sure you want to delete this task?",
+        }}
+      />
     </ThemeProvider>
   );
 }
