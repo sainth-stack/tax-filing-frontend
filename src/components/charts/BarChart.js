@@ -58,6 +58,8 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
     ],
   });
   const [popupVisible, setPopupVisible] = useState(false);
+
+  // console.log("bar graph deails", barDetails);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [clickedCompanies, setClickedCompanies] = useState([]);
   const [clickedLabel, setClickedLabel] = useState("");
@@ -143,10 +145,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
         );
 
         setChartData({
-          labels: labels.map(
-            (label) =>
-              label
-          ),
+          labels: labels.map((label) => label),
           datasets: [
             {
               label: "Number of Active Companies",
@@ -239,38 +238,126 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
 
   function formatString(str) {
     return str
-      .replace(/([A-Z])/g, ' $1') // Add space before each uppercase letter
-      .replace(/^./, str => str.toUpperCase()) // Capitalize the first letter
+      .replace(/([A-Z])/g, " $1") // Add space before each uppercase letter
+      .replace(/^./, (str) => str.toUpperCase()) // Capitalize the first letter
       .trim(); // Remove any leading/trailing whitespace
   }
 
-  const handleExportAsCSV = () => {
-    const csvContent = chartData.labels
-      .map((label, index) => {
-        return `${label},${chartData.datasets[0].data[index]}`;
-      })
-      .join("\n");
 
-    const blob = new Blob([`Task Type,Number of Companies\n${csvContent}`], {
-      type: "text/csv;charset=utf-8;",
-    });
-    saveAs(blob, "task_types.csv");
+const handleExportAsCSV = () => {
+  // Dynamically extract headers based on the keys of the first company in the data (barDetails)
+  const headers = [
+    "Company ID", // Always include Company ID
+    ...Object.keys(barDetails[0]).flatMap((key) => {
+      // Check if the key is an object, if so, include nested fields in the header
+      if (
+        typeof barDetails[0][key] === "object" &&
+        barDetails[0][key] !== null
+      ) {
+        return Object.keys(barDetails[0][key]).map(
+          (subKey) => `${key}_${subKey}`
+        );
+      }
+      return key;
+    }),
+  ];
+
+  // Prepare data for CSV content with auto-incremented "Company ID"
+  const csvContent = barDetails
+    .map((company, index) => {
+      // Auto-increment Company ID, starting from 1
+      return [
+        index + 1, // Company ID
+        ...Object.keys(company).flatMap((key) => {
+          // Check if the key is an object, if so, extract its values
+          if (typeof company[key] === "object" && company[key] !== null) {
+            return Object.keys(company[key]).map(
+              (subKey) => company[key][subKey] || ""
+            );
+          }
+          return company[key] || ""; // Get value or empty string if undefined
+        }),
+      ].join(","); // Join fields with a comma
+    })
+    .join("\n"); // Join each row with a new line
+
+  // Create CSV and trigger download
+  const blob = new Blob([`${headers.join(",")}\n${csvContent}`], {
+    type: "text/csv;charset=utf-8;",
+  });
+  saveAs(blob, "companies_data.csv");
+};
+
+
+
+ // Import jsPDF AutoTable plugin
+const handleExportAsPDF = () => {
+  if (barDetails.length === 0) {
+    alert("No data available to export."); // Handle empty data case
+    return;
+  }
+
+  const headers = Object.keys(barDetails[0]).map((key) =>
+    key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())
+  ); 
+
+  const formatValue = (value) => {
+    if (Array.isArray(value)) {
+      return value.join(", "); // Join array values into a string
+    } else if (typeof value === "object" && value !== null) {
+      return Object.values(value).join(", "); // Join object values into a string
+    }
+
+    return value || "N/A"; // Return value or empty string for null/undefined
   };
 
-  // Export as PDF
-  const handleExportAsPDF = () => {
-    const doc = new jsPDF();
-    doc.text("Company Details by Task Type", 14, 16);
+  // Prepare table data dynamically based on the object keys
+  const tableData = barDetails.map((company, index) => [
+    index + 1, // Auto-incrementing Company ID
+    ...Object.values(company).map(formatValue), // Format nested values
+  ]);
+
+  // Add the "Company ID" to the start of headers
+  headers.unshift("Company ID");
+
+  const doc = new jsPDF();
+  const maxColumnsPerPage = 6; // Number of columns per page
+  const totalColumns = headers.length;
+
+  // Split headers and table data into chunks of 6 columns each
+  for (let i = 0; i < totalColumns; i += maxColumnsPerPage) {
+    const pageHeaders = headers.slice(i, i + maxColumnsPerPage); // Headers for the current page
+    const pageData = tableData.map((row) =>
+      row.slice(i, i + maxColumnsPerPage)
+    ); // Corresponding data
+
+    // Add a new page for each chunk of 6 columns
+    if (i !== 0) doc.addPage();
+
+    doc.setFontSize(16);
+    doc.text("Company Data Report", 14, 20);
+
+    // Add the table for the current chunk of columns
     doc.autoTable({
-      head: [["Task Type", "Number of Companies"]],
-      body: chartData.labels.map((label, index) => [
-        label,
-        chartData.datasets[0].data[index],
-      ]),
+      head: [pageHeaders],
+      body: pageData,
       startY: 30,
+      theme: "grid",
+      headStyles: {
+        fillColor: [25, 18, 220],
+        textColor: [255, 255, 255],
+      },
+      margin: { top: 30 },
     });
-    doc.save("task_types.pdf");
-  };
+  }
+
+  // Save the PDF
+  doc.save("companies_data_paginated.pdf");
+};
+
+
+
+
 
   return (
     <div className="container">
@@ -334,7 +421,12 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
                   <div className="w-full">
                     <div style={{ width: "auto", height: "300px" }}>
                       <Bar
-                        data={{ ...chartData, labels: chartData.labels.map((item) => formatString(item)) }}
+                        data={{
+                          ...chartData,
+                          labels: chartData.labels.map((item) =>
+                            formatString(item)
+                          ),
+                        }}
                         options={options}
                         style={{ width: "250px", height: "250px" }}
                       />

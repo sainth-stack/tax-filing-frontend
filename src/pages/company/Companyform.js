@@ -113,7 +113,7 @@ const CompanyForm = ({
       toast.success("Company created successfully");
     } catch (error) {
       setLoading(false);
-      toast.error(`Error: ${error.response?.data?.message || error.message}`);
+      toast.error(` ${error.response?.data?.message || error.message}`);
     }
   };
 

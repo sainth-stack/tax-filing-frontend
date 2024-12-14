@@ -17,7 +17,7 @@ const TaskDetailsPopup = ({
 }) => {
   if (!visible) return null;
 
-  console.log("task popup cheking companies data,",companies)
+  // console.log("task popup cheking companies data,",companies)
   return (
     <div
       style={{

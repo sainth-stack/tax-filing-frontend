@@ -230,11 +230,11 @@ export default function TasksTable({
                     <TableCell align="left" padding="normal">
                       {task.taskName || "N/A"}
                     </TableCell>
-                    <TableCell align="left" padding="normal">
+                   
                       <TableCell align="left" padding="normal">
                         {task.dueDate ? moment(task.dueDate).format('DD-MMM-YYYY') : 'N/A'}
                       </TableCell>
-                    </TableCell>
+                   
                     <TableCell align="left" padding="normal">
                       {task.applicationStatus || "N/A"}
                     </TableCell>
