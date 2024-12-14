@@ -34,13 +34,15 @@ ChartJS.register(
 );
 
 const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
+console.log("prop checking", paymentGraphDetails);
+
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [taskDetails, setTaskDetails] = useState([]);
   const [popupVisible, setPopupVisible] = useState(false);
   const [type, setType] = useState("");
   const navigate = useNavigate();
   const [filterTime, setFilterData] = useState([]);
-  const [popupContent, setPopupContent] = useState({ title: '', tasks: [] });
+  const [popupContent, setPopupContent] = useState({ title: '', tasks: [],companies:[] });
 
   useEffect(() => {
     let filtered = [...filterTime2]; // Ensure it starts with filterTime2
@@ -146,7 +148,8 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
 
       setPopupContent({
         title: `${status} Tasks - ${label}`,
-        tasks: selectedTasks
+        tasks: selectedTasks,
+        companies: paymentGraphDetails,
       });
       setPopupVisible(true);
     }
@@ -241,29 +244,34 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
   return (
     <>
       <div className="container">
-        <div className="bar_chart p-2" style={{
-          width: "100%",
-          height: "450px",
-          border: "1px solid #e0e0e0",
-          borderRadius: "8px",
-          backgroundColor: "#fff",
-          padding: "16px",
-          position: "relative",
-        }}>
+        <div
+          className="bar_chart p-2"
+          style={{
+            width: "100%",
+            height: "450px",
+            border: "1px solid #e0e0e0",
+            borderRadius: "8px",
+            backgroundColor: "#fff",
+            padding: "16px",
+            position: "relative",
+          }}
+        >
           {loading ? (
             <div className="flex justify-center items-center m-2">
               <Loader />
             </div>
           ) : (
             <>
-              <Header {...{
-                title: "Monthly Filing/Payment status by task by company",
-                handleExportAsCSV,
-                handleExportAsPDF,
-                payment: true,
-                type,
-                setType,
-              }} />
+              <Header
+                {...{
+                  title: "Monthly Filing/Payment status by task by company",
+                  handleExportAsCSV,
+                  handleExportAsPDF,
+                  payment: true,
+                  type,
+                  setType,
+                }}
+              />
 
               <div className="w-full">
                 <div style={{ width: "auto", height: "340px" }}>
@@ -276,12 +284,13 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
               </div>
             </>
           )}
-          
+
           <TaskDetailsPopup
             visible={popupVisible}
             onClose={() => setPopupVisible(false)}
             title={popupContent.title}
             tasks={popupContent.tasks}
+            companies={popupContent.companies}
             onTaskClick={handleTaskClick}
           />
         </div>

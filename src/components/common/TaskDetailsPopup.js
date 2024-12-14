@@ -1,19 +1,23 @@
 import React from "react";
-import { IconButton } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import { CloseOutlined } from "@mui/icons-material";
 import NoDataFound from "../charts/NoDataFound";
 import { isTaskCompleted } from "../../utils/const";
-import { getTaskDisplayName, GetTaskLabel } from "../../utils/TaskTypeMap";
+import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
+import DoNotDisturbOnOutlinedIcon from "@mui/icons-material/DoNotDisturbOnOutlined";
+import { getTaskDetails, getTaskDisplayName, GetTaskLabel, getTaskNumber } from "../../utils/TaskTypeMap";
 
 const TaskDetailsPopup = ({ 
   visible, 
   onClose, 
   title, 
   tasks, 
+  companies,
   onTaskClick 
 }) => {
   if (!visible) return null;
 
+  console.log("task popup cheking companies data,",companies)
   return (
     <div
       style={{
@@ -124,14 +128,8 @@ const TaskDetailsPopup = ({
                         fontSize: "13px",
                       }}
                     >
-                      <strong>
-                        {getTaskDisplayName(
-                          task.taskName,
-                          task.taskType,
-                          task.gstMonthly_gstType
-                        )}
-                      </strong>{" "}
-                      {GetTaskLabel(task.taskType) || "N/A"}
+                  
+                      <strong>{getTaskNumber(task.taskType,task.company,companies)}</strong>{" "}
                     </span>
                     {/* <span
                       style={{
@@ -167,7 +165,35 @@ const TaskDetailsPopup = ({
                         alignSelf: "flex-start",
                       }}
                     >
-                      {isTaskCompleted(task) ? "Completed" : "Not Completed"}
+                      {isTaskCompleted(task) ? (
+                        <>
+                          <Box
+                            display="flex"
+                            justifyContent="flex-end"
+                            alignItems="center"
+                            width="100%"
+                          >
+                            <span>Completed</span>
+                            <CheckCircleOutlineOutlinedIcon
+                              sx={{ fontSize: 16, ml: 1 }}
+                            />
+                          </Box>
+                        </>
+                      ) : (
+                        <>
+                          <Box
+                            display="flex"
+                            justifyContent="space-between"
+                            alignItems="center"
+                          >
+                            <span>Not Completed</span>
+                            <DoNotDisturbOnOutlinedIcon
+                              fontSize="small"
+                              sx={{ ml: 1 }}
+                            />
+                          </Box>
+                        </>
+                      )}
                     </span>
                     <span
                       style={{
@@ -187,7 +213,7 @@ const TaskDetailsPopup = ({
                     </span>
                     <span
                       style={{
-                        padding: "4px 8px",
+                        padding: "5px 8px",
                         borderRadius: "4px",
                         backgroundColor: "#e9ecef",
                         fontSize: "13px",
