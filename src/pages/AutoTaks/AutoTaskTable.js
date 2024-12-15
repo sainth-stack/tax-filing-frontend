@@ -75,23 +75,19 @@ export default function AutoTasksTable({
   setPageSize,
   setPage,
   totalTasks,
-  fetchAllTasks,
 }) {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("sno"); // default sorting by S.No
-  const [openDialog, setOpenDialog] = useState(false); // State to control the dialog visibility
-  // const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [selectedTask, setSelectedTask] = useState(null); // Store the selected task for confirmation
-  const [openDialog2, setOpenDialog2] = useState(false); // State to control the dialog visibility
-  const [id, setId] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);  // State to control the dialog visibility
+  const [selectedTask, setSelectedTask] = useState(null);  // Store the selected task for confirmation
+  const [openDialog2, setOpenDialog2] = useState(false);  // State to control the dialog visibility
+  const [id, setId] = useState('')
   const handleClose = () => {
     setOpenDialog(false);
   };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    fetchAllTasks(newPage, pageSize);
   };
 
   const handleAssignToMe = async (task) => {
@@ -107,7 +103,6 @@ export default function AutoTasksTable({
         formDataToSubmit.append(key, finalDate[key]);
       });
 
-      // Submit form data
       if (finalDate._id) {
         try {
           await axios.put(

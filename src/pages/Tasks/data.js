@@ -44,13 +44,13 @@ export const getTasks = ({ companies = [], users = [], data, noAct }) => {
     {
       type: "date",
       id: "startDate",
-      disable: true,
+      // disable: true,
       label: "Start Date",
     },
     {
       type: "date",
       id: "dueDate",
-      disable: true,
+      // disable: true,
       label: "Due Date",
     },
     ...((data?.taskName !== "gstNewRegistration" && !noAct)

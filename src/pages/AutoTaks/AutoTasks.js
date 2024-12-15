@@ -70,6 +70,7 @@ const AutoTasks = () => {
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
+    setPage(0)
     setFormData((prevValues) => ({
       ...prevValues,
       [id]: value,
@@ -134,7 +135,7 @@ const AutoTasks = () => {
   useEffect(() => {
     fetchTasks();
     fetchUsers();
-  }, [formData]);
+  }, [formData,page, pageSize]);
 
   //for  model
   const fetchCompanies = async () => {
@@ -157,32 +158,10 @@ const AutoTasks = () => {
     }
   };
 
-  const fetchAllTasks = async (page, pageSize) => {
-    setLoading(true);
-
-    try {
-      const response = await axios.get(`${base_url}/tasks/auto/all`, {
-        params: { page: page + 1, pageSize: pageSize },
-      });
-
-      const { data } = response.data;
-      setLoading(false);
-
-
-      setTasks(data);
-
-    } catch (error) {
-      toast.error("Error While  Fetching Tasks ");
-
-      console.error("Error fetching users:", error);
-    }
-  };
-
   useEffect(() => {
     fetchCompanies();
     fetchUsers();
-    fetchAllTasks(page, pageSize);
-  }, [page, pageSize]);
+  }, []);
 
   const handleDelete = async (id) => {
     setLoading(true);
@@ -331,7 +310,6 @@ const AutoTasks = () => {
               page,
               totalTasks,
               pageSize,
-              fetchAllTasks,
               setPageSize,
             }}
             dataLoading={loading}
