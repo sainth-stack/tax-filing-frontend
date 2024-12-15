@@ -302,6 +302,7 @@ const PendingCompletedTasksGraph = ({
                 title={popupContent.title}
                 tasks={popupContent.tasks}
                 onTaskClick={handleTaskClick}
+                companies={PendingCompeltedTaksGraphDetails}
               />
             </>
           )}

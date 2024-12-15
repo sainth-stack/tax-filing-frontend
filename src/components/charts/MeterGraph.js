@@ -318,6 +318,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
           title={popupContent.title}
           tasks={popupContent.tasks}
           onTaskClick={handleTaskClick}
+          companies={MeterGraphDetails}
         />
       </div>
     </>

@@ -7,17 +7,16 @@ import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutli
 import DoNotDisturbOnOutlinedIcon from "@mui/icons-material/DoNotDisturbOnOutlined";
 import { getTaskDetails, getTaskDisplayName, GetTaskLabel, getTaskNumber } from "../../utils/TaskTypeMap";
 
-const TaskDetailsPopup = ({ 
-  visible, 
-  onClose, 
-  title, 
-  tasks, 
+const TaskDetailsPopup = ({
+  visible,
+  onClose,
+  title,
+  tasks,
   companies,
-  onTaskClick 
+  onTaskClick
 }) => {
   if (!visible) return null;
 
-  // console.log("task popup cheking companies data,",companies)
   return (
     <div
       style={{
@@ -128,19 +127,10 @@ const TaskDetailsPopup = ({
                         fontSize: "13px",
                       }}
                     >
-                  
-                      <strong>{getTaskNumber(task.taskType,task.company,companies)}</strong>{" "}
+
+                      <strong>{getTaskNumber(task.taskType, task.company, companies)}</strong>{" "}
                     </span>
-                    {/* <span
-                      style={{
-                        padding: "4px 8px",
-                        borderRadius: "4px",
-                        backgroundColor: "#e9ecef",
-                        fontSize: "13px",
-                      }}
-                    >
-                    <strong>Type:</strong> {task.taskType || "Unknown"}
-                    </span> */}
+
                   </div>
                 </div>
                 {/* Right column */}
@@ -206,9 +196,9 @@ const TaskDetailsPopup = ({
                       <strong>Month:</strong>{" "}
                       {task.startDate
                         ? new Date(task.startDate).toLocaleString("default", {
-                            month: "long",
-                            year: "numeric",
-                          })
+                          month: "long",
+                          year: "numeric",
+                        })
                         : task.month || task.taskMonth || "N/A"}
                     </span>
                     <span

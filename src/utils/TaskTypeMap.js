@@ -28,41 +28,36 @@ export const GetTaskLabel = (taskType, gstin, registrationNumber) => {
 
 
 export const getTaskNumber = (taskType, companyName, companyData) => {
-  const company = companyData.find(
+  console.log(taskType)
+  const company = companyData?.filter(
     (company) => company.companyName === companyName
+  )[0];
 
-    
-  );
-
-  // if (company) {
-  //   console.log("Company name found:", company.companyName);
-  // } else {
-  //   console.log("No company found with the name:", companyName);
-  // }
+  console.log(company)
 
   if (!company) {
     return "Company not found for provided name"; 
   }
 
   switch (taskType) {
-    case "pf":
+    case "providentFund":
       return company.providentFund?.pfNumber
-        ? `pf: ${company.providentFund.pfNumber}`
+        ? `Provident Fund Number: ${company.providentFund.pfNumber}`
         : "N/A";
     case "gst":
       return company.gst?.gstin ? `GSTIN: ${company.gst.gstin}` : "N/A";
     case "esi":
-      return company.esi?.esiNumber ? `esi: ${company.esi.esiNumber}` : "N/A";
+      return company.esi?.esiNumber ? `Registration Number: ${company.esi.esiNumber}` : "N/A";
     case "incomeTax":
       return company.incomeTax?.incomeTaxPassword
-        ? `incomeTax: ${company.incomeTax.incomeTaxPassword}`
+        ? `Income Tax Password: ${company.incomeTax.incomeTaxPassword}`
         : "N/A";
     case "professionalTax":
       return company.professionalTax?.ptNumber
-        ? `professionalTax: ${company.professionalTax.ptNumber}`
+          ? `Professional Tax Number: ${company.professionalTax.ptNumber}`
         : "N/A";
     case "tds":
-      return company.tds?.tan ? `tds: ${company.tds.tan}` : "N/A";
+      return company.tds?.tan ? `TDS/TCS Number: ${company.tds.tan}` : "N/A";
     case "shopCommercialEstablishment":
       return company.shopCommercialEstablishment?.seNumber
         ? `seNumber: ${company.shopCommercialEstablishment.seNumber}`
@@ -71,7 +66,7 @@ export const getTaskNumber = (taskType, companyName, companyData) => {
       return company.msme?.msmeNumber
         ? `msmeNumber: ${company.msme.msmeNumber}`
         : "N/A";
-    case "fssai":
+    case "fssai": 
       return company.fssai?.fssaiNumber
         ? `fssaiNumber: ${company.fssai.fssaiNumber}`
         : "N/A";
