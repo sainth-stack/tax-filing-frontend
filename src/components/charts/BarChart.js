@@ -8,6 +8,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+
+import * as XLSX from "xlsx";
 import axios from "axios";
 import { base_url } from "../../const";
 import Loader from "../helpers/loader";
@@ -59,7 +61,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
   });
   const [popupVisible, setPopupVisible] = useState(false);
 
-  // console.log("bar graph deails", barDetails);
+   console.log("bar graph  vishnudeails", barDetails);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [clickedCompanies, setClickedCompanies] = useState([]);
   const [clickedLabel, setClickedLabel] = useState("");
@@ -244,116 +246,215 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
   }
 
 
-const handleExportAsCSV = () => {
-  // Dynamically extract headers based on the keys of the first company in the data (barDetails)
-  const headers = [
-    "Company ID", // Always include Company ID
-    ...Object.keys(barDetails[0]).flatMap((key) => {
-      // Check if the key is an object, if so, include nested fields in the header
-      if (
-        typeof barDetails[0][key] === "object" &&
-        barDetails[0][key] !== null
-      ) {
-        return Object.keys(barDetails[0][key]).map(
-          (subKey) => `${key}_${subKey}`
-        );
+
+  
+
+  const handleExportAsCSV = () => {
+    if (!barDetails || barDetails.length === 0) return;
+
+    // Define column headers and map data dynamically
+    const columns = [
+      { header: "Company Name", key: "companyDetails.companyName", width: 20 },
+      { header: "Constitution", key: "companyDetails.constitution", width: 15 },
+      {
+        header: "Client Status",
+        key: "companyDetails.clientStatus",
+        width: 12,
+      },
+      {
+        header: "Authorised Person",
+        key: "companyDetails.authorisedPerson",
+        width: 20,
+      },
+      { header: "Phone", key: "companyDetails.phone", width: 12 },
+      { header: "Email", key: "companyDetails.mailId", width: 25 },
+      { header: "PAN", key: "companyDetails.pan", width: 15 },
+      {
+        header: "Effective From",
+        key: "companyDetails.effectiveFrom",
+        width: 15,
+      },
+      { header: "Effective To", key: "companyDetails.effectiveTo", width: 15 },
+      {
+        header: "Company Address",
+        key: "companyDetails.companyAddress",
+        width: 50,
+      },
+      {
+        header: "SubConstitution",
+        key: "companyDetails.subConstitution",
+        width: 50,
+      },
+      { header: "Updated Time", key: "updatedAt", width: 20 },
+     
+    ];
+
+    // Prepare data with dynamic mapping
+    const exportData = barDetails.map((company) => {
+      return columns.reduce((row, col) => {
+        let value = col.key
+          .split(".")
+          .reduce((acc, key) => acc && acc[key], company); // Nested key access
+
+        // Convert 'updatedAt' to a readable format
+        if (col.key === "updatedAt" && value) {
+          const date = new Date(value);
+          value = `${String(date.getDate()).padStart(2, "0")}-${String(
+            date.getMonth() + 1
+          ).padStart(2, "0")}-${date.getFullYear()} ${date
+            .toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+            .toUpperCase()}`;
+        }
+
+        row[col.header] = value || ""; // Set header and value
+        return row;
+      }, {});
+    });
+
+
+    // Create worksheet and apply column widths
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    ws["!cols"] = columns.map((col) => ({ wch: col.width }));
+
+    // Bold headers with background color
+    const range = XLSX.utils.decode_range(ws["!ref"]);
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const cell = ws[XLSX.utils.encode_cell({ r: range.s.r, c: C })];
+      if (cell) {
+        cell.s = {
+          font: { bold: true, sz: 12 }, // Bold and font size
+          fill: { fgColor: { rgb: "E0E0E0" } }, // Light grey background
+          alignment: { wrapText: true, horizontal: "center" }, // Wrap and align center
+        };
       }
-      return key;
-    }),
-  ];
+    }
 
-  // Prepare data for CSV content with auto-incremented "Company ID"
-  const csvContent = barDetails
-    .map((company, index) => {
-      // Auto-increment Company ID, starting from 1
-      return [
-        index + 1, // Company ID
-        ...Object.keys(company).flatMap((key) => {
-          // Check if the key is an object, if so, extract its values
-          if (typeof company[key] === "object" && company[key] !== null) {
-            return Object.keys(company[key]).map(
-              (subKey) => company[key][subKey] || ""
-            );
-          }
-          return company[key] || ""; // Get value or empty string if undefined
-        }),
-      ].join(","); // Join fields with a comma
-    })
-    .join("\n"); // Join each row with a new line
+    // Create workbook and save file
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Company Data");
+    XLSX.writeFile(wb, "company_data.xlsx");
+  };
 
-  // Create CSV and trigger download
-  const blob = new Blob([`${headers.join(",")}\n${csvContent}`], {
-    type: "text/csv;charset=utf-8;",
-  });
-  saveAs(blob, "companies_data.csv");
-};
 
 
 
  // Import jsPDF AutoTable plugin
+
+  
+
+  
+
+
+
+  
+  
+
+
+
+
+
 const handleExportAsPDF = () => {
-  if (barDetails.length === 0) {
-    alert("No data available to export."); // Handle empty data case
+  if (!barDetails || barDetails.length === 0) {
+    alert("No data available to export.");
     return;
   }
 
-  const headers = Object.keys(barDetails[0]).map((key) =>
-    key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())
-  ); 
+  // Define columns and their headers
+  const columns = [
+    { header: "Company Name", key: "companyDetails.companyName" },
+    { header: "Constitution", key: "companyDetails.constitution" },
+    { header: "Client Status", key: "companyDetails.clientStatus" },
+    { header: "Authorised Person", key: "companyDetails.authorisedPerson" },
+    { header: "Phone", key: "companyDetails.phone" },
+    { header: "Email", key: "companyDetails.mailId" },
+    { header: "PAN", key: "companyDetails.pan" },
+    { header: "Effective From", key: "companyDetails.effectiveFrom" },
+    { header: "Effective To", key: "companyDetails.effectiveTo" },
+    { header: "Company Address", key: "companyDetails.companyAddress" },
+    { header: "SubConstitution", key: "companyDetails.subConstitution" },
+    { header: "Updated Time", key: "updatedAt" },
+  ];
 
-  const formatValue = (value) => {
-    if (Array.isArray(value)) {
-      return value.join(", "); // Join array values into a string
-    } else if (typeof value === "object" && value !== null) {
-      return Object.values(value).join(", "); // Join object values into a string
-    }
+  const doc = new jsPDF("landscape");
+  doc.setFontSize(16);
+  doc.text("Company Data Report", 14, 15); // Report title
 
-    return value || "N/A"; // Return value or empty string for null/undefined
-  };
+  const maxColumnsPerPage = 6; // Max 6 columns per page
+  const totalColumns = columns.length;
 
-  // Prepare table data dynamically based on the object keys
-  const tableData = barDetails.map((company, index) => [
-    index + 1, // Auto-incrementing Company ID
-    ...Object.values(company).map(formatValue), // Format nested values
-  ]);
+  // Prepare data dynamically
+  const tableData = barDetails.map((company) =>
+    columns.map((col) => {
+      let value = col.key
+        .split(".")
+        .reduce(
+          (acc, key) => (acc && acc[key] !== undefined ? acc[key] : ""),
+          company
+        );
 
-  // Add the "Company ID" to the start of headers
-  headers.unshift("Company ID");
+      // Custom format for Updated Time
+      if (col.key === "updatedAt" && value) {
+        const date = new Date(value);
+        value = `${String(date.getDate()).padStart(2, "0")}-${String(
+          date.getMonth() + 1
+        ).padStart(2, "0")}-${date.getFullYear()} ${date
+          .toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+          .toUpperCase()}`;
+      }
 
-  const doc = new jsPDF();
-  const maxColumnsPerPage = 6; // Number of columns per page
-  const totalColumns = headers.length;
+      return value || "N/A"; // Default for null/undefined
+    })
+  );
 
-  // Split headers and table data into chunks of 6 columns each
-  for (let i = 0; i < totalColumns; i += maxColumnsPerPage) {
-    const pageHeaders = headers.slice(i, i + maxColumnsPerPage); // Headers for the current page
-    const pageData = tableData.map((row) =>
-      row.slice(i, i + maxColumnsPerPage)
-    ); // Corresponding data
+  // First page with the first 6 columns
+  const firstPageColumns = columns.slice(0, maxColumnsPerPage);
+  const firstPageData = tableData.map((row) => row.slice(0, maxColumnsPerPage));
 
-    // Add a new page for each chunk of 6 columns
-    if (i !== 0) doc.addPage();
+  doc.autoTable({
+    head: [firstPageColumns.map((col) => col.header)],
+    body: firstPageData,
+    startY: 30,
+    theme: "grid",
+    styles: { fontSize: 10, cellPadding: 3 },
+    headStyles: {
+      fillColor: [0, 102, 204],
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    margin: { top: 20 },
+  });
 
-    doc.setFontSize(16);
-    doc.text("Company Data Report", 14, 20);
-
-    // Add the table for the current chunk of columns
-    doc.autoTable({
-      head: [pageHeaders],
-      body: pageData,
-      startY: 30,
-      theme: "grid",
-      headStyles: {
-        fillColor: [25, 18, 220],
-        textColor: [255, 255, 255],
-      },
-      margin: { top: 30 },
-    });
+  // If there are more than 6 columns, add a new page and display remaining columns
+  if (totalColumns > maxColumnsPerPage) {
+    doc.addPage();
+    doc.text("Company Data Report (Continued)", 14, 15); // Continuation title
   }
 
+  // Second page with the remaining columns
+  const remainingColumns = columns.slice(maxColumnsPerPage);
+  const remainingData = tableData.map((row) => row.slice(maxColumnsPerPage));
+
+  doc.autoTable({
+    head: [remainingColumns.map((col) => col.header)],
+    body: remainingData,
+    startY: 30,
+    theme: "grid",
+    styles: { fontSize: 10, cellPadding: 3 },
+    headStyles: {
+      fillColor: [0, 102, 204],
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    margin: { top: 20 },
+  });
+
   // Save the PDF
-  doc.save("companies_data_paginated.pdf");
+  doc.save("company_data_paginated.pdf");
 };
+
+
+
+
 
 
 
