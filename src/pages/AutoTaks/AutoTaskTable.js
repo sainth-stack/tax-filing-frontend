@@ -82,6 +82,8 @@ export default function AutoTasksTable({
   const [selectedTask, setSelectedTask] = useState(null);  // Store the selected task for confirmation
   const [openDialog2, setOpenDialog2] = useState(false);  // State to control the dialog visibility
   const [id, setId] = useState('')
+  const [loadingExport, setLoadingExport] = useState(false); // State to control loading for export
+
   const handleClose = () => {
     setOpenDialog(false);
   };
@@ -215,13 +217,33 @@ export default function AutoTasksTable({
     setOpenDialog2(false);
   };
 
-  
+  const handleExport = async () => {
+    setLoadingExport(true); // Set loading to true when starting the export
+    try {
+      const response = await axios.get(`${base_url}/tasks/auto/export`, {
+        responseType: 'blob', 
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'auto_tasks.csv'); // Specify the file name
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      toast.error("Failed to export tasks");
+      console.error("Export error:", error);
+    } finally {
+      setLoadingExport(false); // Reset loading state after the export is done
+    }
+  };
 
-
-  
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <Button variant="contained" color="primary" onClick={handleExport} disabled={loadingExport}>
+        {loadingExport ? "Exporting..." : "Export All Tasks"}
+      </Button>
       <TableContainer
         component={Paper}
         className="container my-4 shadow-md rounded-lg"
