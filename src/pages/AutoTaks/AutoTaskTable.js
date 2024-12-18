@@ -218,7 +218,7 @@ export default function AutoTasksTable({
   };
 
   const handleExport = async () => {
-    setLoadingExport(true); // Set loading to true when starting the export
+    setLoadingExport(true);
     try {
       const response = await axios.get(`${base_url}/tasks/auto/export`, {
         responseType: 'blob', 
@@ -226,7 +226,7 @@ export default function AutoTasksTable({
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'auto_tasks.csv'); // Specify the file name
+      link.setAttribute('download', 'auto_tasks.csv'); 
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -234,7 +234,7 @@ export default function AutoTasksTable({
       toast.error("Failed to export tasks");
       console.error("Export error:", error);
     } finally {
-      setLoadingExport(false); // Reset loading state after the export is done
+      setLoadingExport(false);
     }
   };
 
@@ -336,95 +336,94 @@ export default function AutoTasksTable({
                 </TableCell>
               </TableRow>
             ) : (
-              sortedTasks.map((task, index) => (
-                <TableRow key={task._id || index} sx={{ height: "48px" }}>
-                  <TableCell align="left" padding="normal">
-                    {page * pageSize + index + 1}
-                  </TableCell>
-                  <TableCell align="left" padding="normal">
-                    {task.company || "N/A"}
-                  </TableCell>
-
-                  <TableCell align="left" padding="normal">
-                    {task.startDate
-                      ? new Date(task.startDate).toLocaleDateString("en-US", {
-                          month: "long",
-                        }) // e.g., "December"
-                      : "N/A"}
-                  </TableCell>
-
-                  <TableCell align="left" padding="normal">
-                    {task.startDate
-                      ? new Date(task.startDate).toLocaleDateString("en-US", {
-                          year: "numeric", // Show the year
-                        })
-                      : "N/A"}
-                  </TableCell>
-
-                  <TableCell align="left" padding="normal">
-                    {getTaskDisplayName(
-                      task.taskName,
-                      task.taskType,
-                      task.gstMonthly_gstType
-                    )}
-                  </TableCell>
-
-                  <TableCell align="left" padding="normal">
-                    {task.dueDate
-                      ? moment(task.dueDate).format("DD-MMM-YYYY")
-                      : "N/A"}
-                  </TableCell>
-                  <TableCell align="left" padding="normal">
-                    {task.applicationStatus || "N/A"}
-                  </TableCell>
-                  <TableCell align="left" padding="normal">
-                    {task.assignedName || "N/A"}
-                  </TableCell>
-                  <TableCell align="left" padding="normal">
-                    {task.applicationSubStatus || "N/A"}
-                  </TableCell>
-                  <TableCell align="left" padding="normal">
-                    {userId?._id !== task.assignedTo && (
+              sortedTasks.map((task, index) => {
+                let startData=task.startDate ||'N/A'
+                return(
+                  <TableRow key={task._id || index} sx={{ height: "48px" }}>
+                    <TableCell align="left" padding="normal">
+                      {page * pageSize + index + 1}
+                    </TableCell>
+                    <TableCell align="left" padding="normal">
+                      {task.company || "N/A"}
+                    </TableCell>
+  
+                    <TableCell align="left" padding="normal">
+                    { new Date(new Date(startData).setMonth(new Date(startData).getMonth() - 1)).toLocaleDateString("en-US", {
+                            month: "long",
+                          })}
+                    </TableCell>
+  
+                    <TableCell align="left" padding="normal">
+                      {new Date(task.startDate).toLocaleDateString("en-US", {
+                            year: "numeric",
+                          })}
+                    </TableCell>
+  
+                    <TableCell align="left" padding="normal">
+                      {getTaskDisplayName(
+                        task.taskName,
+                        task.taskType,
+                        task.gstMonthly_gstType
+                      )}
+                    </TableCell>
+  
+                    <TableCell align="left" padding="normal">
+                      {task.dueDate
+                        ? moment(task.dueDate).format("DD-MMM-YYYY")
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell align="left" padding="normal">
+                      {task.applicationStatus || "N/A"}
+                    </TableCell>
+                    <TableCell align="left" padding="normal">
+                      {task.assignedName || "N/A"}
+                    </TableCell>
+                    <TableCell align="left" padding="normal">
+                      {task.applicationSubStatus || "N/A"}
+                    </TableCell>
+                    <TableCell align="left" padding="normal">
+                      {userId?._id !== task.assignedTo && (
+                        <IconButton
+                          title="Assign to me"
+                          aria-label="edit"
+                          size="small"
+                          onClick={() => handleClickOpen(task)}
+                        >
+                          <ControlPointIcon
+                            fontSize="inherit"
+                            className="text-grey-400 z-0 bg-gray-50 rounded"
+                          />
+                        </IconButton>
+                      )}
                       <IconButton
-                        title="Assign to me"
                         aria-label="edit"
                         size="small"
-                        onClick={() => handleClickOpen(task)}
+                        onClick={() => handleEditForm(task._id)}
                       >
-                        <ControlPointIcon
+                        <EditOutlined
                           fontSize="inherit"
-                          className="text-grey-400 z-0 bg-gray-50 rounded"
+                          className="text-green-400 z-0 bg-gray-50 rounded"
                         />
                       </IconButton>
-                    )}
-                    <IconButton
-                      aria-label="edit"
-                      size="small"
-                      onClick={() => handleEditForm(task._id)}
-                    >
-                      <EditOutlined
-                        fontSize="inherit"
-                        className="text-green-400 z-0 bg-gray-50 rounded"
-                      />
-                    </IconButton>
-                    {userId?.role == "A" && (
-                      <IconButton
-                        aria-label="delete"
-                        size="small"
-                        onClick={() => {
-                          setId(task?._id);
-                          setOpenDialog2(true);
-                        }}
-                      >
-                        <DeleteOutline
-                          fontSize="inherit"
-                          className="text-red-400 bg-gray-100 rounded"
-                        />
-                      </IconButton>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))
+                      {userId?.role == "A" && (
+                        <IconButton
+                          aria-label="delete"
+                          size="small"
+                          onClick={() => {
+                            setId(task?._id);
+                            setOpenDialog2(true);
+                          }}
+                        >
+                          <DeleteOutline
+                            fontSize="inherit"
+                            className="text-red-400 bg-gray-100 rounded"
+                          />
+                        </IconButton>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                )
+              })
             )}
           </TableBody>
         </Table>

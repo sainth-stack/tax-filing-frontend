@@ -195,7 +195,7 @@ const TaskDetailsPopup = ({
                     >
                       <strong>Month:</strong>{" "}
                       {task.startDate
-                        ? new Date(task.startDate).toLocaleString("default", {
+                        ? new Date(new Date(task.startDate).setMonth(new Date(task.startDate).getMonth() - 1)).toLocaleString("default", {
                           month: "long",
                           year: "numeric",
                         })
