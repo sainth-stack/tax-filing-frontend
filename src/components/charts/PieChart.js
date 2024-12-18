@@ -199,83 +199,23 @@ const PieChart = ({ companyDetails, loading }) => {
     },
   });
 
-  const handleExportAsCSV = () => {
-    const csvContent = companyDetails
-      .map((company) => {
-        return `${company.companyName || "--"},${company.constitution || "--"
-          },${company.subConstitution || "--"},${company.clientStatus || "--"},${company.authorisedPerson || "--"
-          },${company.phone || "--"},${company.mailId || "--"},${company.pan || "--"
-          },${company.companyAddress || "--"}`;
-      })
-      .join("\n");
 
-    const blob = new Blob(
-      [
-        `Company Name,Constitution,Sub Constitution,Client Status,Authorised Person,Phone,Mail ID,PAN,Company Address\n${csvContent}`,
-      ],
-      {
-        type: "text/csv;charset=utf-8;",
-      }
-    );
+  /* columns */
+   const columns = [
+     { header: "Company Name", key: "companyDetails.companyName" },
+     { header: "Constitution", key: "companyDetails.constitution" },
+     { header: "Sub Constitution", key: "companyDetails.subConstitution" },
+     { header: "Client Status", key: "companyDetails.clientStatus" },
+     { header: "Authorized Person", key: "companyDetails.authorisedPerson" },
+     { header: "Phone", key: "companyDetails.phone" },
+     { header: "MailId", key: "companyDetails.mailId" },
+     { header: "PAN", key: "companyDetails.pan" },
+     // { header: "Company Address", key: "companyAddress" }, // Uncomment if needed
+   ];
+  
 
-    saveAs(blob, "company_details.csv");
-  };
-
-  //export as pdf vishnu
-  const handleExportAsPDF = () => {
-    const doc = new jsPDF();
-
-
-    if (companyDetails.length === 0) {
-      console.error("No data to export.");
-      return;
-    }
-
-    doc.text("Company Details", 14, 16);
-
-    const tableData = companyDetails.map((company) => ({
-      CompanyName: company.companyName || " --",
-      Constitution: company.constitution || " --",
-      SubConstitution: company.subConstitution || " --",
-      clientStatus: company.clientStatus || " --",
-      authorisedPerson: company.authorisedPerson || " --",
-      phone: company.phone || " --",
-      mailId: company.mailId || " --",
-      pan: company.pan || " --",
-      // companyAddress: company.companyAddress || " --",
-    }));
-
-    doc.autoTable({
-      head: [
-        [
-          "Company Name",
-          "Constitution",
-          "Sub Constitution",
-          "Client Status",
-          "Authorized Person",
-          "Phone",
-          "MailId",
-          "PAN",
-          // "Company Address",
-        ],
-      ],
-      body: tableData.map((item) => [
-        item.CompanyName,
-        item.Constitution,
-        item.SubConstitution,
-        item.clientStatus,
-        item.authorisedPerson,
-        item.phone,
-        item.mailId,
-        item.pan,
-        item.companyAddress,
-      ]),
-      startY: 30,
-    });
-
-    doc.save("company_details.pdf");
-  };
-
+  
+ 
 
   return (
     <div className="container ">
@@ -290,8 +230,6 @@ const PieChart = ({ companyDetails, loading }) => {
           // Add padding for a card-like layout
         }}
       >
-
-
         {loading ? (
           <>
             <div className="flex justify-center   items-center m-2">
@@ -301,9 +239,10 @@ const PieChart = ({ companyDetails, loading }) => {
         ) : (
           <>
             <Header
+             data={companyDetails}
+              columns={columns}
               title={"Company Status by Constitution and Subconstitution"}
-              {...{ handleExportAsCSV, handleExportAsPDF }}
-            />
+                        />
             <div className="flex justify-center  items-start p-4">
               {/* Graph Section */}
 
@@ -330,7 +269,6 @@ const PieChart = ({ companyDetails, loading }) => {
                         <Doughnut data={chartData} options={options} />
                         <div className="w-full sm:w-1/2 lg:w-1/3 p-4">
                           <ul className="space-y-2 ">
-                       
                             {chartData.labels.length !== 0 &&
                               chartData.labels.map((label, index) => (
                                 <>
@@ -340,24 +278,32 @@ const PieChart = ({ companyDetails, loading }) => {
                                       style={{
                                         minWidth: "17px",
                                         backgroundColor:
-                                          chartData.datasets[0].backgroundColor[index],
+                                          chartData.datasets[0].backgroundColor[
+                                            index
+                                          ],
                                       }}
                                     ></span>
-                                    <span className="mx-2" style={{ fontSize: '14px', fontWeight: 600 }}>{label}</span>
+                                    <span
+                                      className="mx-2"
+                                      style={{
+                                        fontSize: "14px",
+                                        fontWeight: 600,
+                                      }}
+                                    >
+                                      {label}
+                                    </span>
                                   </li>
                                 </>
                               ))}
                           </ul>
                         </div>
                       </Grid>
-
                     </>
                   )}
                 </div>
               </div>
 
               {/* Dynamic Custom Legends Section */}
-
             </div>
           </>
         )}
@@ -436,6 +382,7 @@ const PieChart = ({ companyDetails, loading }) => {
       )}
     </div>
   );
+
 };
 
 export default PieChart;

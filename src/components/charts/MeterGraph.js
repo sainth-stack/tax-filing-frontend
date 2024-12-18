@@ -10,6 +10,7 @@ import Header from "../../pages/Dashboard/card-container";
 import Loader from "../helpers/loader";
 import NoDataFound from "./NoDataFound";
 import TaskDetailsPopup from "../common/TaskDetailsPopup";
+import { columns } from "../Export/data";
 
 const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   const [data, setData] = useState({
@@ -106,69 +107,12 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   // Export CSV
   // Export CSV
   // Export CSV
-  const handleExportAsCSV = () => {
-    const fields = ["Task Name", "Task Type", "Status"];
-    const allTasks = [
-      ...taskDetails.completed.map((task) => ({
-        ...task,
-        status: "Completed",
-      })),
-      ...taskDetails.inProgress.map((task) => ({
-        ...task,
-        status: "In Progress",
-      })),
-      ...taskDetails.overdue.map((task) => ({ ...task, status: "Overdue" })),
-    ];
-
-    if (allTasks.length === 0) {
-      alert("No tasks available to export.");
-      return;
-    }
-
-    const csvContent = [
-      fields.join(","), // header
-      ...allTasks.map((task) =>
-        [task.taskName, task.taskType, task.status].join(",")
-      ),
-    ].join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", `all_tasks.csv`);
-    link.click();
-  };
+ 
 
   // Export PDF
-  const handleExportAsPDF = () => {
-    const doc = new jsPDF();
-    const allTasks = [
-      ...taskDetails.completed.map((task) => ({
-        ...task,
-        status: "Completed",
-      })),
-      ...taskDetails.inProgress.map((task) => ({
-        ...task,
-        status: "In Progress",
-      })),
-      ...taskDetails.overdue.map((task) => ({ ...task, status: "Overdue" })),
-    ];
+ 
 
-    if (allTasks.length === 0) {
-      alert("No tasks available to export.");
-      return;
-    }
-
-    doc.text("All Tasks", 10, 10);
-
-    doc.autoTable({
-      head: [["Task Name", "Task Type", "Status"]],
-      body: allTasks.map((task) => [task.taskName, task.taskType, task.status]),
-    });
-
-    doc.save(`all_tasks.pdf`);
-  };
-
+  // console.log("meter graph data",MeterGraphDetails)/*  */
   return (
     <>
       <div className="container">
@@ -192,10 +136,12 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
             </>
           ) : (
             <>
-              <Header
+                <Header
+                  data={MeterGraphDetails}
+                columns={columns}
+                
                 {...{ title: "Tasks Due Date" }}
-                handleExportAsCSV={handleExportAsCSV}
-                handleExportAsPDF={handleExportAsPDF}
+               
               />
               {categories.length === 0 ? (
                 <NoDataFound />

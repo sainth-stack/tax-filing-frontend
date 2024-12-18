@@ -21,6 +21,7 @@ import Loader from "../helpers/loader";
 import NoDataFound from "./NoDataFound";
 import { isTaskCompleted } from "../../utils/const";
 import TaskDetailsPopup from "../common/TaskDetailsPopup";
+import { columns } from "../Export/data";
 
 ChartJS.register(
 
@@ -34,7 +35,7 @@ ChartJS.register(
 );
 
 const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
-console.log("prop checking", paymentGraphDetails);
+console.log("payment grpah  checking", paymentGraphDetails);
 
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [taskDetails, setTaskDetails] = useState([]);
@@ -205,41 +206,12 @@ console.log("prop checking", paymentGraphDetails);
     maintainAspectRatio: true,
   };
 
-  const handleExportAsCSV = () => {
-    const csvContent = chartData.labels
-      .map((label, index) => {
-        return `${label},${chartData.datasets[0].data[index]},${chartData.datasets[1].data[index]}`;
-      })
-      .join("\n");
+ 
 
-    const blob = new Blob(
-      [`Task Type,Completed,Not Completed\n${csvContent}`],
-      {
-        type: "text/csv;charset=utf-8;",
-      }
-    );
-    saveAs(blob, "task_status.csv");
-  };
+  
 
   // Export as PDF
-  const handleExportAsPDF = () => {
-    const doc = new jsPDF();
-    doc.text("Task Status Overview", 14, 16);
-
-    const tableData = chartData.labels.map((label, index) => [
-      label,
-      chartData.datasets[0].data[index], // Completed count
-      chartData.datasets[1].data[index], // Not Completed count
-    ]);
-
-    doc.autoTable({
-      head: [["Task Type", "Completed", "Not Completed"]],
-      body: tableData,
-      startY: 30,
-    });
-
-    doc.save("task_status.pdf");
-  };
+ 
 
   return (
     <>
@@ -262,11 +234,12 @@ console.log("prop checking", paymentGraphDetails);
             </div>
           ) : (
             <>
-              <Header
+                <Header
+                  data={paymentGraphDetails}
+                  columns={columns}
                 {...{
                   title: "Monthly Filing/Payment status by task by company",
-                  handleExportAsCSV,
-                  handleExportAsPDF,
+                 
                   payment: true,
                   type,
                   setType,

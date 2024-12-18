@@ -23,6 +23,7 @@ import Loader from "../helpers/loader";
 import NoDataFound from "./NoDataFound";
 import { isTaskCompleted } from "../../utils/const";
 import TaskDetailsPopup from "../common/TaskDetailsPopup";
+import { columns } from "../Export/data";
 
 // Register Chart.js components
 ChartJS.register(
@@ -41,6 +42,8 @@ const PendingCompletedTasksGraph = ({
   loading,
 }) => {
 
+
+  console.log("4th graph deatis",PendingCompeltedTaksGraphDetails)
   const navigate = useNavigate();
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [selectedTasks, setSelectedTasks] = useState([]);
@@ -218,11 +221,11 @@ const PendingCompletedTasksGraph = ({
             </div>
           ) : (
             <>
-              <Header
+                <Header
+                  columns={columns}
+                data={PendingCompeltedTaksGraphDetails}
                 {...{
                   title: "Tasks by Assignee",
-                  handleExportAsPDF,
-                  handleExportAsCSV,
                 }}
               />
 
@@ -230,7 +233,6 @@ const PendingCompletedTasksGraph = ({
                 <NoDataFound />
               ) : (
                 <>
-
                   <Bar
                     data={chartData}
                     options={{
@@ -294,8 +296,7 @@ const PendingCompletedTasksGraph = ({
                     }}
                   />
                 </>
-              )
-              }
+              )}
               <TaskDetailsPopup
                 visible={popupVisible}
                 onClose={() => setPopupVisible(false)}
