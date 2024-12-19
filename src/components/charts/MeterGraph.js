@@ -100,9 +100,15 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
     setPopupVisible(true);
   };
 
-  const handleTaskClick = (taskId) => {
-    navigate(`/tasks`, { state: { taskId } });
+  const handleTaskClick = (taskId, auto) => {
+    if (auto) {
+      navigate(`/tasks/auto`, { state: { taskId } });
+    } else {
+      navigate(`/tasks`, { state: { taskId } });
+    }
+    setPopupVisible(false);
   };
+
 
   // Export CSV
   // Export CSV
