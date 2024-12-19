@@ -4,6 +4,8 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const CustomInput = ({
+  activeStateEffectiveDate,
+  selectedId,
   type,
   id,
   label,
@@ -16,13 +18,18 @@ const CustomInput = ({
   readOnly,
   name,
   required,
-  disabled
+  disabled,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
+
+ 
+  
+
   return (
     <div className={`flex flex-col relative ${className}`}>
       <label htmlFor={id} className="mb-1" style={{ ...labelStyles }}>
         {label}
+
         {required && <span className="text-red-500">*</span>}
       </label>
       <div className={type === "password" && "relative"} style={{ zIndex: 20 }}>

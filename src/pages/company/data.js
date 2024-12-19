@@ -1,4 +1,36 @@
 export const sectionsData = (data) => {
+  const isClientInactive = data?.companyDetails?.clientStatus === "inactive";
+  const isIncomeTaxInactive = data?.incomeTax?.status === "inactive";
+  const isGstInactive = data?.gst?.status === "inactive";
+
+  const esiInactive = data?.esi?.status === "inactive";
+    const isTDSInactive = data?.tds?.status === "inactive";
+   const isPfInactive = data?.providentFund?.status === "inactive";
+   const isprofessionalTax = data?.professionalTax?.status === "inactive";
+   const isMSMEInactive =
+     data?.msme?.status === "inactive";
+
+    const isfactoryLicenseInactive = data?.factoryLicense?.status === "inactive";
+
+    const isimportExportInactive = data?.importExport?.status === "inactive";
+
+    const isFssaiInactive =
+      data?.fssai?.status === "inactive";
+
+    const isshopCommercialEstablishmentInactive =
+      data?.shopCommercialEstablishment?.status === "inactive";
+
+    const ispartnershipFirmFormCInActive =
+      data?.ispartnershipFirmFormCInActive?.status === "inactive";
+
+    const isshramSuvidhaPortalInactive =
+      data?.isshramSuvidhaPortalInactive?.status === "inactive";
+
+    const isMCAInactive =
+      data?.mca?.status === "inactive";
+
+   ;
+
   return [
     {
       title: "Company Details",
@@ -74,13 +106,13 @@ export const sectionsData = (data) => {
           type: "date",
           id: "companyDetails.effectiveFrom",
           label: "Effective From",
-          // required: true,
+          required: true,
         },
         {
           type: "date",
           id: "companyDetails.effectiveTo",
           label: "Effective To",
-          // required: true,
+          required: isClientInactive,
         },
         {
           type: "textarea",
@@ -133,6 +165,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "incomeTax.effectiveTo",
           label: "Effective To",
+          required: isIncomeTaxInactive,
         },
         {
           type: "file",
@@ -190,6 +223,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "gst.effectiveTo",
           label: "Effective To",
+          required: isGstInactive,
         },
         {
           type: "select",
@@ -202,12 +236,12 @@ export const sectionsData = (data) => {
             /*  { value: "LLP", label: "LLP" }, */
           ],
         },
-        {
-          type: "Date",
-          id: "gst.dueDateReturn",
-          label: "Due Date for GST Returns",
-          // required: true,
-        },
+        // {
+        //   type: "Date",
+        //   id: "gst.dueDateReturn",
+        //   label: "Due Date for GST Returns",
+        //   // required: true,
+        // },
         {
           type: "file",
           id: "gst.approvalCertificate",
@@ -252,6 +286,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "esi.effectiveTo",
           label: "Effective To",
+          required: esiInactive,
         },
         {
           type: "file",
@@ -297,6 +332,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "providentFund.effectiveTo",
           label: "Effective To",
+           required: isPfInactive,
         },
         {
           type: "file",
@@ -357,6 +393,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "professionalTax.effectiveTo",
           label: "Effective To",
+           required: isprofessionalTax,
         },
         {
           type: "file",
@@ -403,6 +440,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "tds.effectiveTo",
           label: "Effective To",
+           required: isTDSInactive,
         },
         {
           type: "file",
@@ -453,6 +491,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "shopCommercialEstablishment.effectiveTo",
           label: "Effective To",
+           required: isshopCommercialEstablishmentInactive,
         },
         {
           type: "file",
@@ -488,6 +527,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "msme.effectiveTo",
           label: "Effective To",
+          required: isMSMEInactive,
         },
         {
           type: "file",
@@ -538,6 +578,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "fssai.effectiveTo",
           label: "Effective To",
+           required: isFssaiInactive,
         },
         {
           type: "file",
@@ -588,6 +629,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "factoryLicense.effectiveTo",
           label: "Effective To",
+           required: isfactoryLicenseInactive,
         },
         {
           type: "file",
@@ -643,6 +685,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "importExport.effectiveTo",
           label: "Effective To",
+          required: isimportExportInactive,
         },
         {
           type: "file",
@@ -678,6 +721,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "partnershipFirmFormC.effectiveTo",
           label: "Effective To",
+           required: ispartnershipFirmFormCInActive,
         },
         {
           type: "file",
@@ -723,6 +767,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "shramSuvidhaPortal.effectiveTo",
           label: "Effective To",
+          required: isshramSuvidhaPortalInactive
         },
         {
           type: "file",
@@ -769,6 +814,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "mca.effectiveTo",
           label: "Effective To",
+         required:isMCAInactive
         },
         {
           type: "file",

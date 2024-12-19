@@ -14,13 +14,16 @@ export default function Accordian({
   sections,
   expanded,
   agencyId,
+  selectedId,
   handleAccordian,
   formData = {},
   clientStatus,
+  activeStateEffectiveDate,
   companyId,
   disabled,
   view,
 }) {
+  // console.log("from accordian", activeStateEffectiveDate, "it is", selectedId );
   const [accData, setAccData] = React.useState([]);
   const getActive = (section, index) => {
     if (section.title == "Company Details") {
@@ -148,9 +151,10 @@ export default function Accordian({
                         }
                         return (
                           <CustomInput
+                            selectedId={selectedId}
+                            activeStateEffectiveDate={activeStateEffectiveDate}
                             key={fieldIndex}
                             type={field.type}
-                            id={fieldId}
                             label={field.label}
                             required={field.required}
                             readOnly={field.readOnly}
@@ -245,6 +249,8 @@ export default function Accordian({
                     }
                     return (
                       <CustomInput
+                        selectedId={selectedId}
+                        activeStateEffectiveDate={activeStateEffectiveDate}
                         key={fieldIndex}
                         type={field.type}
                         id={fieldId}

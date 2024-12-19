@@ -16,6 +16,8 @@ const SelectInput = ({
   name,
   isMultiple // New prop to control multiple selection
 }) => {
+
+ 
   return (
     <div className={`flex flex-col ${className}`} style={style}>
       <label htmlFor={id} className="mb-1" style={{ ...labelStyles }}>

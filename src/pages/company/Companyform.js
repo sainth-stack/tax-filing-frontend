@@ -5,6 +5,7 @@ import Accordian from "../../components/Accordian";
 import { base_url } from "../../const";
 import { toast } from "react-toastify";
 import Loader from "../../components/helpers/loader";
+import { handleStatus } from "../../utils/HandleStatus";
 
 const CompanyForm = ({
   clientStatuses,
@@ -18,9 +19,14 @@ const CompanyForm = ({
   setView,
 }) => {
   const [loading, setLoading] = useState(false);
+  const [id,setId]=useState()
   const [formData, setFormData] = useState({});
+  const [activeState, setActiveState] = useState("");
   const sections = sectionsData(formData);
   const [error, setError] = useState("");
+
+  const [activeStateEffectiveDate, setActiveStateEffectiveDate] = useState(false);
+const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
   const [clientStatus, setClientStatus] = useState("");
   const [expanded, setExpanded] = useState(sections ? ["Company Details"] : []);
 
@@ -47,19 +53,28 @@ const CompanyForm = ({
     return acc;
   }, {});
 
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    console.log(id, value, "dsfs");
-    const [section, field] = id.split(".");
-    setFormData((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [field]: value,
-      },
-    }));
-  };
+  
+ const handleInputChange = (e) => {
+   const { id, value } = e.target;
 
+   // Call handleStatus to set active state based on section id
+   setId(id)
+
+ 
+
+   const [section, field] = id.split(".");
+   setFormData((prev) => ({
+     ...prev,
+     [section]: {
+       ...prev[section],
+       [field]: value,
+     },
+   }));
+ };
+
+  
+
+  // console.log("from main componet ", activeState);
   const handleFileChange = (e) => {
     const { id, files } = e.target;
     const [section, field] = id.split(".");
@@ -275,6 +290,8 @@ const CompanyForm = ({
       </header>
       <div className="p-6 ">
         <Accordian
+          activeStateEffectiveDate={activeState}
+          selectedId={id}
           companyId={companyId}
           clientStatus={clientStatus}
           view={view}
