@@ -64,7 +64,7 @@ export const sectionsData = (data) => {
                   { value: "unregistered", label: "UnRegistered" },
                   { value: "llp", label: "LLP" },
                 ],
-                required: true,
+                // required: true,
               },
             ]
           : []),
@@ -106,7 +106,7 @@ export const sectionsData = (data) => {
           type: "date",
           id: "companyDetails.effectiveFrom",
           label: "Effective From",
-          required: true,
+          // required: true,
         },
         {
           type: "date",

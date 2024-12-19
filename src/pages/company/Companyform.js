@@ -6,6 +6,7 @@ import { base_url } from "../../const";
 import { toast } from "react-toastify";
 import Loader from "../../components/helpers/loader";
 import { handleStatus } from "../../utils/HandleStatus";
+import { isEffectiveToRequired } from "../../utils/HandleError";
 
 const CompanyForm = ({
   clientStatuses,
@@ -23,6 +24,7 @@ const CompanyForm = ({
   const [formData, setFormData] = useState({});
   const [activeState, setActiveState] = useState("");
   const sections = sectionsData(formData);
+
   const [error, setError] = useState("");
 
   const [activeStateEffectiveDate, setActiveStateEffectiveDate] = useState(false);
@@ -57,6 +59,8 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
  const handleInputChange = (e) => {
    const { id, value } = e.target;
 
+ 
+
    // Call handleStatus to set active state based on section id
    setId(id)
 
@@ -72,6 +76,17 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
    }));
  };
 
+  
+  
+   const isFormEmpty = () => {
+     return Object.values(formData).every(
+       (section) =>
+         section &&
+         Object.values(section).every(
+           (field) => field === "" || field === null || field === undefined
+         )
+     );
+  };
   
 
   // console.log("from main componet ", activeState);
@@ -97,8 +112,31 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
     }
     e.preventDefault();
 
+     
+    
     try {
       const cleanedFormData = { ...formData };
+      const validationResult = isEffectiveToRequired(cleanedFormData);
+
+      if (!validationResult.isValid) {
+        toast.error(validationResult.message); 
+        setLoading(false); 
+        return; 
+      }
+
+     if (
+       cleanedFormData.companyDetails.clientStatus === "inactive" &&
+       !cleanedFormData.companyDetails.effectiveTo
+     ) {
+       console.log(
+         "Error: Effective To field is required when clientStatus is inactive"
+       );
+       alert(
+         "Error: Effective To field is required when clientStatus is inactive"
+       );
+       return;
+       
+     } 
 
       // Replace empty objects with empty strings in each section
       Object.keys(cleanedFormData).forEach((sectionKey) => {
@@ -309,20 +347,21 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
           handleAccordian={handleAccordian}
         />
         <div className="flex justify-end mt-4">
-          {!view && (
-            <button
-              onClick={companyId ? handleUpdate : handleSubmit}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 w-24"
-            >
-              {loading ? (
-                <Loader color="#fff" thickness="4" />
-              ) : companyId ? (
-                "Update"
-              ) : (
-                "Save"
-              )}
-            </button>
-          )}
+          {!view &&
+            !isFormEmpty() &&(
+              <button
+                onClick={companyId ? handleUpdate : handleSubmit}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 w-24"
+              >
+                {loading ? (
+                  <Loader color="#fff" thickness="4" />
+                ) : companyId ? (
+                  "Update"
+                ) : (
+                  "Save"
+                )}
+              </button>
+            )}
           <button
             onClick={() => {
               setCompanyId("");
