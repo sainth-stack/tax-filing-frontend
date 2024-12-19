@@ -18,6 +18,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import Header from "../../pages/Dashboard/card-container";
 import NoDataFound from "./NoDataFound";
+import { FirstGraphColumns } from "../Export/data";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -201,17 +202,7 @@ const PieChart = ({ companyDetails, loading }) => {
 
 
   /* columns */
-   const columns = [
-     { header: "Company Name", key: "companyDetails.companyName" },
-     { header: "Constitution", key: "companyDetails.constitution" },
-     { header: "Sub Constitution", key: "companyDetails.subConstitution" },
-     { header: "Client Status", key: "companyDetails.clientStatus" },
-     { header: "Authorized Person", key: "companyDetails.authorisedPerson" },
-     { header: "Phone", key: "companyDetails.phone" },
-     { header: "MailId", key: "companyDetails.mailId" },
-     { header: "PAN", key: "companyDetails.pan" },
-     // { header: "Company Address", key: "companyAddress" }, // Uncomment if needed
-   ];
+  
   
 
   
@@ -240,7 +231,7 @@ const PieChart = ({ companyDetails, loading }) => {
           <>
             <Header
              data={companyDetails}
-              columns={columns}
+              columns={FirstGraphColumns}
               title={"Company Status by Constitution and Subconstitution"}
                         />
             <div className="flex justify-center  items-start p-4">

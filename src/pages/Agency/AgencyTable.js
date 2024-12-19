@@ -65,7 +65,7 @@ export default function AgencyTable({
     agencyRefresh,
     agencyName,
 }) {
-    console.log("for data verifying", formData.effectiveFrom)
+    // console.log("for data verifying", formData.effectiveFrom)
     const [agencies, setAgencies] = useState([]);
     const [loading, setLoading] = useState(false);
     const [id, setId] = useState('')
@@ -92,11 +92,11 @@ export default function AgencyTable({
 
                 });
 
-                console.log("filter response", response);
+                // console.log("filter response", response);
                 const { data } = response;
                 setAgencies(data);
 
-                console.log("data from in table", data);
+                // console.log("data from in table", data);
 
                 // Map through the data and add _id field
                 const agencyDetailsArray = data.map((item) => ({

@@ -50,6 +50,7 @@ const Charts = () => {
     };
     fetchCompanies()
   }, [])
+
   useEffect(() => {
     const fetchCompanies = async () => {
       setLoading(true);
@@ -190,18 +191,23 @@ const Charts = () => {
       </div>
 
       <div className="grid grid-cols-2 gap-4  container">
+        {/* lst graph */}
         <PieChart companyDetails={companies} loading={loading} />
+        {/* second graph */}
         <BarChart barDetails={companies} loading={loading} />
+        {/* third graph */}
         <PaymentGraph
           paymentGraphDetails={companies}
           filterTime2={filteredTasks}
           loading={loading}
         />
+        {/* fourth graph  */}
         <MeterGraph
           MeterGraphDetails={companies}
           filteredTasks={filteredTasks}
           loading={loading}
         />
+        {/* fifth graph */}
         <PendingCompeltedTaksGraph
           PendingCompeltedTaksGraphDetails={companies}
           filteredTasks={filteredTasks}

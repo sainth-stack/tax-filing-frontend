@@ -65,7 +65,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    console.log(base_url);
+    // console.log(base_url);
   }, []);
 
   return (

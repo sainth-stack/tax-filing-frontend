@@ -3,6 +3,7 @@ import jsPDF from "jspdf";
 import { useState } from "react";
 import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
 import SelectInput from "../../../components/select";
+import moment from "moment";
 
 const Header = ({
   children,
@@ -10,13 +11,13 @@ const Header = ({
   title,
   columns,
   data,
-  fileName = "exported_data",
+  fileName = "Company_Data",
   type,
   setType,
-  payment = false,
+  payment = false, 
 }) => {
-  console.log("columns", columns);
-  console.log("data from 4th graphs", data)
+   console.log("columns", columns);
+  // console.log("data from 4th graphs", data)
   
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const isMenuOpen = Boolean(menuAnchorEl);
@@ -31,33 +32,84 @@ const Header = ({
 
   /* ex[port casv fucntion] */
 
-  const handleExportCSV = () => {
-    if (!Array.isArray(columns) || columns.length === 0) {
-      console.error("Invalid columns format. Expected an array.");
-      return;
+const handleExportCSV = () => {
+  if (!Array.isArray(columns) || columns.length === 0) {
+    console.error("Invalid columns format. Expected an array.");
+    return;
+  }
+
+  // Step 1: Count the number of tasks assigned to each person for each task type
+  const taskCountMap = data.reduce((acc, row) => {
+    const assignedName = row.assignedName;
+    const taskType = row.taskType;
+
+    if (assignedName && taskType) {
+      const key = `${assignedName}-${taskType}`; // Combine assignedName and taskType as key
+      acc[key] = (acc[key] || 0) + 1;
     }
+    return acc;
+  }, {});
 
-    const headers = columns.map((col) => col.header).join(",");
+  // Step 2: Add a column for 'taskCount' dynamically
+  columns.push({
+    header: "Total Tasks", // Name of the new column
+    key: "taskCount",     // Key for the new column
+  });
 
-    const rows = data.map((row) =>
-      columns
-        .map((col) => {
-          const keys = col.key.split(".");
-          let value = row;
-          keys.forEach((key) => (value = value ? value[key] : "")); // Fallback to empty string
-          return `"${value !== undefined ? value : ""}"`; // Ensure undefined is replaced
-        })
-        .join(",")
-    );
+  // Step 3: Prepare CSV rows, including task count
+  const headers = columns.map((col) => col.header).join(",");
 
-    const csvContent = [headers, ...rows].join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `${fileName}.csv`;
-    link.click();
-    handleMenuClose();
-  };
+  const rows = data.map((row) =>
+    columns
+      .map((col) => {
+        if (col.key === "taskStatus") {
+          const currentDate = moment(); // Get the current date using moment
+          const dueDate = moment(row.dueDate); // Convert dueDate to moment
+          const startDate = moment(row.startDate); // Convert startDate to moment
+          const updatedAt = moment(row.updatedAt); // Get the updated date, if available
+
+          if (updatedAt.isBefore(currentDate) && updatedAt.isSameOrBefore(dueDate)) {
+            return `"Completed"`;
+          }
+
+          if (currentDate.isAfter(dueDate)) {
+            return `"Overdue"`;
+          }
+
+          if (currentDate.isBetween(startDate, dueDate, null, "[]")) {
+            return `"Pending"`;
+          }
+
+          return `"Pending"`;
+        }
+
+        // If the column key is 'taskCount', use the task count for the assigned person and task type
+        if (col.key === "taskCount") {
+          const assignedName = row.assignedName;
+          const taskType = row.taskType;
+          const key = `${assignedName}-${taskType}`; // Combine assignedName and taskType as key
+          return `"${taskCountMap[key] || 0}"`;
+        }
+
+        // Otherwise, process the column's data as usual
+        const keys = col.key.split(".");
+        let value = row;
+        keys.forEach((key) => (value = value ? value[key] : ""));
+        return `"${value !== undefined ? value : ""}"`;
+      })
+      .join(",")
+  );
+
+  const csvContent = [headers, ...rows].join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${fileName}.csv`;
+  link.click();
+  handleMenuClose();
+};
+
+
 
   /* expoert as pdf */
 
@@ -77,7 +129,25 @@ const handleExportAsPDF = () => {
   const maxColumnsPerPage = 6; // Maximum columns per page
   const totalColumns = columns.length;
 
-  // Prepare data dynamically
+  // Prepare task count map for each person and task type
+  const taskCountMap = data.reduce((acc, row) => {
+    const assignedName = row.assignedName;
+    const taskType = row.taskType;
+
+    if (assignedName && taskType) {
+      const key = `${assignedName}-${taskType}`;
+      acc[key] = (acc[key] || 0) + 1;
+    }
+    return acc;
+  }, {});
+
+  // Add "Total Tasks" column dynamically
+  columns.push({
+    header: "Total Tasks", // Name of the new column
+    key: "taskCount", // Key for the new column
+  });
+
+  // Prepare data dynamically, including taskStatus logic and task count
   const tableData = data.map((row) =>
     columns.map((col) => {
       let value = col.key
@@ -87,17 +157,72 @@ const handleExportAsPDF = () => {
           row
         );
 
-      // Custom format for date columns
+      // Handle taskStatus logic dynamically
+      if (col.key === "taskStatus") {
+        const currentDate = moment(); // Get current date
+        let dueDate = moment(row.dueDate); // Get dueDate
+        let startDate = moment(row.startDate); // Get startDate
+        const updatedAt = moment(row.updatedAt); // Get updatedAt date
+
+        // Ensure proper date formatting for startDate and dueDate
+        if (!startDate.isValid()) {
+          startDate = moment(row.startDate, "YYYY-MM-DD"); // Adjust format if needed
+        }
+        if (!dueDate.isValid()) {
+          dueDate = moment(row.dueDate, "YYYY-MM-DD"); // Adjust format if needed
+        }
+
+        // If the task is completed (based on updatedAt)
+        if (
+          updatedAt.isBefore(currentDate) &&
+          updatedAt.isSameOrBefore(dueDate)
+        ) {
+          value = "Completed";
+        } else if (currentDate.isAfter(dueDate)) {
+          // If current date is greater than dueDate, it's overdue
+          value = "Overdue";
+        } else if (currentDate.isBetween(startDate, dueDate, null, "[]")) {
+          // If current date is between start and due dates, it's pending
+          value = "Pending";
+        } else {
+          value = "Pending"; // Default
+        }
+      }
+
+      // Add task count for assignedName and taskType
+      if (col.key === "taskCount") {
+        const assignedName = row.assignedName;
+        const taskType = row.taskType;
+        const key = `${assignedName}-${taskType}`;
+        value = taskCountMap[key] || 0;
+      }
+
+      // Custom format for date columns (Updated to handle startDate and dueDate)
       if (col.key === "updatedAt" && value) {
         const date = new Date(value);
-        value = `${String(date.getDate()).padStart(2, "0")}-${String(
-          date.getMonth() + 1
+        value = `${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+          date.getDate()
         ).padStart(2, "0")}-${date.getFullYear()} ${date
           .toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
           .toUpperCase()}`;
       }
 
-      return value || "N/A"; // Default to "N/A" for null or undefined
+      // Custom format for startDate and dueDate (Optional: you can adjust these formats)
+      if (col.key === "startDate" && value) {
+        const date = moment(value); // Convert startDate to moment
+        value = date.isValid()
+          ? date.format("MM-DD-YYYY") // You can change the format here
+          : "Invalid Date";
+      }
+
+      if (col.key === "dueDate" && value) {
+        const date = moment(value); // Convert dueDate to moment
+        value = date.isValid()
+          ? date.format("MM-DD-YYYY") // You can change the format here
+          : "Invalid Date";
+      }
+
+      return value || "0"; // Default to "N/A" for null or undefined
     })
   );
 
@@ -116,9 +241,7 @@ const handleExportAsPDF = () => {
     );
 
     doc.text(
-      index === 0
-        ? "Company Data Report"
-        : "Company Data Report (Continued)",
+      index === 0 ? "Company Data Report" : "Company Data Report (Continued)",
       14,
       15
     ); // Add title
@@ -141,6 +264,10 @@ const handleExportAsPDF = () => {
   // Save the PDF
   doc.save(`${fileName}.pdf`);
 };
+
+
+
+
 
 
 

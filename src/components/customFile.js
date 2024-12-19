@@ -1,7 +1,7 @@
 import React from "react";
 
 const CustomFileInput = ({ id, label, required, onChange, link,readOnly }) => {
-  console.log(label,readOnly)
+  // console.log(label,readOnly)
   return (
     <div className="mb-4">
       <label

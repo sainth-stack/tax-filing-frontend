@@ -41,7 +41,7 @@ const ServiceForm = () => {
 
       setTasks(updatedTasks); // Update the tasks state with fetched data
     } catch (error) {
-      console.log("Error fetching tasks:", error);
+      // console.log("Error fetching tasks:", error);
     }
   };
 
@@ -103,7 +103,7 @@ const ServiceForm = () => {
         }, {});
         return { ...prevLoading, ...clearedLoadingState };
       });
-      console.log("Error submitting data:", error);
+      // console.log("Error submitting data:", error);
     }
   };
 
@@ -126,7 +126,7 @@ const ServiceForm = () => {
 
     } catch (error) {
       setLoading((prevLoading) => ({ ...prevLoading, [taskId]: false }));
-      console.log("Error updating task:", error);
+      // console.log("Error updating task:", error);
     }
   };
 
