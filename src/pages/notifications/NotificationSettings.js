@@ -41,7 +41,7 @@ const NotificationSettings = () => {
   const fetchNotificationSettings = async (agencyId) => {
     try {
       const { data } = await axios.get(`${base_url}/notifications/${agencyId}`);
-      console.log("API Response:", data);
+      // console.log("API Response:", data);
 
       if (Array.isArray(data) && data.length > 0) {
         const firstNotification = data[0];
@@ -128,12 +128,12 @@ const NotificationSettings = () => {
         await axios.put(`${base_url}/notifications/${notificationId}`, payload, {
           headers: { "Content-Type": "application/json" },
         });
-        console.log("Notification settings updated successfully.");
+        // console.log("Notification settings updated successfully.");
       } else {
         await axios.post(`${base_url}/notifications`, payload, {
           headers: { "Content-Type": "application/json" },
         });
-        console.log("Notification settings created successfully.");
+        // console.log("Notification settings created successfully.");
       }
     } catch (error) {
       console.error("Error saving notification settings:", error.message);
@@ -191,7 +191,7 @@ const NotificationSettings = () => {
                 </Box>
 
                 {/* Render form fields dynamically */}
-                {console.log(checkboxData)}
+                {/* {console.log(checkboxData)} */}
                 {getFormFields().map(({ id, label, type, ...rest }) => (
                   <Box key={`${activeForm}-${id}`} sx={{ mb: 2 }}>
                     {type === "select" && (

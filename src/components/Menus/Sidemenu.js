@@ -21,11 +21,11 @@ const Sidemenu = ({ user }) => {
 
     if (storedUserRole) {
       const user = JSON.parse(storedUserRole);
-      console.log("local", user.role)
+      // console.log("local", user.role)
       setUserRole(user.role);
 
     } else {
-      console.log("No user role found in localStorage");
+      // console.log("No user role found in localStorage");
     }
   }, []);
   const location = useLocation();

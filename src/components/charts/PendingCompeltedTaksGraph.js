@@ -23,7 +23,7 @@ import Loader from "../helpers/loader";
 import NoDataFound from "./NoDataFound";
 import { isTaskCompleted } from "../../utils/const";
 import TaskDetailsPopup from "../common/TaskDetailsPopup";
-import { columns } from "../Export/data";
+import { columns, FourthGraphColumns } from "../Export/data";
 
 // Register Chart.js components
 ChartJS.register(
@@ -43,7 +43,7 @@ const PendingCompletedTasksGraph = ({
 }) => {
 
 
-  console.log("4th graph deatis",PendingCompeltedTaksGraphDetails)
+  // console.log("4th graph deatis",PendingCompeltedTaksGraphDetails)
   const navigate = useNavigate();
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [selectedTasks, setSelectedTasks] = useState([]);
@@ -164,41 +164,10 @@ const PendingCompletedTasksGraph = ({
     setPopupVisible(false);
   };
 
-  const handleExportAsCSV = () => {
-    const csvContent = chartData.labels
-      .map((label, index) => {
-        return `${label},${chartData.datasets[0].data[index]},${chartData.datasets[1].data[index]}`;
-      })
-      .join("\n");
-
-    const blob = new Blob(
-      [`Task Type,Completed,Not Completed\n${csvContent}`],
-      {
-        type: "text/csv;charset=utf-8;",
-      }
-    );
-    saveAs(blob, "task_status.csv");
-  };
+  
 
   // Export as PDF
-  const handleExportAsPDF = () => {
-    const doc = new jsPDF();
-    doc.text("Task Status Overview", 14, 16);
-
-    const tableData = chartData.labels.map((label, index) => [
-      label,
-      chartData.datasets[0].data[index], // Completed count
-      chartData.datasets[1].data[index], // Not Completed count
-    ]);
-
-    doc.autoTable({
-      head: [["Task Type", "Completed", "Not Completed"]],
-      body: tableData,
-      startY: 30,
-    });
-
-    doc.save("task_status.pdf");
-  };
+  
 
   return (
     <>
@@ -221,9 +190,10 @@ const PendingCompletedTasksGraph = ({
             </div>
           ) : (
             <>
-                <Header
-                  columns={columns}
-                data={PendingCompeltedTaksGraphDetails}
+              <Header
+                // columns={columns}
+                  data={filteredTasks}
+                columns={FourthGraphColumns}
                 {...{
                   title: "Tasks by Assignee",
                 }}

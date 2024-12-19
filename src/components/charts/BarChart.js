@@ -9,23 +9,21 @@ import {
   Legend,
 } from "chart.js";
 
-import * as XLSX from "xlsx";
-import axios from "axios";
-import { base_url } from "../../const";
+
 import Loader from "../helpers/loader";
 import { IconButton } from "@mui/material";
 import { CloseOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router";
-import jsPDF from "jspdf";
 import "jspdf-autotable";
-import { saveAs } from "file-saver";
 import Header from "../../pages/Dashboard/card-container";
 import NoDataFound from "./NoDataFound";
-import { columns } from "../Export/data";
+import { SecondGraphColumns } from "../Export/data";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 const BarChart = ({ chartHeight, barDetails, loading }) => {
+
+  // console.log("second graph bar details",barDetails)
   const colors = [
     "#42A5F5",
     "#ff6385",
@@ -271,14 +269,11 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
           </>
         ) : (
           <>
-              <Header
-                data={barDetails}
-              columns={columns}
+            <Header
+              data={barDetails}
+              columns={SecondGraphColumns}
               {...{
                 title: "Active Services by company",
-               
-                
-                // handleExportAsPDF,
               }}
             />
 

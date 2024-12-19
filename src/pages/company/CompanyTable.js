@@ -118,7 +118,7 @@ export default function CompanyTable({
             ...item.companyDetails,
             _id: item._id,
           }));
-console.log(companyDetailsArray)
+// console.log(companyDetailsArray)
           setCompanies(companyDetailsArray);
           setTotalCount(totalCount); // Update the total count for pagination
         } else {
@@ -179,7 +179,7 @@ console.log(companyDetailsArray)
         throw new Error("Document ID is required to fetch the audit trail.");
       }
 
-      console.log("Fetching audit trail for document ID:", documentId);
+      // console.log("Fetching audit trail for document ID:", documentId);
 
       setLoading(true);
       const response = await axios.post(`${base_url}/audit-history`, {
@@ -188,16 +188,16 @@ console.log(companyDetailsArray)
 
       setLoading(false);
 
-      console.log("Response from audit-history API:", response);
+      // console.log("Response from audit-history API:", response);
 
       const { logs } = response.data;
 
       if (logs && logs.length > 0) {
-        console.log("Audit logs received:", logs);
+        // console.log("Audit logs received:", logs);
         setAuditData(logs);
         setOpen(true);
       } else {
-        console.log("No audit logs found.");
+        // console.log("No audit logs found.");
         toast.warn("No audit history found for this company.");
       }
     } catch (error) {

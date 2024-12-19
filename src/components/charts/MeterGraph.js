@@ -10,7 +10,7 @@ import Header from "../../pages/Dashboard/card-container";
 import Loader from "../helpers/loader";
 import NoDataFound from "./NoDataFound";
 import TaskDetailsPopup from "../common/TaskDetailsPopup";
-import { columns } from "../Export/data";
+import { columns, FourthGraphColumns, ThirdGraphColumns } from "../Export/data";
 
 const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   const [data, setData] = useState({
@@ -112,7 +112,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   // Export PDF
  
 
-  // console.log("meter graph data",MeterGraphDetails)/*  */
+  console.log("meter graph data", filteredTasks);/*  */
   return (
     <>
       <div className="container">
@@ -136,12 +136,11 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
             </>
           ) : (
             <>
-                <Header
-                  data={MeterGraphDetails}
-                columns={columns}
-                
+              <Header
+                data={filteredTasks}
+                 columns={FourthGraphColumns}
+
                 {...{ title: "Tasks Due Date" }}
-               
               />
               {categories.length === 0 ? (
                 <NoDataFound />
@@ -151,9 +150,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                     <GaugeChart
                       id="gauge-chart"
                       nrOfLevels={(categories && categories.length) || 1}
-                      percent={
-                        (averagePercentage / 100).toFixed(3)
-                      }
+                      percent={(averagePercentage / 100).toFixed(3)}
                       textColor="#000"
                       fontSize="20px"
                       colors={colors}

@@ -21,7 +21,7 @@ import Loader from "../helpers/loader";
 import NoDataFound from "./NoDataFound";
 import { isTaskCompleted } from "../../utils/const";
 import TaskDetailsPopup from "../common/TaskDetailsPopup";
-import { columns } from "../Export/data";
+import { ThirdGraphColumns } from "../Export/data";
 
 ChartJS.register(
 
@@ -35,7 +35,7 @@ ChartJS.register(
 );
 
 const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
-console.log("payment grpah  checking", paymentGraphDetails);
+
 
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [taskDetails, setTaskDetails] = useState([]);
@@ -129,6 +129,7 @@ console.log("payment grpah  checking", paymentGraphDetails);
     fetchData();
   }, [filterTime]);
 
+  // console.log("3rd graph grpah  checking", filterTime2);
   const handleClick = (event, elements) => {
     if (elements.length > 0) {
       const datasetIndex = elements[0].datasetIndex;
@@ -234,12 +235,12 @@ console.log("payment grpah  checking", paymentGraphDetails);
             </div>
           ) : (
             <>
-                <Header
-                  data={paymentGraphDetails}
-                  columns={columns}
+              <Header
+                data={filterTime2}
+                columns={ThirdGraphColumns}
                 {...{
                   title: "Monthly Filing/Payment status by task by company",
-                 
+
                   payment: true,
                   type,
                   setType,
