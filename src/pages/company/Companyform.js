@@ -242,11 +242,13 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
        const validationResult = isEffectiveToRequired(cleanedFormData);
 
       if (!validationResult.isValid) {
-      setError(validationResult.message);
-      toast.error(validationResult.message); 
-      setLoading(false); 
-      return; 
-    }
+        setError(validationResult.message);
+        toast.error(validationResult.message);
+        setLoading(false);
+        return;
+      } else {
+        setError("");
+      }
 
     if (
       cleanedFormData.companyDetails.clientStatus === "inactive" &&
