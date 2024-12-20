@@ -47,7 +47,7 @@ export const isEffectiveToRequired = (data) => {
     ) {
       return {
         isValid: false,
-        message: `Error: Effective To field is Required for ${section.label} when status is inactive.`,
+        message: `Please Fill All Required Fields in ${section.label}`,
       };
     }
   }

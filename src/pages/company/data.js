@@ -113,6 +113,7 @@ export const sectionsData = (data) => {
           id: "companyDetails.effectiveTo",
           label: "Effective To",
           required: isClientInactive,
+          border: isClientInactive ? "1px solid red" : "1px solid #ccc",
         },
         {
           type: "textarea",
@@ -166,6 +167,7 @@ export const sectionsData = (data) => {
           id: "incomeTax.effectiveTo",
           label: "Effective To",
           required: isIncomeTaxInactive,
+          border: isIncomeTaxInactive ? "1px solid red" : "1px solid #ccc",
         },
         {
           type: "file",
@@ -224,6 +226,7 @@ export const sectionsData = (data) => {
           id: "gst.effectiveTo",
           label: "Effective To",
           required: isGstInactive,
+          border: isGstInactive ? "1px solid red" : "1px solid #ccc",
         },
         {
           type: "select",
@@ -287,6 +290,7 @@ export const sectionsData = (data) => {
           id: "esi.effectiveTo",
           label: "Effective To",
           required: esiInactive,
+          border: esiInactive ? "1px solid red" : "1px solid #ccc",
         },
         {
           type: "file",
@@ -332,7 +336,8 @@ export const sectionsData = (data) => {
           type: "date",
           id: "providentFund.effectiveTo",
           label: "Effective To",
-           required: isPfInactive,
+          required: isPfInactive,
+          border: isPfInactive ? "1px solid red" : "1px solid #ccc",
         },
         {
           type: "file",
@@ -393,7 +398,8 @@ export const sectionsData = (data) => {
           type: "date",
           id: "professionalTax.effectiveTo",
           label: "Effective To",
-           required: isprofessionalTax,
+          required: isprofessionalTax,
+          border: isprofessionalTax ? "1px solid red" : "1px solid #ccc",
         },
         {
           type: "file",
@@ -440,7 +446,8 @@ export const sectionsData = (data) => {
           type: "date",
           id: "tds.effectiveTo",
           label: "Effective To",
-           required: isTDSInactive,
+          required: isTDSInactive,
+          border: isTDSInactive ? "1px solid red" : "1px solid #ccc",
         },
         {
           type: "file",
@@ -491,7 +498,10 @@ export const sectionsData = (data) => {
           type: "date",
           id: "shopCommercialEstablishment.effectiveTo",
           label: "Effective To",
-           required: isshopCommercialEstablishmentInactive,
+          required: isshopCommercialEstablishmentInactive,
+          border: isshopCommercialEstablishmentInactive
+            ? "1px solid red"
+            : "1px solid #ccc",
         },
         {
           type: "file",
@@ -528,6 +538,7 @@ export const sectionsData = (data) => {
           id: "msme.effectiveTo",
           label: "Effective To",
           required: isMSMEInactive,
+          border: isMSMEInactive ? "1px solid red" : "1px solid #ccc",
         },
         {
           type: "file",
@@ -578,7 +589,8 @@ export const sectionsData = (data) => {
           type: "date",
           id: "fssai.effectiveTo",
           label: "Effective To",
-           required: isFssaiInactive,
+          required: isFssaiInactive,
+          border: isFssaiInactive ? "1px solid red" : "1px solid #ccc",
         },
         {
           type: "file",
@@ -629,7 +641,8 @@ export const sectionsData = (data) => {
           type: "date",
           id: "factoryLicense.effectiveTo",
           label: "Effective To",
-           required: isfactoryLicenseInactive,
+          required: isfactoryLicenseInactive,
+          border: isfactoryLicenseInactive ? "1px solid red" : "1px solid #ccc",
         },
         {
           type: "file",
@@ -686,6 +699,7 @@ export const sectionsData = (data) => {
           id: "importExport.effectiveTo",
           label: "Effective To",
           required: isimportExportInactive,
+          border: isimportExportInactive ? "1px solid red" : "1px solid #ccc",
         },
         {
           type: "file",
@@ -721,7 +735,10 @@ export const sectionsData = (data) => {
           type: "date",
           id: "partnershipFirmFormC.effectiveTo",
           label: "Effective To",
-           required: ispartnershipFirmFormCInActive,
+          required: ispartnershipFirmFormCInActive,
+          border: ispartnershipFirmFormCInActive
+            ? "1px solid red"
+            : "1px solid #ccc",
         },
         {
           type: "file",
@@ -767,7 +784,10 @@ export const sectionsData = (data) => {
           type: "date",
           id: "shramSuvidhaPortal.effectiveTo",
           label: "Effective To",
-          required: isshramSuvidhaPortalInactive
+          required: isshramSuvidhaPortalInactive,
+          border: isshramSuvidhaPortalInactive
+            ? "1px solid red"
+            : "1px solid #ccc",
         },
         {
           type: "file",
@@ -814,7 +834,8 @@ export const sectionsData = (data) => {
           type: "date",
           id: "mca.effectiveTo",
           label: "Effective To",
-         required:isMCAInactive
+          required: isMCAInactive,
+          border: isMCAInactive ? "1px solid red" : "1px solid #ccc",
         },
         {
           type: "file",

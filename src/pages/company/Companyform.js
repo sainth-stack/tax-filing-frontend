@@ -119,9 +119,14 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
       const validationResult = isEffectiveToRequired(cleanedFormData);
 
       if (!validationResult.isValid) {
+      setError(validationResult.message);
+
         toast.error(validationResult.message); 
         setLoading(false); 
         return; 
+      }
+      else {
+        setError("");
       }
 
      if (
@@ -131,9 +136,7 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
        console.log(
          "Error: Effective To field is required when clientStatus is inactive"
        );
-       alert(
-         "Error: Effective To field is required when clientStatus is inactive"
-       );
+        setLoading(false);
        return;
        
      } 
@@ -236,6 +239,26 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
     try {
       const cleanedFormData = { ...formData };
 
+       const validationResult = isEffectiveToRequired(cleanedFormData);
+
+      if (!validationResult.isValid) {
+      setError(validationResult.message);
+      toast.error(validationResult.message); 
+      setLoading(false); 
+      return; 
+    }
+
+    if (
+      cleanedFormData.companyDetails.clientStatus === "inactive" &&
+      !cleanedFormData.companyDetails.effectiveTo
+    ) {
+      console.error("Effective To field is required when clientStatus is inactive");
+     
+      setLoading(false);
+      return;
+      }
+      
+
       // Replace empty objects with empty strings in each section
       Object.keys(cleanedFormData).forEach((sectionKey) => {
         if (
@@ -329,6 +352,7 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
       <div className="p-6 ">
         <Accordian
           activeStateEffectiveDate={activeState}
+          error={error}
           selectedId={id}
           companyId={companyId}
           clientStatus={clientStatus}
@@ -347,21 +371,20 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
           handleAccordian={handleAccordian}
         />
         <div className="flex justify-end mt-4">
-          {!view &&
-            !isFormEmpty() &&(
-              <button
-                onClick={companyId ? handleUpdate : handleSubmit}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 w-24"
-              >
-                {loading ? (
-                  <Loader color="#fff" thickness="4" />
-                ) : companyId ? (
-                  "Update"
-                ) : (
-                  "Save"
-                )}
-              </button>
-            )}
+          {!view && !isFormEmpty() && (
+            <button
+              onClick={companyId ? handleUpdate : handleSubmit}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 w-24"
+            >
+              {loading ? (
+                <Loader color="#fff" thickness="4" />
+              ) : companyId ? (
+                "Update"
+              ) : (
+                "Save"
+              )}
+            </button>
+          )}
           <button
             onClick={() => {
               setCompanyId("");
@@ -372,7 +395,9 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
           >
             Cancel
           </button>
+
         </div>
+          {error && <div style={{ color: "red", padding: "8px" }}>{error}</div>}
       </div>
     </div>
   );

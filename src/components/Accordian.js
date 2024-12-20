@@ -22,8 +22,9 @@ export default function Accordian({
   companyId,
   disabled,
   view,
+  error,
 }) {
-  // console.log("from accordian", activeStateEffectiveDate, "it is", selectedId );
+  console.log("from accordian error",error );
   const [accData, setAccData] = React.useState([]);
   const getActive = (section, index) => {
     if (section.title == "Company Details") {
@@ -109,6 +110,7 @@ export default function Accordian({
                         if (field.type === "select") {
                           return (
                             <SelectInput
+                             border={error ? field.border : undefined}
                               key={fieldIndex}
                               id={fieldId}
                               label={field.label}
@@ -124,6 +126,7 @@ export default function Accordian({
                         } else if (field.type === "textarea") {
                           return (
                             <TextArea
+                             border={error ? field.border : undefined}
                               key={index}
                               id={field?.id}
                               label={field.label}
@@ -138,6 +141,7 @@ export default function Accordian({
                         } else if (field.type === "file") {
                           return (
                             <CustomFileInput
+                             border={error ? field.border : undefined}
                               key={fieldIndex}
                               id={fieldId}
                               label={field.label}
@@ -152,6 +156,7 @@ export default function Accordian({
                         }
                         return (
                           <CustomInput
+                           border={error ? field.border : undefined}
                             selectedId={selectedId}
                             activeStateEffectiveDate={activeStateEffectiveDate}
                             key={fieldIndex}
@@ -167,6 +172,7 @@ export default function Accordian({
                           />
                         );
                       })}
+                     
                     </AccordionDetails>
                   </Accordion>
                 )}
@@ -216,6 +222,7 @@ export default function Accordian({
                       return (
                         <SelectInput
                           key={fieldIndex}
+                         border={error ? field.border : undefined}
                           id={fieldId}
                           label={field.label}
                           options={field.options}
@@ -227,6 +234,7 @@ export default function Accordian({
                     } else if (field.type === "textarea") {
                       return (
                         <TextArea
+                         border={error ? field.border : undefined}
                           key={index}
                           id={field?.id}
                           label={field.label}
@@ -239,6 +247,7 @@ export default function Accordian({
                     } else if (field.type === "file") {
                       return (
                         <CustomFileInput
+                         border={error ? field.border : undefined}
                           key={fieldIndex}
                           id={fieldId}
                           label={field.label}
@@ -250,6 +259,7 @@ export default function Accordian({
                     }
                     return (
                       <CustomInput
+                       border={error ? field.border : undefined}
                         selectedId={selectedId}
                         activeStateEffectiveDate={activeStateEffectiveDate}
                         key={fieldIndex}
@@ -266,6 +276,7 @@ export default function Accordian({
                     );
                   })}
                 </AccordionDetails>
+              
               </Accordion>
             )}
           </>

@@ -19,6 +19,7 @@ const CustomInput = ({
   name,
   required,
   disabled,
+  border
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -26,7 +27,7 @@ const CustomInput = ({
   
 
   return (
-    <div className={`flex flex-col relative ${className}`}>
+    <div className={`flex flex-col relative ${className} `}>
       <label htmlFor={id} className="mb-1" style={{ ...labelStyles }}>
         {label}
 
@@ -48,7 +49,10 @@ const CustomInput = ({
           onChange={onChange}
           placeholder={placeholder}
           className="border rounded p-[6px] focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-          style={{ ...style }}
+          style={{
+            border: border || "1px solid #ccc",
+            ...style,
+          }}
           readOnly={readOnly}
         />
         {type === "password" && (
