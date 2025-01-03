@@ -14,6 +14,7 @@ const Charts = () => {
   const [status, setStatus] = useState("all");
   const [companies, setCompanies] = useState([]);
   const [taskType, setTaskType] = useState('0');
+  const [filedStatus, setFiledStatus] = useState('all');
   const [filteredTasks, setfilteredTasks] = useState([]);
   const [applicationSubStatus, setApplicationSubStatus] = useState('0');
   const [month, setMonth] = useState('0');
@@ -62,6 +63,7 @@ const Charts = () => {
           name: company === '0' ? '' : company,
           userId: user.role !== "A" ? user?._id : '',
           taskType: taskType !== "0" ? taskType : undefined,
+             filedStatus: filedStatus === "all" ? "" : filedStatus,
         });
         setLoading(false);
         const { data } = response?.data;
@@ -83,29 +85,38 @@ const Charts = () => {
     };
 
     fetchCompanies();
-  }, [status, year, month, company, taskType, applicationSubStatus]);
+  }, [status, year, month, company, taskType,filedStatus, applicationSubStatus]);
 
   const handleFilterChange = async () => {
     setLoading(true);
     try {
       const { data } = await axios.post(`${base_url}/tasks/filter`, {
+        status: status === "all" ? "" : status,
+
+        filedStatus: filedStatus === "all" ? "" : filedStatus,
+
         year,
-        month: month === '0' ? '' : month,
-        company: company === '0' ? '' : company,
-        user: user.role !== "A" ? user?._id : '',
-        list: user.role !== "A" ? user?._id : '',
+        month: month === "0" ? "" : month,
+        company: company === "0" ? "" : company,
+        user: user.role !== "A" ? user?._id : "",
+        list: user.role !== "A" ? user?._id : "",
         taskType: taskType !== "0" ? taskType : undefined,
-        applicationSubStatus: applicationSubStatus !== "0" ? applicationSubStatus : '',
+        applicationSubStatus:
+          applicationSubStatus !== "0" ? applicationSubStatus : "",
       });
 
       const response = await axios.post(`${base_url}/tasks/auto/filter`, {
+        status: status === "all" ? "" : status,
+
+        filedStatus: filedStatus === "all" ? "" : filedStatus,
         year,
-        month: month === '0' ? '' : month,
-        company: company === '0' ? '' : company,
-        user: user.role !== "A" ? user?._id : '',
-        list: user.role !== "A" ? user?._id : '',
+        month: month === "0" ? "" : month,
+        company: company === "0" ? "" : company,
+        user: user.role !== "A" ? user?._id : "",
+        list: user.role !== "A" ? user?._id : "",
         taskType: taskType !== "0" ? taskType : undefined,
-        applicationSubStatus: applicationSubStatus !== "0" ? applicationSubStatus : '',
+        applicationSubStatus:
+          applicationSubStatus !== "0" ? applicationSubStatus : "",
       });
       const finData1 = response?.data?.tasks?.map((item) => {
         return {
@@ -122,7 +133,7 @@ const Charts = () => {
 
   useEffect(() => {
     handleFilterChange();
-  }, [year, month, company, taskType, applicationSubStatus]);
+  }, [year, month, company, taskType, filedStatus,applicationSubStatus]);
 
 
   return (
@@ -143,6 +154,7 @@ const Charts = () => {
             fontWeight: 500,
           }}
         />
+
         <SelectInput
           id="year"
           className="shadow-sm ml-2"
@@ -167,7 +179,7 @@ const Charts = () => {
           label="Company"
           value={company}
           onChange={(e) => setCompany(e.target.value)}
-          options={[{ label: 'All', value: '0' }, ...cps]}
+          options={[{ label: "All", value: "0" }, ...cps]}
           labelStyles={{ fontWeight: 500 }}
         />
         <SelectInput
@@ -176,18 +188,41 @@ const Charts = () => {
           label="Task Type"
           value={taskType}
           onChange={(e) => setTaskType(e.target.value)}
-          options={[{ label: 'All', value: '0' }, ...taskTypeOptions.options]}
+          options={[{ label: "All", value: "0" }, ...taskTypeOptions.options]}
           labelStyles={{ fontWeight: 500 }}
         />
-        {taskType === 'gst' && <SelectInput
-          id="applicationSubStatus"
-          className="shadow-sm ml-2"
-          label="Type of GST"
-          value={applicationSubStatus}
-          onChange={(e) => setApplicationSubStatus(e.target.value)}
-          options={[{ label: 'All', value: '0' }, ...applicationSubstatusOptions]}
-          labelStyles={{ fontWeight: 500 }}
-        />}
+        {taskType === "gst" && (
+          <>
+            <SelectInput
+              id="filedStatus"
+              className="shadow-sm"
+              label="Filed Status"
+              value={filedStatus}
+              onChange={(e) => setFiledStatus(e.target.value)}
+              options={[
+                { value: "all", label: "All" },
+                { value: "filed", label: "Filed" },
+                { value: "notFiled", label: "Not Filed" },
+              ]}
+              labelStyles={{
+                fontWeight: 500,
+              }}
+            />
+
+            <SelectInput
+              id="applicationSubStatus"
+              className="shadow-sm ml-2"
+              label="Type of GST"
+              value={applicationSubStatus}
+              onChange={(e) => setApplicationSubStatus(e.target.value)}
+              options={[
+                { label: "All", value: "0" },
+                ...applicationSubstatusOptions,
+              ]}
+              labelStyles={{ fontWeight: 500 }}
+            />
+          </>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-4  container">
@@ -212,7 +247,6 @@ const Charts = () => {
           PendingCompeltedTaksGraphDetails={companies}
           filteredTasks={filteredTasks}
           loading={loading}
-
         />
       </div>
     </>

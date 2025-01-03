@@ -6,7 +6,7 @@ import { base_url } from "../../const";
 import { toast } from "react-toastify";
 import Loader from "../../components/helpers/loader";
 import { handleStatus } from "../../utils/HandleStatus";
-import { isEffectiveToRequired } from "../../utils/HandleError";
+import { isEffectiveToRequired, isGstStateRequired } from "../../utils/HandleError";
 
 const CompanyForm = ({
   clientStatuses,
@@ -118,6 +118,20 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
       const cleanedFormData = { ...formData };
       const validationResult = isEffectiveToRequired(cleanedFormData);
 
+      const validState=isGstStateRequired(cleanedFormData)
+
+
+
+       if (!validState.isValid) {
+         setError(validState.message);
+
+         toast.error(validState.message);
+         setLoading(false);
+         return;
+       } else {
+         setError("");
+      }
+      
       if (!validationResult.isValid) {
       setError(validationResult.message);
 

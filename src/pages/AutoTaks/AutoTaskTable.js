@@ -337,7 +337,7 @@ export default function AutoTasksTable({
             ) : (
               sortedTasks.map((task, index) => {
                 let startData=task.startDate ||'N/A'
-                return(
+                return (
                   <TableRow key={task._id || index} sx={{ height: "48px" }}>
                     <TableCell align="left" padding="normal">
                       {page * pageSize + index + 1}
@@ -345,19 +345,25 @@ export default function AutoTasksTable({
                     <TableCell align="left" padding="normal">
                       {task.company || "N/A"}
                     </TableCell>
-  
+
                     <TableCell align="left" padding="normal">
-                    { new Date(new Date(startData).setMonth(new Date(startData).getMonth() - 1)).toLocaleDateString("en-US", {
-                            month: "long",
-                          })}
+                      {new Date(
+                        new Date(startData).setMonth(
+                          new Date(startData).getMonth() - 1
+                        )
+                      ).toLocaleDateString("en-US", {
+                        month: "long",
+                      })}
                     </TableCell>
-  
+
                     <TableCell align="left" padding="normal">
-                      {new Date(formData.year).toLocaleDateString("en-US", {
-                            year: "numeric",
-                          })}
+                      {new Date(
+                        formData.year || new Date().getFullYear().toString()
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                      })}
                     </TableCell>
-  
+
                     <TableCell align="left" padding="normal">
                       {getTaskDisplayName(
                         task.taskName,
@@ -365,7 +371,7 @@ export default function AutoTasksTable({
                         task.gstMonthly_gstType
                       )}
                     </TableCell>
-  
+
                     <TableCell align="left" padding="normal">
                       {task.dueDate
                         ? moment(task.dueDate).format("DD-MMM-YYYY")
@@ -421,7 +427,7 @@ export default function AutoTasksTable({
                       )}
                     </TableCell>
                   </TableRow>
-                )
+                );
               })
             )}
           </TableBody>

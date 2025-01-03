@@ -1,7 +1,6 @@
 export const isEffectiveToRequired = (data) => {
   // Define the sections to check
     const sections = [
-     
       {
         key: "companyDetails",
         statusField: "clientStatus",
@@ -37,6 +36,7 @@ export const isEffectiveToRequired = (data) => {
         label: "isshramSuvidhaPortalInactive",
       },
       { key: "mca", statusField: "status", label: "mca" },
+  
     ];
 
   
@@ -55,3 +55,18 @@ export const isEffectiveToRequired = (data) => {
   
   return { isValid: true };
 };
+
+
+
+export const isGstStateRequired = (data) => {
+  
+  if (!data?.gst?.state || data.gst.state === "" || data.gst.state === "0") {
+    return {
+      isValid: false,
+      message: "State field is required in GST.",
+    };
+  }
+
+  return { isValid: true };
+};
+
