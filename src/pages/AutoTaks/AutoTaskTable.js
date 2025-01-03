@@ -237,7 +237,6 @@ export default function AutoTasksTable({
       setLoadingExport(false);
     }
   };
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -354,7 +353,7 @@ export default function AutoTasksTable({
                     </TableCell>
   
                     <TableCell align="left" padding="normal">
-                      {new Date(task.startDate).toLocaleDateString("en-US", {
+                      {new Date(formData.year).toLocaleDateString("en-US", {
                             year: "numeric",
                           })}
                     </TableCell>

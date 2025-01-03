@@ -39,11 +39,9 @@ const AutoTasks = () => {
     year: new Date().getFullYear()
   });
   const [view, setView] = useState(false);
-
   const [tasks, setTasks] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const [companyRefresh, setCompanyRefresh] = useState(false);
   const [showAutoGenModal, setShowAutoGenModal] = useState(false); // For modal visibility
   const [autoGenData, setAutoGenData] = useState({
