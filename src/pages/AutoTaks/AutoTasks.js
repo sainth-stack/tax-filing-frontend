@@ -36,7 +36,7 @@ const AutoTasks = () => {
     defaultValue: "",
     taskType: "",
     month: '',
-    year: new Date().getFullYear()
+    year: new Date().getFullYear().toString()
   });
   const [view, setView] = useState(false);
   const [tasks, setTasks] = useState([]);
