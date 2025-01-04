@@ -177,11 +177,11 @@ export default function AutoTasksTable({
     if (orderBy === "applicationSubStatus") {
       return order === "asc"
         ? (a.applicationSubStatus || "").localeCompare(
-            b.applicationSubStatus || ""
-          )
+          b.applicationSubStatus || ""
+        )
         : (b.applicationSubStatus || "").localeCompare(
-            a.applicationSubStatus || ""
-          );
+          a.applicationSubStatus || ""
+        );
     }
 
     if (orderBy === "month") {
@@ -221,12 +221,12 @@ export default function AutoTasksTable({
     setLoadingExport(true);
     try {
       const response = await axios.get(`${base_url}/tasks/auto/export`, {
-        responseType: 'blob', 
+        responseType: 'blob',
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'auto_tasks.csv'); 
+      link.setAttribute('download', 'auto_tasks.csv');
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -336,7 +336,7 @@ export default function AutoTasksTable({
               </TableRow>
             ) : (
               sortedTasks.map((task, index) => {
-                let startData=task.startDate ||'N/A'
+                let startData = task.startDate || 'N/A'
                 return (
                   <TableRow key={task._id || index} sx={{ height: "48px" }}>
                     <TableCell align="left" padding="normal">
@@ -347,19 +347,13 @@ export default function AutoTasksTable({
                     </TableCell>
 
                     <TableCell align="left" padding="normal">
-                      {new Date(
-                        new Date(startData).setMonth(
-                          new Date(startData).getMonth() - 1
-                        )
-                      ).toLocaleDateString("en-US", {
+                      {new Date(new Date(startData).setMonth(new Date(startData).getMonth() - 1)).toLocaleDateString("en-US", {
                         month: "long",
                       })}
                     </TableCell>
 
                     <TableCell align="left" padding="normal">
-                      {new Date(
-                        formData.year || new Date().getFullYear().toString()
-                      ).toLocaleDateString("en-US", {
+                      {new Date(formData.year || new Date()).toLocaleDateString("en-US", {
                         year: "numeric",
                       })}
                     </TableCell>
