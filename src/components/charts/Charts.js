@@ -8,13 +8,18 @@ import PaymentGraph from "./PaymentGraph";
 import MeterGraph from "./MeterGraph";
 import PendingCompeltedTaksGraph from "./PendingCompeltedTaksGraph";
 import { applicationSubstatusOptions, monthsJson, taskTypeOptions, yearsJson } from "./FilterData";
+import Popup from "../Popup/Popup";
 
 const Charts = () => {
+    const [filedStatus, setFiledStatus] = useState("all");
+    const [reason, setReason] = useState("");
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("all");
   const [companies, setCompanies] = useState([]);
   const [taskType, setTaskType] = useState('0');
-  const [filedStatus, setFiledStatus] = useState('all');
   const [filteredTasks, setfilteredTasks] = useState([]);
   const [applicationSubStatus, setApplicationSubStatus] = useState('0');
   const [month, setMonth] = useState('0');
@@ -22,6 +27,28 @@ const Charts = () => {
   const [cps, setcps] = useState([])
   const [company, setCompany] = useState('0');
   const user = JSON.parse(localStorage.getItem('user'))
+
+
+  const handleFiledStatusChange = (value) => {
+    setFiledStatus(value);
+    if (value === "notfiled") {
+      setIsPopupOpen(true); // Open popup if status is "notFiled"
+    } else {
+      setReason(""); // Clear reason when the status is changed
+    }
+  };
+
+  const handlePopupSubmit = () => {
+    if (reason.trim() === "") {
+      alert("Reason for not filing is required.");
+    } else {
+      setIsPopupOpen(false);
+      console.log("Reason submitted:", reason);
+    }
+  };
+
+
+  // console.log("reason",reason)
   useEffect(() => {
     const fetchCompanies = async () => {
       setLoading(true);
@@ -198,16 +225,31 @@ const Charts = () => {
               className="shadow-sm"
               label="Filed Status"
               value={filedStatus}
-              onChange={(e) => setFiledStatus(e.target.value)}
+              onChange={(e) => handleFiledStatusChange(e.target.value)}
               options={[
                 { value: "all", label: "All" },
                 { value: "filed", label: "Filed" },
-                { value: "notFiled", label: "Not Filed" },
+                { value: "notfiled", label: "Not Filed" },
               ]}
               labelStyles={{
                 fontWeight: 500,
               }}
             />
+
+            <Popup
+              isOpen={isPopupOpen}
+              onClose={() => setIsPopupOpen(false)}
+              title="Reason for Not Filing"
+              onSubmit={handlePopupSubmit}
+            >
+              <textarea
+                rows={4}
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                style={{ width: "100%", marginTop: "1rem" }}
+                placeholder="Enter your reason here..."
+              ></textarea>
+            </Popup>
 
             <SelectInput
               id="applicationSubStatus"

@@ -10,6 +10,8 @@ import { useEffect } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import TextArea from "./text-area";
+import { Box, Button, Tooltip } from "@mui/material";
+import { useState } from "react";
 export default function Accordian({
   sections,
   expanded,
@@ -24,8 +26,9 @@ export default function Accordian({
   view,
   error,
 }) {
-  console.log("from accordian error",error );
-  const [accData, setAccData] = React.useState([]);
+ 
+  const [accData, setAccData] = useState([]);
+  const [formDataState, setFormDataState] = useState(formData);
   const getActive = (section, index) => {
     if (section.title == "Company Details") {
       return section.formData[section.id]?.clientStatus === "active";
@@ -56,10 +59,33 @@ export default function Accordian({
     }
   }, [sections]);
 
+  const handleAddMore = (sectionId) => {
+    
+    handleAccordian(sectionId);
+
+    // Check if the section already has entries in formData
+    if (formDataState[sectionId]) {
+      // Assuming formData[sectionId] is an array and adding an empty object (or entry) for new data
+      setFormDataState({
+        ...formDataState,
+        [sectionId]: [...formDataState[sectionId], {}], // Add an empty object for new entry
+      });
+    } else {
+      // If no entries exist for that section, initialize it as an array with one empty object
+      setFormDataState({
+        ...formDataState,
+        [sectionId]: [{}], // Start with an empty object
+      });
+    }
+  };
+
   if (!accData) return null;
+
+
   return (
     <>
       {accData.map((section, index) => {
+        {/* console.log("section csc", section.id); */}
         return (
           <>
             {companyId && companyId && view ? (
@@ -110,7 +136,7 @@ export default function Accordian({
                         if (field.type === "select") {
                           return (
                             <SelectInput
-                             border={error ? field.border : undefined}
+                              border={error ? field.border : undefined}
                               key={fieldIndex}
                               id={fieldId}
                               label={field.label}
@@ -126,7 +152,7 @@ export default function Accordian({
                         } else if (field.type === "textarea") {
                           return (
                             <TextArea
-                             border={error ? field.border : undefined}
+                              border={error ? field.border : undefined}
                               key={index}
                               id={field?.id}
                               label={field.label}
@@ -141,7 +167,7 @@ export default function Accordian({
                         } else if (field.type === "file") {
                           return (
                             <CustomFileInput
-                             border={error ? field.border : undefined}
+                              border={error ? field.border : undefined}
                               key={fieldIndex}
                               id={fieldId}
                               label={field.label}
@@ -156,7 +182,7 @@ export default function Accordian({
                         }
                         return (
                           <CustomInput
-                           border={error ? field.border : undefined}
+                            border={error ? field.border : undefined}
                             selectedId={selectedId}
                             activeStateEffectiveDate={activeStateEffectiveDate}
                             key={fieldIndex}
@@ -172,7 +198,6 @@ export default function Accordian({
                           />
                         );
                       })}
-                     
                     </AccordionDetails>
                   </Accordion>
                 )}
@@ -187,7 +212,6 @@ export default function Accordian({
                 <div style={section.sectionStyle}>
                   <AccordionSummary
                     className={`shadow-md rounded-t-lg`}
-                    // style={{ background: getActive(section, index) ? "green" : "" }}
                     expandIcon={<KeyboardArrowDownIcon />}
                     aria-controls={`panel${index}-content`}
                     id={`panel${index}-header`}
@@ -217,12 +241,13 @@ export default function Accordian({
                 >
                   {section.fields.map((field, fieldIndex) => {
                     const fieldId = field.id;
+
                     const [sectionKey, fieldKey] = fieldId.split(".");
                     if (field.type === "select") {
                       return (
                         <SelectInput
                           key={fieldIndex}
-                         border={error ? field.border : undefined}
+                          border={error ? field.border : undefined}
                           id={fieldId}
                           label={field.label}
                           options={field.options}
@@ -234,7 +259,7 @@ export default function Accordian({
                     } else if (field.type === "textarea") {
                       return (
                         <TextArea
-                         border={error ? field.border : undefined}
+                          border={error ? field.border : undefined}
                           key={index}
                           id={field?.id}
                           label={field.label}
@@ -247,7 +272,7 @@ export default function Accordian({
                     } else if (field.type === "file") {
                       return (
                         <CustomFileInput
-                         border={error ? field.border : undefined}
+                          border={error ? field.border : undefined}
                           key={fieldIndex}
                           id={fieldId}
                           label={field.label}
@@ -259,7 +284,7 @@ export default function Accordian({
                     }
                     return (
                       <CustomInput
-                       border={error ? field.border : undefined}
+                        border={error ? field.border : undefined}
                         selectedId={selectedId}
                         activeStateEffectiveDate={activeStateEffectiveDate}
                         key={fieldIndex}
@@ -276,7 +301,40 @@ export default function Accordian({
                     );
                   })}
                 </AccordionDetails>
-              
+
+                
+
+                {(section.id === "gst" ||
+                  section.id === "professionalTax" ||
+                  section.id === "fssai" ||
+                  section.id === "shopCommercialEstablishment" ||
+                  section.id === "factoryLicense" ) && (
+                  <Box
+                    key={section.id}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      padding: ".5rem",
+                    }}
+                  >
+                    <Tooltip
+                      title="Click To Add One More Entry"
+                      sx={{ textTransform: "capitalize" }}
+                      placement="top"
+                      arrow
+                    >
+                      <Button
+                        variant="contained"
+                        color="primary"
+                         onClick={() => handleAddMore(section.title)} // Add functionality for adding one more
+                      >
+                        Add One More
+                      </Button>
+                    </Tooltip>
+                  </Box>
+                )}
+
+               
               </Accordion>
             )}
           </>
