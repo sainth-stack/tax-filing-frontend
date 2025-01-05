@@ -11,11 +11,9 @@ import { applicationSubstatusOptions, monthsJson, taskTypeOptions, yearsJson } f
 import Popup from "../Popup/Popup";
 
 const Charts = () => {
-    const [filedStatus, setFiledStatus] = useState("all");
-    const [reason, setReason] = useState("");
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-  
+  const [filedStatus, setFiledStatus] = useState("all");
+  const [reason, setReason] = useState("");
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("all");
   const [companies, setCompanies] = useState([]);
@@ -31,24 +29,9 @@ const Charts = () => {
 
   const handleFiledStatusChange = (value) => {
     setFiledStatus(value);
-    if (value === "notfiled") {
-      setIsPopupOpen(true); // Open popup if status is "notFiled"
-    } else {
-      setReason(""); // Clear reason when the status is changed
-    }
-  };
-
-  const handlePopupSubmit = () => {
-    if (reason.trim() === "") {
-      alert("Reason for not filing is required.");
-    } else {
-      setIsPopupOpen(false);
-      console.log("Reason submitted:", reason);
-    }
   };
 
 
-  // console.log("reason",reason)
   useEffect(() => {
     const fetchCompanies = async () => {
       setLoading(true);
@@ -90,7 +73,7 @@ const Charts = () => {
           name: company === '0' ? '' : company,
           userId: user.role !== "A" ? user?._id : '',
           taskType: taskType !== "0" ? taskType : undefined,
-             filedStatus: filedStatus === "all" ? "" : filedStatus,
+          // status: filedStatus === "all" ? "" : filedStatus,
         });
         setLoading(false);
         const { data } = response?.data;
@@ -112,16 +95,15 @@ const Charts = () => {
     };
 
     fetchCompanies();
-  }, [status, year, month, company, taskType,filedStatus, applicationSubStatus]);
+  }, [status, year, month, company, taskType, filedStatus, applicationSubStatus]);
 
   const handleFilterChange = async () => {
     setLoading(true);
     try {
       const { data } = await axios.post(`${base_url}/tasks/filter`, {
         status: status === "all" ? "" : status,
-
-        filedStatus: filedStatus === "all" ? "" : filedStatus,
-
+        status: filedStatus === "all" ? "" : filedStatus,
+        reason:reason ? reason : undefined,
         year,
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
@@ -134,8 +116,8 @@ const Charts = () => {
 
       const response = await axios.post(`${base_url}/tasks/auto/filter`, {
         status: status === "all" ? "" : status,
-
-        filedStatus: filedStatus === "all" ? "" : filedStatus,
+        status: filedStatus === "all" ? "" : filedStatus,
+        reason:reason ? reason : undefined,
         year,
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
@@ -160,7 +142,7 @@ const Charts = () => {
 
   useEffect(() => {
     handleFilterChange();
-  }, [year, month, company, taskType, filedStatus,applicationSubStatus]);
+  }, [year, month, company, taskType, filedStatus, applicationSubStatus,reason]);
 
 
   return (
@@ -221,37 +203,6 @@ const Charts = () => {
         {taskType === "gst" && (
           <>
             <SelectInput
-              id="filedStatus"
-              className="shadow-sm"
-              label="Filed Status"
-              value={filedStatus}
-              onChange={(e) => handleFiledStatusChange(e.target.value)}
-              options={[
-                { value: "all", label: "All" },
-                { value: "filed", label: "Filed" },
-                { value: "notfiled", label: "Not Filed" },
-              ]}
-              labelStyles={{
-                fontWeight: 500,
-              }}
-            />
-
-            <Popup
-              isOpen={isPopupOpen}
-              onClose={() => setIsPopupOpen(false)}
-              title="Reason for Not Filing"
-              onSubmit={handlePopupSubmit}
-            >
-              <textarea
-                rows={4}
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                style={{ width: "100%", marginTop: "1rem" }}
-                placeholder="Enter your reason here..."
-              ></textarea>
-            </Popup>
-
-            <SelectInput
               id="applicationSubStatus"
               className="shadow-sm ml-2"
               label="Type of GST"
@@ -263,16 +214,77 @@ const Charts = () => {
               ]}
               labelStyles={{ fontWeight: 500 }}
             />
+            <SelectInput
+              id="status"
+              className="shadow-sm"
+              label="Filed Status"
+              value={filedStatus}
+              onChange={(e) => handleFiledStatusChange(e.target.value)}
+              style={{ marginLeft: '10px' }}
+              options={[
+                { value: "all", label: "All" },
+                { value: "filed", label: "Filed" },
+                { value: "notFiled", label: "Not Filed" },
+              ]}
+              labelStyles={{
+                fontWeight: 500,
+              }}
+            />
+            {(taskType == "gst"&& filedStatus =="notFiled") && <SelectInput
+              id="resons"
+              className="shadow-sm"
+              label="Reasons for Not Filling"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              style={{ marginLeft: '10px' }}
+              options={applicationSubStatus === "gstr1"
+                ? [
+                  {
+                    value: "previous_month_not_filed",
+                    label: "Previous Month Not Filed",
+                  },
+                  {
+                    value: "data_pending",
+                    label: "Data Pending/ Client Not Responded",
+                  },
+                  {
+                    value: "clarification_pending",
+                    label: "Clarification Pending",
+                  },
+                  { value: "in_process", label: "In Process" },
+                  { value: "due_to_inactive", label: "Due to Inactive" },
+                ]
+                : [
+                  {
+                    value: "previous_month_not_filed",
+                    label: "Previous Month Not Filed",
+                  },
+                  {
+                    value: "data_pending",
+                    label: "Data Pending/ Client Did Not Respond",
+                  },
+                  {
+                    value: "clarification_pending",
+                    label: "Clarification Pending",
+                  },
+                  {
+                    value: "tax_payment_pending",
+                    label: "Tax Payment Pending",
+                  },
+                  { value: "in_process", label: "In Process" },
+                  { value: "due_to_inactive", label: "Due to Inactive" },
+                ]}
+              labelStyles={{
+                fontWeight: 500,
+              }}
+            />}
           </>
         )}
       </div>
 
       <div className="grid grid-cols-2 gap-4  container">
-        {/* lst graph */}
         <PieChart companyDetails={companies} loading={loading} />
-        {/* second graph */}
         <BarChart barDetails={companies} loading={loading} />
-        {/* third graph */}
         <PaymentGraph
           paymentGraphDetails={companies}
           filterTime2={filteredTasks}
