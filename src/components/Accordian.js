@@ -304,7 +304,7 @@ export default function Accordian({
 
                 
 
-                {(section.id === "gst" ||
+                {/* {(section.id === "gst" ||
                   section.id === "professionalTax" ||
                   section.id === "fssai" ||
                   section.id === "shopCommercialEstablishment" ||
@@ -332,7 +332,7 @@ export default function Accordian({
                       </Button>
                     </Tooltip>
                   </Box>
-                )}
+                )} */}
 
                
               </Accordion>

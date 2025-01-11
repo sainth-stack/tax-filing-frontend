@@ -18,7 +18,10 @@ const Charts = () => {
   
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("all");
+
   const [companies, setCompanies] = useState([]);
+  const [reasonOptions, setReasonOptions] = useState([]);
+
   const [taskType, setTaskType] = useState('0');
   const [filteredTasks, setfilteredTasks] = useState([]);
   const [applicationSubStatus, setApplicationSubStatus] = useState('0');
@@ -76,6 +79,7 @@ const Charts = () => {
         console.error("Error fetching data:", error);
       }
     };
+    
     fetchCompanies()
   }, [])
 
@@ -236,35 +240,32 @@ const Charts = () => {
               }}
             />
 
-            <Popup
-              isOpen={isPopupOpen}
-              onClose={() => setIsPopupOpen(false)}
-              title="Reason for Not Filing"
-              onSubmit={handlePopupSubmit}
-            >
-              <textarea
-                rows={4}
+            {filedStatus === "notfiled" && (
+              <SelectInput
+                id="reasonForSuspension"
+                className="shadow-sm ml-2"
+                label="Reason for Suspension"
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                style={{ width: "100%", marginTop: "1rem" }}
-                placeholder="Enter your reason here..."
-              ></textarea>
-            </Popup>
-
-            <SelectInput
-              id="applicationSubStatus"
-              className="shadow-sm ml-2"
-              label="Type of GST"
-              value={applicationSubStatus}
-              onChange={(e) => setApplicationSubStatus(e.target.value)}
-              options={[
-                { label: "All", value: "0" },
-                ...applicationSubstatusOptions,
-              ]}
-              labelStyles={{ fontWeight: 500 }}
-            />
+                 options={reasonOptions}
+                labelStyles={{ fontWeight: 500 }}
+              />
+            )}
           </>
         )}
+
+        <SelectInput
+          id="applicationSubStatus"
+          className="shadow-sm ml-2"
+          label="Type of GST"
+          value={applicationSubStatus}
+          onChange={(e) => setApplicationSubStatus(e.target.value)}
+          options={[
+            { label: "All", value: "0" },
+            ...applicationSubstatusOptions,
+          ]}
+          labelStyles={{ fontWeight: 500 }}
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4  container">
