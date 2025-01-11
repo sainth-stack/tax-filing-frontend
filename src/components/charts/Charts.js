@@ -26,7 +26,6 @@ const Charts = () => {
   const [company, setCompany] = useState('0');
   const user = JSON.parse(localStorage.getItem('user'))
 
-
   const handleFiledStatusChange = (value) => {
     setFiledStatus(value);
   };
