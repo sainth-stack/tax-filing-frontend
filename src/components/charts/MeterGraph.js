@@ -18,7 +18,6 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
     inProgress: 0,
     completed: 0,
   });
-  // Default to 50% or other initial value
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [taskDetails, setTaskDetails] = useState({
@@ -28,7 +27,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   });
   const navigate = useNavigate();
   const [popupVisible, setPopupVisible] = useState(false);
-  const [popupContent, setPopupContent] = useState({ title: '', tasks: [] });
+  const [popupContent, setPopupContent] = useState({ title: "", tasks: [] });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,13 +35,27 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
         const categorizedTasks = filteredTasks.reduce(
           (acc, task) => {
             const dueDate = new Date(task.dueDate);
-            const actualCompletionDate = (task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate)
-              ? new Date((task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate))
-              : null;
+            const actualCompletionDate =
+              task?.actualCompletionDate ||
+              task?.pfMonthly_filedate ||
+              task?.esi_fileDate ||
+              task?.pft_fileDate ||
+              task?.gstMonthly_filedate
+                ? new Date(
+                    task?.actualCompletionDate ||
+                      task?.pfMonthly_filedate ||
+                      task?.esi_fileDate ||
+                      task?.pft_fileDate ||
+                      task?.gstMonthly_filedate
+                  )
+                : null;
 
             if (actualCompletionDate) {
               acc.completed.push(task);
-            } else if (new Date() > dueDate) {
+            } else if (
+              new Date().setHours(0, 0, 0, 0) >
+              new Date(dueDate).setHours(0, 0, 0, 0)
+            ) {
               acc.overdue.push(task);
             } else {
               acc.inProgress.push(task);
@@ -72,30 +85,29 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   const labelColors = ["#008000", "#ffcf57", "#ff0000"];
 
   if (data.completed > 0) {
-    categories.push({ name: 'completed', value: data.completed });
+    categories.push({ name: "completed", value: data.completed });
     colors.push("#008000"); // Hex code for green
   }
 
   if (data.inProgress > 0) {
-    categories.push({ name: 'inProgress', value: data.inProgress });
+    categories.push({ name: "inProgress", value: data.inProgress });
     colors.push("#ffcf57"); // Hex code for yellow
   }
 
   if (data.overdue > 0) {
-    categories.push({ name: 'overDue', value: data.overdue });
+    categories.push({ name: "overDue", value: data.overdue });
     colors.push("#ff0000"); // Hex code for red
   }
 
-
-
-  const completedCategories = categories.find(item => item.name === "completed")?.value || 0;
+  const completedCategories =
+    categories.find((item) => item.name === "completed")?.value || 0;
   const totalCategories = categories.reduce((sum, item) => sum + item.value, 0);
   const averagePercentage =
     totalCategories > 0 ? (completedCategories / totalCategories) * 100 : 0;
   const handleCategoryClick = (category) => {
     setPopupContent({
       title: category,
-      tasks: taskDetails[category] || []
+      tasks: taskDetails[category] || [],
     });
     setPopupVisible(true);
   };
@@ -109,16 +121,13 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
     setPopupVisible(false);
   };
 
-
   // Export CSV
   // Export CSV
   // Export CSV
- 
 
   // Export PDF
- 
 
-  console.log("meter graph data", filteredTasks);/*  */
+  console.log("meter graph data", filteredTasks); /*  */
   return (
     <>
       <div className="container">
@@ -144,8 +153,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
             <>
               <Header
                 data={filteredTasks}
-                 columns={FourthGraphColumns}
-
+                columns={FourthGraphColumns}
                 {...{ title: "Tasks Due Date" }}
               />
               {categories.length === 0 ? (

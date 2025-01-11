@@ -11,11 +11,9 @@ import { applicationSubstatusOptions, monthsJson, taskTypeOptions, yearsJson } f
 import Popup from "../Popup/Popup";
 
 const Charts = () => {
-    const [filedStatus, setFiledStatus] = useState("all");
-    const [reason, setReason] = useState("");
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-  
+  const [filedStatus, setFiledStatus] = useState("all");
+  const [reason, setReason] = useState("");
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("all");
 
@@ -31,27 +29,11 @@ const Charts = () => {
   const [company, setCompany] = useState('0');
   const user = JSON.parse(localStorage.getItem('user'))
 
-
   const handleFiledStatusChange = (value) => {
     setFiledStatus(value);
-    if (value === "notfiled") {
-      setIsPopupOpen(true); // Open popup if status is "notFiled"
-    } else {
-      setReason(""); // Clear reason when the status is changed
-    }
-  };
-
-  const handlePopupSubmit = () => {
-    if (reason.trim() === "") {
-      alert("Reason for not filing is required.");
-    } else {
-      setIsPopupOpen(false);
-      console.log("Reason submitted:", reason);
-    }
   };
 
 
-  // console.log("reason",reason)
   useEffect(() => {
     const fetchCompanies = async () => {
       setLoading(true);
@@ -94,7 +76,7 @@ const Charts = () => {
           name: company === '0' ? '' : company,
           userId: user.role !== "A" ? user?._id : '',
           taskType: taskType !== "0" ? taskType : undefined,
-             filedStatus: filedStatus === "all" ? "" : filedStatus,
+          // status: filedStatus === "all" ? "" : filedStatus,
         });
         setLoading(false);
         const { data } = response?.data;
@@ -116,16 +98,15 @@ const Charts = () => {
     };
 
     fetchCompanies();
-  }, [status, year, month, company, taskType,filedStatus, applicationSubStatus]);
+  }, [status, year, month, company, taskType, filedStatus, applicationSubStatus]);
 
   const handleFilterChange = async () => {
     setLoading(true);
     try {
       const { data } = await axios.post(`${base_url}/tasks/filter`, {
         status: status === "all" ? "" : status,
-
-        filedStatus: filedStatus === "all" ? "" : filedStatus,
-
+        status: filedStatus === "all" ? "" : filedStatus,
+        reason:reason ? reason : undefined,
         year,
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
@@ -138,8 +119,8 @@ const Charts = () => {
 
       const response = await axios.post(`${base_url}/tasks/auto/filter`, {
         status: status === "all" ? "" : status,
-
-        filedStatus: filedStatus === "all" ? "" : filedStatus,
+        status: filedStatus === "all" ? "" : filedStatus,
+        reason:reason ? reason : undefined,
         year,
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
@@ -164,7 +145,7 @@ const Charts = () => {
 
   useEffect(() => {
     handleFilterChange();
-  }, [year, month, company, taskType, filedStatus,applicationSubStatus]);
+  }, [year, month, company, taskType, filedStatus, applicationSubStatus,reason]);
 
 
   return (
@@ -240,40 +221,40 @@ const Charts = () => {
               }}
             />
 
-            {filedStatus === "notfiled" && (
-              <SelectInput
-                id="reasonForSuspension"
-                className="shadow-sm ml-2"
-                label="Reason for Suspension"
+            <Popup
+              isOpen={isPopupOpen}
+              onClose={() => setIsPopupOpen(false)}
+              title="Reason for Not Filing"
+              // onSubmit={handlePopupSubmit}
+            >
+              <textarea
+                rows={4}
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                 options={reasonOptions}
-                labelStyles={{ fontWeight: 500 }}
-              />
-            )}
+                style={{ width: "100%", marginTop: "1rem" }}
+                placeholder="Enter your reason here..."
+              ></textarea>
+            </Popup>
+
+            <SelectInput
+              id="applicationSubStatus"
+              className="shadow-sm ml-2"
+              label="Type of GST"
+              value={applicationSubStatus}
+              onChange={(e) => setApplicationSubStatus(e.target.value)}
+              options={[
+                { label: "All", value: "0" },
+                ...applicationSubstatusOptions,
+              ]}
+              labelStyles={{ fontWeight: 500 }}
+            />
           </>
         )}
-
-        <SelectInput
-          id="applicationSubStatus"
-          className="shadow-sm ml-2"
-          label="Type of GST"
-          value={applicationSubStatus}
-          onChange={(e) => setApplicationSubStatus(e.target.value)}
-          options={[
-            { label: "All", value: "0" },
-            ...applicationSubstatusOptions,
-          ]}
-          labelStyles={{ fontWeight: 500 }}
-        />
       </div>
 
       <div className="grid grid-cols-2 gap-4  container">
-        {/* lst graph */}
         <PieChart companyDetails={companies} loading={loading} />
-        {/* second graph */}
         <BarChart barDetails={companies} loading={loading} />
-        {/* third graph */}
         <PaymentGraph
           paymentGraphDetails={companies}
           filterTime2={filteredTasks}

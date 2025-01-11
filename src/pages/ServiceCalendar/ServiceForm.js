@@ -184,11 +184,9 @@ const ServiceForm = () => {
           }}
         >
           {tasks.map((task, index) => {
-            console.log(task?.prevDates?.length > 0 ? task?.prevDates[0]?.history : '')
             const historyDates = task?.prevDates?.length > 0
               ? task?.prevDates[0]?.history
               : [];
-
             return (
               (
                 <Box
@@ -218,7 +216,7 @@ const ServiceForm = () => {
                           // onChange={(date) => handleDateChange(index, date)}
                           multiple
                           inline // Keep inline to show calendar, not just text input
-                          minDate={new Date()}
+                          // minDate={new Date()}
                           showYearDropdown
                           dateFormat="yyyy-MM-dd"
                           placeholderText="Select a date"
