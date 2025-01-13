@@ -161,6 +161,12 @@ const GetCommonFields = (data) => {
             { value: "no", label: "No" },
           ],
         },
+        {
+          id: "companygstin",
+          label: "GSTIN",
+          type: "number",
+          placeholder: "GSTIN",
+        },
         ...(data?.taskName === "gstNewRegistration"
           ? [
             {
