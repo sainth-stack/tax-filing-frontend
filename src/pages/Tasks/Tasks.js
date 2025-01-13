@@ -118,6 +118,8 @@ const Tasks = () => {
         month: formData?.month,
         year: formData?.year,
         list: user.role !== "A" ? user?._id : '',
+        page: page + 1,
+        pageSize: pageSize
       });
       setLoading(false);
 
@@ -200,7 +202,7 @@ const Tasks = () => {
   useEffect(() => {
     fetchCompanies();
     fetchUsers();
-    fetchAllTasks(page, pageSize);
+    // fetchAllTasks(page, pageSize);
   }, [page, pageSize]);
 
   const handleDelete = async (id) => {
@@ -368,7 +370,6 @@ const Tasks = () => {
                 showForm,
                 fetchTasks,
                 view,
-
                 setCompanyRefresh,
                 companyRefresh,
                 fetchAllTasks,

@@ -216,6 +216,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
       const fetchTaskData = async () => {
         try {
           const response = await axios.get(`${base_url}/tasks/${companyId}`);
+
           const formattedData = mapDates(response.data);
           setFormData(formattedData);
         } catch (error) {
@@ -239,7 +240,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
         if (isDate(data[key])) {
           acc[key] = moment(data[key]).format("YYYY-MM-DD");
         } else {
-          acc[key] = mapDates(data[key]);
+          acc[key] = mapDates(data[key] || "");
         }
         return acc;
       }, {});
