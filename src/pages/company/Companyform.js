@@ -58,14 +58,7 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
   
  const handleInputChange = (e) => {
    const { id, value } = e.target;
-
- 
-
-   // Call handleStatus to set active state based on section id
    setId(id)
-
- 
-
    const [section, field] = id.split(".");
    setFormData((prev) => ({
      ...prev,
@@ -76,7 +69,6 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
    }));
  };
 
-  
   
    const isFormEmpty = () => {
      return Object.values(formData).every(
@@ -150,11 +142,11 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
 
      // Ensure sections allowing duplicates are arrays
      const sectionsAllowingDuplicates = [
-       "gst",
-       "professionalTax",
-       "fssai",
-       "shopCommercialEstablishment",
-       "factoryLicense",
+      //  "gst",
+      //  "professionalTax",
+      //  "fssai",
+      //  "shopCommercialEstablishment",
+      //  "factoryLicense",
      ];
 
      sectionsAllowingDuplicates.forEach((section) => {
