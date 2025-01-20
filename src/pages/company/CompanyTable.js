@@ -156,9 +156,8 @@ export default function CompanyTable({
     }
 
     setLoading(true);
-
     try {
-      await axios.delete(`${base_url}/companies/${id}`, {
+     const res= await axios.delete(`${base_url}/companies/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -167,8 +166,8 @@ export default function CompanyTable({
       toast.warn("Company Deleted successfully");
       setLoading(false);
     } catch (error) {
-      toast.warn("Failed to  Delete Company  ");
-
+      toast.error(error?.response?.data?.error);
+      setLoading(false);
       console.error("Error deleting company:", error);
     }
   };
