@@ -16,7 +16,6 @@ const AgencyForm = ({
 }) => {
     const [formData, setFormData] = useState({});
     const [error, setError] = useState("");
-
     const sections = sectionsData(formData);
 
     // Initialize empty form data based on sections
@@ -83,7 +82,11 @@ const AgencyForm = ({
                             agencyName: agencyDetails.agencyName || "",  // Map correctly
                             agencyLocation: agencyDetails.agencyLocation || "",  // Map correctly
                             effectiveFrom: agencyDetails.effectiveFrom?.slice(0, 10) || "",  // Date fields
-                            effectiveTo: agencyDetails.effectiveTo?.slice(0, 10) || ""  // Date fields
+                            effectiveTo: agencyDetails.effectiveTo?.slice(0, 10) || "" , // Date fields
+                            email: agencyDetails.email || "",  // Map correctly
+                            firstName: agencyDetails.firstName || "",  // Map correctly
+                            lastName: agencyDetails.lastName || "",  // Map correctly
+                            password: agencyDetails.password || "",  // Map correctly
                         }
                     };
 
@@ -101,7 +104,7 @@ const AgencyForm = ({
     }, [agencyId]);
 
     return (
-        <div className="container mx-auto p-4 bg-gray rounded-lg shadow-md">
+        <div className="container p-4 bg-gray rounded-lg shadow-md">
             <header className="text-black p-4 rounded-t-lg" style={{ background: "lightgrey" }}>
                 <h1 className="text-2xl font-bold">
                     {agencyId ? "Edit Agency" : "Create New Agency"}
@@ -110,7 +113,7 @@ const AgencyForm = ({
             <div className="p-6">
                 {/* Render form fields directly */}
                 {sections.map((section) => (
-                    <div key={section.title} className="flex gap-5">
+                    <div key={section.title} className="grid grid-cols-4 gap-6">
                         {section.fields.map((field) => {
                             const [sectionKey, fieldKey] = field.id.split("."); // Correctly split id here
                             return (

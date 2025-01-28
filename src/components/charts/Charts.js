@@ -7,7 +7,12 @@ import { base_url } from "../../const";
 import PaymentGraph from "./PaymentGraph";
 import MeterGraph from "./MeterGraph";
 import PendingCompeltedTaksGraph from "./PendingCompeltedTaksGraph";
-import { applicationSubstatusOptions, monthsJson, taskTypeOptions, yearsJson } from "./FilterData";
+import {
+  applicationSubstatusOptions,
+  monthsJson,
+  taskTypeOptions,
+  yearsJson,
+} from "./FilterData";
 import Popup from "../Popup/Popup";
 
 const Charts = () => {
@@ -16,31 +21,27 @@ const Charts = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("all");
-
   const [companies, setCompanies] = useState([]);
-  const [reasonOptions, setReasonOptions] = useState([]);
-
-  const [taskType, setTaskType] = useState('0');
+  const [taskType, setTaskType] = useState("0");
   const [filteredTasks, setfilteredTasks] = useState([]);
-  const [applicationSubStatus, setApplicationSubStatus] = useState('0');
-  const [month, setMonth] = useState('0');
+  const [applicationSubStatus, setApplicationSubStatus] = useState("0");
+  const [month, setMonth] = useState("0");
   const [year, setYear] = useState(new Date().getFullYear());
-  const [cps, setcps] = useState([])
-  const [company, setCompany] = useState('0');
-  const user = JSON.parse(localStorage.getItem('user'))
+  const [cps, setcps] = useState([]);
+  const [company, setCompany] = useState("0");
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const handleFiledStatusChange = (value) => {
     setFiledStatus(value);
   };
-
 
   useEffect(() => {
     const fetchCompanies = async () => {
       setLoading(true);
       try {
         const response = await axios.post(`${base_url}/companies/filter`, {
-          userId: user.role !== "A" ? user?._id : ''
-
+          userId: user.role !== "A" ? user?._id : "",
+          agency: user.agency,
         });
         setLoading(false);
 
@@ -51,7 +52,7 @@ const Charts = () => {
           ...item,
           _id: item._id,
           label: item.companyDetails?.companyName,
-          value: item.companyDetails?.companyName
+          value: item.companyDetails?.companyName,
         }));
 
         setcps(companyDetailsArray);
@@ -61,9 +62,9 @@ const Charts = () => {
         console.error("Error fetching data:", error);
       }
     };
-    
-    fetchCompanies()
-  }, [])
+
+    fetchCompanies();
+  }, []);
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -72,10 +73,11 @@ const Charts = () => {
         const response = await axios.post(`${base_url}/companies/filter`, {
           status: status === "all" ? "" : status,
           year,
-          month: month === '0' ? '' : month,
-          name: company === '0' ? '' : company,
-          userId: user.role !== "A" ? user?._id : '',
+          month: month === "0" ? "" : month,
+          name: company === "0" ? "" : company,
+          userId: user.role !== "A" ? user?._id : "",
           taskType: taskType !== "0" ? taskType : undefined,
+          agency: user.agency,
           // status: filedStatus === "all" ? "" : filedStatus,
         });
         setLoading(false);
@@ -98,7 +100,15 @@ const Charts = () => {
     };
 
     fetchCompanies();
-  }, [status, year, month, company, taskType, filedStatus, applicationSubStatus]);
+  }, [
+    status,
+    year,
+    month,
+    company,
+    taskType,
+    filedStatus,
+    applicationSubStatus,
+  ]);
 
   const handleFilterChange = async () => {
     setLoading(true);
@@ -106,7 +116,7 @@ const Charts = () => {
       const { data } = await axios.post(`${base_url}/tasks/filter`, {
         status: status === "all" ? "" : status,
         status: filedStatus === "all" ? "" : filedStatus,
-        reason:reason ? reason : undefined,
+        reason: reason ? reason : undefined,
         year,
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
@@ -120,7 +130,7 @@ const Charts = () => {
       const response = await axios.post(`${base_url}/tasks/auto/filter`, {
         status: status === "all" ? "" : status,
         status: filedStatus === "all" ? "" : filedStatus,
-        reason:reason ? reason : undefined,
+        reason: reason ? reason : undefined,
         year,
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
@@ -132,9 +142,10 @@ const Charts = () => {
       });
       const finData1 = response?.data?.tasks?.map((item) => {
         return {
-          ...item, auto: true
-        }
-      })
+          ...item,
+          auto: true,
+        };
+      });
       setfilteredTasks([...data?.data, ...finData1]);
       setLoading(false);
     } catch (error) {
@@ -145,8 +156,15 @@ const Charts = () => {
 
   useEffect(() => {
     handleFilterChange();
-  }, [year, month, company, taskType, filedStatus, applicationSubStatus,reason]);
-
+  }, [
+    year,
+    month,
+    company,
+    taskType,
+    filedStatus,
+    applicationSubStatus,
+    reason,
+  ]);
 
   return (
     <>

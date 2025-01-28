@@ -96,6 +96,7 @@ export default function CompanyTable({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [totalCount, setTotalCount] = useState(0);
+  const user = JSON.parse(localStorage.getItem("user"))
   useEffect(() => {
     const fetchCompanies = async () => {
       setLoading(true);
@@ -105,10 +106,10 @@ export default function CompanyTable({
           name,
           page: page + 1, 
           pageSize: rowsPerPage,
+          agency: user?.agency
         });
 
         setLoading(false);
-
         const { data, totalCount } = response.data; // Get data and total count
         // console.log("Fetched companies From Logic:", data);
 

@@ -27,10 +27,11 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
   const tasks = (data) => {
     return getTasks({ companies: [], users: [], data, noAct: true })
   }
-
+  const user = JSON.parse(localStorage.getItem('user'))
   const endTask = getEndTasks();
   const defaultData = tasks().reduce((acc, field) => {
     acc[field.id] = "";
+    acc['agencyName']=user?.agency
     return acc;
   }, {});
   const [formData, setFormData] = useState(defaultData);
@@ -110,7 +111,6 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
       return newData;
     });
   };
-  const user = JSON.parse(localStorage.getItem('user'))
 
   const fetchCompanies = async () => {
     try {
