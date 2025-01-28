@@ -99,7 +99,8 @@ const AutoTasks = () => {
         year: formData?.year,
         list: user.role !== "A" ? user?._id : '',
         page: page + 1,
-        pageSize: pageSize
+        pageSize: pageSize,
+        agency: user?.agency
       });
       setLoading(false);
       // console.log("filtrede users", data);

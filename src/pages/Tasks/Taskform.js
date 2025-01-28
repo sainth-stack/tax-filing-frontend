@@ -33,8 +33,10 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
     return getTasks({ companies: [], users: [], data })
   }
   const endTask = getEndTasks();
+  const user = JSON.parse(localStorage.getItem('user'))
   const defaultData = tasks().reduce((acc, field) => {
     acc[field.id] = "";
+    acc['agencyName']=user?.agency
     return acc;
   }, {});
   const [formData, setFormData] = useState(defaultData);
@@ -118,7 +120,6 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
       return newData;
     });
   };
-  const user = JSON.parse(localStorage.getItem('user'))
 
   const fetchCompanies = async () => {
     try {

@@ -5,12 +5,12 @@ import Accordian from "../../components/Accordian";
 import { base_url } from "../../const";
 import { toast } from "react-toastify";
 import Loader from "../../components/helpers/loader";
-import { handleStatus } from "../../utils/HandleStatus";
-import { isEffectiveToRequired, isGstStateRequired } from "../../utils/HandleError";
+import {
+  isEffectiveToRequired,
+  isGstStateRequired,
+} from "../../utils/HandleError";
 
 const CompanyForm = ({
-  clientStatuses,
-  companyName,
   companyId,
   setCompanyId,
   setShowForm,
@@ -20,15 +20,17 @@ const CompanyForm = ({
   setView,
 }) => {
   const [loading, setLoading] = useState(false);
-  const [id,setId]=useState()
-  const [formData, setFormData] = useState({});
+  const [id, setId] = useState();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [formData, setFormData] = useState({
+    companyDetails: {
+      agencyName: user?.agency,
+    },
+  });
   const [activeState, setActiveState] = useState("");
   const sections = sectionsData(formData);
-
   const [error, setError] = useState("");
 
-  const [activeStateEffectiveDate, setActiveStateEffectiveDate] = useState(false);
-const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
   const [clientStatus, setClientStatus] = useState("");
   const [expanded, setExpanded] = useState(sections ? ["Company Details"] : []);
 
@@ -55,31 +57,28 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
     return acc;
   }, {});
 
-  
- const handleInputChange = (e) => {
-   const { id, value } = e.target;
-   setId(id)
-   const [section, field] = id.split(".");
-   setFormData((prev) => ({
-     ...prev,
-     [section]: {
-       ...prev[section],
-       [field]: value,
-     },
-   }));
- };
-
-  
-   const isFormEmpty = () => {
-     return Object.values(formData).every(
-       (section) =>
-         section &&
-         Object.values(section).every(
-           (field) => field === "" || field === null || field === undefined
-         )
-     );
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setId(id);
+    const [section, field] = id.split(".");
+    setFormData((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value,
+      },
+    }));
   };
-  
+
+  const isFormEmpty = () => {
+    return Object.values(formData).every(
+      (section) =>
+        section &&
+        Object.values(section).every(
+          (field) => field === "" || field === null || field === undefined
+        )
+    );
+  };
 
   // console.log("from main componet ", activeState);
   const handleFileChange = (e) => {
@@ -94,103 +93,102 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
     }));
   };
 
- const handleSubmit = async (e) => {
-   setLoading(true);
-   const token = localStorage.getItem("token");
+  const handleSubmit = async (e) => {
+    setLoading(true);
+    const token = localStorage.getItem("token");
 
-   if (!token) {
-     console.error("Token is missing. User may not be logged in.");
-     return;
-   }
-   e.preventDefault();
+    if (!token) {
+      console.error("Token is missing. User may not be logged in.");
+      return;
+    }
+    e.preventDefault();
 
-   try {
-     const cleanedFormData = { ...formData };
+    try {
+      const cleanedFormData = { ...formData };
 
-     // Validate the effectiveTo field
-     const validationResult = isEffectiveToRequired(cleanedFormData);
-     const validState = isGstStateRequired(cleanedFormData);
+      // Validate the effectiveTo field
+      const validationResult = isEffectiveToRequired(cleanedFormData);
+      const validState = isGstStateRequired(cleanedFormData);
 
-     if (!validState.isValid) {
-       setError(validState.message);
-       toast.error(validState.message);
-       setLoading(false);
-       return;
-     } else {
-       setError("");
-     }
+      if (!validState.isValid) {
+        setError(validState.message);
+        toast.error(validState.message);
+        setLoading(false);
+        return;
+      } else {
+        setError("");
+      }
 
-     if (!validationResult.isValid) {
-       setError(validationResult.message);
-       toast.error(validationResult.message);
-       setLoading(false);
-       return;
-     } else {
-       setError("");
-     }
+      if (!validationResult.isValid) {
+        setError(validationResult.message);
+        toast.error(validationResult.message);
+        setLoading(false);
+        return;
+      } else {
+        setError("");
+      }
 
-     if (
-       cleanedFormData.companyDetails.clientStatus === "inactive" &&
-       !cleanedFormData.companyDetails.effectiveTo
-     ) {
-       console.log(
-         "Error: Effective To field is required when clientStatus is inactive"
-       );
-       setLoading(false);
-       return;
-     }
+      if (
+        cleanedFormData.companyDetails.clientStatus === "inactive" &&
+        !cleanedFormData.companyDetails.effectiveTo
+      ) {
+        console.log(
+          "Error: Effective To field is required when clientStatus is inactive"
+        );
+        setLoading(false);
+        return;
+      }
 
-     // Ensure sections allowing duplicates are arrays
-     const sectionsAllowingDuplicates = [
-      //  "gst",
-      //  "professionalTax",
-      //  "fssai",
-      //  "shopCommercialEstablishment",
-      //  "factoryLicense",
-     ];
+      // Ensure sections allowing duplicates are arrays
+      const sectionsAllowingDuplicates = [
+        //  "gst",
+        //  "professionalTax",
+        //  "fssai",
+        //  "shopCommercialEstablishment",
+        //  "factoryLicense",
+      ];
 
-     sectionsAllowingDuplicates.forEach((section) => {
-       if (
-         cleanedFormData[section] &&
-         !Array.isArray(cleanedFormData[section])
-       ) {
-         cleanedFormData[section] = [cleanedFormData[section]]; // Convert to array if not already
-       }
-     });
+      sectionsAllowingDuplicates.forEach((section) => {
+        if (
+          cleanedFormData[section] &&
+          !Array.isArray(cleanedFormData[section])
+        ) {
+          cleanedFormData[section] = [cleanedFormData[section]]; // Convert to array if not already
+        }
+      });
 
-     // Replace empty objects with empty strings in attachments or approvalCertificate
-     Object.keys(cleanedFormData).forEach((sectionKey) => {
-       if (
-         sectionKey === "attachments" ||
-         cleanedFormData[sectionKey]?.approvalCertificate
-       ) {
-         cleanedFormData[sectionKey] = replaceEmptyObjectsWithEmptyStrings(
-           cleanedFormData[sectionKey]
-         );
-       }
-     });
+      // Replace empty objects with empty strings in attachments or approvalCertificate
+      Object.keys(cleanedFormData).forEach((sectionKey) => {
+        if (
+          sectionKey === "attachments" ||
+          cleanedFormData[sectionKey]?.approvalCertificate
+        ) {
+          cleanedFormData[sectionKey] = replaceEmptyObjectsWithEmptyStrings(
+            cleanedFormData[sectionKey]
+          );
+        }
+      });
 
-     // Send the cleaned data to the backend
-     const response = await axios.post(
-       `${base_url}/companies`,
-       cleanedFormData,
-       {
-         headers: {
-           Authorization: `Bearer ${token}`,
-         },
-       }
-     );
+      // Send the cleaned data to the backend
+      const response = await axios.post(
+        `${base_url}/companies`,
+        cleanedFormData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-     // Handle file uploads if necessary
-     await handleFiles(response.data);
-     setLoading(false);
-     toast.success("Company created successfully");
-   } catch (error) {
-     setLoading(false);
-     toast.error(` ${error.response?.data?.message || error.message}`);
-   }
- };
-
+      // Handle file uploads if necessary
+      await handleFiles(response.data);
+      setLoading(false);
+      toast.success("Company created successfully");
+    } catch (error) {
+      setLoading(false);
+      toast.error(` ${error.response?.data?.message || error.message}`);
+    }
+  };
 
   const handleFiles = async (data) => {
     const token = localStorage.getItem("token");
@@ -256,9 +254,9 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
     }
 
     try {
-      const cleanedFormData = { ...formData };
+      const cleanedFormData = { ...formData , companyDetails: { ...formData.companyDetails, agencyName: user?.agency }};
 
-       const validationResult = isEffectiveToRequired(cleanedFormData);
+      const validationResult = isEffectiveToRequired(cleanedFormData);
 
       if (!validationResult.isValid) {
         setError(validationResult.message);
@@ -269,16 +267,17 @@ const [selectedId, setSelectedId] = useState("companyDetails.clientStatus");
         setError("");
       }
 
-    if (
-      cleanedFormData.companyDetails.clientStatus === "inactive" &&
-      !cleanedFormData.companyDetails.effectiveTo
-    ) {
-      console.error("Effective To field is required when clientStatus is inactive");
-     
-      setLoading(false);
-      return;
+      if (
+        cleanedFormData.companyDetails.clientStatus === "inactive" &&
+        !cleanedFormData.companyDetails.effectiveTo
+      ) {
+        console.error(
+          "Effective To field is required when clientStatus is inactive"
+        );
+
+        setLoading(false);
+        return;
       }
-      
 
       // Replace empty objects with empty strings in each section
       Object.keys(cleanedFormData).forEach((sectionKey) => {

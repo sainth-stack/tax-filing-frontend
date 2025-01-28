@@ -115,11 +115,12 @@ const Tasks = () => {
         applicationSubStatus: formData?.applicationSubStatus,
         effectiveFrom: formData?.effectiveFrom,
         effectiveTo: formData?.effectiveTo,
-        month: formData?.month,
+        month: formData?.month ==="0" ? undefined : formData?.month,
         year: formData?.year,
         list: user.role !== "A" ? user?._id : '',
         page: page + 1,
-        pageSize: pageSize
+        pageSize: pageSize,
+        agency:user?.agency
       });
       setLoading(false);
 
