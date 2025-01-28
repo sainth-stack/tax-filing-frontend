@@ -132,7 +132,7 @@ const [year, setYear] = useState([
       const { data } = await axios.post(`${base_url}/tasks/filter`, {
         status: status === "all" ? "" : status,
         status: filedStatus === "all" ? "" : filedStatus,
-        reason:reason ? reason : undefined,
+        reason: reason ? reason : undefined,
         year,
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
@@ -174,8 +174,15 @@ year,
 
   useEffect(() => {
     handleFilterChange();
-  }, [year, month, company, taskType, filedStatus, applicationSubStatus,reason]);
-
+  }, [
+    year,
+    month,
+    company,
+    taskType,
+    filedStatus,
+    applicationSubStatus,
+    reason,
+  ]);
 
   const handleYearChange = (selectedOptions) => {
     // Handle both single selection and array of selections
