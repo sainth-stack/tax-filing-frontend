@@ -124,7 +124,8 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   const fetchCompanies = async () => {
     try {
       const response = await axios.post(`${base_url}/companies/filter`, {
-        userId: user.role !== "A" ? user?._id : ''
+        userId: user.role !== "A" ? user?._id : '',
+        agency:user?.agency
       });
       const data = response?.data?.data?.map((item) => ({
         value: item?.companyDetails?.companyName,
