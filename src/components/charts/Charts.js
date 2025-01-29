@@ -123,6 +123,7 @@ const Charts = () => {
         user: user.role !== "A" ? user?._id : "",
         list: user.role !== "A" ? user?._id : "",
         taskType: taskType !== "0" ? taskType : undefined,
+        agency: user.agency,
         applicationSubStatus:
           applicationSubStatus !== "0" ? applicationSubStatus : "",
       });
@@ -137,6 +138,7 @@ const Charts = () => {
         user: user.role !== "A" ? user?._id : "",
         list: user.role !== "A" ? user?._id : "",
         taskType: taskType !== "0" ? taskType : undefined,
+        agency: user.agency,
         applicationSubStatus:
           applicationSubStatus !== "0" ? applicationSubStatus : "",
       });

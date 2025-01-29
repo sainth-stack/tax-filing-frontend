@@ -289,7 +289,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
     if (field.id === "company") {
       return companies;
     } else if (field.id === "assignedTo") {
-      return [{ label: "All", value: "all" }, ...users];
+      return [...users];
     } else if (field.id === "monthlyMonth") {
       return [{ value: currentMonth, label: currentMonth }, ...field?.options];
     } else if (field.id === "year") {
