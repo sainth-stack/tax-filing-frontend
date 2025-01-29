@@ -1,7 +1,6 @@
 import { monthsJson, yearsJson } from "../../components/charts/FilterData";
 
 export const getTasks = ({ companies = [], users = [], data, noAct }) => {
-  console.log(data)
   return [
     // {
     //   type: "checkbox",

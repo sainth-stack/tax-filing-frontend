@@ -87,6 +87,7 @@ const AgencyForm = ({
                             firstName: agencyDetails.firstName || "",  // Map correctly
                             lastName: agencyDetails.lastName || "",  // Map correctly
                             password: agencyDetails.password || "",  // Map correctly
+                            userId: agencyDetails.userId || "",
                         }
                     };
 
@@ -124,6 +125,7 @@ const AgencyForm = ({
                                     <input
                                         type={field.type}
                                         id={field.id}
+                                        disabled={field?.disabled}
                                         value={formData[sectionKey]?.[fieldKey] || ""} // Correctly access formData here
                                         onChange={handleInputChange}
                                         placeholder={field.placeholder || ""}
