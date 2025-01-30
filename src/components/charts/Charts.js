@@ -10,6 +10,7 @@ import PendingCompeltedTaksGraph from "./PendingCompeltedTaksGraph";
 import { applicationSubstatusOptions, monthsJson, taskTypeOptions, yearsJson } from "./FilterData";
 import Popup from "../Popup/Popup";
 import MultiSelectInput from "../multi-select";
+import { Box } from "@mui/material";
 
 const Charts = () => {
    const currentYear = new Date().getFullYear();
@@ -28,7 +29,7 @@ const Charts = () => {
   const [month, setMonth] = useState('0');
 
 const [year, setYear] = useState([
-  // { value: currentYear, label: `${currentYear}` },
+  //  { value: currentYear, label: `${currentYear}` },
 ]);
 
   const [cps, setcps] = useState([])
@@ -44,10 +45,7 @@ const [year, setYear] = useState([
      value: currentYear - i,
    }));
 
-   // Set the default value as the current year
-  //  useEffect(() => {
-  //    setYear([currentYear]); // Initialize with the current year
-  //  }, []);
+  //  Set the default value as the current year
 
   
 
@@ -123,8 +121,8 @@ const [year, setYear] = useState([
     try {
       const { data } = await axios.post(`${base_url}/tasks/filter`, {
         status: status === "all" ? "" : status,
-        status: filedStatus === "all" ? "" : filedStatus,
-        reason:reason ? reason : undefined,
+        // filedStatus: filedStatus === "all" ? "" : filedStatus,
+        reason: reason ? reason : undefined,
         year,
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
@@ -137,9 +135,9 @@ const [year, setYear] = useState([
 
       const response = await axios.post(`${base_url}/tasks/auto/filter`, {
         status: status === "all" ? "" : status,
-        status: filedStatus === "all" ? "" : filedStatus,
+        // filedStatus: filedStatus === "all" ? "" : filedStatus,
         reason: reason ? reason : undefined,
-year,
+        year,
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
         user: user.role !== "A" ? user?._id : "",
@@ -190,22 +188,35 @@ const handleYearChange = (selectedOptions) => {
             fontWeight: 500,
           }}
         />
-
-        <MultiSelectInput
-          id="year"
-          labelStyles={{
-            fontWeight: 500,
-            width: "200px", // Fixed width
-            maxWidth: "300px", // Maximum allowed width
-            minWidth: "150px",
+        
+        <Box
+          sx={{
+            p: { xs: 1, sm: 2 },
+            marginBottom:"-0.9rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            gap: 1.5,
+           
           }}
-          label="Select Year(s)"
-          value={year} // Pass the current state
-          setValue={handleYearChange} // Pass the handler function
-          options={yearsJson}
-          isMulti={Array.isArray(year)}
-        />
-
+        >
+          <MultiSelectInput
+            id="year"
+            labelStyles={{
+              fontWeight: 600,
+              fontSize: "14px",
+              width: "100%",
+              maxWidth: "280px",
+              minWidth: "180px",
+            }}
+            label="Select Year(s)"
+            value={year}
+            setValue={handleYearChange}
+            options={yearsJson}
+            isMulti={Array.isArray(year)}
+          />
+        </Box>
+        
         <SelectInput
           id="month"
           className="shadow-sm ml-2"
