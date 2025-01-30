@@ -17,6 +17,7 @@ import MultiSelectInput from "../multi-select";
 import { Box } from "@mui/material";
 
 const Charts = () => {
+  console.log(yearsJson)
    const currentYear = new Date().getFullYear();
   const [filedStatus, setFiledStatus] = useState("all");
   const [reason, setReason] = useState("");
@@ -133,7 +134,7 @@ const [year, setYear] = useState([
         status: status === "all" ? "" : status,
         status: filedStatus === "all" ? "" : filedStatus,
         reason: reason ? reason : undefined,
-        year,
+        year:year?.map((item)=>item.value).join(','),
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
         user: user.role !== "A" ? user?._id : "",
@@ -216,20 +217,27 @@ year,
        
         />
 
-        <MultiSelectInput
+     <div style={{marginLeft:'10px'}}>
+         <MultiSelectInput
           id="year"
           labelStyles={{
             fontWeight: 500,
-            width: "200px", // Fixed width
-            maxWidth: "300px", // Maximum allowed width
+            width: "300px", 
+            maxWidth: "250px", 
             minWidth: "150px",
+            mb:0.2
+          }}
+          sx={{
+            height:'40px',
+            
           }}
           label="Select Year(s)"
-          value={year} // Pass the current state
-          setValue={handleYearChange} // Pass the handler function
+          value={year} 
+          setValue={handleYearChange}
           options={yearsJson}
           isMulti={Array.isArray(year)}
         />
+     </div>
 
         <SelectInput
           id="month"
