@@ -116,7 +116,7 @@ const Tasks = () => {
         effectiveFrom: formData?.effectiveFrom,
         effectiveTo: formData?.effectiveTo,
         month: formData?.month ==="0" ? undefined : formData?.month,
-        year: formData?.year,
+        year: formData?.year.toString(),
         list: user.role !== "A" ? user?._id : '',
         page: page + 1,
         pageSize: pageSize,

@@ -17,6 +17,7 @@ import Popup from "../Popup/Popup";
 import MultiSelectInput from "../multi-select";
 
 const Charts = () => {
+  console.log(yearsJson)
    const currentYear = new Date().getFullYear();
   const [filedStatus, setFiledStatus] = useState("all");
   const [reason, setReason] = useState("");
@@ -26,16 +27,12 @@ const Charts = () => {
   const [companies, setCompanies] = useState([]);
   const [taskType, setTaskType] = useState("0");
   const [filteredTasks, setfilteredTasks] = useState([]);
-  const [applicationSubStatus, setApplicationSubStatus] = useState('0');
-  const [month, setMonth] = useState('0');
-
-const [year, setYear] = useState([
-  // { value: currentYear, label: `${currentYear}` },
-]);
-
-  const [cps, setcps] = useState([])
-  const [company, setCompany] = useState('0');
-  const user = JSON.parse(localStorage.getItem('user'))
+  const [applicationSubStatus, setApplicationSubStatus] = useState("0");
+  const [month, setMonth] = useState("0");
+  const [year, setYear] = useState([{value:new Date().getFullYear(),label:new Date().getFullYear()}]);
+  const [cps, setcps] = useState([]);
+  const [company, setCompany] = useState("0");
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const handleFiledStatusChange = (value) => {
     setFiledStatus(value);
@@ -91,7 +88,7 @@ const [year, setYear] = useState([
          
         const response = await axios.post(`${base_url}/companies/filter`, {
           status: status === "all" ? "" : status,
-          year,
+          year:year?.map((item)=>item.value).join(','),
           month: month === "0" ? "" : month,
           name: company === "0" ? "" : company,
           userId: user.role !== "A" ? user?._id : "",
@@ -136,7 +133,7 @@ const [year, setYear] = useState([
         status: status === "all" ? "" : status,
         status: filedStatus === "all" ? "" : filedStatus,
         reason: reason ? reason : undefined,
-        year,
+        year:year?.map((item)=>item.value).join(','),
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
         user: user.role !== "A" ? user?._id : "",
@@ -151,7 +148,7 @@ const [year, setYear] = useState([
         status: status === "all" ? "" : status,
         status: filedStatus === "all" ? "" : filedStatus,
         reason: reason ? reason : undefined,
-year,
+        year:year?.map((item)=>item.value).join(','),
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
         user: user.role !== "A" ? user?._id : "",
@@ -183,6 +180,18 @@ const handleYearChange = (selectedOptions) => {
   setYear(selectedOptions); // Update state with the new selection
 };
 
+  const handleYearChange = (selectedOptions) => {
+    // Handle both single selection and array of selections
+    const options = Array.isArray(selectedOptions) ? selectedOptions : [selectedOptions];
+    
+    const simplifiedOptions = options.map(option => ({
+      value: option.value,
+      label: option.label
+    }));
+
+    setYear(simplifiedOptions);
+  };
+
   return (
     <>
       <div className="flex items-center m-3 p-3">
@@ -200,22 +209,30 @@ const handleYearChange = (selectedOptions) => {
           labelStyles={{
             fontWeight: 500,
           }}
+       
         />
 
-        <MultiSelectInput
+     <div style={{marginLeft:'10px'}}>
+         <MultiSelectInput
           id="year"
           labelStyles={{
             fontWeight: 500,
-            width: "200px", // Fixed width
-            maxWidth: "300px", // Maximum allowed width
+            width: "300px", 
+            maxWidth: "250px", 
             minWidth: "150px",
+            mb:0.2
+          }}
+          sx={{
+            height:'40px',
+            
           }}
           label="Select Year(s)"
-          value={year} // Pass the current state
-          setValue={handleYearChange} // Pass the handler function
+          value={year} 
+          setValue={handleYearChange}
           options={yearsJson}
           isMulti={Array.isArray(year)}
         />
+     </div>
 
         <SelectInput
           id="month"
