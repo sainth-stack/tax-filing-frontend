@@ -14,6 +14,7 @@ import NotificationSettings from "./pages/notifications/NotificationSettings";
 import Agency from "./pages/Agency/Agency";
 import AutoTasks from "./pages/AutoTaks/AutoTasks";
 import ServiceCalendar from "./pages/ServiceCalendar/ServiceCalendar";
+import CompletedTasks from "./pages/CompletedTasks/CompletedTasks";
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/tasks/auto" element={<AutoTasks />} />
+        <Route path="/tasks/done" element={<CompletedTasks />} />
+        
         <Route path="/users" element={<Users />} />
         <Route path="/company" element={<Company />} />
         <Route

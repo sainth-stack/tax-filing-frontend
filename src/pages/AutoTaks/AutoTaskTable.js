@@ -240,7 +240,12 @@ export default function AutoTasksTable({
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Button variant="contained" color="primary" onClick={handleExport} disabled={loadingExport}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleExport}
+        disabled={loadingExport}
+      >
         {loadingExport ? "Exporting..." : "Export All Tasks"}
       </Button>
       <TableContainer
@@ -336,7 +341,7 @@ export default function AutoTasksTable({
               </TableRow>
             ) : (
               sortedTasks.map((task, index) => {
-                let startData = task.startDate || 'N/A'
+                let startData = task.startDate || "N/A";
                 return (
                   <TableRow key={task._id || index} sx={{ height: "48px" }}>
                     <TableCell align="left" padding="normal">
@@ -347,15 +352,22 @@ export default function AutoTasksTable({
                     </TableCell>
 
                     <TableCell align="left" padding="normal">
-                      {new Date(new Date(startData).setMonth(new Date(startData).getMonth() - 1)).toLocaleDateString("en-US", {
+                      {new Date(
+                        new Date(startData).setMonth(
+                          new Date(startData).getMonth() - 1
+                        )
+                      ).toLocaleDateString("en-US", {
                         month: "long",
                       })}
                     </TableCell>
 
                     <TableCell align="left" padding="normal">
-                      {new Date(formData.year || new Date()).toLocaleDateString("en-US", {
-                        year: "numeric",
-                      })}
+                      {new Date(formData.year || new Date()).toLocaleDateString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                        }
+                      )}
                     </TableCell>
 
                     <TableCell align="left" padding="normal">

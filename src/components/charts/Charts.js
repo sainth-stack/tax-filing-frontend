@@ -9,8 +9,10 @@ import MeterGraph from "./MeterGraph";
 import PendingCompeltedTaksGraph from "./PendingCompeltedTaksGraph";
 import { applicationSubstatusOptions, monthsJson, taskTypeOptions, yearsJson } from "./FilterData";
 import Popup from "../Popup/Popup";
+import MultiSelectInput from "../multi-select";
 
 const Charts = () => {
+   const currentYear = new Date().getFullYear();
   const [filedStatus, setFiledStatus] = useState("all");
   const [reason, setReason] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -24,7 +26,11 @@ const Charts = () => {
   const [filteredTasks, setfilteredTasks] = useState([]);
   const [applicationSubStatus, setApplicationSubStatus] = useState('0');
   const [month, setMonth] = useState('0');
-  const [year, setYear] = useState(new Date().getFullYear());
+
+const [year, setYear] = useState([
+  // { value: currentYear, label: `${currentYear}` },
+]);
+
   const [cps, setcps] = useState([])
   const [company, setCompany] = useState('0');
   const user = JSON.parse(localStorage.getItem('user'))
@@ -33,6 +39,17 @@ const Charts = () => {
     setFiledStatus(value);
   };
 
+   const yearsJson = Array.from({ length: 10 }, (_, i) => ({
+     label: `${currentYear - i}`,
+     value: currentYear - i,
+   }));
+
+   // Set the default value as the current year
+  //  useEffect(() => {
+  //    setYear([currentYear]); // Initialize with the current year
+  //  }, []);
+
+  
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -69,12 +86,13 @@ const Charts = () => {
     const fetchCompanies = async () => {
       setLoading(true);
       try {
+         
         const response = await axios.post(`${base_url}/companies/filter`, {
           status: status === "all" ? "" : status,
           year,
-          month: month === '0' ? '' : month,
-          name: company === '0' ? '' : company,
-          userId: user.role !== "A" ? user?._id : '',
+          month: month === "0" ? "" : month,
+          name: company === "0" ? "" : company,
+          userId: user.role !== "A" ? user?._id : "",
           taskType: taskType !== "0" ? taskType : undefined,
           // status: filedStatus === "all" ? "" : filedStatus,
         });
@@ -120,8 +138,8 @@ const Charts = () => {
       const response = await axios.post(`${base_url}/tasks/auto/filter`, {
         status: status === "all" ? "" : status,
         status: filedStatus === "all" ? "" : filedStatus,
-        reason:reason ? reason : undefined,
-        year,
+        reason: reason ? reason : undefined,
+year,
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
         user: user.role !== "A" ? user?._id : "",
@@ -147,6 +165,12 @@ const Charts = () => {
     handleFilterChange();
   }, [year, month, company, taskType, filedStatus, applicationSubStatus,reason]);
 
+   
+const handleYearChange = (selectedOptions) => {
+  
+  setYear(selectedOptions); // Update state with the new selection
+};
+  
 
   return (
     <>
@@ -167,15 +191,21 @@ const Charts = () => {
           }}
         />
 
-        <SelectInput
+        <MultiSelectInput
           id="year"
-          className="shadow-sm ml-2"
-          label="Year"
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
+          labelStyles={{
+            fontWeight: 500,
+            width: "200px", // Fixed width
+            maxWidth: "300px", // Maximum allowed width
+            minWidth: "150px",
+          }}
+          label="Select Year(s)"
+          value={year} // Pass the current state
+          setValue={handleYearChange} // Pass the handler function
           options={yearsJson}
-          labelStyles={{ fontWeight: 500 }}
+          isMulti={Array.isArray(year)}
         />
+
         <SelectInput
           id="month"
           className="shadow-sm ml-2"

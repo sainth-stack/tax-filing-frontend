@@ -1,16 +1,39 @@
 export const taskTypeMap = {
   gstr3b: "GSTR3B",
   gstr1: "GSTR1",
+
+  
   professionalTaxRegularMonthlyActivity: "Professional Tax",
   esiRegularMonthlyActivity: "Employees State Insurance",
   pfMonthly: "Provident Fund",
   tdsTcsMonthly: "TDS/TCS",
 };
 
+const capitalizeString = (str) => {
+  return str
+    .split(" ") // Split the string into words
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize first letter of each word
+    .join(" "); // Join the words back into a single string
+};
+
 
 export const getTaskDisplayName = (taskName, taskType, gstMonthly_gstType) => {
   if (taskType === "gst") {
-    return taskTypeMap[gstMonthly_gstType] || `${taskName} - Other Type`;
+    const formatTaskName = (taskName) => {
+      const parts = taskName.split("gst"); 
+
+      // console.log("pasrts",parts)
+      
+      return parts.length > 1
+        ? `${parts[0]}GST - ${parts[1]
+            .trim()
+            .replace(/^\w/, (c) => c.toUpperCase())}`
+        : taskName; 
+    };
+
+    // Usage
+    return taskTypeMap[gstMonthly_gstType] || formatTaskName(taskName);
+
   }
   return taskTypeMap[taskName] || taskTypeMap.default;
 };

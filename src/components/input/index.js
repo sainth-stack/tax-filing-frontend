@@ -28,12 +28,19 @@ const CustomInput = ({
 
   return (
     <div className={`flex flex-col relative ${className} `}>
-      <label htmlFor={id} className="mb-1" style={{ ...labelStyles }}>
+      <label
+        htmlFor={id}
+        className="mb-1"
+        style={{ ...labelStyles, zIndex: -20 }}
+      >
         {label}
 
         {required && <span className="text-red-500">*</span>}
       </label>
-      <div className={type === "password" && "relative"} style={{ zIndex: 20 }}>
+      <div
+        className={type === "password" && "relative"}
+        
+      >
         <input
           type={
             type === "password" && !showPassword

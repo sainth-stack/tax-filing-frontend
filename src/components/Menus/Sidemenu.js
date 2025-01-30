@@ -11,7 +11,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
 import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import AssuredWorkloadIcon from "@mui/icons-material/AssuredWorkload";
-
+import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurnedInOutlined";
 const Sidemenu = ({ user }) => {
 
   const [userRole, setUserRole] = useState(null);
@@ -40,6 +40,7 @@ const Sidemenu = ({ user }) => {
       { name: "Company", icon: <BusinessIcon />, path: "/company" },
       { name: "Manual Tasks", icon: <TaskOutlinedIcon />, path: "/tasks" },
       { name: "Auto Tasks", icon: <TaskOutlinedIcon />, path: "/tasks/auto" },
+     
 
       { name: "Users", icon: <PeopleAltOutlined />, path: "/users" },
       {
@@ -65,6 +66,11 @@ const Sidemenu = ({ user }) => {
       { name: "Manual Tasks", icon: <TaskOutlinedIcon />, path: "/tasks" },
       { name: "Auto Tasks", icon: <TaskOutlinedIcon />, path: "/tasks/auto" },
 
+      {
+        name: "Completed Tasks",
+        icon: <AssignmentTurnedInOutlinedIcon />,
+        path: "/tasks/done",
+      },
       { name: "Users", icon: <PeopleAltOutlined />, path: "/users" },
       {
         name: "Notification Settings",
