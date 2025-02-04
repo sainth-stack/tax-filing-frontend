@@ -17,7 +17,6 @@ import MultiSelectInput from "../multi-select";
 import { Box } from "@mui/material";
 
 const Charts = () => {
-  console.log(yearsJson)
    const currentYear = new Date().getFullYear();
   const [filedStatus, setFiledStatus] = useState("all");
   const [reason, setReason] = useState("");
