@@ -33,8 +33,10 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
     return getTasks({ companies: [], users: [], data })
   }
   const endTask = getEndTasks();
+  const user = JSON.parse(localStorage.getItem('user'))
   const defaultData = tasks().reduce((acc, field) => {
     acc[field.id] = "";
+    acc['agencyName']=user?.agency
     return acc;
   }, {});
   const [formData, setFormData] = useState(defaultData);
@@ -118,12 +120,12 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
       return newData;
     });
   };
-  const user = JSON.parse(localStorage.getItem('user'))
 
   const fetchCompanies = async () => {
     try {
       const response = await axios.post(`${base_url}/companies/filter`, {
-        userId: user.role !== "A" ? user?._id : ''
+        userId: user.role !== "A" ? user?._id : '',
+        agency:user?.agency
       });
       const data = response?.data?.data?.map((item) => ({
         value: item?.companyDetails?.companyName,
@@ -216,6 +218,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
       const fetchTaskData = async () => {
         try {
           const response = await axios.get(`${base_url}/tasks/${companyId}`);
+
           const formattedData = mapDates(response.data);
           setFormData(formattedData);
         } catch (error) {
@@ -239,7 +242,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
         if (isDate(data[key])) {
           acc[key] = moment(data[key]).format("YYYY-MM-DD");
         } else {
-          acc[key] = mapDates(data[key]);
+          acc[key] = mapDates(data[key] || "");
         }
         return acc;
       }, {});
@@ -286,7 +289,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
     if (field.id === "company") {
       return companies;
     } else if (field.id === "assignedTo") {
-      return [{ label: "All", value: "all" }, ...users];
+      return [...users];
     } else if (field.id === "monthlyMonth") {
       return [{ value: currentMonth, label: currentMonth }, ...field?.options];
     } else if (field.id === "year") {

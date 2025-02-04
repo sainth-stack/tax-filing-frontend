@@ -20,17 +20,19 @@ const UserForm = ({
   const [Users, setUsers] = useState([]);
   const [Agencies, setAgencies] = useState([]);
   const [companies, setCompanies] = useState([]);
-  const [formData, setFormData] = useState({
-   
-      });
+  const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
-
+const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
     // Fetch companies and agencies before initializing form fields
     const fetchInitialData = async () => {
       try {
         const [companiesRes, agenciesRes] = await Promise.all([
-          axios.get(`${base_url}/companies/all`),
+          axios.get(`${base_url}/companies/all`, {
+            params: {
+              agency: user?.agency,
+            },
+          }),
           axios.get(`${base_url}/agencies/all`),
         ]);
 
@@ -66,38 +68,33 @@ const UserForm = ({
   }, []);
 
   // Handle input change
-const handleInputChange = (e, isMultiSelect = false) => {
-  if (isMultiSelect) {
-   
-    const selectedCompanies = e.map((option) => option); // Full object, not just value
-    setFormData((prev) => ({
-      ...prev,
-      company: selectedCompanies, // Store full object details in 'company' field
-    }));
-  } else {
-    const { id, value, type, checked, multiple } = e.target;
-
-    if (multiple) {
-      const selectedCompanies = Array.from(
-        e.target.selectedOptions,
-        (option) => option // Full object, not just value
-      );
+  const handleInputChange = (e, isMultiSelect = false) => {
+    if (isMultiSelect) {
+      const selectedCompanies = e.map((option) => option); // Full object, not just value
       setFormData((prev) => ({
         ...prev,
         company: selectedCompanies, // Store full object details in 'company' field
       }));
     } else {
-      setFormData((prev) => ({
-        ...prev,
-        [id]: type === "checkbox" ? checked : value,
-      }));
+      const { id, value, type, checked, multiple } = e.target;
+
+      if (multiple) {
+        const selectedCompanies = Array.from(
+          e.target.selectedOptions,
+          (option) => option // Full object, not just value
+        );
+        setFormData((prev) => ({
+          ...prev,
+          company: selectedCompanies, // Store full object details in 'company' field
+        }));
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          [id]: type === "checkbox" ? checked : value,
+        }));
+      }
     }
-  }
-};
-
-
-
-
+  };
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -225,23 +222,28 @@ const handleInputChange = (e, isMultiSelect = false) => {
                         options={field.options}
                         value={formData[field.id] || []}
                         onChange={(selectedOptions) => {
-                          const simplifiedOptions = selectedOptions.map(option => ({
-                            _id: option._id,
-                            label: option.companyDetails?.companyName || option?.label,
-                            value: option.companyDetails?.companyName || option?.value,
-                            isSelected: true
-                          }));
+                          const simplifiedOptions = selectedOptions.map(
+                            (option) => ({
+                              _id: option._id,
+                              label:
+                                option.companyDetails?.companyName ||
+                                option?.label,
+                              value:
+                                option.companyDetails?.companyName ||
+                                option?.value,
+                              isSelected: true,
+                            })
+                          );
 
-                          setFormData(prev => ({
+                          setFormData((prev) => ({
                             ...prev,
-                            [field.id]: simplifiedOptions
+                            [field.id]: simplifiedOptions,
                           }));
                         }}
                       />
                     );
                   }
                   if (field.type === "select") {
-
                     if (field.id === "company") {
                       return (
                         <MultiSelectInput
@@ -249,8 +251,8 @@ const handleInputChange = (e, isMultiSelect = false) => {
                           id={field.id}
                           label={field.label}
                           options={field.options}
-                          value={formData.company} 
-                          onChange={handleInputChange} 
+                          value={formData.company}
+                          onChange={handleInputChange}
                           required={field.required}
                         />
                       );
@@ -263,13 +265,22 @@ const handleInputChange = (e, isMultiSelect = false) => {
                         options={field.options}
                         value={formData[field.id]}
                         onChange={handleInputChange}
-                      // required={field.required}
+                        // required={field.required}
                       />
                     );
                   }
                   if (field.type === "checkbox") {
                     return (
-                      <div key={index} className="grid" style={{ display: 'flex', justifyContent: 'start', flexDirection: 'column', gap: '10px' }}>
+                      <div
+                        key={index}
+                        className="grid"
+                        style={{
+                          display: "flex",
+                          justifyContent: "start",
+                          flexDirection: "column",
+                          gap: "10px",
+                        }}
+                      >
                         <label htmlFor={field.id}>{field.text}</label>
                         <CustomCheckbox
                           id={field.id}
@@ -280,7 +291,7 @@ const handleInputChange = (e, isMultiSelect = false) => {
                               ? handleWhatsappInputChange
                               : handleInputChange
                           }
-                        // required={field.required}
+                          // required={field.required}
                         />
                       </div>
                     );

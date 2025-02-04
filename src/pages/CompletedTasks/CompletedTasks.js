@@ -44,16 +44,17 @@ const CompletedTasks = () => {
   const [open, setOpen] = useState(false);
 
   const [formData, setFormData] = useState({
-    company: "",
     assignedTo: "",
-    applicationSubstatus: "",
-    status: "",
     effectiveFrom: "",
     effectiveTo: "",
-    defaultValue: "",
-    taskType: "",
-    month: "",
-    year: new Date().getFullYear(),
+    status: "filed",
+    filedStatus: "all",
+    reason: "",
+    year: [],
+    month: "0",
+    company: "0",
+    year: new Date().getFullYear().toString(),
+    applicationSubStatus: "0"
   });
   const [view, setView] = useState(false);
 
@@ -63,39 +64,7 @@ const CompletedTasks = () => {
   const user = JSON.parse(localStorage.getItem("user"));
 
   const [companyRefresh, setCompanyRefresh] = useState(false);
- 
-
-
-
-
-
-
- 
-
-  const fetchTasks = async () => {
-    setLoading(true);
-    try {
-      const { data } = await axios.post(`${base_url}/tasks/filter`, {
-        company: formData?.company,
-        assignedTo:
-          formData?.assignedTo !== "all" ? formData?.assignedTo : undefined,
-        status: formData?.status !== "all" ? formData?.status : undefined,
-        taskType: formData?.taskType !== "all" ? formData?.taskType : undefined,
-        applicationSubStatus: formData?.applicationSubStatus,
-        effectiveFrom: formData?.effectiveFrom,
-        effectiveTo: formData?.effectiveTo,
-        month: formData?.month,
-        year: formData?.year,
-        list: user.role !== "A" ? user?._id : "",
-      });
-      setLoading(false);
-
-      setTasks(data?.data);
-    } catch (error) {
-      toast.error("Error While Tasks Filtering");
-      console.error("Error fetching tasks:", error);
-    }
-  };
+  const [filteredTasks, setfilteredTasks] = useState([]);
 
   const fetchUsers = async (page, pageSize) => {
     try {
@@ -115,14 +84,10 @@ const CompletedTasks = () => {
     }
   };
 
-  // console.log("users Paginations] ", users);
-
   useEffect(() => {
-    fetchTasks();
     fetchUsers(page, pageSize);
   }, [page, pageSize, formData]);
 
-  //for  model
   const fetchCompanies = async () => {
     setLoading(true);
     const user = JSON.parse(localStorage.getItem("user"));
@@ -144,66 +109,10 @@ const CompletedTasks = () => {
       console.error("Error fetching companies:", error);
     }
   };
-
- const fetchAllTasks = async (page, pageSize) => {
-   setLoading(true);
-
-   try {
-     // Fetch both manual and automatic tasks
-     const [ManualTasksResponse, AutoTasksResponse] = await Promise.all([
-       axios.get(`${base_url}/tasks/all`, {
-         params: { page: page + 1, pageSize: pageSize },
-       }),
-       axios.get(`${base_url}/tasks/auto/all`, {
-         params: { page: page + 1, pageSize: pageSize },
-       }),
-     ]);
-
-     // Extract task data
-     const allTasksData = ManualTasksResponse?.data?.data || [];
-     const autoTasksData = AutoTasksResponse?.data?.data || [];
-     console.log("manual tasks", allTasksData, allTasksData.length);
-     console.log("auto tasks", autoTasksData, autoTasksData.length);
-
-     // Combine all tasks
-     const combinedTasks = [...allTasksData, ...autoTasksData];
-
-     console.log("combined tasks count", combinedTasks.length);
-
-     // Filter completed tasks
-     const completedTasks = combinedTasks.filter((task) => {
-       const actualCompletionDate =
-         task?.actualCompletionDate ||
-         task?.pfMonthly_filedate ||
-         task?.esi_fileDate ||
-         task?.pft_fileDate ||
-         task?.gstMonthly_filedate;
-
-       return (
-         actualCompletionDate !== undefined && actualCompletionDate !== null
-       );
-     });
-
-     // Update state with completed tasks
-     console.log("Completed  tasks count", completedTasks.length);
-      
-     setTasks(completedTasks);
-     console.log("Completed tasks:", completedTasks);
-   } catch (error) {
-     toast.error("Error While Fetching Tasks");
-     console.error("Error fetching tasks:", error);
-   } finally {
-     setLoading(false);
-   }
- };
-
     
-    
-
   useEffect(() => {
     fetchCompanies();
     fetchUsers();
-    fetchAllTasks(page, pageSize);
   }, [page, pageSize]);
 
   const handleDelete = async (id) => {
@@ -239,7 +148,61 @@ const CompletedTasks = () => {
       }));
     };
 
+  const handleFilterChange = async () => {
+    setLoading(true);
+    try {
+      const [tasksResponse, autoTasksResponse] = await Promise.all([
+        axios.post(`${base_url}/tasks/filter`, {
+          status: formData.status === "all" ? "" : formData.status,
+          // status: formData.filedStatus === "all" ? "" : formData.filedStatus,
+          reason: formData.reason ? formData.reason : undefined,
+          year: formData.year.toString(),
+          month: formData.month === "0" ? "" : formData.month,
+          company: formData.company === "0" ? "" : formData.company,
+          user: user.role !== "A" ? user?._id : "",
+          list: user.role !== "A" ? user?._id : "",
+          taskType: formData.taskType !== "0" ? formData.taskType : undefined,
+          agency: user.agency,
+          page: page + 1,
+          pageSize,
+          applicationSubStatus:
+            formData.applicationSubStatus !== "0" ? formData.applicationSubStatus : "",
+        }),
+        axios.post(`${base_url}/tasks/auto/filter`, {
+          status: formData.status === "all" ? "" : formData.status,
+          // status: formData.filedStatus === "all" ? "" : formData.filedStatus,
+          reason: formData.reason ? formData.reason : undefined,
+          year: formData.year.toString(),
+          month: formData.month === "0" ? "" : formData.month,
+          company: formData.company === "0" ? "" : formData.company,
+          user: user.role !== "A" ? user?._id : "",
+          list: user.role !== "A" ? user?._id : "",
+          taskType: formData.taskType !== "0" ? formData.taskType : undefined,
+          agency: user.agency,
+          page: page + 1,
+          pageSize,
+          applicationSubStatus:
+            formData.applicationSubStatus !== "0" ? formData.applicationSubStatus : "",
+        })
+      ]);
+      const autoTasks = autoTasksResponse?.data?.tasks?.map(item => ({
+        ...item,
+        auto: true
+      }));
+setTotalTasks(autoTasksResponse.data?.totalTasks+tasksResponse?.data?.totalTasks)
+      setTasks([...tasksResponse?.data?.data, ...autoTasks]);
+    } catch (error) {
+      toast.error("Error While Tasks Filtering");
+      console.error("Error fetching filtered tasks:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    handleFilterChange();
+  }, [formData, page, pageSize]);
+console.log(formData)
   return (
     <Layout>
      
@@ -326,7 +289,7 @@ const CompletedTasks = () => {
               setPage,
               page,
               pageSize,
-              fetchAllTasks,
+              fetchAllTasks:handleFilterChange,
               setPageSize,
               formData,
               fetchUsers,

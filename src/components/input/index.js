@@ -23,15 +23,13 @@ const CustomInput = ({
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
- 
-  
 
   return (
     <div className={`flex flex-col relative ${className} `}>
       <label
         htmlFor={id}
         className="mb-1"
-        style={{ ...labelStyles, zIndex: -20 }}
+        style={{ ...labelStyles, zIndex: 99 }}
       >
         {label}
 

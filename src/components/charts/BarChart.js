@@ -9,7 +9,7 @@ import {
   Legend,
 } from "chart.js";
 
-
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import Loader from "../helpers/loader";
 import { IconButton } from "@mui/material";
 import { CloseOutlined } from "@mui/icons-material";
@@ -19,10 +19,16 @@ import Header from "../../pages/Dashboard/card-container";
 import NoDataFound from "./NoDataFound";
 import { SecondGraphColumns } from "../Export/data";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend,
+  ChartDataLabels
+);
 
 const BarChart = ({ chartHeight, barDetails, loading }) => {
-
   // console.log("second graph bar details",barDetails)
   const colors = [
     "#42A5F5",
@@ -64,6 +70,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
   const [clickedCompanies, setClickedCompanies] = useState([]);
   const [clickedLabel, setClickedLabel] = useState("");
   const [companyGroupsByTask, setCompanyGroupByTask] = useState([]);
+  const [finalData, setFinalData] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
@@ -136,8 +143,10 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
 
         // Prepare chart data
         const labels = Object.keys(activeCompanyGroups);
-        const data = labels.map(
-          (taskType) => activeCompanyGroups[taskType].ids.length
+        const data = labels.map((taskType) => 40);
+
+        setFinalData(
+          labels?.map((taskType) => activeCompanyGroups[taskType].ids.length)
         );
 
         const barColors = labels.map(
@@ -194,12 +203,23 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
       legend: {
         display: false,
       },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: (context) => {
+            const index = context.dataIndex;
+            return finalData[index];
+          },
+        },
+      },
       datalabels: {
         display: true,
         color: "white",
         anchor: "center",
         align: "center",
-        formatter: (value) => value || "",
+        formatter: (value, index) => {
+          return finalData[index?.dataIndex];
+        },
         font: { size: 20, weight: "bold" },
       },
     },
@@ -224,6 +244,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
         grid: {
           display: false,
         },
+        height: 300,
         ticks: {
           stepSize: 1,
           callback: (value) => (Number.isInteger(value) ? value : null),
@@ -242,10 +263,6 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
       .replace(/^./, (str) => str.toUpperCase()) // Capitalize the first letter
       .trim(); // Remove any leading/trailing whitespace
   }
-
-
-
-  
 
   return (
     <div className="container">

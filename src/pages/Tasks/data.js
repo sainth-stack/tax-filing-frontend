@@ -1,7 +1,6 @@
 import { monthsJson, yearsJson } from "../../components/charts/FilterData";
 
 export const getTasks = ({ companies = [], users = [], data, noAct }) => {
-  console.log(data)
   return [
     // {
     //   type: "checkbox",
@@ -160,6 +159,12 @@ const GetCommonFields = (data) => {
             { value: "yes", label: "Yes" },
             { value: "no", label: "No" },
           ],
+        },
+        {
+          id: "companygstin",
+          label: "GSTIN",
+          type: "number",
+          placeholder: "GSTIN",
         },
         ...(data?.taskName === "gstNewRegistration"
           ? [

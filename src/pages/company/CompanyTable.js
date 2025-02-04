@@ -96,6 +96,7 @@ export default function CompanyTable({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [totalCount, setTotalCount] = useState(0);
+  const user = JSON.parse(localStorage.getItem("user"))
   useEffect(() => {
     const fetchCompanies = async () => {
       setLoading(true);
@@ -105,10 +106,10 @@ export default function CompanyTable({
           name,
           page: page + 1, 
           pageSize: rowsPerPage,
+          agency: user?.agency
         });
 
         setLoading(false);
-
         const { data, totalCount } = response.data; // Get data and total count
         // console.log("Fetched companies From Logic:", data);
 
@@ -156,9 +157,8 @@ export default function CompanyTable({
     }
 
     setLoading(true);
-
     try {
-      await axios.delete(`${base_url}/companies/${id}`, {
+     const res= await axios.delete(`${base_url}/companies/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -167,8 +167,8 @@ export default function CompanyTable({
       toast.warn("Company Deleted successfully");
       setLoading(false);
     } catch (error) {
-      toast.warn("Failed to  Delete Company  ");
-
+      toast.error(error?.response?.data?.error);
+      setLoading(false);
       console.error("Error deleting company:", error);
     }
   };

@@ -7,7 +7,11 @@ import { base_url } from "../../const";
 import PaymentGraph from "./PaymentGraph";
 import MeterGraph from "./MeterGraph";
 import PendingCompeltedTaksGraph from "./PendingCompeltedTaksGraph";
-import { applicationSubstatusOptions, monthsJson, taskTypeOptions, yearsJson } from "./FilterData";
+import {
+  applicationSubstatusOptions,
+  monthsJson,
+  taskTypeOptions,
+} from "./FilterData";
 import Popup from "../Popup/Popup";
 import MultiSelectInput from "../multi-select";
 import { Box } from "@mui/material";
@@ -19,11 +23,8 @@ const Charts = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("all");
-
   const [companies, setCompanies] = useState([]);
-  const [reasonOptions, setReasonOptions] = useState([]);
-
-  const [taskType, setTaskType] = useState('0');
+  const [taskType, setTaskType] = useState("0");
   const [filteredTasks, setfilteredTasks] = useState([]);
   const [applicationSubStatus, setApplicationSubStatus] = useState('0');
   const [month, setMonth] = useState('0');
@@ -54,8 +55,8 @@ const [year, setYear] = useState([
       setLoading(true);
       try {
         const response = await axios.post(`${base_url}/companies/filter`, {
-          userId: user.role !== "A" ? user?._id : ''
-
+          userId: user.role !== "A" ? user?._id : "",
+          agency: user.agency,
         });
         setLoading(false);
 
@@ -66,7 +67,7 @@ const [year, setYear] = useState([
           ...item,
           _id: item._id,
           label: item.companyDetails?.companyName,
-          value: item.companyDetails?.companyName
+          value: item.companyDetails?.companyName,
         }));
 
         setcps(companyDetailsArray);
@@ -76,9 +77,9 @@ const [year, setYear] = useState([
         console.error("Error fetching data:", error);
       }
     };
-    
-    fetchCompanies()
-  }, [])
+
+    fetchCompanies();
+  }, []);
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -87,11 +88,12 @@ const [year, setYear] = useState([
          
         const response = await axios.post(`${base_url}/companies/filter`, {
           status: status === "all" ? "" : status,
-          year,
+          year:year?.map((item)=>item.value).join(','),
           month: month === "0" ? "" : month,
           name: company === "0" ? "" : company,
           userId: user.role !== "A" ? user?._id : "",
           taskType: taskType !== "0" ? taskType : undefined,
+          agency: user.agency,
           // status: filedStatus === "all" ? "" : filedStatus,
         });
         setLoading(false);
@@ -114,21 +116,30 @@ const [year, setYear] = useState([
     };
 
     fetchCompanies();
-  }, [status, year, month, company, taskType, filedStatus, applicationSubStatus]);
+  }, [
+    status,
+    year,
+    month,
+    company,
+    taskType,
+    filedStatus,
+    applicationSubStatus,
+  ]);
 
   const handleFilterChange = async () => {
     setLoading(true);
     try {
       const { data } = await axios.post(`${base_url}/tasks/filter`, {
         status: status === "all" ? "" : status,
-        // filedStatus: filedStatus === "all" ? "" : filedStatus,
-        reason: reason ? reason : undefined,
+        status: filedStatus === "all" ? "" : filedStatus,
+        reason:reason ? reason : undefined,
         year,
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
         user: user.role !== "A" ? user?._id : "",
         list: user.role !== "A" ? user?._id : "",
         taskType: taskType !== "0" ? taskType : undefined,
+        agency: user.agency,
         applicationSubStatus:
           applicationSubStatus !== "0" ? applicationSubStatus : "",
       });
@@ -137,20 +148,22 @@ const [year, setYear] = useState([
         status: status === "all" ? "" : status,
         // filedStatus: filedStatus === "all" ? "" : filedStatus,
         reason: reason ? reason : undefined,
-        year,
+year,
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
         user: user.role !== "A" ? user?._id : "",
         list: user.role !== "A" ? user?._id : "",
         taskType: taskType !== "0" ? taskType : undefined,
+        agency: user.agency,
         applicationSubStatus:
           applicationSubStatus !== "0" ? applicationSubStatus : "",
       });
       const finData1 = response?.data?.tasks?.map((item) => {
         return {
-          ...item, auto: true
-        }
-      })
+          ...item,
+          auto: true,
+        };
+      });
       setfilteredTasks([...data?.data, ...finData1]);
       setLoading(false);
     } catch (error) {
@@ -163,12 +176,18 @@ const [year, setYear] = useState([
     handleFilterChange();
   }, [year, month, company, taskType, filedStatus, applicationSubStatus,reason]);
 
-   
-const handleYearChange = (selectedOptions) => {
-  
-  setYear(selectedOptions); // Update state with the new selection
-};
-  
+
+  const handleYearChange = (selectedOptions) => {
+    // Handle both single selection and array of selections
+    const options = Array.isArray(selectedOptions) ? selectedOptions : [selectedOptions];
+    
+    const simplifiedOptions = options.map(option => ({
+      value: option.value,
+      label: option.label
+    }));
+
+    setYear(simplifiedOptions);
+  };
 
   return (
     <>
@@ -187,36 +206,24 @@ const handleYearChange = (selectedOptions) => {
           labelStyles={{
             fontWeight: 500,
           }}
+       
         />
-        
-        <Box
-          sx={{
-            p: { xs: 1, sm: 2 },
-            marginBottom:"-0.9rem",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            gap: 1.5,
-           
+
+        <MultiSelectInput
+          id="year"
+          labelStyles={{
+            fontWeight: 500,
+            width: "200px", // Fixed width
+            maxWidth: "300px", // Maximum allowed width
+            minWidth: "150px",
           }}
-        >
-          <MultiSelectInput
-            id="year"
-            labelStyles={{
-              fontWeight: 600,
-              fontSize: "14px",
-              width: "100%",
-              maxWidth: "280px",
-              minWidth: "180px",
-            }}
-            label="Select Year(s)"
-            value={year}
-            setValue={handleYearChange}
-            options={yearsJson}
-            isMulti={Array.isArray(year)}
-          />
-        </Box>
-        
+          label="Select Year(s)"
+          value={year} // Pass the current state
+          setValue={handleYearChange} // Pass the handler function
+          options={yearsJson}
+          isMulti={Array.isArray(year)}
+        />
+
         <SelectInput
           id="month"
           className="shadow-sm ml-2"

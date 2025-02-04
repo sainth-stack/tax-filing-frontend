@@ -3,9 +3,7 @@
     Select,
     MenuItem,
     Chip,
-    FormControl,
-  InputLabel,
-    
+    FormControl,    
     FormHelperText,
     Box,
   } from "@mui/material";
@@ -48,6 +46,7 @@
     isMulti = true, 
     labelStyles = {},
     errorMessage = "",
+    sx
   }) => {
     // Add search state
     const [searchText, setSearchText] = React.useState("");
@@ -94,7 +93,7 @@ if (setValue) {
               />
             ))}
             {selected.length > 2 && (
-              <Box component="span" sx={{ color: "text.secondary" }}>
+              <Box component="span" sx={{ color: "text.secondary" ,display:'flex',alignItems:'center'}}>
                 +{selected.length - 2} more
               </Box>
             )}
@@ -111,7 +110,7 @@ if (setValue) {
         error={isInvalid}
         disabled={isDisabled}
         sx={{
-          mb: 2,
+          mb: labelStyles?.mb ? labelStyles?.mb :2,
           width: labelStyles?.width || "100%", 
           maxWidth: labelStyles?.maxWidth || "none", 
           minWidth: labelStyles?.minWidth || "unset",
@@ -125,12 +124,12 @@ if (setValue) {
           labelId={`${id}-label`}
           id={id}
           multiple={isMulti}
-          value={value?.map((v) => v.value) || []}
+          value={value?.map((v) => v?.value) || []}
           onChange={handleChange}
           renderValue={renderValue}
           error={isInvalid}
           // Decrease height
-          sx={{ "& .MuiSelect-select": { padding: "8px 14px" } }}
+          sx={{ "& .MuiSelect-select": { padding: "8px 14px" },...sx }}
           MenuProps={{
             PaperProps: {
               style: {
