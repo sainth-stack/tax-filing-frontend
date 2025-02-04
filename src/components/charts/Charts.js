@@ -30,7 +30,7 @@ const Charts = () => {
   const [month, setMonth] = useState('0');
 
 const [year, setYear] = useState([
-  //  { value: currentYear, label: `${currentYear}` },
+   { value: currentYear, label: `${currentYear}` },
 ]);
 
   const [cps, setcps] = useState([])
@@ -148,7 +148,7 @@ const [year, setYear] = useState([
         status: status === "all" ? "" : status,
         // filedStatus: filedStatus === "all" ? "" : filedStatus,
         reason: reason ? reason : undefined,
-year,
+        year:year?.map((item)=>item.value).join(','),
         month: month === "0" ? "" : month,
         company: company === "0" ? "" : company,
         user: user.role !== "A" ? user?._id : "",
