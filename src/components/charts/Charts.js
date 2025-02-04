@@ -11,13 +11,11 @@ import {
   applicationSubstatusOptions,
   monthsJson,
   taskTypeOptions,
-  yearsJson,
 } from "./FilterData";
 import Popup from "../Popup/Popup";
 import MultiSelectInput from "../multi-select";
 
 const Charts = () => {
-  console.log(yearsJson)
    const currentYear = new Date().getFullYear();
   const [filedStatus, setFiledStatus] = useState("all");
   const [reason, setReason] = useState("");
@@ -176,9 +174,6 @@ const Charts = () => {
     handleFilterChange();
   }, [year, month, company, taskType, filedStatus, applicationSubStatus,reason]);
 
-const handleYearChange = (selectedOptions) => {
-  setYear(selectedOptions); // Update state with the new selection
-};
 
   const handleYearChange = (selectedOptions) => {
     // Handle both single selection and array of selections
