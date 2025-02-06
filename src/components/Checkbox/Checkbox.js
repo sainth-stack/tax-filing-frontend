@@ -9,18 +9,20 @@ const CustomCheckbox = ({
   required,
   className,
   style,
+  disabled,
   labelStyles,
   name
 }) => {
   return (
     <div className={`flex items-center ${className}`}>
       <input
+        disabled={disabled}
         type="checkbox"
         id={id}
         checked={checked}
         style={{
           width: "18px", // Adjust size here
-          height: "18px", // Adjust size here
+          height: "18px", // diAdjust size here
           cursor: "pointer",
           ...style,
         }}

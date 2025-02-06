@@ -9,7 +9,7 @@ import {
   getProfessionalTaxData,
   getTasks,
   providentFund,
-  TDSTCS,
+ TDSTCS,
 } from "./../Tasks/data";
 import { toast } from "react-toastify";
 import SelectInput from "../../components/select";
@@ -19,7 +19,7 @@ import CustomFileInput from "../../components/customFile";
 import Loader from "../../components/helpers/loader";
 import { base_url } from "../../const";
 
-const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompanyId }) => {
+const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompanyId,completedTaskView }) => {
   const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
   const [totalPages,setTotalPages] = useState(0);
@@ -35,6 +35,27 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
     return acc;
   }, {});
   const [formData, setFormData] = useState(defaultData);
+
+    useEffect(() => {
+      console.log("show form state", showForm);
+      // Reset the completedTaskView and formData when the page is refreshed or showForm is false
+      if (!showForm) {
+        completedTaskView = null;
+        setFormData(null); 
+        setShowForm(false);
+      }
+
+      // If completedTaskView exists, update formData
+      if (completedTaskView && showForm) {
+        setFormData((prevState) => ({
+          ...prevState,
+          ...completedTaskView,
+        }));
+      }
+    }, [completedTaskView, showForm]);
+
+
+  
   const [error, setError] = useState(null);
   const [taskData, setTasks] = useState(tasks());
   const currentYear = moment().year();

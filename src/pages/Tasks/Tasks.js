@@ -34,7 +34,7 @@ const Tasks = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [showtasks, setShowTasks] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
-
+  const [completedTaskView, setCompletedTaskView] = useState(null);
   const [page, setPage] = useState(0); // Default page 1
   const [pageSize, setPageSize] = useState(5);
   const [totalTasks, setTotalTasks] = useState(0);
@@ -52,15 +52,15 @@ const Tasks = () => {
     effectiveTo: "",
     defaultValue: "",
     taskType: "",
-    month: '',
-    year: new Date().getFullYear()
+    month: "",
+    year: new Date().getFullYear(),
   });
   const [view, setView] = useState(false);
 
   const [tasks, setTasks] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
-  const user = JSON.parse(localStorage.getItem('user'))
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const [companyRefresh, setCompanyRefresh] = useState(false);
   const [showAutoGenModal, setShowAutoGenModal] = useState(false); // For modal visibility
@@ -72,6 +72,38 @@ const Tasks = () => {
 
   const location = useLocation();
   const taskId = location.state?.taskId;
+
+
+  useEffect(() => {
+    const taskFromLocation = location?.state?.task;
+
+    if (taskFromLocation) {
+      console.log("Task from location:", taskFromLocation);
+      setCompletedTaskView(taskFromLocation);
+      setShowForm(true);
+    } else {
+      setCompletedTaskView(null);
+      setShowForm(false);
+    }
+
+    const cleanupOnRefreshOrUnmount = () => {
+      setCompletedTaskView(null);
+      setShowForm(false);
+    };
+
+    // Check for page refresh or navigation
+    const isPageRefreshed = sessionStorage.getItem("isRefreshed");
+    if (!isPageRefreshed) {
+      sessionStorage.setItem("isRefreshed", true); 
+    } else {
+      cleanupOnRefreshOrUnmount(); 
+      sessionStorage.removeItem("isRefreshed"); 
+    }
+
+    return cleanupOnRefreshOrUnmount;
+  }, [location.state]); 
+
+  // console.log("comeplted from parent,completedTaskView", completedTaskView);
 
   useEffect(() => {
     if (taskId) {
@@ -115,12 +147,12 @@ const Tasks = () => {
         applicationSubStatus: formData?.applicationSubStatus,
         effectiveFrom: formData?.effectiveFrom,
         effectiveTo: formData?.effectiveTo,
-        month: formData?.month ==="0" ? undefined : formData?.month,
+        month: formData?.month === "0" ? undefined : formData?.month,
         year: formData?.year.toString(),
-        list: user.role !== "A" ? user?._id : '',
+        list: user.role !== "A" ? user?._id : "",
         page: page + 1,
         pageSize: pageSize,
-        agency:user?.agency
+        agency: user?.agency,
       });
       setLoading(false);
 
@@ -138,13 +170,12 @@ const Tasks = () => {
 
       const data = response?.data?.data.map((item) => ({
         value: item?._id,
-        label: item?.firstName + " " + (item?.lastName || ''),
+        label: item?.firstName + " " + (item?.lastName || ""),
       }));
 
       // Optionally, you can also store pagination info (totalUsers, totalPages) if needed
       setUsers(data);
       setTotalPages(data.length);
-
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -160,11 +191,11 @@ const Tasks = () => {
   //for  model
   const fetchCompanies = async () => {
     setLoading(true);
-    const user = JSON.parse(localStorage.getItem('user'))
+    const user = JSON.parse(localStorage.getItem("user"));
 
     try {
       const response = await axios.post(`${base_url}/companies/filter`, {
-        userId: user.role !== "A" ? user?._id : undefined
+        userId: user.role !== "A" ? user?._id : undefined,
       });
       const data = response?.data?.data?.map((item) => ({
         value: item?.companyDetails?.TaskId,
@@ -192,7 +223,7 @@ const Tasks = () => {
       setLoading(false);
       setTasks(data);
       setTotalTasks(response.data.totalTasks);
-      console.log(allUsers, "about taks for paginations")
+      console.log(allUsers, "about taks for paginations");
     } catch (error) {
       toast.error("Error While  Fetching Tasks ");
 
@@ -340,6 +371,8 @@ const Tasks = () => {
                 onClick={() => {
                   setCompanyId("");
                   setShowForm(false);
+      setCompletedTaskView(null);
+
                 }}
               >
                 Cancel
@@ -365,6 +398,8 @@ const Tasks = () => {
           <div className="justify-center">
             <Taskform
               {...{
+                showForm,
+                completedTaskView,
                 companyId,
                 setCompanyId,
                 setShowForm,
@@ -395,7 +430,7 @@ const Tasks = () => {
               fetchAllTasks,
               setPageSize,
               formData,
-              fetchUsers
+              fetchUsers,
             }}
             dataLoading={loading}
           />
@@ -473,7 +508,12 @@ const Tasks = () => {
             </Button>
             <Button
               variant="outlined"
-              onClick={() => setShowAutoGenModal(false)}
+              onClick={() => {
+                setShowForm(false);
+      setCompletedTaskView(null);
+
+                setShowAutoGenModal(false);
+              }}
             >
               Cancel
             </Button>

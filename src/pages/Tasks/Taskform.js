@@ -6,6 +6,7 @@ import CustomFileInput from "../../components/customFile";
 import moment from "moment";
 import {
   getEndTasks,
+  showForm,
   getEsiData,
   getGstData,
   getIncomeTaxData,
@@ -21,29 +22,70 @@ import Loader from "../../components/helpers/loader";
 import CustomCheckbox from "../../components/Checkbox/Checkbox";
 import ExistingCustomer from "./popups/existingCostomer";
 import NewCustomer from "./popups/newCostomer";
+import { useLocation } from "react-router";
 
-const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
+const Taskform = ({
+  showForm,
+  setShowForm,
+  fetchTasks,
+  companyId,
+  completedTaskView,
+}) => {
+
   const [companies, setCompanies] = useState([]);
   const [companyData, setCompanyData] = useState(null);
-  const [customer, setCustomer] = useState('')
-  const [showModel, setShowModel] = useState(false)
+  const [customer, setCustomer] = useState("");
+  const [showModel, setShowModel] = useState(false);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const tasks = (data) => {
-    return getTasks({ companies: [], users: [], data })
-  }
+    return getTasks({ companies: [], users: [], data });
+  };
   const endTask = getEndTasks();
-  const user = JSON.parse(localStorage.getItem('user'))
+  const user = JSON.parse(localStorage.getItem("user"));
   const defaultData = tasks().reduce((acc, field) => {
     acc[field.id] = "";
-    acc['agencyName']=user?.agency
+    acc["agencyName"] = user?.agency;
     return acc;
   }, {});
-  const [formData, setFormData] = useState(defaultData);
+
+ const [formData, setFormData] = useState(defaultData)
+
+  useEffect(() => {
+  
+
+    console.log("show form state",showForm)
+      // Reset the completedTaskView and formData when the page is refreshed or showForm is false
+      if (!showForm) {
+        completedTaskView = null;
+        setFormData(null); // Clear form data
+        setShowForm(false); // Hide the form
+      }
+    
+
+  
+
+    // If completedTaskView exists, update formData
+    if (completedTaskView && showForm) {
+      setFormData((prevState) => ({
+        ...prevState,
+        ...completedTaskView,
+      }));
+    }
+
+  }, [completedTaskView, showForm]);
+
+
+
+
+
+
+  
   const [error, setError] = useState(null);
   const [taskData, setTasks] = useState(tasks());
 
   const currentYear = moment().year();
+
   const currentMonth = moment().format("MMMM");
 
   const handleInputChange = (e) => {
@@ -124,8 +166,8 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   const fetchCompanies = async () => {
     try {
       const response = await axios.post(`${base_url}/companies/filter`, {
-        userId: user.role !== "A" ? user?._id : '',
-        agency:user?.agency
+        userId: user.role !== "A" ? user?._id : "",
+        agency: user?.agency,
       });
       const data = response?.data?.data?.map((item) => ({
         value: item?.companyDetails?.companyName,
@@ -157,8 +199,6 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
   }, []);
 
   // Dependency array to rerun when isChecked or company changes
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -316,8 +356,22 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
         <>{"Vishnu"}</>
       )} */}
 
-      {customer === 'Exist' && showModel && <ExistingCustomer {...{ setCustomer, setFormData, formData, setShowModel }} />}
-      {customer === 'New' && showModel && <NewCustomer {...{ setCustomer, setFormData, formData, setShowModel, fetchCompanies }} />}
+      {customer === "Exist" && showModel && (
+        <ExistingCustomer
+          {...{ setCustomer, setFormData, formData, setShowModel }}
+        />
+      )}
+      {customer === "New" && showModel && (
+        <NewCustomer
+          {...{
+            setCustomer,
+            setFormData,
+            formData,
+            setShowModel,
+            fetchCompanies,
+          }}
+        />
+      )}
 
       {showForm && (
         <>
@@ -325,7 +379,9 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
             className="text-black p-2 rounded-t-lg"
             style={{ background: "#f5f5f5" }}
           >
-            <h1 className="text-2xl font-bold">Create New Task</h1>
+            <h1 className="text-2xl font-bold">
+              {completedTaskView ? "View Task" : "Create New Task"}
+            </h1>
           </header>
           <form onSubmit={handleSubmit} className="p-3">
             <div
@@ -340,11 +396,15 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                   <h4 className="text-[16px] flex-col gap-3">Customer</h4>
                   <div className="flex items-center gap-5 mt-2">
                     <CustomCheckbox
+                      disabled={completedTaskView ? true : false}
                       id="Customer"
                       label="Existing"
                       name={"customer"}
                       checked={customer == "Exist"}
-                      onChange={() => { setCustomer("Exist"); setShowModel(true) }}
+                      onChange={() => {
+                        setCustomer("Exist");
+                        setShowModel(true);
+                      }}
                       required={false}
                       className="mb-2 items-center  font-bold  justify-center"
                       style={{ cursor: "pointer" }}
@@ -352,11 +412,15 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                     />
 
                     <CustomCheckbox
+                      disabled={completedTaskView ? true : false}
                       id="newCustomer"
                       label="New"
                       name={"customer"}
                       checked={customer == "New"}
-                      onChange={() => { setCustomer("New"); setShowModel(true) }}
+                      onChange={() => {
+                        setCustomer("New");
+                        setShowModel(true);
+                      }}
                       required={false}
                       className="mb-2 items-center font-bold justify-center"
                       style={{ cursor: "pointer" }}
@@ -364,7 +428,6 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                     />
                   </div>
                 </div>
-
 
                 {taskData?.map((field, index) => {
                   if (field.type === "select") {
@@ -383,6 +446,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                         onChange={handleInputChange}
                         required={field.required}
                         defaultValue={field?.defaultValue}
+                        disabled={completedTaskView ? true : false}
                       />
                     );
                   } else if (field.type === "textarea") {
@@ -396,6 +460,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                         onChange={handleInputChange}
                         required={field.required}
                         defaultValue={field?.defaultValue}
+                        disabled={completedTaskView ? true : false}
                       />
                     );
                   } else if (
@@ -412,6 +477,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                         value={formData[field.id] || ""}
                         onChange={handleInputChange}
                         required={field.required}
+                        disabled={completedTaskView ? true : false}
                       />
                     );
                   } else if (field.type === "file") {
@@ -423,6 +489,7 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                         link={formData[field.id]}
                         onChange={handleFileChange}
                         readOnly={field?.readOnly}
+                        disabled={completedTaskView ? true : false}
                       />
                     );
                   }
@@ -431,10 +498,17 @@ const Taskform = ({ showForm, setShowForm, fetchTasks, companyId }) => {
                 <div className="col-span-4 flex justify-end mt-4">
                   <button
                     type="submit"
-                    className="bg-blue-500 w-24 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+                    className={`w-30 py-2 px-2 rounded-lg ${
+                      loading ? "bg-gray-400" : "bg-blue-500"
+                    } text-white hover:bg-blue-600 ${
+                      completedTaskView ? "cursor-not-allowed bg-gray-400" : ""
+                    }`}
+                    disabled={completedTaskView} // Disable the button if completedTaskView is available
                   >
                     {loading ? (
                       <Loader color="#fff" thickness="4" />
+                    ) : completedTaskView ? (
+                      "Task View" // Text when the button is disabled due to completedTaskView
                     ) : companyId ? (
                       "Update"
                     ) : (

@@ -9,7 +9,6 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import TablePagination from "@mui/material/TablePagination";
-import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import moment from "moment";
@@ -19,6 +18,10 @@ import Loader from "../../components/helpers/loader";
 import SortableTableHeader from "../../components/table/SortableTableHeader";
 import { toast } from "react-toastify";
 import { getTaskDisplayName } from "../../utils/TaskTypeMap";
+import TaskDetailsPopup from './../../components/common/TaskDetailsPopup';
+import { useNavigate } from "react-router";
+import {  Visibility } from "@mui/icons-material";
+
 
 const theme = createTheme({
   typography: {
@@ -68,6 +71,7 @@ export default function CompletedTasksTable({
   formData,
   page,
   pageSize,
+  setTasks,
   setPageSize,
   setPage,
   totalTasks,
@@ -82,6 +86,16 @@ export default function CompletedTasksTable({
     "Page :",
     page
   );
+
+  const navigate = useNavigate();
+
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [popupContent, setPopupContent] = useState({
+    title: "",
+    tasks: [],
+    companies: [],
+  });
+
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("sno");
 
@@ -107,6 +121,33 @@ export default function CompletedTasksTable({
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(columnId);
   };
+
+
+  const handleClick = (task) => {
+    console.log("Task clicked", task);
+
+    // Store task in sessionStorage when clicked
+    sessionStorage.setItem("task", JSON.stringify(task));
+
+    // Navigate to the tasks page with the task
+    navigate("/tasks", { state: { task } });
+  };
+
+  useEffect(() => {
+    // Check if the task exists in sessionStorage on component mount
+    const savedTask = sessionStorage.getItem("task");
+
+    if (savedTask) {
+      const task = JSON.parse(savedTask);
+      console.log("Restored task:", task);
+      // You can use the task here if needed
+    }
+
+    // Cleanup: Remove task from sessionStorage on component unmount or refresh
+    return () => {
+      sessionStorage.removeItem("task");
+    };
+  }, []); // Empty dependency array ensures this effect runs only once on mount
 
   const sortedTasks = tasks.sort((a, b) => {
     if (orderBy === "company") {
@@ -255,16 +296,16 @@ export default function CompletedTasksTable({
                     {task.applicationSubStatus || "N/A"}
                   </TableCell>
                   <TableCell align="left" padding="normal">
-                    {/* <IconButton
-                      aria-label="edit"
+                    <IconButton
+                      aria-label="View"
                       size="small"
-                      onClick={() => handleEditForm(task._id)}
+                      onClick={() => handleClick(task)}
                     >
-                      <EditOutlined
+                      <Visibility
                         fontSize="inherit"
                         className="text-green-400 z-0 bg-gray-50 rounded"
                       />
-                    </IconButton> */}
+                    </IconButton>
 
                     <IconButton
                       aria-label="Completed"
@@ -308,6 +349,15 @@ export default function CompletedTasksTable({
           }}
         />
       </TableContainer>
+      {/* 
+      <TaskDetailsPopup
+        visible={popupVisible}
+        onClose={() => setPopupVisible(false)}
+        title={popupContent.title}
+        tasks={popupContent.tasks}
+        companies={popupContent.companies}
+        onTaskClick={handleTaskClick}
+      /> */}
       <Accordian />
     </ThemeProvider>
   );

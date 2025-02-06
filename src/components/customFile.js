@@ -1,6 +1,6 @@
 import React from "react";
 
-const CustomFileInput = ({ id, label, required, onChange, link,readOnly }) => {
+const CustomFileInput = ({ id, label, required, onChange, link,readOnly,disabled }) => {
   // console.log(label,readOnly)
   return (
     <div className="mb-4">
@@ -13,6 +13,7 @@ const CustomFileInput = ({ id, label, required, onChange, link,readOnly }) => {
       <input
         type="file"
         id={id}
+        disabled={disabled}
         required={required}
         onChange={onChange}
         readOnly={readOnly}

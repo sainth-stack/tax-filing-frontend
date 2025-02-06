@@ -20,6 +20,8 @@ import AutoTaskForm from "./AutoTaskForm";
 
 const AutoTasks = () => {
   const [showForm, setShowForm] = useState(false);
+  const [completedTaskView, setCompletedTaskView] = useState(null);
+
   const [allUsers, setAllUsers] = useState([]);
   const [showtasks, setShowTasks] = useState(false);
   const [companyId, setCompanyId] = useState("");
@@ -202,6 +204,38 @@ const AutoTasks = () => {
     }
   };
 
+
+  //logic for  completed auto tasks
+  
+  useEffect(() => {
+    const taskFromLocation = location?.state?.task;
+
+    if (taskFromLocation) {
+      console.log("auto Task from location:", taskFromLocation);
+      setCompletedTaskView(taskFromLocation);
+      setShowForm(true);
+    } else {
+      setCompletedTaskView(null);
+      setShowForm(false);
+    }
+
+    const cleanupOnRefreshOrUnmount = () => {
+      setCompletedTaskView(null);
+      setShowForm(false);
+    };
+
+    // Check for page refresh or navigation
+    const isPageRefreshed = sessionStorage.getItem("isRefreshed");
+    if (!isPageRefreshed) {
+      sessionStorage.setItem("isRefreshed", true);
+    } else {
+      cleanupOnRefreshOrUnmount();
+      sessionStorage.removeItem("isRefreshed");
+    }
+
+    return cleanupOnRefreshOrUnmount;
+  }, [location.state]); 
+
   return (
     <Layout>
       <div className="container mx-auto my-6">
@@ -299,6 +333,7 @@ const AutoTasks = () => {
         <div className="bg-white rounded-lg shadow-md">
           <AutoTasksTable
             {...{
+              completedTaskView,
               setCompanyId,
               companyRefresh,
               handleDelete,
