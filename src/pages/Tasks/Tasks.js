@@ -189,27 +189,25 @@ const Tasks = () => {
   }, [page, pageSize, formData]);
 
   //for  model
-  const fetchCompanies = async () => {
-    setLoading(true);
-    const user = JSON.parse(localStorage.getItem("user"));
+   const fetchCompanies = async () => {
+     setLoading(true);
 
-    try {
-      const response = await axios.post(`${base_url}/companies/filter`, {
-        userId: user.role !== "A" ? user?._id : undefined,
-      });
-      const data = response?.data?.data?.map((item) => ({
-        value: item?.companyDetails?.TaskId,
-        label: item?.companyDetails?.TaskId,
-      }));
-      setLoading(false);
+     try {
+       const response = await axios.post(`${base_url}/companies/filter`, {
+         userId: user.role !== "A" ? user?._id : "",
+       });
+       const data = response?.data?.data?.map((item) => ({
+         value: item?.companyDetails?.TaskId,
+         label: item?.companyDetails?.TaskId,
+       }));
+       setLoading(false);
 
-      setCompanies(data);
-    } catch (error) {
-      toast.error("Error While Companies Fetching ");
-
-      console.error("Error fetching companies:", error);
-    }
-  };
+       setCompanies(data);
+     } catch (error) {
+       toast.error("Error While Companies Fetching ");
+       console.error("Error fetching companies:", error);
+     }
+   };
 
   const fetchAllTasks = async (page, pageSize) => {
     setLoading(true);
@@ -265,11 +263,22 @@ const Tasks = () => {
     try {
       const { company, taskType, year } = autoGenData;
 
-      await axios.post(`${base_url}/tasks`, {
-        company,
-        taskType,
-        year,
-      });
+       const taskResponse = await axios.post(`${base_url}/tasks`, {
+         company,
+         taskType,
+         year,
+       });
+
+      const task = taskResponse.data;
+
+    
+       await axios.post(`${base_url}/notifications`, {
+         userId: task.assignedTo,
+         message: `A new task of type "${taskType}"  id Assigned to ${task.assignedName} for the year ${year} has been assigned to you.`,
+         taskId: task._id,
+       });
+      
+      
       fetchTasks();
       setShowAutoGenModal(false);
     } catch (error) {

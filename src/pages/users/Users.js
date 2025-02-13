@@ -33,7 +33,7 @@ const Users = () => {
       const response = await axios.post(`${base_url}/users/filter`, {
         name,
         page: page + 1,
-        agency: agency,
+        // agency: agency,
         pageSize: pageSize,
       });
       setLoading(false);

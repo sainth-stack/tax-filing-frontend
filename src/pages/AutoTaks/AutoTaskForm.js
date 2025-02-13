@@ -203,10 +203,11 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
       });
 
       // Submit form data
+       let taskResponse;
       if (formData._id) {
         try {
           setLoading(true);
-          await axios.put(
+         taskResponse= await axios.put(
             `${base_url}/tasks/auto/${formData._id}`,
             formDataToSubmit
           );
@@ -216,17 +217,59 @@ const AutoTaskForm = ({ showForm, setShowForm, fetchTasks, companyId, setCompany
           toast.success("Task Updated Successfully");
         } catch (error) {
           toast.error("Failed to   Update Task");
+          return;
+
         }
       } else {
         try {
-          await axios.post(`${base_url}/tasks/auto`, formDataToSubmit);
+     taskResponse=     await axios.post(`${base_url}/tasks/auto`, formDataToSubmit);
           toast.success("Task Created Successfully");
           setShowForm(false);
         } catch (error) {
           toast.error("Failed to Create Task");
+          return
         }
       }
 
+
+       const task = taskResponse.data.task;
+
+       // Check if assignedTo exists and send a notification email
+       if (task.assignedTo) {
+         try {
+           const userResponse = await axios.get(
+             `${base_url}/users/${task.assignedTo}`
+           );
+           const assignedUser = userResponse.data;
+
+           if (assignedUser && assignedUser.email) {
+             const agency = JSON.parse(localStorage?.getItem("user"))?.agency;
+             const ccAddress = JSON.parse(localStorage?.getItem("user"))?.email;
+
+             await axios.post(`${base_url}/notifications`, {
+               assignNewTask: {
+                 roleData: {
+                   toAddress: [assignedUser.email],
+                   ccAddress: [ccAddress],
+                   subject: "New Task Assigned",
+                   message: `Hello ${
+                     assignedUser.firstName || "User"
+                   }, you have been assigned a new task: "${
+                     task.taskName || task.taskType
+                   }". Please check  for more details.`,
+                 },
+               },
+               agency,
+             });
+
+             console.log("Notification sent successfully.");
+           } else {
+             console.error("Assigned user email not found.");
+           }
+         } catch (error) {
+           console.error("Failed to fetch assigned user details:", error);
+         }
+       }
       // Fetch tasks and reset form data
       fetchTasks();
       setFormData(defaultData);

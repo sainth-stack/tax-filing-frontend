@@ -200,57 +200,103 @@ const Taskform = ({
 
   // Dependency array to rerun when isChecked or company changes
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+   e.preventDefault();
 
-    setError(null);
-    try {
-      const formDataToSubmit = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (formData[key] instanceof File) {
-          formDataToSubmit.append(key, formData[key]);
-        } else {
-          formDataToSubmit.append(key, formData[key]);
-        }
-      });
+   setError(null);
+   setLoading(true);
 
-      // Submit form data
-      if (formData._id) {
-        try {
-          setLoading(true);
-          await axios.put(
-            `${base_url}/tasks/${formData._id}`,
-            formDataToSubmit
-          );
-          setLoading(false);
-          setShowForm(false);
+   try {
+     const formDataToSubmit = new FormData();
+     Object.keys(formData).forEach((key) => {
+       formDataToSubmit.append(key, formData[key]);
+     });
 
-          toast.success("Task Updated Successfully");
-        } catch (error) {
-          toast.error("Failed to   Update Task");
-        }
-      } else {
-        try {
-          await axios.post(`${base_url}/tasks`, formDataToSubmit);
-          toast.success("Task Created Successfully");
-          setShowForm(false);
-        } catch (error) {
-          toast.error("Failed to Create Task");
-        }
-      }
+     let taskResponse;
+     const isUpdate = !!formData._id;
 
-      // Fetch tasks and reset form data
-      fetchTasks();
-      setFormData(defaultData);
-      setError(null);
-    } catch (error) {
-      setError(error.message);
-      console.error(
-        "ERROR",
-        error.response ? error.response.data : error.message
-      );
-    }
-  };
+     if (isUpdate) {
+       try {
+         // Update existing task
+         taskResponse = await axios.put(
+           `${base_url}/tasks/${formData._id}`,
+           formDataToSubmit
+         );
+         toast.success("Task Updated Successfully");
+       } catch (error) {
+         toast.error("Failed to Update Task");
+         setLoading(false);
+         return;
+       }
+     } else {
+       try {
+         // Create new task
+         taskResponse = await axios.post(`${base_url}/tasks`, formDataToSubmit);
+         toast.success("Task Created Successfully");
+       } catch (error) {
+         toast.error("Failed to Create Task");
+         setLoading(false);
+         return;
+       }
+     }
+
+     const task = taskResponse.data.task;
+
+     // Check if assignedTo exists and send a notification email
+     if (task.assignedTo) {
+       try {
+         const userResponse = await axios.get(
+           `${base_url}/users/${task.assignedTo}`
+         );
+         const assignedUser = userResponse.data;
+
+         if (assignedUser && assignedUser.email) {
+           const agency = JSON.parse(localStorage?.getItem("user"))?.agency;
+           const ccAddress = JSON.parse(localStorage?.getItem("user"))?.email;
+
+
+           await axios.post(`${base_url}/notifications`, {
+             assignNewTask: {
+               roleData: {
+                 toAddress: [assignedUser.email],
+                 ccAddress:[ccAddress],
+                 subject: "New Task Assigned",
+                 message: `Hello ${
+                   assignedUser.firstName || "User"
+                 }, you have been assigned a new task: "${
+                   task.taskName ||task.taskType
+                 }". Please check  for more details.`,
+               },
+             },
+             agency,
+           });
+
+           console.log("Notification sent successfully.");
+         } else {
+           console.error("Assigned user email not found.");
+         }
+       } catch (error) {
+         console.error("Failed to fetch assigned user details:", error);
+       }
+     }
+
+     // Fetch tasks and reset the form
+     fetchTasks();
+     setFormData(defaultData);
+     setError(null);
+     setShowForm(false);
+   } catch (error) {
+     setError(error.message);
+     console.error(
+       "ERROR:",
+       error.response ? error.response.data : error.message
+     );
+   } finally {
+     setLoading(false);
+   }
+ };
+
+  
 
   useEffect(() => {
     if (companyId) {
