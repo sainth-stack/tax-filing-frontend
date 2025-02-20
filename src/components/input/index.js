@@ -19,7 +19,8 @@ const CustomInput = ({
   name,
   required,
   disabled,
-  border
+  border,
+  formData
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 

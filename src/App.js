@@ -15,6 +15,8 @@ import Agency from "./pages/Agency/Agency";
 import AutoTasks from "./pages/AutoTaks/AutoTasks";
 import ServiceCalendar from "./pages/ServiceCalendar/ServiceCalendar";
 import CompletedTasks from "./pages/CompletedTasks/CompletedTasks";
+import PaymentCardPage from "./components/PaymentCard/PaymentCardPage";
+import PaymentPage from "./pages/PaymentPage/Payments";
 
 function App() {
   return (
@@ -26,8 +28,10 @@ function App() {
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/tasks/auto" element={<AutoTasks />} />
         <Route path="/tasks/done" element={<CompletedTasks />} />
-        
+
         <Route path="/users" element={<Users />} />
+        <Route path="/payments" element={<PaymentPage />} />
+
         <Route path="/company" element={<Company />} />
         <Route
           path="/notification-settings"

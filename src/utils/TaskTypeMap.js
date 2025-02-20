@@ -117,3 +117,17 @@ export const getTaskNumber = (taskType, companyName, companyData) => {
 };
 
 
+
+
+
+export const paymentTaskTypeMap = {
+  gst: "GST",
+  providentFund: "Provident Fund",
+  incomeTax: "Income Tax",
+  tds: "TDS",
+  professionalTax: "Prefessional Tax",
+  esi:"ESI"
+  
+  
+  // Add more mappings if needed
+};

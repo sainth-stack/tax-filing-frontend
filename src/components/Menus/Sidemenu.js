@@ -11,6 +11,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
 import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import AssuredWorkloadIcon from "@mui/icons-material/AssuredWorkload";
+import PaymentIcon from "@mui/icons-material/Payment";
 import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurnedInOutlined";
 const Sidemenu = ({ user }) => {
 
@@ -40,7 +41,6 @@ const Sidemenu = ({ user }) => {
       { name: "Company", icon: <BusinessIcon />, path: "/company" },
       { name: "Manual Tasks", icon: <TaskOutlinedIcon />, path: "/tasks" },
       { name: "Auto Tasks", icon: <TaskOutlinedIcon />, path: "/tasks/auto" },
-     
 
       { name: "Users", icon: <PeopleAltOutlined />, path: "/users" },
       {
@@ -70,6 +70,11 @@ const Sidemenu = ({ user }) => {
         name: "Completed Tasks",
         icon: <AssignmentTurnedInOutlinedIcon />,
         path: "/tasks/done",
+      },
+      {
+        name: "Payments",
+        icon: <PaymentIcon />,
+        path: "/payments",
       },
       { name: "Users", icon: <PeopleAltOutlined />, path: "/users" },
       {
