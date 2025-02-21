@@ -100,15 +100,6 @@ const PaymentPage = () => {
    }));
  };
 
- 
-
-  
-
- 
-
-
- 
-
   const handleDelete = async (id) => {
     // alert("payemtn id", id)
   console.log("pay going to delte",id)
@@ -127,9 +118,6 @@ const PaymentPage = () => {
   }
 };
 
- 
-
- 
 
   return (
     <Layout>
@@ -195,11 +183,8 @@ const PaymentPage = () => {
               {...{
                 formData,
                 setFormData,
-
                 showForm,
-     
                 setShowForm,
-               
                 view,
                 setCompanyRefresh,
                 companyRefresh,

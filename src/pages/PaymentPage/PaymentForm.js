@@ -147,16 +147,12 @@ const PaymentForm = ({ showForm, formData, setFormData }) => {
                           className="flex flex-col p-3 space-y-2 overflow-y-auto border rounded-md"
                         >
                           <p className="sticky top-0 p-2 mb-2 font-semibold bg-gray-200 rounded-lg shadow-sm z-5">
-                            Select Task Type
+                            Task Type
                           </p>
                           {field.options.map((option) => (
                             <div
                               key={option.value}
-                              className={`p-2 border rounded-md flex cursor-pointer text-center ${
-                                formData.taskType === option.value
-                                  ? "bg-blue-500 text-white font-semibold"
-                                  : "hover:bg-gray-200"
-                              }`}
+                              className={`p-2 border rounded-md flex cursor-pointer text-center`}
                               onClick={() =>
                                 handleInputChange("taskType", option.value)
                               }
