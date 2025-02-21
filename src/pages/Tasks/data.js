@@ -196,6 +196,7 @@ export const getGstData = (data, companies) => {
         { value: "gstMonthly", label: "GST - Monthly Filing" },
         { value: "gstMonthlyPayment", label: "GST - Monthly Payment" },
         { value: "gstRevocations", label: "GST - Revocations" },
+        { value: "paymentcollection", label: "Payment - Collection" },
       ],
     },
   ];
@@ -217,8 +218,25 @@ export const getGstData = (data, companies) => {
     fields = [...fields, ...getMonthlyPamnetData(data, companies)];
   } else if (["gstRevocations"].includes(data?.taskName)) {
     fields = [...fields, ...GstRevocationData(data)];
+  } else if (["paymentcollection"].includes(data?.taskName)) {
+    fields = [...fields, ...GetPaymentCollection(data)];
   }
+  return fields;
+};
 
+
+export const GetPaymentCollection = (data) => {
+  const fields = [
+    {
+      type: "select",
+      id: "paymentstatus",
+      label: "Payment Status",
+      options: [
+        { value: "pending", label: "Pending" },
+        { value: "completed", label: "Completed" },
+      ],
+    },
+  ];
   return fields;
 };
 
@@ -791,6 +809,7 @@ export const providentFund = (data) => {
         { value: "pfRegistration", label: "PF - New Registration" },
         { value: "pfMonthly", label: "PF - Regular Monthly Filing" },
         { value: "pfInactive", label: "PF - Inactive Registration" },
+        { value: "paymentcollection", label: "Payment - Collection" },
       ],
     },
   ];
@@ -801,6 +820,9 @@ export const providentFund = (data) => {
     fields = [...fields, ...pfRegistration(data)];
   } else if (["pfMonthly"].includes(data?.taskName)) {
     fields = [...fields, ...pfMonthly(data)];
+  }
+  else if (["paymentcollection"].includes(data?.taskName)) {
+    fields = [...fields, ...GetPaymentCollection(data)];
   }
 
   return fields;
@@ -926,6 +948,7 @@ export const TDSTCS = (data) => {
       options: [
         { value: "tdsTcs", label: "TDS/TCS" },
         { value: "tdsTcsMonthly", label: "TDS/TCS - Monthly Payment" },
+        { value: "paymentcollection", label: "Payment - Collection" },
       ],
     },
   ];
@@ -937,7 +960,9 @@ export const TDSTCS = (data) => {
   } else if (["tdsTcsMonthly"].includes(data?.taskName)) {
     fields = [...fields, ...TdsMonthly(data)];
   }
-
+  else if (["paymentcollection"].includes(data?.taskName)) {
+    fields = [...fields, ...GetPaymentCollection(data)];
+  }
   return fields;
 };
 
@@ -1113,6 +1138,7 @@ export const getIncomeTaxData = (data) => {
           label: "Income Tax - Non Audit Cases",
         },
         { value: "incomeTaxAdvanceTax", label: "Income Tax - Advance Tax" },
+        { value: "paymentcollection", label: "Payment - Collection" },
       ],
     },
   ];
@@ -1125,6 +1151,8 @@ export const getIncomeTaxData = (data) => {
     fields = [...fields, ...incomeTaxNonAuditForm(data)];
   } else if (["incomeTaxAdvanceTax"].includes(data?.taskName)) {
     fields = [...fields, ...incomeTaxAdvanceTaxForm(data)];
+  }else if (["paymentcollection"].includes(data?.taskName)) {
+    fields = [...fields, ...GetPaymentCollection(data)];
   }
 
   return fields;
@@ -1352,6 +1380,7 @@ export const getEsiData = (data) => {
           label: "ESI Monthly",
         },
         { value: "esiInactive", label: "ESI InActive Registration" },
+        { value: "paymentcollection", label: "Payment - Collection" },
       ],
     },
   ];
@@ -1364,6 +1393,8 @@ export const getEsiData = (data) => {
     fields = [...fields, ...esiRegularMonthlyActivityForm(data)];
   } else if (["esiInactive"].includes(data?.taskName)) {
     fields = [...fields, ...esiInactiveForm(data)];
+  }else if (["paymentcollection"].includes(data?.taskName)) {
+    fields = [...fields, ...GetPaymentCollection(data)];
   }
 
   return fields;
@@ -1572,6 +1603,7 @@ export const getProfessionalTaxData = (data) => {
           value: "professionalTaxInactive",
           label: "Professional Tax - Inactive",
         },
+        { value: "paymentcollection", label: "Payment - Collection" },
       ],
     },
   ];
@@ -1585,7 +1617,9 @@ export const getProfessionalTaxData = (data) => {
   } else if (data?.pft_taskName === "professionalTaxInactive") {
     fields = [...fields, ...professionalTaxInactiveForm(data)];
   }
-
+  else if (["paymentcollection"].includes(data?.taskName)) {
+    fields = [...fields, ...GetPaymentCollection(data)];
+  }
   return fields;
 };
 
@@ -1771,6 +1805,7 @@ const applicationSubstatusOptions = (formData) => {
       { value: "gstMonthly", label: "GST - Monthly Filing" },
       { value: "gstMonthlyPayment", label: "GST - Monthly Payment" },
       { value: "gstRevocations", label: "GST - Revocations" },
+      { value: "paymentcollection", label: "Payment - Collection" }
     ]
     : [{ value: "", label: "All" }];
 };
@@ -1848,6 +1883,7 @@ export const taskSearch = (formData) => {
     }
   ]
 };
+
 
 //revocations data condotions
 export const GstRevocationData = (data) => {

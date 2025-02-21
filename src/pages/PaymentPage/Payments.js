@@ -57,11 +57,14 @@ const PaymentPage = () => {
 
   const fetchPayments = async () => {
       try {
-        const response = await axios.get(`${base_url}/payments`); // Fetch all payments
+        console.log(user?.agency,'dd')
+        const response = await axios.get(`${base_url}/payments`, {
+          params: {
+            agencyName: user?.agency
+          }
+        }); // Fetch payments for specific agency
         if (response.data.success) {
           setPayments(response?.data?.data);
-          
-          // Set only the 'data' array
         } else {
           console.error("Failed to fetch payments");
         }
@@ -107,7 +110,6 @@ const PaymentPage = () => {
 
   try {
     await axios.delete(`${base_url}/payments/${id}`);
-
     setLoading(false);
     setPayments(payments.filter((payment) => payment._id !== id));
     toast.warn("Payment Deleted Successfully");

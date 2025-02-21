@@ -372,7 +372,7 @@ const Taskform = ({
   }, [formData]);
 
   const getFields = (field) => {
-    if (field.id === "company") {
+    if (field?.id === "company") {
       return companies;
     } else if (field.id === "assignedTo") {
       return [...users];
@@ -477,18 +477,18 @@ const Taskform = ({
 
                 {taskData?.map((field, index) => {
                   if (field.type === "select") {
-                    const value =
-                      field.id === "company" && companyData
-                        ? companyData.companyName // Get companyName
-                        : formData[field.id] || "";
-
+                    console.log(companyData)
+                    const value = (field?.id === "company" && companyData) 
+                    ? companyData?.companyName 
+                    : formData?.[field?.id] || "";
+                                    console.log(value)
                     return (
                       <SelectInput
                         key={index}
-                        id={field.id}
-                        label={field.label}
+                        id={field?.id}
+                        label={field?.label}
                         options={getFields(field)}
-                        value={value || formData[field.id]}
+                        value={value || formData?.[field?.id]}
                         onChange={handleInputChange}
                         required={field.required}
                         defaultValue={field?.defaultValue}
@@ -517,10 +517,10 @@ const Taskform = ({
                     return (
                       <CustomInput
                         key={index}
-                        id={field.id}
+                        id={field?.id}
                         type={field.type}
                         label={field.label}
-                        value={formData[field.id] || ""}
+                        value={formData?.[field?.id] || ""}
                         onChange={handleInputChange}
                         required={field.required}
                         disabled={completedTaskView ? true : false}

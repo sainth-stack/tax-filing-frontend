@@ -72,7 +72,6 @@ export default function TasksTable({
   fetchAllTasks,
   dataLoading,
 }) {
-
   // console.log("chekign total tasks ", totalTasks, 'total page /*  */size', pageSize, "Page :", page);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("sno");

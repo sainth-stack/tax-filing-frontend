@@ -156,7 +156,7 @@ const Tasks = () => {
         agency: user?.agency,
       });
       setLoading(false);
-
+      setTotalTasks(data.totalTasks);
       setTasks(data?.data);
     } catch (error) {
       toast.error("Error While Tasks Filtering");

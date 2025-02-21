@@ -74,6 +74,7 @@ const PaymentForm = ({ showForm, formData, setFormData }) => {
       company: formData.company, // Assuming `company` is selected from the dropdown
       taskType: formData.taskType, // Adjust if needed
       feeType: formData.feeType, // Monthly_Subscription or Lumpsum
+      agencyName:user?.agency
     };
 
     // Extracting amounts dynamically
