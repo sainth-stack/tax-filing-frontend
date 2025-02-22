@@ -209,7 +209,7 @@ const handleSubmit = async (e) => {
           payload
         );
         console.log("✅ Payment updated successfully:", response.data);
-        toast.success("Payment Successfully Updated");
+        toast.success("Payment Successfully Updated",{draggable:true});
       } catch (error) {
         console.error(
           "❌ Error updating payment:",
