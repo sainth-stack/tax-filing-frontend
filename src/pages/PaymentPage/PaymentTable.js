@@ -91,69 +91,70 @@ export default function PaymentTable({
     fetchPayments(newPage, pageSize);
   };
 
-   const handleChangeRowsPerPage = (event) => {
-     const newPageSize = parseInt(event.target.value, 10);
-     setPageSize(newPageSize);
-     setPage(0); // Reset to first page
-     fetchPayments(0, newPageSize);
-   };
-
-
  
+
+  const handleChangeRowsPerPage = (event) => {
+  const newSize = parseInt(event.target.value, 10);  // Get selected rows per page
+  setPageSize(newSize);  // Set the new page size
+  setPage(0);  // Reset to first page
+  fetchPayments(0, newSize);  // Fetch data with updated pagination
+};
+
+
 
   const handleRequestSort = (columnId) => {
     const isAsc = orderBy === columnId && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(columnId);
   };
-const sortedPayments = payments.sort((a, b) => {
-  if (orderBy === "company") {
-    const aCompany = a.company?.toLowerCase() || "";
-    const bCompany = b.company?.toLowerCase() || "";
-    return order === "asc"
-      ? aCompany.localeCompare(bCompany)
-      : bCompany.localeCompare(aCompany);
-  }
+  const sortedPayments = Array.isArray(payments)
+    ? [...payments].sort((a, b) => {
+        if (!a || !b) return 0; // Handle undefined/null cases
 
-  if (orderBy === "paymentType") {
-    const aType = a.paymentType?.toLowerCase() || "";
-    const bType = b.paymentType?.toLowerCase() || "";
-    return order === "asc"
-      ? aType.localeCompare(bType)
-      : bType.localeCompare(aType);
-  }
+        if (orderBy === "company") {
+          const aCompany = a.company?.toLowerCase() || "";
+          const bCompany = b.company?.toLowerCase() || "";
+          return order === "asc"
+            ? aCompany.localeCompare(bCompany)
+            : bCompany.localeCompare(aCompany);
+        }
 
-  if (orderBy === "amount") {
-    return order === "asc"
-      ? (a.amount || 0) - (b.amount || 0)
-      : (b.amount || 0) - (a.amount || 0);
-  }
+        if (orderBy === "paymentType") {
+          const aType = a.paymentType?.toLowerCase() || "";
+          const bType = b.paymentType?.toLowerCase() || "";
+          return order === "asc"
+            ? aType.localeCompare(bType)
+            : bType.localeCompare(aType);
+        }
 
-  if (orderBy === "taskType") {
-    // Extract names from the payments array
-    const aNames = a.payments?.length
-      ? a.payments.map((p) => p.name.toLowerCase()).join(", ")
-      : "";
-    const bNames = b.payments?.length
-      ? b.payments.map((p) => p.name.toLowerCase()).join(", ")
-      : "";
+        if (orderBy === "amount") {
+          return order === "asc"
+            ? (a.amount || 0) - (b.amount || 0)
+            : (b.amount || 0) - (a.amount || 0);
+        }
 
-    return order === "asc"
-      ? aNames.localeCompare(bNames)
-      : bNames.localeCompare(aNames);
-  }
+        if (orderBy === "taskType") {
+          const aNames = a.payments?.length
+            ? a.payments.map((p) => p.name?.toLowerCase() || "").join(", ")
+            : "";
+          const bNames = b.payments?.length
+            ? b.payments.map((p) => p.name?.toLowerCase() || "").join(", ")
+            : "";
 
+          return order === "asc"
+            ? aNames.localeCompare(bNames)
+            : bNames.localeCompare(aNames);
+        }
 
-  return 0; // Default case (no sorting)
-});
+        return 0; // Default case (no sorting)
+      })
+    : []; // If payments is not an array, return an empty array
 
-
- const handleEditForm = (id) => {
+  const handleEditForm = (id) => {
     // alert(id)
 
     setPaymentId(id);
   };
-  
 
   return (
     <ThemeProvider theme={theme}>
@@ -218,7 +219,9 @@ const sortedPayments = payments.sort((a, b) => {
                 </TableCell>
               </TableRow>
             ) : (
-              sortedPayments.map((payment, index) => (
+              sortedPayments.slice(page * pageSize, page * pageSize + pageSize)
+
+              .map((payment, index) => (
                 <TableRow key={payment._id || index} sx={{ height: "48px" }}>
                   <TableCell align="left" padding="normal">
                     {page * pageSize + index + 1}
@@ -260,10 +263,7 @@ const sortedPayments = payments.sort((a, b) => {
                     <IconButton
                       aria-label="edit"
                       size="small"
-                                              onClick={() => handleEditForm(payment._id)}
-
-
-                      
+                      onClick={() => handleEditForm(payment._id)}
                     >
                       <EditOutlined
                         fontSize="inherit"
@@ -287,20 +287,21 @@ const sortedPayments = payments.sort((a, b) => {
           </TableBody>
         </Table>
 
-        <TablePagination
-          rowsPerPageOptions={[1, 2]} // Options for rows per page
-          component="div"
-          count={totalPayments} // Total number of payments
-          rowsPerPage={pageSize} // Selected number of rows per page
-          page={page} // Current page
-          onPageChange={handleChangePage} // Function to update page
-          onRowsPerPageChange={handleChangeRowsPerPage} // Function to update rows per page
-          className="border-t border-gray-200"
-          sx={{
-            boxShadow: "none",
-            border: "none",
-          }}
-        />
+       <TablePagination
+  rowsPerPageOptions={[1,2,3]}  // Allow only 1 row per page
+  component="div"
+  count={totalPayments}  // Ensure this is correct
+  rowsPerPage={pageSize} // Should be set to 1
+  page={page}  // Current page
+  onPageChange={handleChangePage}  // Update page function
+  onRowsPerPageChange={handleChangeRowsPerPage}  // Update rows per page function
+  className="border-t border-gray-200"
+  sx={{
+    boxShadow: "none",
+    border: "none",
+  }}
+/>
+
       </TableContainer>
       <Accordian />
     </ThemeProvider>

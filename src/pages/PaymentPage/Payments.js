@@ -31,7 +31,7 @@ const PaymentPage = () => {
   
   const [showForm, setShowForm] = useState(false);
   const [page, setPage] = useState(0); // Default page 1
-  const [pageSize, setPageSize] = useState(0);
+  const [pageSize, setPageSize] = useState(1);
 
   const [paymentId, setPaymentId] = useState("");
   const [open, setOpen] = useState(false);
@@ -56,21 +56,42 @@ const PaymentPage = () => {
   // console.log("comeplted from parent,completedTaskView", completedTaskView);
 
   const fetchPayments = async () => {
-      try {
-        console.log(user?.agency,'dd')
-        const response = await axios.get(`${base_url}/payments`); // Fetch payments for specific agency
-        if (response.data.success) {
-          setPayments(response?.data?.data);
-          setTotalPayments(response?.data?.totalPayments);
-        } else {
-          console.error("Failed to fetch payments");
-        }
-      } catch (error) {
-        console.error("Error fetching payments:", error);
+    try {
+      console.log("User Data:", user);
+
+      if (!user?.agency) {
+        console.error("Agency name is missing");
+        return;
       }
-    };
+
+      let agencyName=user?.agency
+
+      console.log("agency Name Vishnu",agencyName)
+      // Fetch payments for the specific agency
+     const response = await axios.get(
+       `${base_url}/payments?agencyName=${user.agency}`
+     );
+
+
+      console.log("resposefdvnkjfnv",response.data)
+    
+      if (response?.data.data) {
+        setPayments(response.data.data);
+        setTotalPayments(response.data.totalPayments || 0); // Ensure totalPayments is always a number
+      } else {
+        console.error("No payments data received");
+      }
+    } catch (error) {
+      console.error(
+        "Error fetching payments:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
 
   
+  console.log("paymetn state",payments)
 
    useEffect(() => {
     

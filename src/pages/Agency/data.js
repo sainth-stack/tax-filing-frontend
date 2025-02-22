@@ -8,7 +8,7 @@ export const sectionsData = (data) => {
           type: "text",
           id: "AgencyDetails.agencyName", // Changed to camelCase
           label: "Agency Name",
-          disabled: data?.AgencyDetails?.agencyName?true:false,
+          // disabled: data?.AgencyDetails?.agencyName?true:false,
           placeholder: "Enter Agency Name",
         },
         {
