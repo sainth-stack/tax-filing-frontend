@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CloseOutlined, MoreVert as MoreVertIcon } from "@mui/icons-material";
 import SelectInput from "../../../components/select";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 const Header = ({
   children,
@@ -118,7 +119,7 @@ const handleExportCSV = () => {
 
 const handleExportAsPDF = () => {
   if (!data || data.length === 0) {
-    alert("No data available to export.");
+    toast.info("No data available to export.");
     return;
   }
 
@@ -294,7 +295,7 @@ const handleExportAsPDF = () => {
         {payment && (
           <SelectInput
             id="month"
-            className="shadow-sm ml-2"
+            className="ml-2 shadow-sm"
             value={type}
             onChange={(e) => setType(e.target.value)}
             default1={"Payment Type"}

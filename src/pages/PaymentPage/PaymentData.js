@@ -1,4 +1,4 @@
-export const PaymentStaticData = (companiesdata = [], feeType = "") => {
+export const PaymentStaticData = (companiesdata = [], PaymentType = "") => {
   const fields = [
     {
       type: "select",
@@ -23,7 +23,7 @@ export const PaymentStaticData = (companiesdata = [], feeType = "") => {
     },
     {
       type: "select",
-      id: "feeType",
+      id: "paymentType",
       label: "Fee Type",
       options: [
         { value: "monthlySubscription", label: "Monthly Subscription" },
@@ -41,7 +41,7 @@ export const PaymentStaticData = (companiesdata = [], feeType = "") => {
     { value: "professionalTax", label: "Professional Tax" },
   ];
 
-  if (feeType === "monthlySubscription") {
+  if (PaymentType === "monthlySubscription") {
     // Add a text input for each task type
     taskTypes.forEach((task) => {
       fields.push({
@@ -51,11 +51,11 @@ export const PaymentStaticData = (companiesdata = [], feeType = "") => {
         placeholder: `Enter amount for ${task.label}`,
       });
     });
-  } else if (feeType === "lumpsum") {
+  } else if (PaymentType =="lumpsum") {
     // Single text input for total amount
     fields.push({
       type: "text",
-      id: "lumpsumAmount",
+      id: "amount",
       label: "Lumpsum Amount",
       placeholder: "Enter lumpsum amount",
     });

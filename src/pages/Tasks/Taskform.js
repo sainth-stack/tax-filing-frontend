@@ -394,7 +394,7 @@ const Taskform = ({
     <div className="container mx-auto bg-white rounded-lg shadow-md">
       {/* {loading && loading ? (
         <>
-          <div className="flex justify-center items-center  p-4">
+          <div className="flex items-center justify-center p-4">
             <Loader size={30} />{" "}
           </div>
         </>
@@ -422,7 +422,7 @@ const Taskform = ({
       {showForm && (
         <>
           <header
-            className="text-black p-2 rounded-t-lg"
+            className="p-2 text-black rounded-t-lg"
             style={{ background: "#f5f5f5" }}
           >
             <h1 className="text-2xl font-bold">
@@ -432,9 +432,9 @@ const Taskform = ({
           <form onSubmit={handleSubmit} className="p-3">
             <div
               key={""}
-              className="mb-2 p-2 border border-gray-300 rounded-lg bg-gray-50 shadow-sm"
+              className="p-2 mb-2 border border-gray-300 rounded-lg shadow-sm bg-gray-50"
             >
-              <h2 className="text-xl font-semibold mb-2 border-b border-gray-200 pb-2">
+              <h2 className="pb-2 mb-2 text-xl font-semibold border-b border-gray-200">
                 {"Task Form"}
               </h2>
               <div className="grid grid-cols-4 gap-5">
@@ -452,7 +452,7 @@ const Taskform = ({
                         setShowModel(true);
                       }}
                       required={false}
-                      className="mb-2 items-center  font-bold  justify-center"
+                      className="items-center justify-center mb-2 font-bold"
                       style={{ cursor: "pointer" }}
                       labelStyles={{ fontSize: "16px", color: "#333" }}
                     />
@@ -468,7 +468,7 @@ const Taskform = ({
                         setShowModel(true);
                       }}
                       required={false}
-                      className="mb-2 items-center font-bold justify-center"
+                      className="items-center justify-center mb-2 font-bold"
                       style={{ cursor: "pointer" }}
                       labelStyles={{ fontSize: "16px", color: "#333" }}
                     />
@@ -541,7 +541,7 @@ const Taskform = ({
                   }
                   return null;
                 })}
-                <div className="col-span-4 flex justify-end mt-4">
+                <div className="flex justify-end col-span-4 mt-4">
                   <button
                     type="submit"
                     className={`w-30 py-2 px-2 rounded-lg ${
@@ -563,7 +563,7 @@ const Taskform = ({
                   </button>
                 </div>
               </div>
-              {error && <div className="text-red-500 mt-2">{error}</div>}
+              {error && <div className="mt-2 text-red-500">{error}</div>}
             </div>
           </form>
         </>

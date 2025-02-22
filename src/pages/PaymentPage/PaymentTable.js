@@ -62,22 +62,23 @@ const theme = createTheme({
 });
 
 export default function PaymentTable({
-  tasks,
+  
   handleDelete,
-  setCompanyId,
-  formData,
-  setFormData,
+  setPaymentId,
+  totalPayments,
+  
   payments,
   page,
   pageSize,
   setPageSize,
   setPage,
-  totalTasks,
-  fetchAllTasks,
+  
+  
+  fetchPayments,
   dataLoading,
 }) {
 
-  console.log("payment datiles from table",payments)
+  console.log("payments lengthe", totalPayments);
   // console.log("chekign total tasks ", totalTasks, 'total page /*  */size', pageSize, "Page :", page);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("sno");
@@ -87,17 +88,18 @@ export default function PaymentTable({
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    fetchAllTasks(newPage, pageSize);
+    fetchPayments(newPage, pageSize);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setPageSize(parseInt(event.target.value, 5)); // Convert to number
-    setPage(0); // Reset to the first page when rows per page changes
-  };
+   const handleChangeRowsPerPage = (event) => {
+     const newPageSize = parseInt(event.target.value, 10);
+     setPageSize(newPageSize);
+     setPage(0); // Reset to first page
+     fetchPayments(0, newPageSize);
+   };
 
-  const handleEditForm = (id) => {
-    setCompanyId(id);
-  };
+
+ 
 
   const handleRequestSort = (columnId) => {
     const isAsc = orderBy === columnId && order === "asc";
@@ -106,32 +108,52 @@ export default function PaymentTable({
   };
 const sortedPayments = payments.sort((a, b) => {
   if (orderBy === "company") {
-    // If you have a company name, use it; otherwise, fallback to companyId
-    const aCompany = a.company || a.companyId || "";
-    const bCompany = b.company || b.companyId || "";
+    const aCompany = a.company?.toLowerCase() || "";
+    const bCompany = b.company?.toLowerCase() || "";
     return order === "asc"
       ? aCompany.localeCompare(bCompany)
       : bCompany.localeCompare(aCompany);
   }
+
   if (orderBy === "paymentType") {
+    const aType = a.paymentType?.toLowerCase() || "";
+    const bType = b.paymentType?.toLowerCase() || "";
     return order === "asc"
-      ? (a.paymentType || "").localeCompare(b.paymentType || "")
-      : (b.paymentType || "").localeCompare(a.paymentType || "");
+      ? aType.localeCompare(bType)
+      : bType.localeCompare(aType);
   }
+
   if (orderBy === "amount") {
-    return order === "asc" ? a.amount - b.amount : b.amount - a.amount;
-  }
-  if (orderBy === "paymentName") {
-    // Sort by the name of the first payment inside the payments array
-    const aName = a.payments && a.payments.length > 0 ? a.payments[0].name : "";
-    const bName = b.payments && b.payments.length > 0 ? b.payments[0].name : "";
     return order === "asc"
-      ? aName.localeCompare(bName)
-      : bName.localeCompare(aName);
+      ? (a.amount || 0) - (b.amount || 0)
+      : (b.amount || 0) - (a.amount || 0);
   }
-  return 0; // Default, no sorting
+
+  if (orderBy === "taskType") {
+    // Extract names from the payments array
+    const aNames = a.payments?.length
+      ? a.payments.map((p) => p.name.toLowerCase()).join(", ")
+      : "";
+    const bNames = b.payments?.length
+      ? b.payments.map((p) => p.name.toLowerCase()).join(", ")
+      : "";
+
+    return order === "asc"
+      ? aNames.localeCompare(bNames)
+      : bNames.localeCompare(aNames);
+  }
+
+
+  return 0; // Default case (no sorting)
 });
 
+
+ const handleEditForm = (id) => {
+    // alert(id)
+
+    setPaymentId(id);
+  };
+  
 
   return (
     <ThemeProvider theme={theme}>
@@ -144,7 +166,7 @@ const sortedPayments = payments.sort((a, b) => {
         <Table
           className="table-auto"
           sx={{ minWidth: 650 }}
-          aria-label="tasks table"
+          aria-label="payment table"
         >
           <TableHead>
             <TableRow>
@@ -160,21 +182,21 @@ const sortedPayments = payments.sort((a, b) => {
                 onSort={handleRequestSort}
               />
               <SortableTableHeader
-                columnId="taskName"
+                columnId="taskType"
                 label="Task Type"
                 order={order}
                 orderBy={orderBy}
                 onSort={handleRequestSort}
               />
               <SortableTableHeader
-                columnId="dueDate"
-                label="Fee Type"
+                columnId="paymentType"
+                label="Payment Type"
                 order={order}
                 orderBy={orderBy}
                 onSort={handleRequestSort}
               />
               <SortableTableHeader
-                columnId="status"
+                columnId="amount"
                 label="Amount"
                 order={order}
                 orderBy={orderBy}
@@ -238,13 +260,10 @@ const sortedPayments = payments.sort((a, b) => {
                     <IconButton
                       aria-label="edit"
                       size="small"
-                      onClick={() =>
-                         {
-                           toast.info("Edit will be updated Soooon.........",{position:"top-center",draggable:true});
-                           // handleEditForm(payment._id)}
-                         }
-                        
-                      }
+                                              onClick={() => handleEditForm(payment._id)}
+
+
+                      
                     >
                       <EditOutlined
                         fontSize="inherit"
@@ -269,9 +288,9 @@ const sortedPayments = payments.sort((a, b) => {
         </Table>
 
         <TablePagination
-          rowsPerPageOptions={[5, 10, 20]} // Options for rows per page
+          rowsPerPageOptions={[1, 2]} // Options for rows per page
           component="div"
-          count={payments?.length} // Total number of payments
+          count={totalPayments} // Total number of payments
           rowsPerPage={pageSize} // Selected number of rows per page
           page={page} // Current page
           onPageChange={handleChangePage} // Function to update page

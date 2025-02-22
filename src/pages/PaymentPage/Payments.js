@@ -49,7 +49,7 @@ const PaymentPage = () => {
   
 
   const location = useLocation();
-  const taskId = location.state?.taskId;
+
 
  
 
@@ -58,13 +58,10 @@ const PaymentPage = () => {
   const fetchPayments = async () => {
       try {
         console.log(user?.agency,'dd')
-        const response = await axios.get(`${base_url}/payments`, {
-          params: {
-            agencyName: user?.agency
-          }
-        }); // Fetch payments for specific agency
+        const response = await axios.get(`${base_url}/payments`); // Fetch payments for specific agency
         if (response.data.success) {
           setPayments(response?.data?.data);
+          setTotalPayments(response?.data?.totalPayments);
         } else {
           console.error("Failed to fetch payments");
         }
@@ -72,6 +69,8 @@ const PaymentPage = () => {
         console.error("Error fetching payments:", error);
       }
     };
+
+  
 
    useEffect(() => {
     
@@ -81,11 +80,11 @@ const PaymentPage = () => {
   console.log("payments data from api ",payments)
 
   useEffect(() => {
-    if (taskId) {
+    if (paymentId) {
       setShowForm(true);
-      setPaymentId(taskId);
+      setPaymentId(paymentId);
     }
-  }, [taskId]);
+  }, [paymentId]);
 
   const handleClose = () => {
     setOpen(false);
@@ -94,14 +93,13 @@ const PaymentPage = () => {
     setShowForm(!showForm);
     // alert("add new payment clicked")
   };
-
  const handleInputChange = (event) => {
-   const { id, value } = event.target;
-   setFormData((prev) => ({
-     ...prev,
-     [id]: value,
-   }));
- };
+    const { id, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
 
   const handleDelete = async (id) => {
     // alert("payemtn id", id)
@@ -112,7 +110,7 @@ const PaymentPage = () => {
     await axios.delete(`${base_url}/payments/${id}`);
     setLoading(false);
     setPayments(payments.filter((payment) => payment._id !== id));
-    toast.warn("Payment Deleted Successfully");
+    toast.warn("Payment Deleted Successfully",{draggable:true});
   } catch (error) {
     setLoading(false);
     toast.error("Failed To Delete Payment");
@@ -183,9 +181,13 @@ const PaymentPage = () => {
           <div className="justify-center">
             <PaymentForm
               {...{
+                paymentId,
                 formData,
                 setFormData,
                 showForm,
+           
+                fetchPayments,
+
                 setShowForm,
                 view,
                 setCompanyRefresh,
@@ -200,6 +202,7 @@ const PaymentPage = () => {
         <div className="bg-white rounded-lg shadow-md">
           <PaymentTable
             {...{
+              fetchPayments,
               totalPayments,
               setPaymentId,
               companyRefresh,
