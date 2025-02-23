@@ -186,7 +186,10 @@ const handleSubmit = async (e) => {
 
     // ✅ Handle Lumpsum Case
     console.log("lumsum case",formData?.paymentType)
-    if (formData?.paymentType === "lumpsum") {
+    if (
+      formData?.paymentType === "lumpsum" ||
+      formData?.paymentType === "Lumpsum"
+    ) {
       const amount = Number(formData?.amount) || 0;
       const selectedTasks = Object.keys(formData)
         .filter((key) => key.startsWith("task_") && formData[key] === true)
