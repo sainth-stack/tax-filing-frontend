@@ -219,38 +219,46 @@ export default function PaymentTable({
                 </TableCell>
               </TableRow>
             ) : (
-              sortedPayments.slice(page * pageSize, page * pageSize + pageSize)
+              sortedPayments
+                .slice(page * pageSize, page * pageSize + pageSize)
 
-              .map((payment, index) => (
-                <TableRow key={payment._id || index} sx={{ height: "48px" }}>
-                  <TableCell align="left" padding="normal">
-                    {page * pageSize + index + 1}
-                  </TableCell>
-                  <TableCell align="left" padding="normal">
-                    {payment.company || "N/A"}
-                  </TableCell>
-                  <TableCell
-                    align="left"
-                    padding="normal"
-                    sx={{
-                      maxWidth: "2rem",
-                    }}
-                  >
-                    {payment.payments
-                      ?.map((p) => paymentTaskTypeMap[p.name] || p.name) // Replace with mapped value if exists
-                      .join(", ") || "N/A"}
-                  </TableCell>
+                .map((payment, index) => (
+                  <TableRow key={payment._id || index} sx={{ height: "48px" }}>
+                    <TableCell align="left" padding="normal">
+                      {page * pageSize + index + 1}
+                    </TableCell>
+                    <TableCell align="left" padding="normal">
+                      {payment.company || "N/A"}
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      padding="normal"
+                      sx={{
+                        maxWidth: "2rem",
+                      }}
+                    >
+                      {payment.payments
+                        ?.map((p) => paymentTaskTypeMap[p.name] || p.name) // Replace with mapped value if exists
+                        .join(", ") || "N/A"}
+                    </TableCell>
 
-                  <TableCell align="left" padding="normal">
-                    {payment.paymentType || "N/A"}
-                  </TableCell>
+                    <TableCell align="left" padding="normal">
+                      {["lumpsum", "Lumpsum"].includes(payment.paymentType)
+                        ? "Lumpsum"
+                        : [
+                            "monthlySubscription",
+                            "MonthlySubscription",
+                          ].includes(payment.paymentType)
+                        ? "Monthly Subscription"
+                        : "N/A"}
+                    </TableCell>
 
-                  <TableCell align="left" padding="normal">
-                    {payment.amount
-                      ? `₹${payment.amount.toLocaleString()}`
-                      : "N/A"}
-                  </TableCell>
-                  {/* <TableCell align="left" padding="normal">
+                    <TableCell align="left" padding="normal">
+                      {payment.amount
+                        ? `₹${payment.amount.toLocaleString()}`
+                        : "N/A"}
+                    </TableCell>
+                    {/* <TableCell align="left" padding="normal">
                     {payment.payments.length > 0
                       ? payment.payments
                           .map(
@@ -259,49 +267,48 @@ export default function PaymentTable({
                           .join(", ")
                       : "No Payments"}
                   </TableCell> */}
-                  <TableCell align="left" padding="normal">
-                    <IconButton
-                      aria-label="edit"
-                      size="small"
-                      onClick={() => handleEditForm(payment._id)}
-                    >
-                      <EditOutlined
-                        fontSize="inherit"
-                        className="z-0 text-green-400 rounded bg-gray-50"
-                      />
-                    </IconButton>
-                    <IconButton
-                      aria-label="delete"
-                      size="small"
-                      onClick={() => handleDelete(payment._id)}
-                    >
-                      <DeleteOutline
-                        fontSize="inherit"
-                        className="text-red-400 bg-gray-100 rounded"
-                      />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
+                    <TableCell align="left" padding="normal">
+                      <IconButton
+                        aria-label="edit"
+                        size="small"
+                        onClick={() => handleEditForm(payment._id)}
+                      >
+                        <EditOutlined
+                          fontSize="inherit"
+                          className="z-0 text-green-400 rounded bg-gray-50"
+                        />
+                      </IconButton>
+                      <IconButton
+                        aria-label="delete"
+                        size="small"
+                        onClick={() => handleDelete(payment._id)}
+                      >
+                        <DeleteOutline
+                          fontSize="inherit"
+                          className="text-red-400 bg-gray-100 rounded"
+                        />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
             )}
           </TableBody>
         </Table>
 
-       <TablePagination
-  rowsPerPageOptions={[1,2,3]}  // Allow only 1 row per page
-  component="div"
-  count={totalPayments}  // Ensure this is correct
-  rowsPerPage={pageSize} // Should be set to 1
-  page={page}  // Current page
-  onPageChange={handleChangePage}  // Update page function
-  onRowsPerPageChange={handleChangeRowsPerPage}  // Update rows per page function
-  className="border-t border-gray-200"
-  sx={{
-    boxShadow: "none",
-    border: "none",
-  }}
-/>
-
+        <TablePagination
+          rowsPerPageOptions={[1, 2, 3]} // Allow only 1 row per page
+          component="div"
+          count={totalPayments} // Ensure this is correct
+          rowsPerPage={pageSize} // Should be set to 1
+          page={page} // Current page
+          onPageChange={handleChangePage} // Update page function
+          onRowsPerPageChange={handleChangeRowsPerPage} // Update rows per page function
+          className="border-t border-gray-200"
+          sx={{
+            boxShadow: "none",
+            border: "none",
+          }}
+        />
       </TableContainer>
       <Accordian />
     </ThemeProvider>

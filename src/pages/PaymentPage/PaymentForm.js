@@ -11,6 +11,7 @@ import Loader from "../../components/helpers/loader";
 const PaymentForm = ({
   showForm,
   formData,
+  setPaymentId,
   setFormData,
   setShowForm,
   paymentId,
@@ -228,10 +229,11 @@ const handleSubmit = async (e) => {
     fetchPayments(); // ✅ Refresh payment list
 
     // ✅ Reset form properly after updating
-    setTimeout(() => {
-      setFormData({});
-      setShowForm(false); // ✅ Hide form
-    }, 100); // Small delay to ensure state updates
+    
+      setFormData();
+      setShowForm(false); 
+      setPaymentId()// ✅ Hide form
+ 
   } catch (error) {
     console.error(
       "❌ Error submitting payment:",

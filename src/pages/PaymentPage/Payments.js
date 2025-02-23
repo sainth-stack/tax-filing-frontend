@@ -202,6 +202,7 @@ const PaymentPage = () => {
           <div className="justify-center">
             <PaymentForm
               {...{
+                setPaymentId,
                 paymentId,
                 formData,
                 setFormData,
