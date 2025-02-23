@@ -111,6 +111,7 @@ const PaymentPage = () => {
     setOpen(false);
   };
   const handleShowForm = () => {
+    setPaymentId()
     setShowForm(!showForm);
     // alert("add new payment clicked")
   };
