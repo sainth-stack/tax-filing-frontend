@@ -295,20 +295,21 @@ export default function PaymentTable({
           </TableBody>
         </Table>
 
-        <TablePagination
-          rowsPerPageOptions={[1, 2, 3]} // Allow only 1 row per page
-          component="div"
-          count={totalPayments} // Ensure this is correct
-          rowsPerPage={pageSize} // Should be set to 1
-          page={page} // Current page
-          onPageChange={handleChangePage} // Update page function
-          onRowsPerPageChange={handleChangeRowsPerPage} // Update rows per page function
-          className="border-t border-gray-200"
-          sx={{
-            boxShadow: "none",
-            border: "none",
-          }}
-        />
+       <TablePagination
+  rowsPerPageOptions={[5,10,15]}  // Allow only 1 row per page
+  component="div"
+  count={totalPayments}  // Ensure this is correct
+  rowsPerPage={pageSize} // Should be set to 1
+  page={page}  // Current page
+  onPageChange={handleChangePage}  // Update page function
+  onRowsPerPageChange={handleChangeRowsPerPage}  // Update rows per page function
+  className="border-t border-gray-200"
+  sx={{
+    boxShadow: "none",
+    border: "none",
+  }}
+/>
+
       </TableContainer>
       <Accordian />
     </ThemeProvider>
