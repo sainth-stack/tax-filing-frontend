@@ -133,7 +133,7 @@ export default function PaymentTable({
             : (b.amount || 0) - (a.amount || 0);
         }
 
-        if (orderBy === "taskType") {
+        if (orderBy == "taskType") {
           const aNames = a.payments?.length
             ? a.payments.map((p) => p.name?.toLowerCase() || "").join(", ")
             : "";
@@ -223,12 +223,12 @@ export default function PaymentTable({
                 .slice(page * pageSize, page * pageSize + pageSize)
 
                 .map((payment, index) => (
-                  <TableRow key={payment._id || index} sx={{ height: "48px" }}>
+                  <TableRow key={payment?._id || index} sx={{ height: "48px" }}>
                     <TableCell align="left" padding="normal">
                       {page * pageSize + index + 1}
                     </TableCell>
                     <TableCell align="left" padding="normal">
-                      {payment.company || "N/A"}
+                      {payment?.company || "N/A"}
                     </TableCell>
                     <TableCell
                       align="left"
@@ -237,30 +237,30 @@ export default function PaymentTable({
                         maxWidth: "2rem",
                       }}
                     >
-                      {payment.payments
-                        ?.map((p) => paymentTaskTypeMap[p.name] || p.name) // Replace with mapped value if exists
+                      {payment?.payments
+                        ?.map((p) => paymentTaskTypeMap[p?.name] || p?.name) // Replace with mapped value if exists
                         .join(", ") || "N/A"}
                     </TableCell>
 
                     <TableCell align="left" padding="normal">
-                      {["lumpsum", "Lumpsum"].includes(payment.paymentType)
+                      {["lumpsum", "Lumpsum"].includes(payment?.paymentType)
                         ? "Lumpsum"
                         : [
                             "monthlySubscription",
                             "MonthlySubscription",
-                          ].includes(payment.paymentType)
+                          ].includes(payment?.paymentType)
                         ? "Monthly Subscription"
                         : "N/A"}
                     </TableCell>
 
                     <TableCell align="left" padding="normal">
-                      {payment.amount
-                        ? `₹${payment.amount.toLocaleString()}`
+                      {payment?.amount
+                        ? `₹${payment?.amount.toLocaleString()}`
                         : "N/A"}
                     </TableCell>
                     {/* <TableCell align="left" padding="normal">
-                    {payment.payments.length > 0
-                      ? payment.payments
+                    {payment?.payments.length > 0
+                      ? payment?.payments
                           .map(
                             (p) => `${p.name} (₹${p.amount.toLocaleString()})`
                           )
@@ -271,7 +271,7 @@ export default function PaymentTable({
                       <IconButton
                         aria-label="edit"
                         size="small"
-                        onClick={() => handleEditForm(payment._id)}
+                        onClick={() => handleEditForm(payment?._id)}
                       >
                         <EditOutlined
                           fontSize="inherit"
@@ -281,7 +281,7 @@ export default function PaymentTable({
                       <IconButton
                         aria-label="delete"
                         size="small"
-                        onClick={() => handleDelete(payment._id)}
+                        onClick={() => handleDelete(payment?._id)}
                       >
                         <DeleteOutline
                           fontSize="inherit"

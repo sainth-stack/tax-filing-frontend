@@ -133,6 +133,7 @@ const PaymentPage = () => {
     setPayments(payments.filter((payment) => payment._id !== id));
     toast.warn("Payment Deleted Successfully",{draggable:true});
     fetchPayments();
+    setPaymentId()
   } catch (error) {
     setLoading(false);
     toast.error("Failed To Delete Payment");

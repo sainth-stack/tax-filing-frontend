@@ -46,7 +46,7 @@ const PaymentForm = ({
         if (!paymentId) {
           const initialData = PaymentStaticData(companyOptions, "").reduce(
             (acc, field) => {
-              acc[field.id] = field.defaultValue || "";
+              acc[field?.id] = field.defaultValue || "";
               return acc;
             },
             {}
@@ -86,21 +86,24 @@ const PaymentForm = ({
           }
 
           const populatedData = {
-            _id: payment._id,
-            company: payment.company || "",
-            taskType: payment.payments?.map((p) => p.name).join(", ") || "",
-            paymentType: (payment.paymentType || "").toLowerCase(), // Normalize case
-            amount: payment.amount || "", // Set amount for lumpsum
+            _id: payment?._id,
+            company: payment?.company || "",
+            taskType: payment?.payments?.map((p) => p.name).join(", ") || "",
+            paymentType: ["lumpsum", "Lumpsum"].includes(payment?.paymentType) 
+  ? payment.paymentType.toLowerCase() 
+  : payment?.paymentType || "",
+ // Normalize case
+            amount: payment?.amount || "", // Set amount for lumpsum
           };
 
           // console.log("📌 Checking payment type:", payment.paymentType);
 
-          if (payment.payments && populatedData.paymentType === "lumpsum") {
+          if (payment.payments && populatedData?.paymentType === "lumpsum"||"Lumpsum") {
             // console.log("✅ Lumpsum detected, processing payments...");
             populatedData.amount = payment.amount;
             payment.payments.forEach((p) => {
-              populatedData[`task_${p.name}`] = p.isChecked;
-              populatedData[`amount_${p.name}`] = p.amount;
+              populatedData[`task_${p.name}`] = p?.isChecked;
+              populatedData[`amount_${p.name}`] = p?.amount;
             });
           } else {
             // console.log(
@@ -161,16 +164,16 @@ const handleSubmit = async (e) => {
     setLoading(true);
     setError(null);
 
-    const paymentId = formData._id;
+    const paymentId = formData?._id;
     const isUpdate = !!paymentId;
 
     console.log("🛠 Update Mode:", isUpdate);
     console.log("🆔 Payment ID:", paymentId);
 
     let payload = {
-      company: formData.company,
-      taskType: formData.taskType,
-      paymentType: formData.paymentType,
+      company: formData?.company,
+      taskType: formData?.taskType,
+      paymentType: formData?.paymentType,
       agencyName: user?.agency,
     };
 
@@ -182,8 +185,9 @@ const handleSubmit = async (e) => {
     });
 
     // ✅ Handle Lumpsum Case
-    if (formData.paymentType == "lumpsum") {
-      const amount = Number(formData.amount) || 0;
+    console.log("lumsum case",formData?.paymentType)
+    if (formData?.paymentType === "lumpsum") {
+      const amount = Number(formData?.amount) || 0;
       const selectedTasks = Object.keys(formData)
         .filter((key) => key.startsWith("task_") && formData[key] === true)
         .map((key) => key.replace("task_", ""));
@@ -201,8 +205,8 @@ const handleSubmit = async (e) => {
     if (isUpdate) {
       payload.paymentId = paymentId;
 
-      console.log("🔄 Updating payment:", paymentId);
-      console.log("📤 Payload before PUT:", payload);
+      // console.log("🔄 Updating payment:", paymentId);
+      // console.log("📤 Payload before PUT:", payload);
 
       try {
         response = await axios.put(
@@ -266,7 +270,7 @@ const handleSubmit = async (e) => {
                 <div className="grid grid-cols-4 gap-4">
                   {PaymentStaticData(companies, formData?.paymentType)?.map(
                     (field, index) => {
-                      if (field.id == "taskType") {
+                      if (field?.id == "taskType") {
                         return (
                           <div
                             key={index}
@@ -275,13 +279,13 @@ const handleSubmit = async (e) => {
                             <p className="sticky top-0 p-2 mb-2 font-semibold bg-gray-200 rounded-lg shadow-sm z-5">
                               Task Type
                             </p>
-                            {field.options.map((option) => (
+                            {field?.options?.map((option) => (
                               <div
                                 key={option.value}
                                 className={`p-2 border rounded-md flex cursor-pointer text-center ${
-                                  formData.taskType
+                                  formData?.taskType
                                     ?.split(", ")
-                                    .includes(option.value)
+                                    .includes(option?.value)
                                     ? "bg-blue-100"
                                     : ""
                                 }`}
@@ -289,21 +293,22 @@ const handleSubmit = async (e) => {
                                   handleInputChange("taskType", option.value)
                                 }
                               >
-                                <p>{option.label}</p>
+                                <p>{option?.label}</p>
                               </div>
                             ))}
                           </div>
                         );
-                      } else if (field.type === "select") {
+                      } else if (field?.type === "select") {
                         return (
                           <div key={index}>
                             <SelectInput
-                              id={field.id}
+                              id={field?.id}
                               label={field.label}
                               options={field.options}
-                              value={formData[field.id] || ""}
+                             
+                              value={formData?.[field?.id] ?? ""}
                               onChange={(e) =>
-                                handleInputChange(field.id, e.target.value)
+                                handleInputChange(field?.id, e.target.value)
                               }
                             />
                           </div>
@@ -313,24 +318,24 @@ const handleSubmit = async (e) => {
                     }
                   )}
                   <div>
-                    {PaymentStaticData(companies, formData.paymentType)?.map(
+                    {PaymentStaticData(companies, formData?.paymentType)?.map(
                       (field, index) => {
                         if (field.type === "text") {
                           return (
                             <div key={index}>
                               <CustomInput
-                                id={field.id}
+                                id={field?.id}
                                 type="text"
-                                label={field.label}
-                                placeholder={field.placeholder}
-                                value={formData[field.id] || ""}
+                                label={field?.label}
+                                placeholder={field?.placeholder}
+                                value={formData[field?.id] || ""}
                                 onChange={(e) =>
-                                  handleInputChange(field.id, e.target.value)
+                                  handleInputChange(field?.id, e.target.value)
                                 }
                               />
                             </div>
                           );
-                        } else if (field.type === "checkbox") {
+                        } else if (field?.type === "checkbox") {
                           return (
                             <div
                               key={index}
@@ -338,16 +343,16 @@ const handleSubmit = async (e) => {
                             >
                               <div className="flex items-center my-2 space-x-2">
                                 <CustomCheckbox
-                                  id={field.id}
-                                  checked={formData[field.id] || false}
+                                  id={field?.id}
+                                  checked={formData[field?.id] || false}
                                   onChange={(e) =>
                                     handleInputChange(
-                                      field.id,
+                                      field?.id,
                                       e.target.checked
                                     )
                                   }
                                 />
-                                <label htmlFor={field.id}>{field.label}</label>
+                                <label htmlFor={field?.id}>{field?.label}</label>
                               </div>
                             </div>
                           );
