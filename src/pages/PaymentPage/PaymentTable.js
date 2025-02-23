@@ -288,7 +288,7 @@ export default function PaymentTable({
         </Table>
 
        <TablePagination
-  rowsPerPageOptions={[1,2,3]}  // Allow only 1 row per page
+  rowsPerPageOptions={[5,10,20]}  // Allow only 1 row per page
   component="div"
   count={totalPayments}  // Ensure this is correct
   rowsPerPage={pageSize} // Should be set to 1

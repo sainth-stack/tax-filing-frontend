@@ -31,7 +31,7 @@ const PaymentPage = () => {
   
   const [showForm, setShowForm] = useState(false);
   const [page, setPage] = useState(0); // Default page 1
-  const [pageSize, setPageSize] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
 
   const [paymentId, setPaymentId] = useState("");
   const [open, setOpen] = useState(false);
@@ -132,6 +132,7 @@ const PaymentPage = () => {
     setLoading(false);
     setPayments(payments.filter((payment) => payment._id !== id));
     toast.warn("Payment Deleted Successfully",{draggable:true});
+    fetchPayments();
   } catch (error) {
     setLoading(false);
     toast.error("Failed To Delete Payment");
