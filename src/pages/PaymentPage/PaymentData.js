@@ -19,6 +19,17 @@ export const PaymentStaticData = (companiesdata = [], PaymentType = "") => {
         { value: "tds", label: "TDS and TCS" },
         { value: "esi", label: "ESI" },
         { value: "professionalTax", label: "Professional Tax" },
+        {
+          value: "shopCommercialEstablishment",
+          label: "Shop Commercial Establishment",
+        },
+        { value: "msme", label: "MSME" },
+        { value: "fssai", label: "FSSAI" },
+        { value: "factoryLicense", label: "Factory License" },
+        { value: "importExport", label: "Import Export" },
+        { value: "partnershipFirmFormC", label: "Partnership Firm Form C" },
+        { value: "shramSuvidhaPortal", label: "ShramSuvidha Portal" },
+        { value: "mca", label: "MCA" },
       ],
     },
     {
@@ -39,6 +50,17 @@ export const PaymentStaticData = (companiesdata = [], PaymentType = "") => {
     { value: "tds", label: "TDS and TCS" },
     { value: "esi", label: "ESI" },
     { value: "professionalTax", label: "Professional Tax" },
+    {
+      value: "shopCommercialEstablishment",
+      label: "Shop Commercial Establishment",
+    },
+    { value: "msme", label: "MSME" },
+    { value: "fssai", label: "FSSAI" },
+    { value: "factoryLicense", label: "Factory License" },
+    { value: "importExport", label: "Import Export" },
+    { value: "partnershipFirmFormC", label: "Partnership Firm Form C" },
+    { value: "shramSuvidhaPortal", label: "ShramSuvidha Portal" },
+    { value: "mca", label: "MCA" },
   ];
 
   if (PaymentType === "monthlySubscription") {

@@ -121,13 +121,20 @@ export const getTaskNumber = (taskType, companyName, companyData) => {
 
 
 export const paymentTaskTypeMap = {
-  gst: "GST",
-  providentFund: "Provident Fund",
   incomeTax: "Income Tax",
-  tds: "TDS",
+  gst: "GST",
+  esi: "ESI",
+  providentFund: "Provident Fund",
   professionalTax: "Prefessional Tax",
-  esi:"ESI"
-  
-  
+  tds: "TDS",
+  shopCommercialEstablishment: "Shop Commercial Establishment",
+  msme: "MSME",
+  fssai: "FSSAI",
+  factoryLicense: "Factory License",
+  importExport: "Import Export",
+  partnershipFirmFormC: "Partnership FirmFormC",
+  shramSuvidhaPortal: "ShramSuvidha Portal",
+  "mca":"MCA",
+
   // Add more mappings if needed
 };

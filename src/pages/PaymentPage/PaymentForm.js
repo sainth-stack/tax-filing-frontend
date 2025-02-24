@@ -285,7 +285,7 @@ const handleSubmit = async (e) => {
                             {field?.options?.map((option) => (
                               <div
                                 key={option.value}
-                                className={`p-2 border rounded-md flex cursor-pointer text-center ${
+                                className={`p-1 border rounded-md flex cursor-pointer text-center ${
                                   formData?.taskType
                                     ?.split(", ")
                                     .includes(option?.value)
