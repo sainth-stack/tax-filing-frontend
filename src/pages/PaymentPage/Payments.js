@@ -107,20 +107,10 @@ const PaymentPage = () => {
     }
   }, [paymentId]);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
   const handleShowForm = () => {
     setPaymentId()
     setShowForm(!showForm);
     // alert("add new payment clicked")
-  };
- const handleInputChange = (event) => {
-    const { id, value } = event.target;
-    setFormData((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
   };
 
   const handleDelete = async (id) => {

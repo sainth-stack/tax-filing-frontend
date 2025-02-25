@@ -35,7 +35,7 @@ export const getTaskDisplayName = (taskName, taskType, gstMonthly_gstType) => {
     return taskTypeMap[gstMonthly_gstType] || formatTaskName(taskName);
 
   }
-  return taskTypeMap[taskName] || taskTypeMap.default;
+  return taskTypeMap[taskName] || taskTypeMap.default || taskName;
 };
 
 

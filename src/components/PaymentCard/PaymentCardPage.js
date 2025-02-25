@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect,useState } from "react";
 import { Card, CardContent, Typography, Box, Grid } from "@mui/material";
-
+import axios from 'axios'
+import {base_url} from '../../const'
 const PaymentCard = ({ title, paymentAmount }) => {
+
   return (
     <Card
       sx={{
@@ -27,13 +29,45 @@ const PaymentCard = ({ title, paymentAmount }) => {
 };
 
 const PaymentCardPage = () => {
+  const [paymentData,setPaymentData] = useState({
+
+  })
+  const fetchPayments = async (agencyName) => {
+    try {
+      if (!agencyName) {
+        console.error("Agency name is missing");
+        return;
+      }
+  
+      const response = await axios.get(
+        `${base_url}/payments-data?agencyName=${agencyName}`
+      );
+  
+      if (response?.data) {
+        console.log("Payments data received:", response.data);
+        setPaymentData(response?.data)
+      } else {
+        console.error("No payments data received");
+      }
+    } catch (error) {
+      console.error(
+        "Error fetching payments:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
+  useEffect(()=>{
+    const user = JSON.parse(localStorage.getItem("user"));
+    fetchPayments(user.agency)
+  },[])
   return (
     <Grid container spacing={3} justifyContent="start">
       <Grid item>
-        <PaymentCard title="Payment Received" paymentAmount="$50,000.00" />
+        <PaymentCard title="Payment Received" paymentAmount={paymentData?.completedAmount || 0} />
       </Grid>
       <Grid item>
-        <PaymentCard title="Payment Pending" paymentAmount="$40,000.00" />
+        <PaymentCard title="Payment Pending" paymentAmount={paymentData?.pendingAmount || 0}/>
       </Grid>
     </Grid>
   );
