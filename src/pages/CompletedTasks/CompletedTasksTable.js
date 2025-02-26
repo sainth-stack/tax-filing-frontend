@@ -70,11 +70,16 @@ export default function CompletedTasksTable({
   setCompanyId,
   formData,
   page,
+  showForm,
+  setShowForm,
   pageSize,
   setTasks,
   setPageSize,
   setPage,
+  setCompletedTaskView,
   totalTasks,
+  setSelectedTask,
+  selectedTask,
   fetchAllTasks,
   dataLoading,
 }) {
@@ -122,15 +127,11 @@ export default function CompletedTasksTable({
     setOrderBy(columnId);
   };
 
-
+  console.log("show form state in table", showForm);
   const handleClick = (task) => {
+    setShowForm(true);
     console.log("Task clicked", task);
-
-    // Store task in sessionStorage when clicked
-    sessionStorage.setItem("task", JSON.stringify(task));
-
-    // Navigate to the tasks page with the task
-    navigate("/tasks", { state: { task } });
+    setSelectedTask(task); // Set the task in parent state
   };
 
   useEffect(() => {
@@ -192,7 +193,7 @@ export default function CompletedTasksTable({
       <CssBaseline />
       <TableContainer
         component={Paper}
-        className="container my-4 shadow-md rounded-lg"
+        className="container my-4 rounded-lg shadow-md"
         sx={{ boxShadow: "none" }}
       >
         <Table
@@ -258,7 +259,7 @@ export default function CompletedTasksTable({
             {dataLoading && dataLoading ? (
               <TableRow>
                 <TableCell colSpan={8} align="center">
-                  <div className="flex justify-center items-center py-4">
+                  <div className="flex items-center justify-center py-4">
                     <Loader size={30} />
                   </div>
                 </TableCell>
@@ -303,7 +304,7 @@ export default function CompletedTasksTable({
                     >
                       <Visibility
                         fontSize="inherit"
-                        className="text-green-400 z-0 bg-gray-50 rounded"
+                        className="z-0 text-green-400 rounded bg-gray-50"
                       />
                     </IconButton>
 

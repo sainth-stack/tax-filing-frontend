@@ -35,7 +35,6 @@ const Tasks = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [showtasks, setShowTasks] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
-  const [completedTaskView, setCompletedTaskView] = useState(null);
   const [page, setPage] = useState(0); // Default page 1
   const [pageSize, setPageSize] = useState(5);
   const [totalTasks, setTotalTasks] = useState(0);
@@ -71,48 +70,14 @@ const Tasks = () => {
     year: new Date().getFullYear().toString(),
   });
 
-  const location = useLocation();
-  const taskId = location.state?.taskId;
+  
 
 
-  useEffect(() => {
-    const taskFromLocation = location?.state?.task;
 
-    if (taskFromLocation) {
-      console.log("Task from location:", taskFromLocation);
-      setCompletedTaskView(taskFromLocation);
-      setShowForm(true);
-    } else {
-      setCompletedTaskView(null);
-      setShowForm(false);
-    }
-
-    const cleanupOnRefreshOrUnmount = () => {
-      setCompletedTaskView(null);
-      setShowForm(false);
-    };
-
-    // Check for page refresh or navigation
-    const isPageRefreshed = sessionStorage.getItem("isRefreshed");
-    if (!isPageRefreshed) {
-      sessionStorage.setItem("isRefreshed", true); 
-    } else {
-      cleanupOnRefreshOrUnmount(); 
-      sessionStorage.removeItem("isRefreshed"); 
-    }
-
-    return cleanupOnRefreshOrUnmount;
-  }, [location.state]); 
 
   // console.log("comeplted from parent,completedTaskView", completedTaskView);
 
-  useEffect(() => {
-    if (taskId) {
-      setShowForm(true);
-      setCompanyId(taskId);
-    }
-  }, [taskId]);
-
+  
   const handleClose = () => {
     setOpen(false);
   };
@@ -290,7 +255,7 @@ const Tasks = () => {
   return (
     <Layout>
       <div className="container mx-auto my-6">
-        <div className="flex flex-row my-3 gap-4">
+        <div className="flex flex-row gap-4 my-3">
           <div className="flex items-center gap-4">
             {taskSearch(formData)?.map((field, index) => {
               if (field?.type === "select") {
@@ -343,7 +308,7 @@ const Tasks = () => {
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <label
             htmlFor="Table"
-            className="block mb-2 text-xl font-medium text-gray-900 ps-2 pt-4"
+            className="block pt-4 mb-2 text-xl font-medium text-gray-900 ps-2"
           >
             Tasks
           </label>
@@ -381,7 +346,7 @@ const Tasks = () => {
                 onClick={() => {
                   setCompanyId("");
                   setShowForm(false);
-      setCompletedTaskView(null);
+      
 
                 }}
               >
@@ -409,7 +374,7 @@ const Tasks = () => {
             <Taskform
               {...{
                 showForm,
-                completedTaskView,
+               
                 companyId,
                 setCompanyId,
                 setShowForm,
@@ -520,7 +485,6 @@ const Tasks = () => {
               variant="outlined"
               onClick={() => {
                 setShowForm(false);
-      setCompletedTaskView(null);
 
                 setShowAutoGenModal(false);
               }}

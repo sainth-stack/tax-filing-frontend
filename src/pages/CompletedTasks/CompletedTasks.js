@@ -29,12 +29,23 @@ import Taskform from "../Tasks/Taskform";
 import { Dates } from "../company/data";
 import DateInput from "../../components/Date/DateInput";
 import CompletedTasksTable from "./CompletedTasksTable";
+import CompletedTaskForm from './CompletedTaskForm';
 
-const CompletedTasks = () => {
-//   const [showForm, setShowForm] = useState(false);
+const CompletedTasks = ({
+ 
+  
+  companyId,
+  setCompanyId,
+  
+  fetchTasks,
+}) => {
+  const [showForm, setShowForm] = useState(false);
+  const [showFrom, setShowFrom] = useState(false);
+
   const [allUsers, setAllUsers] = useState([]);
-  const [showtasks, setShowTasks] = useState(false);
+  
   const [totalPages, setTotalPages] = useState(0);
+  const [completedTaskView,setCompletedTaskView]=useState()
 
   const [page, setPage] = useState(0); // Default page 1
   const [pageSize, setPageSize] = useState(5);
@@ -43,6 +54,7 @@ const CompletedTasks = () => {
   const [users, setUsers] = useState([]);
   const [open, setOpen] = useState(false);
 
+  const [selectedTask, setSelectedTask] = useState(null);
   const [formData, setFormData] = useState({
     assignedTo: "",
     effectiveFrom: "",
@@ -54,12 +66,14 @@ const CompletedTasks = () => {
     month: "0",
     company: "0",
     year: new Date().getFullYear().toString(),
-    applicationSubStatus: "0"
+    applicationSubStatus: "0",
   });
   const [view, setView] = useState(false);
 
   const [tasks, setTasks] = useState([]);
   const [companies, setCompanies] = useState([]);
+const [error, setError] = useState();
+
   const [loading, setLoading] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -84,6 +98,38 @@ const CompletedTasks = () => {
     }
   };
 
+  // const location = useLocation();
+  // const taskId = location.state?.taskId;
+
+  //   useEffect(() => {
+  //     const taskFromLocation = location?.state?.task;
+
+  //     if (taskFromLocation) {
+  //       console.log("Task from location:", taskFromLocation);
+  //       setCompletedTaskView(taskFromLocation);
+  //       setShowForm(true);
+  //     } else {
+  //       setCompletedTaskView(null);
+  //       setShowForm(false);
+  //     }
+
+  //     const cleanupOnRefreshOrUnmount = () => {
+  //       setCompletedTaskView(null);
+  //       setShowForm(false);
+  //     };
+
+  //     // Check for page refresh or navigation
+  //     const isPageRefreshed = sessionStorage.getItem("isRefreshed");
+  //     if (!isPageRefreshed) {
+  //       sessionStorage.setItem("isRefreshed", true);
+  //     } else {
+  //       cleanupOnRefreshOrUnmount();
+  //       sessionStorage.removeItem("isRefreshed");
+  //     }
+
+  //     return cleanupOnRefreshOrUnmount;
+  //   }, [location.state]); 
+  
   useEffect(() => {
     fetchUsers(page, pageSize);
   }, [page, pageSize, formData]);
@@ -109,7 +155,7 @@ const CompletedTasks = () => {
       console.error("Error fetching companies:", error);
     }
   };
-    
+
   useEffect(() => {
     fetchCompanies();
     fetchUsers();
@@ -139,14 +185,13 @@ const CompletedTasks = () => {
     }
   };
 
-  
-    const handleInputChange = (e) => {
-      const { id, value } = e.target;
-      setFormData((prevValues) => ({
-        ...prevValues,
-        [id]: value,
-      }));
-    };
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevValues) => ({
+      ...prevValues,
+      [id]: value,
+    }));
+  };
 
   const handleFilterChange = async () => {
     setLoading(true);
@@ -166,7 +211,9 @@ const CompletedTasks = () => {
           page: page + 1,
           pageSize,
           applicationSubStatus:
-            formData.applicationSubStatus !== "0" ? formData.applicationSubStatus : "",
+            formData.applicationSubStatus !== "0"
+              ? formData.applicationSubStatus
+              : "",
         }),
         axios.post(`${base_url}/tasks/auto/filter`, {
           status: formData.status === "all" ? "" : formData.status,
@@ -182,16 +229,21 @@ const CompletedTasks = () => {
           page: page + 1,
           pageSize,
           applicationSubStatus:
-            formData.applicationSubStatus !== "0" ? formData.applicationSubStatus : "",
-        })
+            formData.applicationSubStatus !== "0"
+              ? formData.applicationSubStatus
+              : "",
+        }),
       ]);
-      const autoTasks = autoTasksResponse?.data?.tasks?.map(item => ({
+      const autoTasks = autoTasksResponse?.data?.tasks?.map((item) => ({
         ...item,
-        auto: true
+        auto: true,
       }));
-setTotalTasks(autoTasksResponse.data?.totalTasks+tasksResponse?.data?.totalTasks)
+      setTotalTasks(
+        autoTasksResponse.data?.totalTasks + tasksResponse?.data?.totalTasks
+      );
       setTasks([...tasksResponse?.data?.data, ...autoTasks]);
     } catch (error) {
+    setError(error)
       toast.error("Error While Tasks Filtering");
       console.error("Error fetching filtered tasks:", error);
     } finally {
@@ -202,12 +254,11 @@ setTotalTasks(autoTasksResponse.data?.totalTasks+tasksResponse?.data?.totalTasks
   useEffect(() => {
     handleFilterChange();
   }, [formData, page, pageSize]);
-console.log(formData)
+  console.log(formData);
   return (
     <Layout>
-     
       <div className="container mx-auto my-6">
-        <div className="flex flex-row my-3 gap-4">
+        <div className="flex flex-row gap-4 my-3">
           <div className="flex items-center gap-4">
             {taskSearch(formData)?.map((field, index) => {
               if (field?.type === "select") {
@@ -257,39 +308,61 @@ console.log(formData)
           ))}
         </div>
 
+        {showForm ? (
+          <>
+            <div className="justify-center">
+             
+              <CompletedTaskForm
+                {...{
+                  setSelectedTask,
+                  selectedTask,
+                  error,
+                  tasks,
+                  showForm,
+                  completedTaskView,
+                  companyId,
+                  setCompanyId,
+                  setShowForm,
+
+                  fetchTasks,
+                  view,
+                  setCompanyRefresh,
+                  companyRefresh,
+                }}
+              />
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <label
             htmlFor="Table"
-            className="block mb-2 text-xl font-medium text-gray-900 ps-2 pt-4"
+            className="block pt-4 mb-2 text-xl font-medium text-gray-900 ps-2"
           >
-           Completed Tasks
+            Completed Tasks
           </label>
         </div>
-
-        {showtasks && showtasks.length > 0 && (
-          <div>
-            <h4>Task Details:</h4>
-            <ul>
-              {showtasks.map((task, index) => (
-                <li key={index}>
-                  <strong>{task}</strong>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
 
         <div className="bg-white rounded-lg shadow-md">
           <CompletedTasksTable
             {...{
+              setSelectedTask,
+              selectedTask,
+              setCompletedTaskView,
+              completedTaskView,
+              setTasks,
               totalTasks,
               companyRefresh,
               handleDelete,
               tasks,
+              setShowForm,
+              showForm,
               setPage,
               page,
               pageSize,
-              fetchAllTasks:handleFilterChange,
+              fetchAllTasks: handleFilterChange,
               setPageSize,
               formData,
               fetchUsers,

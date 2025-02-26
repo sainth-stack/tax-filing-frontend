@@ -21,8 +21,11 @@ const PaymentForm = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [activeTasks, setActiveTasks] = useState([]);
+
   const user = JSON.parse(localStorage.getItem("user"));
 
+  // Fetch companies and initialize form for new payment
   // Fetch companies and initialize form for new payment
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -34,36 +37,65 @@ const PaymentForm = ({
         });
 
         const { data } = response?.data;
+
+        // Map companies to select options
         const companyOptions = data.map((item) => ({
           label: item.companyDetails?.companyName,
-          value: item.companyDetails?.companyName,
+          value: item._id,
           _id: item._id,
         }));
 
         setCompanies(companyOptions);
 
-        // Initialize form only for new payment (no paymentId)
-        if (!paymentId) {
-          const initialData = PaymentStaticData(companyOptions, "").reduce(
-            (acc, field) => {
-              acc[field?.id] = field.defaultValue || "";
-              return acc;
-            },
-            {}
+        // Function to get active tasks based on selected company
+        const getActiveTasks = (companyId) => {
+          const selectedCompany = data.find((item) => item._id === companyId);
+          if (!selectedCompany) return [];
+
+          // List of task fields to check for "active" status
+          const taskFields = [
+            "gst",
+            "incomeTax",
+            "esi",
+            "providentFund",
+            "professionalTax",
+            "tds",
+            "shopCommercialEstablishment",
+            "msme",
+            "fssai",
+            "factoryLicense",
+            "importExport",
+            "partnershipFirmFormC",
+            "shramSuvidhaPortal",
+            "mca",
+          ];
+
+          // Filter tasks with status "active"
+          const active = taskFields?.filter(
+            (task) => selectedCompany[task]?.status === "active"
           );
-          setFormData(initialData);
+          setActiveTasks(active); // Update active tasks state
+          return active;
+        };
+
+        // Recompute tasks when company changes
+        if (formData.company) {
+          const activeTasks = getActiveTasks(formData.company);
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            taskType: activeTasks.length ? activeTasks[0] : "", // Set default active task
+          }));
         }
       } catch (error) {
         console.error("Error fetching companies:", error);
-        setError("Failed to fetch companies.");
+        
       } finally {
         setLoading(false);
       }
     };
 
     fetchCompanies();
-  }, [paymentId, setFormData]);
-
+  }, [formData?.company , paymentId, setFormData]); // Dependency on company change
   // Fetch and populate payment data when paymentId exists
   useEffect(() => {
     if (!paymentId) return; // Exit if no paymentId
@@ -76,7 +108,7 @@ const PaymentForm = ({
         // console.log("🔍 Fetching payment:", paymentId);
         const response = await axios.get(`${base_url}/payments/${paymentId}`);
 
-         console.log("📌 Payments data at frontend:", response.data.data);
+        console.log("📌 Payments data at frontend:", response.data.data);
         if (response.data.data && response.data.success) {
           const payment = response.data.data;
 
@@ -89,16 +121,19 @@ const PaymentForm = ({
             _id: payment?._id,
             company: payment?.company || "",
             taskType: payment?.payments?.map((p) => p.name).join(", ") || "",
-            paymentType: ["lumpsum", "Lumpsum"].includes(payment?.paymentType) 
-  ? payment.paymentType.toLowerCase() 
-  : payment?.paymentType || "",
- // Normalize case
+            paymentType: ["lumpsum", "Lumpsum"].includes(payment?.paymentType)
+              ? payment.paymentType.toLowerCase()
+              : payment?.paymentType || "",
+            // Normalize case
             amount: payment?.amount || "", // Set amount for lumpsum
           };
 
           // console.log("📌 Checking payment type:", payment.paymentType);
 
-          if (payment.payments && populatedData?.paymentType === "lumpsum"||"Lumpsum") {
+          if (
+            (payment.payments && populatedData?.paymentType === "lumpsum") ||
+            "Lumpsum"
+          ) {
             // console.log("✅ Lumpsum detected, processing payments...");
             populatedData.amount = payment.amount;
             payment.payments.forEach((p) => {
@@ -139,122 +174,117 @@ const PaymentForm = ({
   }, [paymentId, setFormData, setShowForm, companies]); // Ensure companies are loaded
 
   // Handle Input Change
- const handleInputChange = (id, value) => {
-   setFormData((prev) => {
-     const updatedData = {
-       ...prev,
-       [id]: value,
-     };
+  const handleInputChange = (id, value) => {
+    setFormData((prev) => {
+      const updatedData = {
+        ...prev,
+        [id]: value,
+      };
 
-     // If the field being updated is `lumpsumAmount`, also update `amount`
-     if (id === "lumpsumAmount") {
-       updatedData.amount = value; // Set `amount` to `lumpsumAmount`
-     }
-
-     return updatedData;
-   });
-
-   console.log("Updated form data:", formData);
- };
-
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    setLoading(true);
-    setError(null);
-
-    const paymentId = formData?._id;
-    const isUpdate = !!paymentId;
-
-    console.log("🛠 Update Mode:", isUpdate);
-    console.log("🆔 Payment ID:", paymentId);
-
-    let payload = {
-      company: formData?.company,
-      taskType: formData?.taskType,
-      paymentType: formData?.paymentType,
-      agencyName: user?.agency,
-    };
-
-    // ✅ Add dynamic amounts
-    Object.keys(formData).forEach((key) => {
-      if (key.startsWith("amount_") && formData[key]) {
-        payload[key] = formData[key];
+      // If the field being updated is `lumpsumAmount`, also update `amount`
+      if (id === "lumpsumAmount") {
+        updatedData.amount = value; // Set `amount` to `lumpsumAmount`
       }
+
+      return updatedData;
     });
 
-    // ✅ Handle Lumpsum Case
-    console.log("lumsum case",formData?.paymentType)
-    if (
-      formData?.paymentType === "lumpsum" ||
-      formData?.paymentType === "Lumpsum"
-    ) {
-      const amount = Number(formData?.amount) || 0;
-      const selectedTasks = Object.keys(formData)
-        .filter((key) => key.startsWith("task_") && formData[key] === true)
-        .map((key) => key.replace("task_", ""));
+    console.log("Updated form data:", formData);
+  };
 
-      payload.payments = selectedTasks.map((task) => ({
-        name: task,
-        isChecked: true,
-        amount: amount,
-      }));
-      payload.amount = amount;
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      setError(null);
 
-    let response;
+      const paymentId = formData?._id;
+      const isUpdate = !!paymentId;
 
-    if (isUpdate) {
-      payload.paymentId = paymentId;
+      console.log("🛠 Update Mode:", isUpdate);
+      console.log("🆔 Payment ID:", paymentId);
 
-      // console.log("🔄 Updating payment:", paymentId);
-      // console.log("📤 Payload before PUT:", payload);
+      let payload = {
+        company: formData?.company,
+        taskType: formData?.taskType,
+        paymentType: formData?.paymentType,
+        agencyName: user?.agency,
+      };
 
-      try {
-        response = await axios.put(
-          `${base_url}/payments/${paymentId}`,
-          payload
-        );
-        console.log("✅ Payment updated successfully:", response.data);
-        toast.success("Payment Successfully Updated",{draggable:true});
-      } catch (error) {
-        console.error(
-          "❌ Error updating payment:",
-          error.response?.data || error.message
-        );
-        throw error;
-      }
-    } else {
-      console.log("➕ Creating new payment:", payload);
-      response = await axios.post(`${base_url}/payments`, payload, {
-        headers: { "Content-Type": "application/json" },
+      // ✅ Add dynamic amounts
+      Object.keys(formData).forEach((key) => {
+        if (key.startsWith("amount_") && formData[key]) {
+          payload[key] = formData[key];
+        }
       });
-      toast.success("Payment Successfully Recorded");
-    }
 
-    fetchPayments(); // ✅ Refresh payment list
+      // ✅ Handle Lumpsum Case
+      console.log("lumsum case", formData?.paymentType);
+      if (
+        formData?.paymentType === "lumpsum" ||
+        formData?.paymentType === "Lumpsum"
+      ) {
+        const amount = Number(formData?.amount) || 0;
+        const selectedTasks = Object.keys(formData)
+          .filter((key) => key.startsWith("task_") && formData[key] === true)
+          .map((key) => key.replace("task_", ""));
 
-    // ✅ Reset form properly after updating
-    
+        payload.payments = selectedTasks.map((task) => ({
+          name: task,
+          isChecked: true,
+          amount: amount,
+        }));
+        payload.amount = amount;
+      }
+
+      let response;
+
+      if (isUpdate) {
+        payload.paymentId = paymentId;
+
+        // console.log("🔄 Updating payment:", paymentId);
+        // console.log("📤 Payload before PUT:", payload);
+
+        try {
+          response = await axios.put(
+            `${base_url}/payments/${paymentId}`,
+            payload
+          );
+          console.log("✅ Payment updated successfully:", response.data);
+          toast.success("Payment Successfully Updated", { draggable: true });
+        } catch (error) {
+          console.error(
+            "❌ Error updating payment:",
+            error.response?.data || error.message
+          );
+          throw error;
+        }
+      } else {
+        console.log("➕ Creating new payment:", payload);
+        response = await axios.post(`${base_url}/payments`, payload, {
+          headers: { "Content-Type": "application/json" },
+        });
+        toast.success("Payment Successfully Recorded");
+      }
+
+      fetchPayments(); // ✅ Refresh payment list
+
+      // ✅ Reset form properly after updating
+
       setFormData();
-      setShowForm(false); 
-      setPaymentId()// ✅ Hide form
- 
-  } catch (error) {
-    console.error(
-      "❌ Error submitting payment:",
-      error.response?.data || error.message
-    );
-    toast.error("Failed to submit payment. Please try again.");
-    setError(error.response?.data?.message || error.message);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-
+      setShowForm(false);
+      setPaymentId(); // ✅ Hide form
+    } catch (error) {
+      console.error(
+        "❌ Error submitting payment:",
+        error.response?.data || error.message
+      );
+      toast.error("Failed to submit payment. Please try again.");
+      setError(error.response?.data?.message || error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">
@@ -271,7 +301,7 @@ const handleSubmit = async (e) => {
             {!loading && (
               <div className="p-3 mb-2 border border-gray-300 rounded-lg shadow-sm bg-gray-50">
                 <div className="grid grid-cols-4 gap-4">
-                  {PaymentStaticData(companies, formData?.paymentType)?.map(
+                  {PaymentStaticData(companies, formData?.paymentType,activeTasks)?.map(
                     (field, index) => {
                       if (field?.id == "taskType") {
                         return (
@@ -285,18 +315,20 @@ const handleSubmit = async (e) => {
                             {field?.options?.map((option) => (
                               <div
                                 key={option.value}
-                                className={`p-1 border rounded-md flex cursor-pointer text-center ${
+                                className={`p-2 border rounded-md flex items-center justify-center cursor-pointer transition-colors duration-200 ${
                                   formData?.taskType
                                     ?.split(", ")
                                     .includes(option?.value)
-                                    ? "bg-blue-100"
-                                    : ""
+                                    ? "bg-blue-100 border-blue-400 text-blue-800"
+                                    : "bg-white border-gray-300 text-gray-700 hover:bg-gray-100"
                                 }`}
                                 onClick={() =>
                                   handleInputChange("taskType", option.value)
                                 }
                               >
-                                <p>{option?.label}</p>
+                                <p className="text-sm font-medium">
+                                  {option?.label}
+                                </p>
                               </div>
                             ))}
                           </div>
@@ -308,7 +340,6 @@ const handleSubmit = async (e) => {
                               id={field?.id}
                               label={field.label}
                               options={field.options}
-                             
                               value={formData?.[field?.id] ?? ""}
                               onChange={(e) =>
                                 handleInputChange(field?.id, e.target.value)
@@ -321,7 +352,7 @@ const handleSubmit = async (e) => {
                     }
                   )}
                   <div>
-                    {PaymentStaticData(companies, formData?.paymentType)?.map(
+                    {PaymentStaticData(companies, formData?.paymentType,activeTasks)?.map(
                       (field, index) => {
                         if (field.type === "text") {
                           return (
@@ -355,7 +386,9 @@ const handleSubmit = async (e) => {
                                     )
                                   }
                                 />
-                                <label htmlFor={field?.id}>{field?.label}</label>
+                                <label htmlFor={field?.id}>
+                                  {field?.label}
+                                </label>
                               </div>
                             </div>
                           );
