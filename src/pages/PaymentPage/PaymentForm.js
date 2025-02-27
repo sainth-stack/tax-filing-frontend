@@ -20,7 +20,7 @@ const PaymentForm = ({
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+console.log(formData)
   const [activeTasks, setActiveTasks] = useState([]);
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -28,30 +28,31 @@ const PaymentForm = ({
   // Fetch companies and initialize form for new payment
   // Fetch companies and initialize form for new payment
   useEffect(() => {
-    const fetchCompanies = async () => {
+    const fetchData = async () => {
       setLoading(true);
+  
       try {
-        const response = await axios.post(`${base_url}/companies/filter`, {
+        // Fetch companies
+        const companiesResponse = await axios.post(`${base_url}/companies/filter`, {
           userId: user.role !== "A" ? user?._id : "",
           agency: user.agency,
         });
-
-        const { data } = response?.data;
-
+  
+        const { data: companiesData } = companiesResponse?.data;
+  
         // Map companies to select options
-        const companyOptions = data.map((item) => ({
+        const companyOptions = companiesData.map((item) => ({
           label: item.companyDetails?.companyName,
-          value: item._id,
+          value: item.companyDetails?.companyName,
           _id: item._id,
         }));
-
+  
         setCompanies(companyOptions);
-
         // Function to get active tasks based on selected company
         const getActiveTasks = (companyId) => {
-          const selectedCompany = data.find((item) => item._id === companyId);
+          const selectedCompany = companiesData.find((item) => item?.companyDetails?.companyName === companyId);
           if (!selectedCompany) return [];
-
+  
           // List of task fields to check for "active" status
           const taskFields = [
             "gst",
@@ -69,7 +70,7 @@ const PaymentForm = ({
             "shramSuvidhaPortal",
             "mca",
           ];
-
+  
           // Filter tasks with status "active"
           const active = taskFields?.filter(
             (task) => selectedCompany[task]?.status === "active"
@@ -77,7 +78,7 @@ const PaymentForm = ({
           setActiveTasks(active); // Update active tasks state
           return active;
         };
-
+  
         // Recompute tasks when company changes
         if (formData.company) {
           const activeTasks = getActiveTasks(formData.company);
@@ -86,93 +87,58 @@ const PaymentForm = ({
             taskType: activeTasks.length ? activeTasks[0] : "", // Set default active task
           }));
         }
-      } catch (error) {
-        console.error("Error fetching companies:", error);
-        
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCompanies();
-  }, [formData?.company , paymentId, setFormData]); // Dependency on company change
-  // Fetch and populate payment data when paymentId exists
-  useEffect(() => {
-    if (!paymentId) return; // Exit if no paymentId
-
-    setShowForm(true);
-
-    const fetchPaymentData = async () => {
-      setLoading(true); // Show loader while fetching
-      try {
-        // console.log("🔍 Fetching payment:", paymentId);
-        const response = await axios.get(`${base_url}/payments/${paymentId}`);
-
-        console.log("📌 Payments data at frontend:", response.data.data);
-        if (response.data.data && response.data.success) {
-          const payment = response.data.data;
-
-          if (companies.length === 0) {
-            console.warn("⚠️ Companies not yet loaded, retrying...");
-            return; // Prevent populating incomplete data
-          }
-
-          const populatedData = {
-            _id: payment?._id,
-            company: payment?.company || "",
-            taskType: payment?.payments?.map((p) => p.name).join(", ") || "",
-            paymentType: ["lumpsum", "Lumpsum"].includes(payment?.paymentType)
-              ? payment.paymentType.toLowerCase()
-              : payment?.paymentType || "",
-            // Normalize case
-            amount: payment?.amount || "", // Set amount for lumpsum
-          };
-
-          // console.log("📌 Checking payment type:", payment.paymentType);
-
-          if (
-            (payment.payments && populatedData?.paymentType === "lumpsum") ||
-            "Lumpsum"
-          ) {
-            // console.log("✅ Lumpsum detected, processing payments...");
-            populatedData.amount = payment.amount;
-            payment.payments.forEach((p) => {
-              populatedData[`task_${p.name}`] = p?.isChecked;
-              populatedData[`amount_${p.name}`] = p?.amount;
-            });
+  
+        // Fetch payment data if paymentId exists
+        if (paymentId) {
+          setShowForm(true);
+  
+          const paymentResponse = await axios.get(`${base_url}/payments/${paymentId}`);
+          const payment = paymentResponse.data.data;
+  
+          if (payment && paymentResponse.data.success) {
+            const populatedData = {
+              _id: payment?._id,
+              company: payment?.company || "",
+              taskType: payment?.payments?.map((p) => p.name).join(", ") || "",
+              paymentType: ["lumpsum", "Lumpsum"].includes(payment?.paymentType)
+                ? payment.paymentType.toLowerCase()
+                : payment?.paymentType || "",
+              amount: payment?.amount || "",
+            };
+  
+            if (
+              (payment.payments && populatedData?.paymentType === "lumpsum") ||
+              "Lumpsum"
+            ) {
+              populatedData.amount = payment.amount;
+              payment.payments.forEach((p) => {
+                populatedData[`task_${p.name}`] = p?.isChecked;
+                populatedData[`amount_${p.name}`] = p?.amount;
+              });
+            } else {
+              Object.keys(payment).forEach((key) => {
+                if (key.startsWith("amount_")) {
+                  populatedData[key] = payment[key];
+                }
+              });
+            }
+  
+            setFormData(populatedData);
           } else {
-            // console.log(
-            //   "✅ Monthly Subscription detected, processing amounts..."
-            // );
-            Object.keys(payment).forEach((key) => {
-              if (key.startsWith("amount_")) {
-                populatedData[key] = payment[key];
-              }
-            });
+            console.error("Unexpected API response:", paymentResponse.data);
+            setError("Unexpected API response format.");
           }
-
-          console.log("🚀 Populating formData:", populatedData);
-          setFormData(populatedData);
-        } else {
-          console.error("🚨 Unexpected API response:", response.data);
-          setError("Unexpected API response format.");
         }
       } catch (error) {
-        console.error(
-          "❌ Error fetching payment data:",
-          error.response?.data || error.message
-        );
-        setError(
-          error.response?.data?.message || "Failed to fetch payment data."
-        );
+        console.error("Error fetching data:", error);
+        setError(error.response?.data?.message || "Failed to fetch data.");
       } finally {
         setLoading(false);
       }
     };
-
-    fetchPaymentData();
-  }, [paymentId, setFormData, setShowForm, companies]); // Ensure companies are loaded
-
+  
+    fetchData();
+  }, [formData?.company, paymentId, setFormData, setShowForm, user.role, user._id, user.agency]);
   // Handle Input Change
   const handleInputChange = (id, value) => {
     setFormData((prev) => {
