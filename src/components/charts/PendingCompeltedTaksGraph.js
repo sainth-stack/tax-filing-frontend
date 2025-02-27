@@ -92,6 +92,13 @@ const PendingCompletedTasksGraph = ({
 
         const labels = uniqueIds.map(id => nameMapping[id]);
 
+        const createGradient = (ctx, color) => {
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, color); // White at the top
+        gradient.addColorStop(1, "#fff"); // Specified color at the bottom
+        return gradient;
+        };
+        const ctx = document.createElement("canvas").getContext("3d");
         const data = {
           labels,
           datasets: [
@@ -100,14 +107,16 @@ const PendingCompletedTasksGraph = ({
               data: uniqueIds.map(
                 (id) => completedTasksByPerson[id]?.count || 0
               ),
-              backgroundColor: "#008000",
+                        backgroundColor: createGradient(ctx, "#008000"), // White to Green
+
             },
             {
               label: "Pending Tasks",
               data: uniqueIds.map(
                 (id) => pendingTasksByPerson[id]?.count || 0
               ),
-              backgroundColor: "#FF0000",
+                        backgroundColor: createGradient(ctx, "#ff0000"), // White to Red
+
             }
           ],
         };
@@ -182,7 +191,7 @@ const PendingCompletedTasksGraph = ({
             padding: "16px",
             position: "relative",
           }}
-          className="mt-4"
+          className=""
         >
           {loading ? (
             <div className="flex justify-center   items-center m-2">

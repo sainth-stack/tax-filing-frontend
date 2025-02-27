@@ -107,7 +107,7 @@ const Sidemenu = ({ user }) => {
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 transition-all duration-300 bg-white border-r border-gray-200 z-30`}
+      className={`fixed inset-y-0 left-0 transition-all duration-300 shadow-xl bg-white border-r border-gray-200 z-40`}
       style={{ width: "200px" }}
     >
       <div className="mt-16">

@@ -31,13 +31,13 @@ ChartJS.register(
 const BarChart = ({ chartHeight, barDetails, loading }) => {
   // console.log("second graph bar details",barDetails)
   const colors = [
-    "#42A5F5",
-    "#ff6385",
-    "#FFA726",
-    "#26C6DA",
-    "#7E57C2",
-    "#FF7043",
-    "#26A69A",
+    "#6AD2FF",
+    "#333333",
+    "#FFBD3A",
+    "#FB4E22",
+    "#C27CFF",
+    "#A6AEB8",
+    "#4318FF",
     "#EC407A",
     "#AB47BC",
     "#FFCA28",

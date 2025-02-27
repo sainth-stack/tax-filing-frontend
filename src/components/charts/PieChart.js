@@ -78,7 +78,8 @@ const PieChart = ({ companyDetails, loading }) => {
     const labels = Object.keys(combinationCounts);
     const data = Object.values(combinationCounts);
     const backgroundColor = labels.map((label, index) => {
-      const colors = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
+            const colors = ["#4318FF",    "#A6AEB8","#C27CFF","#6AD2FF","#FB4E22",];
+
 
       return colors[index % colors.length];
     });

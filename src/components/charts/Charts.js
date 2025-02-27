@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PieChart from "./PieChart";
 import BarChart from "./BarChart";
+import MenuIcon from '@mui/icons-material/Menu';
 import SelectInput from "../select";
 import axios from "axios";
 import { base_url } from "../../const";
@@ -14,10 +15,16 @@ import {
 } from "./FilterData";
 import Popup from "../Popup/Popup";
 import MultiSelectInput from "../multi-select";
-import { Box } from "@mui/material";
+import { Box, Drawer, Grid, IconButton, Tooltip } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+import TaskProgressGaugePage from "./SemiCircle/TaskProgressGaugePage";
 
 const Charts = () => {
-   const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear();
+const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+const [isHovered, setIsHovered] = React.useState(false);
+
+  
   const [filedStatus, setFiledStatus] = useState("all");
   const [reason, setReason] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -196,80 +203,169 @@ const [year, setYear] = useState([
     setYear(simplifiedOptions);
   };
 
+
+  const [categories, setCategories] = useState([]);
+
   return (
-    <>
-      <div className="flex items-center m-3 p-3">
+    
+      
+    <Grid container >
+  
+      {/* Center Content - Graphs */}
+      <Grid item xs={12} container sx={{ gap: ".5rem" }}>
+        
+        <Grid
+        item
+        xs={12} // Use xs={12} to span full width, adjust as needed
+        sx={{
+          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
+          borderRadius: "8px",
+          bgcolor: "white",
+        }}
+      >
+          {/* <TaskProgressGaugePage categories={categories} loading={loading} setCategories={setCategories} /> */}
+        </Grid>
+        
+
+  <Grid item xs={5} sx={{ boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)", borderRadius: "8px",  bgcolor: "white" }}>
+    <PieChart companyDetails={companies} loading={loading} />
+  </Grid>
+  <Grid item xs={5} sx={{ boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)", borderRadius: "8px",  bgcolor: "white" }}>
+    <BarChart barDetails={companies} loading={loading} />
+  </Grid>
+  <Grid item xs={5} sx={{ boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)", borderRadius: "8px",  bgcolor: "white" }}>
+    <PaymentGraph paymentGraphDetails={companies} filterTime2={filteredTasks} loading={loading} />
+  </Grid>
+  <Grid item xs={5}  sx={{ boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",marginTop:"0", borderRadius: "8px",  bgcolor: "white" }}>
+    <PendingCompeltedTaksGraph PendingCompeltedTaksGraphDetails={companies} filteredTasks={filteredTasks} loading={loading} />
+          
+  </Grid>
+  
+</Grid>
+
+      
+
+      {/* right side bar */}
+
+      <Grid item xs={2}>
+  {/* Toggle Button - Hamburger Menu */}
+<Tooltip
+  title={isSidebarOpen ? "Close Menu" : "Open Menu"}
+  arrow
+  placement={isSidebarOpen ? "top" : "left"}
+  open={!isSidebarOpen || isHovered} // Always visible when closed, dynamic on hover
+>
+  <IconButton
+    onClick={() => setIsSidebarOpen((prev) => !prev)}
+    onMouseEnter={() => setIsHovered(true)}
+    onMouseLeave={() => setIsHovered(false)}
+    sx={{
+      position: "absolute",
+      top: 100,
+      right: 30,
+      zIndex: 1300,
+      bgcolor: "primary.main",
+      color: "white",
+      transition: "0.3s ease-in-out",
+      "&:hover": {
+        bgcolor: "gray",
+        color: "#fff",
+        transform: "scale(1.1)",
+        boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
+      },
+      "&:active": {
+        transform: "scale(0.95)",
+      },
+    }}
+  >
+    {isSidebarOpen ? <CloseIcon /> : <MenuIcon />}
+  </IconButton>
+</Tooltip>
+
+
+
+  {/* Sidebar Drawer (Right Side) */}
+  <Drawer
+    anchor="right"
+    open={isSidebarOpen}
+    onClose={() => setIsSidebarOpen(false)}
+    sx={{ 
+      '& .MuiDrawer-paper': { 
+        top: 81, // Adjust this value to move the sidebar down from the top
+        height: 'calc(100vh - 80px)',
+        overflow:"scroll"// Ensures it doesn't extend beyond the viewport
+      } 
+          }}
+          ModalProps={{
+      hideBackdrop: true, // Disables the dimming backdrop
+    }}
+  >
+    <Box sx={{ width: 300, p: 2 }}>
+      {/* Close Button */}
+      
+
+      {/* Filters Section */}
+      <div className="flex flex-col space-y-4 mt-6 ">
         <SelectInput
           id="status"
-          className="shadow-sm"
+          className="shadow-md"
           label="Status"
           value={status}
           onChange={(e) => setStatus(e.target.value)}
           options={[
             { value: "all", label: "All" },
             { value: "active", label: "Active" },
-            { value: "inactive", label: "inactive" },
+            { value: "inactive", label: "Inactive" },
           ]}
-          labelStyles={{
-            fontWeight: 500,
-          }}
-       
+          labelStyles={{ fontWeight: 500 }}
         />
 
-     <div style={{marginLeft:'10px'}}>
-         <MultiSelectInput
-          id="year"
-          labelStyles={{
-            fontWeight: 500,
-            width: "300px", 
-            maxWidth: "250px", 
-            minWidth: "150px",
-            mb:0.2
-          }}
-          sx={{
-            height:'40px',
-            
-          }}
+        <MultiSelectInput
+                id="year"
+          OtherClasses="shadow-md"
+                
           label="Select Year(s)"
-          value={year} 
+          value={year}
           setValue={handleYearChange}
           options={yearsJson}
           isMulti={Array.isArray(year)}
         />
-     </div>
 
         <SelectInput
           id="month"
-          className="shadow-sm ml-2"
+          className="shadow-md"
           label="Month"
           value={month}
           onChange={(e) => setMonth(e.target.value)}
           options={monthsJson}
           labelStyles={{ fontWeight: 500 }}
         />
+
         <SelectInput
           id="company"
-          className="shadow-sm ml-2"
+          className="shadow-md"
           label="Company"
           value={company}
           onChange={(e) => setCompany(e.target.value)}
           options={[{ label: "All", value: "0" }, ...cps]}
           labelStyles={{ fontWeight: 500 }}
         />
+
         <SelectInput
           id="taskType"
-          className="shadow-sm ml-2"
+          className="shadow-md"
           label="Task Type"
           value={taskType}
           onChange={(e) => setTaskType(e.target.value)}
           options={[{ label: "All", value: "0" }, ...taskTypeOptions.options]}
           labelStyles={{ fontWeight: 500 }}
         />
+
         {taskType === "gst" && (
           <>
             <SelectInput
               id="filedStatus"
-              className="shadow-sm"
+              className="shadow-md"
               label="Filed Status"
               value={filedStatus}
               onChange={(e) => handleFiledStatusChange(e.target.value)}
@@ -278,17 +374,10 @@ const [year, setYear] = useState([
                 { value: "filed", label: "Filed" },
                 { value: "notfiled", label: "Not Filed" },
               ]}
-              labelStyles={{
-                fontWeight: 500,
-              }}
+              labelStyles={{ fontWeight: 500 }}
             />
 
-            <Popup
-              isOpen={isPopupOpen}
-              onClose={() => setIsPopupOpen(false)}
-              title="Reason for Not Filing"
-              // onSubmit={handlePopupSubmit}
-            >
+            <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title="Reason for Not Filing">
               <textarea
                 rows={4}
                 value={reason}
@@ -300,42 +389,21 @@ const [year, setYear] = useState([
 
             <SelectInput
               id="applicationSubStatus"
-              className="shadow-sm ml-2"
+              className="shadow-sm"
               label="Type of GST"
               value={applicationSubStatus}
               onChange={(e) => setApplicationSubStatus(e.target.value)}
-              options={[
-                { label: "All", value: "0" },
-                ...applicationSubstatusOptions,
-              ]}
+              options={[{ label: "All", value: "0" }, ...applicationSubstatusOptions]}
               labelStyles={{ fontWeight: 500 }}
             />
           </>
         )}
       </div>
-
-      <div className="grid grid-cols-2 gap-4  container">
-        <PieChart companyDetails={companies} loading={loading} />
-        <BarChart barDetails={companies} loading={loading} />
-        <PaymentGraph
-          paymentGraphDetails={companies}
-          filterTime2={filteredTasks}
-          loading={loading}
-        />
-        {/* fourth graph  */}
-        <MeterGraph
-          MeterGraphDetails={companies}
-          filteredTasks={filteredTasks}
-          loading={loading}
-        />
-        {/* fifth graph */}
-        <PendingCompeltedTaksGraph
-          PendingCompeltedTaksGraphDetails={companies}
-          filteredTasks={filteredTasks}
-          loading={loading}
-        />
-      </div>
-    </>
+    </Box>
+  </Drawer>
+</Grid>
+</Grid>
+    
   );
 };
 
