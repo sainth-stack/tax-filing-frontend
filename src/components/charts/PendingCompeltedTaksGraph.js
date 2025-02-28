@@ -66,39 +66,64 @@ const PendingCompletedTasksGraph = ({
           const assignedName = task.assignedName || "Unassigned";
           nameMapping[assignedTo] = assignedName;
 
-          const actualCompletionDate = (task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate || task?.tdsmonthly_paidDate)
-            ? new Date((task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate || task?.tdsmonthly_paidDate))
-            : null;
+          const actualCompletionDate =
+            task?.actualCompletionDate ||
+            task?.pfMonthly_filedate ||
+            task?.esi_fileDate ||
+            task?.pft_fileDate ||
+            task?.gstMonthly_filedate ||
+            task?.tdsmonthly_paidDate
+              ? new Date(
+                  task?.actualCompletionDate ||
+                    task?.pfMonthly_filedate ||
+                    task?.esi_fileDate ||
+                    task?.pft_fileDate ||
+                    task?.gstMonthly_filedate ||
+                    task?.tdsmonthly_paidDate
+                )
+              : null;
 
           if (actualCompletionDate) {
             if (!completedTasksByPerson[assignedTo]) {
-              completedTasksByPerson[assignedTo] = { count: 0, tasks: [], assignedName: assignedName };
+              completedTasksByPerson[assignedTo] = {
+                count: 0,
+                tasks: [],
+                assignedName: assignedName,
+              };
             }
             completedTasksByPerson[assignedTo].count += 1;
             completedTasksByPerson[assignedTo].tasks.push(task);
           } else {
             if (!pendingTasksByPerson[assignedTo]) {
-              pendingTasksByPerson[assignedTo] = { count: 0, tasks: [], assignedName: assignedName };
+              pendingTasksByPerson[assignedTo] = {
+                count: 0,
+                tasks: [],
+                assignedName: assignedName,
+              };
             }
             pendingTasksByPerson[assignedTo].count += 1;
             pendingTasksByPerson[assignedTo].tasks.push(task);
           }
         });
 
-        const uniqueIds = [...new Set([
-          ...Object.keys(pendingTasksByPerson),
-          ...Object.keys(completedTasksByPerson),
-        ])].sort();
+        const uniqueIds = [
+          ...new Set([
+            ...Object.keys(pendingTasksByPerson),
+            ...Object.keys(completedTasksByPerson),
+          ]),
+        ].sort();
 
-        const labels = uniqueIds.map(id => nameMapping[id]);
+        const labels = uniqueIds.map((id) => nameMapping[id]);
 
+        // Create a gradient background
         const createGradient = (ctx, color) => {
-        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(0, color); // White at the top
-        gradient.addColorStop(1, "#fff"); // Specified color at the bottom
-        return gradient;
+          const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+          gradient.addColorStop(0, color); // White at the top
+          gradient.addColorStop(1, "#ffffff"); // Specified color at the bottom
+          return gradient;
         };
-        const ctx = document.createElement("canvas").getContext("3d");
+
+        const ctx = document.createElement("canvas").getContext("2d");
         const data = {
           labels,
           datasets: [
@@ -107,17 +132,13 @@ const PendingCompletedTasksGraph = ({
               data: uniqueIds.map(
                 (id) => completedTasksByPerson[id]?.count || 0
               ),
-                        backgroundColor: createGradient(ctx, "#008000"), // White to Green
-
+              backgroundColor: createGradient(ctx, "#008000"), // White to Green
             },
             {
               label: "Pending Tasks",
-              data: uniqueIds.map(
-                (id) => pendingTasksByPerson[id]?.count || 0
-              ),
-                        backgroundColor: createGradient(ctx, "#ff0000"), // White to Red
-
-            }
+              data: uniqueIds.map((id) => pendingTasksByPerson[id]?.count || 0),
+              backgroundColor: createGradient(ctx, "#ff0000"), // White to Red
+            },
           ],
         };
 

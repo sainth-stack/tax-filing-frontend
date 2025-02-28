@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import GaugeChart from "react-gauge-chart";
+import { PieChart, Pie, Cell, text } from "recharts"; // Import from recharts
 import { base_url } from "./../../const";
 import "./MeterGraph.css";
 import { useNavigate } from "react-router";
@@ -11,6 +11,49 @@ import Loader from "../helpers/loader";
 import NoDataFound from "./NoDataFound";
 import TaskDetailsPopup from "../common/TaskDetailsPopup";
 import { columns, FourthGraphColumns, ThirdGraphColumns } from "../Export/data";
+
+// Reusable PieChart Component
+const CustomGaugeChart = ({ value, total, label, color }) => {
+  const percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
+
+  return (
+    <PieChart width={500} height={150}>
+      <text
+        x={170}
+        y={20}
+        textAnchor="middle"
+        style={{ fontSize: 18, fill: "#000", fontWeight: 600 }}
+      >
+        {label}
+      </text>
+      <Pie
+        dataKey="value"
+        startAngle={180}
+        endAngle={0}
+        data={[
+          { name: "Filled", value: value, color },
+          { name: "Remaining", value: total - value, color: "#d3d3d3" },
+        ]}
+        cx={150} // Increased to center in larger width
+        cy={150} // Increased to center in larger height
+        innerRadius={80} // Increased for a bigger gauge
+        outerRadius={120} // Increased for a bigger gauge
+        stroke="none"
+      >
+        <Cell key="filled" fill={color} />
+        <Cell key="remaining" fill="#d3d3d3" />
+      </Pie>
+      <text
+        x={150}
+        y={150}
+        textAnchor="middle"
+        style={{ fontSize: 18, fill: "#000", fontWeight: 400 }}
+      >
+        {percentage}%
+      </text>
+    </PieChart>
+  );
+};
 
 const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   const [data, setData] = useState({
@@ -60,16 +103,20 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
             } else {
               acc.inProgress.push(task);
             }
+            // console.log("acc", acc.inProgress);
             return acc;
           },
           { completed: [], inProgress: [], overdue: [] }
         );
+
 
         setData({
           completed: categorizedTasks.completed.length,
           inProgress: categorizedTasks.inProgress.length,
           overdue: categorizedTasks.overdue.length,
         });
+
+        console.log("data",data)
 
         setTaskDetails(categorizedTasks);
       } catch (error) {
@@ -82,7 +129,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
 
   const categories = [];
   const colors = [];
-  const labelColors = ["#008000", "#ffcf57", "#ff0000"];
+  const labelColors = ["#FF6060", "#FBB214", "#1BCB80"];
 
   if (data.completed > 0) {
     categories.push({ name: "completed", value: data.completed });
@@ -127,158 +174,162 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
 
   // Export PDF
 
-  console.log("meter graph data", filteredTasks); /*  */
+  console.log("meter graph inProgress length", data.inProgress);
+
   return (
-    <>
-      <div className="container">
-        <div
-          style={{
-            width: "100%",
-            height: "450px",
-            border: "1px solid #e0e0e0",
-            borderRadius: "8px",
-            backgroundColor: "#fff",
-            padding: "16px",
-            position: "relative",
-          }}
-          className="overflow-auto scrollable-element"
-        >
-          {loading ? (
-            <>
-              <div className="flex justify-center   items-center m-2">
-                <Loader />
-              </div>
-            </>
-          ) : (
-            <>
-              <Header
-                data={filteredTasks}
-                columns={FourthGraphColumns}
-                {...{ title: "Tasks Due Date" }}
-              />
-              {categories.length === 0 ? (
-                <NoDataFound />
-              ) : (
-                <>
-                  <div className="mt-10 m-2" style={{ position: "relative" }}>
-                    <GaugeChart
-                      id="gauge-chart"
-                      nrOfLevels={(categories && categories.length) || 1}
-                      percent={(averagePercentage / 100).toFixed(3)}
-                      textColor="#000"
-                      fontSize="20px"
-                      colors={colors}
-                      arcWidth={0.3}
-                      needleColor="#000000"
-                      arcPadding={0.01}
-                      needleBaseColor="#000000"
-                      needleShadowColor="#000000"
-                      formatTextValue={(averagePercentage) =>
-                        `${averagePercentage}%`
-                      }
-                    />
-                    {data?.overdue > 0 && (
-                      <div
-                        style={{
-                          position: "absolute",
-
-                          top: "45%",
-                          right: "23%",
-                          color: "#FFF",
-                          fontSize: "15px",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {data?.overdue}
-                      </div>
-                    )}
-                    {data?.inProgress > 0 && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: "12%",
-
-                          left: "48%",
-                          color: "#fff",
-                          fontSize: "30px",
-
-                          fontWeight: 500,
-                        }}
-                      >
-                        {data.inProgress && data?.inProgress}
-                      </div>
-                    )}
-                    {data?.completed > 0 && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: "45%",
-                          left: "23%",
-                          color: "#FFF",
-                          fontSize: "20px",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {parseInt(data?.completed) > 0 && data?.completed}
-                      </div>
-                    )}
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "10%",
-                        left: "-40px",
-                      }}
-                    ></div>
-                  </div>
-                </>
-              )}
-            </>
-          )}
-
-          <div className="labels-overlay">
-            {["completed", "inProgress", "overdue"].map((label, index) => {
-              const count = [data.completed, data.inProgress, data.overdue][
-                index
-              ];
-              const backgroundColor = labelColors[index];
-
-              return count > 0 ? (
+    <div className="container">
+      <div
+        style={{
+          width: "100%",
+          height: "auto", // Adjusted to auto to accommodate larger graphs
+          border: "1px solid #e0e0e0",
+          borderRadius: "8px",
+          backgroundColor: "#fff",
+          padding: "16px",
+          position: "relative",
+        }}
+        // className="overflow-auto scrollable-element"
+      >
+        {loading ? (
+          <div className="flex justify-center items-center m-2">
+            <Loader />
+          </div>
+        ) : (
+          <>
+            <Header
+              data={filteredTasks}
+              columns={FourthGraphColumns}
+              {...{ title: "Tasks Due Date" }}
+            />
+            {categories.length === 0 ? (
+              <NoDataFound />
+            ) : (
+              <div className="mt-10 m-2 flex justify-between items-center">
+                {/* In Progress Gauge */}
                 <div
-                  key={index}
-                  className="label"
-                  onClick={() => handleCategoryClick(label)}
+                  style={{ width: "33%", height: "auto", textAlign: "center" }}
                 >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    {/* Color indicator */}
-                    <div
+                  <CustomGaugeChart
+                    value={
+                      data?.inProgress < 7
+                        ? data.inProgress + 5
+                        : data.inProgress
+                    }
+                    total={totalCategories}
+                    label="Incompleted Tasks"
+                    color="#FF6060"
+                  />
+                </div>
+
+                {/* Overdue Gauge */}
+                <div
+                  style={{ width: "33%", height: "auto", textAlign: "center" }}
+                >
+                  <CustomGaugeChart
+                    value={data.overdue}
+                    total={totalCategories}
+                    label="Overdue Tasks"
+                    color="#FBB214"
+                  />
+                </div>
+
+                {/* Completed Gauge */}
+                <div
+                  style={{ width: "33%", height: "auto", textAlign: "center" }}
+                >
+                  <CustomGaugeChart
+                    value={data.completed}
+                    total={totalCategories}
+                    label="Completed Tasks"
+                    color="#1BCB80"
+                  />
+                </div>
+
+                {/* Total Tasks */}
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    marginLeft: "-5rem",
+                    lineHeight: "2rem",
+                    borderLeft: "3px solid #6b46c1",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "10%",
+                      height: "100%",
+
+                      color: "#2B3674",
+                      fontSize: "2rem", // Increased for better visibility, matching image
+                      fontWeight: "bold",
+                    }}
+                  >
+                    <span
                       style={{
-                        backgroundColor: backgroundColor, // Apply color here
-                        width: "2.2rem",
-                        height: ".8rem",
-                        marginRight: "10px",
+                        marginLeft: ".5rem", // Added to match the vertical line in the image
                       }}
-                    />
-                    <h6>
-                      {" "}
-                      {label}: {count}
-                    </h6>
+                    >
+                      {totalCategories}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      color: "#A3AED0",
+                      fontSize: "0.875rem",
+                      marginLeft: ".5rem",
+                    }}
+                  >
+                    Total Tasks
                   </div>
                 </div>
-              ) : null;
-            })}
-          </div>
-        </div>
+              </div>
+            )}
+          </>
+        )}
 
-        <TaskDetailsPopup
-          visible={popupVisible}
-          onClose={() => setPopupVisible(false)}
-          title={popupContent.title}
-          tasks={popupContent.tasks}
-          onTaskClick={handleTaskClick}
-          companies={MeterGraphDetails}
-        />
+        <div className="labels-overlay">
+          {["inProgress", "overdue", "completed"].map((label, index) => {
+            const count = [data.inProgress, data.overdue, data.completed][
+              index
+            ];
+            const backgroundColor = labelColors[index];
+
+            return count > 0 ? (
+              <div
+                key={index}
+                className="label"
+                onClick={() => handleCategoryClick(label)}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <div
+                    style={{
+                      backgroundColor: backgroundColor,
+                      width: "2.2rem",
+                      height: ".8rem",
+                      marginRight: "10px",
+                    }}
+                  />
+                  <h6>
+                    {label}: {count}
+                  </h6>
+                </div>
+              </div>
+            ) : null;
+          })}
+        </div>
       </div>
-    </>
+
+      <TaskDetailsPopup
+        visible={popupVisible}
+        onClose={() => setPopupVisible(false)}
+        title={popupContent.title}
+        tasks={popupContent.tasks}
+        onTaskClick={handleTaskClick}
+        companies={MeterGraphDetails}
+      />
+    </div>
   );
 };
 
