@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+ArcElement,
   Tooltip,
   Legend,
 } from "chart.js";
@@ -22,7 +22,7 @@ import { SecondGraphColumns } from "../Export/data";
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  ArcElement,
   Tooltip,
   Legend,
   ChartDataLabels
@@ -197,61 +197,76 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
     }
   };
 
-  const options = {
-    onClick: handleClick,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        enabled: true,
-        callbacks: {
-          label: (context) => {
-            const index = context.dataIndex;
-            return finalData[index];
-          },
-        },
-      },
-      datalabels: {
-        display: true,
-        color: "white",
-        anchor: "center",
-        align: "center",
-        formatter: (value, index) => {
-          return finalData[index?.dataIndex];
-        },
-        font: { size: 20, weight: "bold" },
-      },
-    },
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: "",
-        },
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: "Number of Companies",
-        },
-        grid: {
-          display: false,
-        },
-        height: 300,
-        ticks: {
-          stepSize: 1,
-          callback: (value) => (Number.isInteger(value) ? value : null),
-        },
-      },
-    },
-  };
+ const options = {
+   onClick: handleClick,
+   plugins: {
+     legend: {
+       display: false,
+       position: "top",
+       labels: {
+         boxWidth: 35, // Slightly larger legend boxes
+         padding: 10, // More spacing between legend items
+         font: {
+           size: 14, // Slightly larger font for readability
+           weight: "bold", // Bold legend text
+         },
+         color: "#333", // Darker color for better contrast
+        //  usePointStyle: true, // Circular points instead of squares
+       },
+     },
+     tooltip: {
+       enabled: true,
+       backgroundColor: "rgba(0, 0, 0, 0.8)", // Darker, semi-transparent background
+       titleFont: {
+         size: 16,
+         weight: "bold",
+       },
+       bodyFont: {
+         size: 14,
+       },
+       padding: 10, // More padding for a cleaner look
+       borderColor: "#ccc", // Subtle border
+       borderWidth: 1,
+
+       callbacks: {
+         // Modify the label to show percentage
+         label: (tooltipItem) => {
+           const value = tooltipItem.raw;
+           const total = tooltipItem.chart.data.datasets[0].data.reduce((a, b) => a + b, 0); // Total value of the doughnut chart
+           const percentage = ((value / total) * 100).toFixed(2); // Calculate the percentage
+
+           return `${tooltipItem.label}: ${percentage}%`; // Display the label with percentage
+         },
+       },
+     },
+     datalabels: {
+       display: true,
+       color: "white",
+       formatter: (value) => value,
+       font: {
+         size: 16, // Slightly larger for emphasis
+         weight: "bold",
+         family: "Arial", // Consistent, clean font
+       },
+       textShadowBlur: 10, // Subtle shadow for better contrast (optional)
+       textShadowColor: "rgba(0, 0, 0, 0.5)", // Shadow color (optional)
+     },
+   },
+   responsive: true,
+   maintainAspectRatio: false,
+   cutout: "50%", // Slightly larger center hole for a modern look
+   animation: {
+     animateScale: true, // Scales segments on load
+     animateRotate: true, // Rotates chart on load
+     duration: 500, // Smooth 1-second animation
+     easing: "easeOutQuart", // Smooth easing effect
+   },
+   hover: {
+     mode: "nearest", // Highlights the nearest segment on hover
+     intersect: true,
+     animationDuration: 400, // Smooth hover animation
+   },
+ };
 
   const handleCompanyClick = (taskId) => {
     navigate("/company", { state: { companyName: taskId } });
@@ -299,7 +314,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
             ) : (
               <>
                 <div className="">
-                  <ul className="flex flex-wrap w-full capitalize">
+                  {/* <ul className="flex flex-wrap w-full capitalize">
                     {chartData.labels.length !== 0 &&
                       chartData.labels.map((label, index) => (
                         <li
@@ -321,11 +336,11 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
                           </span>
                         </li>
                       ))}
-                  </ul>
+                  </ul> */}
 
                   <div className="w-full">
                     <div style={{ width: "auto", height: "300px" }}>
-                      <Bar
+                      <Doughnut
                         data={{
                           ...chartData,
                           labels: chartData.labels.map((item) =>
