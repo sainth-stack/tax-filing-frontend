@@ -78,7 +78,7 @@ const PieChart = ({ companyDetails, loading }) => {
     const labels = Object.keys(combinationCounts);
     const data = Object.values(combinationCounts);
     const backgroundColor = labels.map((label, index) => {
-            const colors = ["#4318FF",    "#A6AEB8","#C27CFF","#6AD2FF","#FB4E22",];
+            const colors = ["#4318FF","#A6AEB8","#C27CFF","#6AD2FF","#FB4E22",];
 
 
       return colors[index % colors.length];
@@ -91,7 +91,7 @@ const PieChart = ({ companyDetails, loading }) => {
           data,
           backgroundColor,
           borderColor: "#fff",
-          borderWidth: 1,
+          borderWidth: 0,
         },
       ],
     });
@@ -133,6 +133,7 @@ const PieChart = ({ companyDetails, loading }) => {
   };
 
  const options = {
+  cutout:'55%',
    plugins: {
      legend: {
        display: false, // Enable the legend
@@ -175,7 +176,7 @@ const PieChart = ({ companyDetails, loading }) => {
        color: "#fff", // Set text color of the data labels
        font: {
          weight: "bold", // Bold font for the data labels
-         size: 30, // Set the font size of the data labels
+         size: 16, // Set the font size of the data labels
        },
        formatter: (value, context) => {
          return `${value}`; // Display the value in the label
@@ -184,9 +185,9 @@ const PieChart = ({ companyDetails, loading }) => {
    },
    elements: {
      arc: {
-       borderWidth: 1, // Border width for each arc (segment of the chart)
+       borderWidth: 0, // Border width for each arc (segment of the chart)
        borderColor: "#fff", // Border color for each segment
-       borderRadius: 10, // Set rounded corners for the arcs
+       borderRadius: 0, // Set rounded corners for the arcs
      },
    },
    onClick: onChartClick, // Event handler for chart clicks

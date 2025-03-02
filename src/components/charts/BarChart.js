@@ -143,11 +143,11 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
 
         // Prepare chart data
         const labels = Object.keys(activeCompanyGroups);
-        const data = labels.map((taskType) => 40);
+        const data = labels?.map((taskType) => activeCompanyGroups[taskType].ids.length);
 
-        setFinalData(
-          labels?.map((taskType) => activeCompanyGroups[taskType].ids.length)
-        );
+        // setFinalData(
+        //   labels?.map((taskType) => activeCompanyGroups[taskType].ids.length)
+        // );
 
         const barColors = labels.map(
           (_, index) => colors[index % colors.length]
@@ -162,8 +162,8 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
 
               backgroundColor: barColors,
               borderColor: "#1E88E5",
-              borderWidth: 0.5,
-              borderRadius: 5,
+              borderWidth: 0,
+              borderRadius: 0,
               fill: true,
               lineTension: 0.4,
               pointRadius: 0,
@@ -198,6 +198,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
   };
 
  const options = {
+  cutout:'55%',
    onClick: handleClick,
    plugins: {
      legend: {

@@ -117,13 +117,15 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
               label: "Completed",
               data: completedData,
               backgroundColor: createGradient(ctx, "#008000"), // White to Green
-              borderRadius: 5,
+              borderRadius: 2,
+              barPercentage: 0.6,
             },
             {
               label: "Not Completed",
               data: notCompletedData,
               backgroundColor: createGradient(ctx, "#ff0000"), // White to Red
-              borderRadius: 5,
+              borderRadius: 2,
+              barPercentage: 0.6,
             },
           ],
         };
@@ -208,7 +210,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
         anchor: "center",
         align: "center",
         formatter: (value) => value || "",
-        font: { size: 20, weight: "bold" },
+        font: { size: 16, weight: "bold" },
       },
     },
     responsive: true,

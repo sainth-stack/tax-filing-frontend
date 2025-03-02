@@ -5,6 +5,8 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { saveAs } from "file-saver";
 import { base_url } from "../../const";
+import { Switch } from "@mui/material"; // Import Switch from Material-UI
+
 import {
   CategoryScale,
   LinearScale,
@@ -36,6 +38,63 @@ ChartJS.register(
   ChartDataLabels
 );
 
+const CustomSwitch = ({ checked, onChange }) => {
+  return (
+    <div
+      onClick={() => onChange(!checked)}
+      style={{
+        display: "inline-block",
+        width: "48px",
+        height: "23px",
+        backgroundColor: checked ? "#1890ff" : "#E9E9EA",
+        borderRadius: "15px",
+        position: "relative",
+        cursor: "pointer",
+        transition: "background-color 0.3s",
+      }}
+    >
+      <div
+        style={{
+          width: "21px",
+          height: "21px",
+          backgroundColor: "#fff",
+          borderRadius: "50%",
+          position: "absolute",
+          top: "1px",
+          left: checked ? "25px" : "1px",
+          transition: "left 0.3s",
+        }}
+      />
+    </div>
+  );
+};
+
+
+
+const CustomLegendWithSwitch = ({ datasets ,setCompleted,complated}) => {
+
+  const handleSwitchChange = () => {
+    setCompleted(!complated);
+  };
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px" }}>
+      {datasets.map((dataset, index) => (
+        <React.Fragment key={index}>
+          <div style={{ margin: "0 10px", textAlign: "center" ,display:'flex',alignItems:'center'}}>
+            <div style={{ backgroundColor: dataset.label === "Completed Tasks" ? "#008000" : "#ff0000", width: "40px", height: "15px", display: "inline-block", marginRight: "5px" }}></div>
+            <span>{dataset.label}</span>
+          </div>
+          {index === 0 && (
+            <CustomSwitch checked={complated} onChange={handleSwitchChange} />
+          )}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+};
+
+
 const PendingCompletedTasksGraph = ({
   PendingCompeltedTaksGraphDetails,
   filteredTasks,
@@ -50,6 +109,7 @@ const PendingCompletedTasksGraph = ({
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [popupContent, setPopupContent] = useState({ title: "", tasks: [] });
+  const [complated,setCompleted] = useState(true)
   const [tasksData, setTasksData] = useState({
     pendingTasksByPerson: {},
     completedTasksByPerson: {},
@@ -83,7 +143,7 @@ const PendingCompletedTasksGraph = ({
                 )
               : null;
 
-          if (actualCompletionDate) {
+          if (actualCompletionDate && complated) {
             if (!completedTasksByPerson[assignedTo]) {
               completedTasksByPerson[assignedTo] = {
                 count: 0,
@@ -93,7 +153,7 @@ const PendingCompletedTasksGraph = ({
             }
             completedTasksByPerson[assignedTo].count += 1;
             completedTasksByPerson[assignedTo].tasks.push(task);
-          } else {
+          } else if(!complated) {
             if (!pendingTasksByPerson[assignedTo]) {
               pendingTasksByPerson[assignedTo] = {
                 count: 0,
@@ -150,7 +210,7 @@ const PendingCompletedTasksGraph = ({
     };
 
     fetchData();
-  }, [filteredTasks]);
+  }, [filteredTasks,complated]);
 
   const handleClick = (event, elements) => {
     if (elements.length > 0) {
@@ -233,6 +293,7 @@ const PendingCompletedTasksGraph = ({
                 <NoDataFound />
               ) : (
                 <>
+                <CustomLegendWithSwitch datasets={chartData.datasets} setCompleted={setCompleted} complated={complated}/>
                   <Bar
                     data={chartData}
                     options={{
@@ -270,6 +331,7 @@ const PendingCompletedTasksGraph = ({
                       },
                       plugins: {
                         legend: {
+                          display:false,
                           position: "top",
                           labels: {
                             font: {
@@ -286,7 +348,7 @@ const PendingCompletedTasksGraph = ({
                           align: "center",
                           formatter: (value) => value || "",
                           font: {
-                            size: 22,
+                            size: 16,
                             weight: "bold",
                           },
                         },
