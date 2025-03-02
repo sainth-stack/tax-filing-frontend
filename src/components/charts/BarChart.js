@@ -237,7 +237,7 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
            const percentage = ((value / total) * 100).toFixed(2); // Calculate the percentage
 
            return `${tooltipItem.label}: ${percentage}%`; // Display the label with percentage
-         },
+          },
        },
      },
      datalabels: {
