@@ -11,49 +11,63 @@ import Loader from "../helpers/loader";
 import NoDataFound from "./NoDataFound";
 import TaskDetailsPopup from "../common/TaskDetailsPopup";
 import { columns, FourthGraphColumns, ThirdGraphColumns } from "../Export/data";
+import { m } from "framer-motion";
 
 // Reusable PieChart Component
-const CustomGaugeChart = ({ value, total, label, color }) => {
+// Reusable PieChart Component
+const CustomGaugeChart = ({ value, total, label, color, onClick }) => {
   const percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
 
   return (
-    <PieChart width={500} height={150}>
-      <text
-        x={170}
-        y={20}
-        textAnchor="middle"
-        style={{ fontSize: 18, fill: "#000", fontWeight: 600 }}
+    <div
+      tabIndex={-1}  // 🔹 Prevent focus on wrapper div
+      style={{ outline: "none" }}  // 🔹 Remove outline on wrapper
+      onClick={onClick}  // 🔹 Handle click event
+    >
+      <PieChart
+        width={500}
+        height={150}
+        style={{ cursor: "pointer" }}  // 🔹 Set pointer cursor
       >
-        {label}
-      </text>
-      <Pie
-        dataKey="value"
-        startAngle={180}
-        endAngle={0}
-        data={[
-          { name: "Filled", value: value, color },
-          { name: "Remaining", value: total - value, color: "#d3d3d3" },
-        ]}
-        cx={150} // Increased to center in larger width
-        cy={150} // Increased to center in larger height
-        innerRadius={80} // Increased for a bigger gauge
-        outerRadius={120} // Increased for a bigger gauge
-        stroke="none"
-      >
-        <Cell key="filled" fill={color} />
-        <Cell key="remaining" fill="#d3d3d3" />
-      </Pie>
-      <text
-        x={150}
-        y={150}
-        textAnchor="middle"
-        style={{ fontSize: 18, fill: "#000", fontWeight: 400 }}
-      >
-        {percentage}%
-      </text>
-    </PieChart>
+        <text
+          x={170}
+          y={20}
+          textAnchor="middle"
+          style={{ fontSize: 18, fill: "#000", fontWeight: 600 }}
+        >
+          {label}
+        </text>
+        <Pie
+          dataKey="value"
+          startAngle={180}
+          endAngle={0}
+          data={[
+            { name: "Filled", value: value, color },
+            { name: "Remaining", value: total - value, color: "#d3d3d3" },
+          ]}
+          cx={150}
+          cy={150}
+          innerRadius={80}
+          outerRadius={120}
+          stroke="none"
+          style={{ pointerEvents: "none" }}  // 🔹 Prevent focus on Pie
+        >
+          <Cell key="filled" fill={color} />
+          <Cell key="remaining" fill="#d3d3d3" />
+        </Pie>
+        <text
+          x={150}
+          y={150}
+          textAnchor="middle"
+          style={{ fontSize: 18, fill: "#000", fontWeight: 400 }}
+        >
+          {percentage}%
+        </text>
+      </PieChart>
+    </div>
   );
 };
+
 
 const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   const [data, setData] = useState({
@@ -204,7 +218,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
             {categories.length === 0 ? (
               <NoDataFound />
             ) : (
-              <div className="mt-10 m-2 flex justify-between items-center">
+              <div className=" m-2 flex justify-between items-center">
                 {/* In Progress Gauge */}
                 <div
                   style={{ width: "33%", height: "auto", textAlign: "center" }}
@@ -218,6 +232,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                     total={totalCategories}
                     label="Incompleted Tasks"
                     color="#FF6060"
+                    onClick={() => handleCategoryClick("inProgress")}
                   />
                 </div>
 
@@ -230,6 +245,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                     total={totalCategories}
                     label="Overdue Tasks"
                     color="#FBB214"
+                    onClick={() => handleCategoryClick("overdue")}
                   />
                 </div>
 
@@ -242,6 +258,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                     total={totalCategories}
                     label="Completed Tasks"
                     color="#1BCB80"
+                    onClick={() => handleCategoryClick('completed')}
                   />
                 </div>
 
@@ -289,7 +306,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
           </>
         )}
 
-        <div className="labels-overlay">
+        {/* <div className="labels-overlay">
           {["inProgress", "overdue", "completed"].map((label, index) => {
             const count = [data.inProgress, data.overdue, data.completed][
               index
@@ -318,7 +335,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
               </div>
             ) : null;
           })}
-        </div>
+        </div> */}
       </div>
 
       <TaskDetailsPopup

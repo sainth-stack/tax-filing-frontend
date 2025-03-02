@@ -27,6 +27,7 @@ const [isHovered, setIsHovered] = React.useState(false);
   const isMobile = useMediaQuery("(max-width:600px)");
   const isTablet = useMediaQuery("(max-width:960px)");
   
+  
   const [filedStatus, setFiledStatus] = useState("all");
   const [reason, setReason] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -255,17 +256,19 @@ const [year, setYear] = useState([
       {/* Right Sidebar */}
       <Box
         sx={{
-          position: "fixed",
+          position: "absolute",
           top: isMobile ? 0 : 100,
           right: isSidebarOpen ? 0 : "-300px",
           width: isMobile ? "100%" : 300,
           height: isMobile ? "100vh" : "calc(100vh - 81px)",
           backgroundColor: "white",
-          borderRadius:".3rem",
+          borderRadius: ".3rem",
           boxShadow: isSidebarOpen ? "-4px 0 12px rgba(0, 0, 0, 0.2)" : "none",
-          transition: "right 0.3s ease-in-out",
+          transition: "right 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
           zIndex: 1200,
-          overflowY: "auto",
+          transform: isSidebarOpen ? "translateX(0)" : "translateX(100%)",
+    transition: "transform 0.4s ease",
+    display: isSidebarOpen ? "block" : "none",
           padding: 2,
         }}
       >
@@ -383,7 +386,7 @@ const [year, setYear] = useState([
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           sx={{
-            position: "fixed",
+            position: "absolute",
             top: isMobile ? 10 : 90,
             right: isMobile ? 10 : 5,
             zIndex: 1300,
@@ -422,7 +425,8 @@ const ChartCard = ({ children, xs = 5, height = "auto" }) => (
       borderRadius: "8px",
       bgcolor: "white",
       marginTop: "0",
-      height: height, // Set dynamic height
+      height: height,
+      cursor:"pointer"// Set dynamic height
     }}
   >
     {children}
