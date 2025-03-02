@@ -146,13 +146,11 @@ export default function PaymentTable({
             : bNames.localeCompare(aNames);
         }
 
-        return 0; // Default case (no sorting)
+        return 0; 
       })
-    : []; // If payments is not an array, return an empty array
+    : [];
 
   const handleEditForm = (id) => {
-    // alert(id)
-
     setPaymentId(id);
   };
 

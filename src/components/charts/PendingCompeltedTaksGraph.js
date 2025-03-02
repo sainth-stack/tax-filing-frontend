@@ -126,22 +126,9 @@ const PendingCompletedTasksGraph = ({
           const assignedName = task.assignedName || "Unassigned";
           nameMapping[assignedTo] = assignedName;
 
-          const actualCompletionDate =
-            task?.actualCompletionDate ||
-            task?.pfMonthly_filedate ||
-            task?.esi_fileDate ||
-            task?.pft_fileDate ||
-            task?.gstMonthly_filedate ||
-            task?.tdsmonthly_paidDate
-              ? new Date(
-                  task?.actualCompletionDate ||
-                    task?.pfMonthly_filedate ||
-                    task?.esi_fileDate ||
-                    task?.pft_fileDate ||
-                    task?.gstMonthly_filedate ||
-                    task?.tdsmonthly_paidDate
-                )
-              : null;
+          const actualCompletionDate = (task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate || task?.tdsmonthly_paidDate || task?.paymentStatus=='completed')
+            ? new Date((task?.actualCompletionDate || task?.pfMonthly_filedate || task?.esi_fileDate || task?.pft_fileDate || task?.gstMonthly_filedate || task?.tdsmonthly_paidDate || task?.paymentStatus=='completed'))
+            : null;
 
           if (actualCompletionDate && complated) {
             if (!completedTasksByPerson[assignedTo]) {

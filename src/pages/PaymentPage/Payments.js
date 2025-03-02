@@ -43,7 +43,7 @@ const PaymentPage = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
-
+  
   const [companyRefresh, setCompanyRefresh] = useState(false);
   const [showAutoGenModal, setShowAutoGenModal] = useState(false); // For modal visibility
   
