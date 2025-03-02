@@ -22,7 +22,7 @@ import RightSidebar from "../right-sidebar";
 
 const Charts = () => {
   const currentYear = new Date().getFullYear();
-const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 const [isHovered, setIsHovered] = React.useState(false);
 
   const isMobile = useMediaQuery("(max-width:600px)");
