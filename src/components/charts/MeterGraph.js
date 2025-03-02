@@ -25,7 +25,7 @@ const CustomGaugeChart = ({ value, total, label, color, onClick }) => {
       onClick={onClick}  // 🔹 Handle click event
     >
       <PieChart
-        width={500}
+      width={300}
         height={150}
         style={{ cursor: "pointer" }}  // 🔹 Set pointer cursor
       >
