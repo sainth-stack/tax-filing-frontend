@@ -19,7 +19,7 @@ const Layout = ({ children }) => {
             <Topmenu />
           </div>
         </header>
-        <div className="flex flex-grow" style={{}}>
+        <div className="flex flex-grow " style={{}} >
           <aside className="w-25 bg-gray-100 shadow-md h-full fixed left-0 pt-16">
             <Sidemenu {...{ user }} />
           </aside>

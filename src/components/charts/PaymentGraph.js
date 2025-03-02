@@ -73,61 +73,71 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
 
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const taskTypes = [];
-        const completedCounts = {};
-        const notCompletedCounts = {};
-        // Collect counts of completed and not completed tasks based on `actualCompletionDate`
-        filterTime?.forEach((task) => {
-          const taskType = task.taskType || "others";
-          const isCompleted = isTaskCompleted(task)
+  const fetchData = async () => {
+    try {
+      const taskTypes = [];
+      const completedCounts = {};
+      const notCompletedCounts = {};
 
-          if (!taskTypes.includes(taskType)) {
-            taskTypes.push(taskType);
-            completedCounts[taskType] = 0;
-            notCompletedCounts[taskType] = 0;
-          }
+      // Collect counts of completed and not completed tasks
+      filterTime?.forEach((task) => {
+        const taskType = task.taskType || "others";
+        const isCompleted = isTaskCompleted(task);
 
-          if (isCompleted) {
-            completedCounts[taskType]++;
-          } else {
-            notCompletedCounts[taskType]++;
-          }
-        });
+        if (!taskTypes.includes(taskType)) {
+          taskTypes.push(taskType);
+          completedCounts[taskType] = 0;
+          notCompletedCounts[taskType] = 0;
+        }
 
-        const completedData = taskTypes.map(
-          (type) => completedCounts[type] || 0
-        );
-        const notCompletedData = taskTypes.map(
-          (type) => notCompletedCounts[type] || 0
-        );
+        if (isCompleted) {
+          completedCounts[taskType]++;
+        } else {
+          notCompletedCounts[taskType]++;
+        }
+      });
 
-        setChartData({
+      const completedData = taskTypes.map((type) => completedCounts[type] || 0);
+      const notCompletedData = taskTypes.map((type) => notCompletedCounts[type] || 0);
+
+      // Create a gradient background
+      const createGradient = (ctx, color) => {
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, color); // White at the top
+        gradient.addColorStop(1, "#ffffff"); // Specified color at the bottom
+        return gradient;
+      };
+
+      setChartData((prevChartData) => {
+        const ctx = document.createElement("canvas").getContext("2d");
+        return {
           labels: taskTypes,
           datasets: [
             {
               label: "Completed",
               data: completedData,
-              backgroundColor: "#008000",
-              borderRadius: 5,
+              backgroundColor: createGradient(ctx, "#008000"), // White to Green
+              borderRadius: 2,
+              barPercentage: 0.6,
             },
             {
               label: "Not Completed",
               data: notCompletedData,
-              backgroundColor: "#FF0000",
-              borderRadius: 5,
+              backgroundColor: createGradient(ctx, "#ff0000"), // White to Red
+              borderRadius: 2,
+              barPercentage: 0.6,
             },
           ],
-        });
-      } catch (error) {
-        console.error("Error fetching or processing data:", error);
-      } finally {
-      }
-    };
+        };
+      });
+    } catch (error) {
+      console.error("Error fetching or processing data:", error);
+    }
+  };
 
-    fetchData();
-  }, [filterTime]);
+  fetchData();
+}, [filterTime]);
+
 
   // console.log("3rd graph grpah  checking", filterTime2);
   const handleClick = (event, elements) => {
@@ -200,7 +210,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
         anchor: "center",
         align: "center",
         formatter: (value) => value || "",
-        font: { size: 20, weight: "bold" },
+        font: { size: 16, weight: "bold" },
       },
     },
     responsive: true,

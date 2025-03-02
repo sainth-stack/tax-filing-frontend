@@ -285,7 +285,7 @@ const handleExportAsPDF = () => {
         style={{
           textAlign: "start",
           fontSize: "20px",
-          fontWeight: "bold",
+          fontWeight: 500,
           color: "#333",
         }}
       >

@@ -6,7 +6,7 @@ const Dashboard = () => {
   return (
     <>
       <Layout>
-        <div className="container">
+        <div className="container" style={{width:'100%',maxWidth:'100%'}}>
           <div className="chart_container">
             <Charts />
           </div>

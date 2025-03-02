@@ -14,6 +14,8 @@
   // Custom styled Select component
   const StyledSelect = styled(Select)(({ theme, error }) => ({
     backgroundColor: 'white',
+         boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+
     '& .MuiOutlinedInput-notchedOutline': {
       borderColor: error ? theme.palette.error.main : 'rgba(0, 0, 0, 0.23)',
     },
@@ -32,7 +34,8 @@
     },
   });
 
-  const MultiSelectInput = ({
+const MultiSelectInput = ({
+    OtherClasses,
     id,
     label,
     options,
@@ -75,7 +78,7 @@ if (setValue) {
 
     // Modified renderValue function
     const renderValue = (selected) => (
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }} >
         {selected.length > 0 ? (
           <>
             {selected.slice(0, 2).map((value) => (
@@ -115,6 +118,7 @@ if (setValue) {
           maxWidth: labelStyles?.maxWidth || "none", 
           minWidth: labelStyles?.minWidth || "unset",
         }}
+        
 
       >
         {/* Move label outside */}

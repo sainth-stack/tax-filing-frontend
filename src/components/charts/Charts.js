@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PieChart from "./PieChart";
 import BarChart from "./BarChart";
+import MenuIcon from '@mui/icons-material/Menu';
 import SelectInput from "../select";
 import axios from "axios";
 import { base_url } from "../../const";
@@ -14,10 +15,20 @@ import {
 } from "./FilterData";
 import Popup from "../Popup/Popup";
 import MultiSelectInput from "../multi-select";
-import { Box } from "@mui/material";
+import { Box, Drawer, Grid, IconButton, Tooltip, useMediaQuery } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+import TaskProgressGaugePage from "./SemiCircle/TaskProgressGaugePage";
+import RightSidebar from "../right-sidebar";
 
 const Charts = () => {
-   const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear();
+const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+const [isHovered, setIsHovered] = React.useState(false);
+
+  const isMobile = useMediaQuery("(max-width:600px)");
+  const isTablet = useMediaQuery("(max-width:960px)");
+  
+  
   const [filedStatus, setFiledStatus] = useState("all");
   const [reason, setReason] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -196,147 +207,108 @@ const [year, setYear] = useState([
     setYear(simplifiedOptions);
   };
 
+
+  const [categories, setCategories] = useState([]);
+
   return (
-    <>
-      <div className="flex items-center m-3 p-3">
-        <SelectInput
-          id="status"
-          className="shadow-sm"
-          label="Status"
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          options={[
-            { value: "all", label: "All" },
-            { value: "active", label: "Active" },
-            { value: "inactive", label: "inactive" },
-          ]}
-          labelStyles={{
-            fontWeight: 500,
-          }}
-       
-        />
-
-     <div style={{marginLeft:'10px'}}>
-         <MultiSelectInput
-          id="year"
-          labelStyles={{
-            fontWeight: 500,
-            width: "300px", 
-            maxWidth: "250px", 
-            minWidth: "150px",
-            mb:0.2
-          }}
-          sx={{
-            height:'40px',
-            
-          }}
-          label="Select Year(s)"
-          value={year} 
-          setValue={handleYearChange}
-          options={yearsJson}
-          isMulti={Array.isArray(year)}
-        />
-     </div>
-
-        <SelectInput
-          id="month"
-          className="shadow-sm ml-2"
-          label="Month"
-          value={month}
-          onChange={(e) => setMonth(e.target.value)}
-          options={monthsJson}
-          labelStyles={{ fontWeight: 500 }}
-        />
-        <SelectInput
-          id="company"
-          className="shadow-sm ml-2"
-          label="Company"
-          value={company}
-          onChange={(e) => setCompany(e.target.value)}
-          options={[{ label: "All", value: "0" }, ...cps]}
-          labelStyles={{ fontWeight: 500 }}
-        />
-        <SelectInput
-          id="taskType"
-          className="shadow-sm ml-2"
-          label="Task Type"
-          value={taskType}
-          onChange={(e) => setTaskType(e.target.value)}
-          options={[{ label: "All", value: "0" }, ...taskTypeOptions.options]}
-          labelStyles={{ fontWeight: 500 }}
-        />
-        {taskType === "gst" && (
-          <>
-            <SelectInput
-              id="filedStatus"
-              className="shadow-sm"
-              label="Filed Status"
-              value={filedStatus}
-              onChange={(e) => handleFiledStatusChange(e.target.value)}
-              options={[
-                { value: "all", label: "All" },
-                { value: "filed", label: "Filed" },
-                { value: "notfiled", label: "Not Filed" },
-              ]}
-              labelStyles={{
-                fontWeight: 500,
-              }}
+    <Grid container width={"100%"}>
+      {/* Center Content - Graphs */}
+      <Grid
+        item
+        xs={12}
+        // md={isSidebarOpen && !isMobile ? 10 : 12}
+        sx={{
+          transition: "all 0.3s ease-in-out",
+          display:'flex',
+           flexDirection:'row',
+           gap:'6px'
+        }}
+      >
+        <Grid container gap={1} sx={{width:isSidebarOpen ? "85%":'98%'}} >
+          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 12}>
+            <MeterGraph
+              MeterGraphDetails={companies}
+              filteredTasks={filteredTasks}
+              loading={loading}
             />
-
-            <Popup
-              isOpen={isPopupOpen}
-              onClose={() => setIsPopupOpen(false)}
-              title="Reason for Not Filing"
-              // onSubmit={handlePopupSubmit}
-            >
-              <textarea
-                rows={4}
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                style={{ width: "100%", marginTop: "1rem" }}
-                placeholder="Enter your reason here..."
-              ></textarea>
-            </Popup>
-
-            <SelectInput
-              id="applicationSubStatus"
-              className="shadow-sm ml-2"
-              label="Type of GST"
-              value={applicationSubStatus}
-              onChange={(e) => setApplicationSubStatus(e.target.value)}
-              options={[
-                { label: "All", value: "0" },
-                ...applicationSubstatusOptions,
-              ]}
-              labelStyles={{ fontWeight: 500 }}
+          </ChartCard>
+          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 5.95}>
+            <PieChart companyDetails={companies} loading={loading} />
+          </ChartCard>
+          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 5.95}>
+            <BarChart barDetails={companies} loading={loading} />
+          </ChartCard>
+          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 5.95}>
+            <PaymentGraph
+              paymentGraphDetails={companies}
+              filterTime2={filteredTasks}
+              loading={loading}
             />
-          </>
-        )}
-      </div>
-
-      <div className="grid grid-cols-2 gap-4  container">
-        <PieChart companyDetails={companies} loading={loading} />
-        <BarChart barDetails={companies} loading={loading} />
-        <PaymentGraph
-          paymentGraphDetails={companies}
-          filterTime2={filteredTasks}
-          loading={loading}
-        />
-        {/* fourth graph  */}
-        <MeterGraph
-          MeterGraphDetails={companies}
-          filteredTasks={filteredTasks}
-          loading={loading}
-        />
-        {/* fifth graph */}
-        <PendingCompeltedTaksGraph
-          PendingCompeltedTaksGraphDetails={companies}
-          filteredTasks={filteredTasks}
-          loading={loading}
-        />
-      </div>
-    </>
+          </ChartCard>
+          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 5.95}>
+            <PendingCompeltedTaksGraph
+              PendingCompeltedTaksGraphDetails={companies}
+              filteredTasks={filteredTasks}
+              loading={loading}
+            />
+          </ChartCard>
+        </Grid>
+         <ChartCard xs={isSidebarOpen ? 2:0.5} sx={{padding:'0px 10px'}}>
+           <RightSidebar
+            isSidebarOpen={isSidebarOpen}
+            setIsSidebarOpen={setIsSidebarOpen}
+            isHovered={isHovered}
+            setIsHovered={setIsHovered}
+            isMobile={isMobile}
+            status={status}
+            setStatus={setStatus}
+            year={year}
+            handleYearChange={handleYearChange}
+            yearsJson={yearsJson}
+            month={month}
+            setMonth={setMonth}
+            monthsJson={monthsJson}
+            company={company}
+            setCompany={setCompany}
+            cps={cps}
+            taskType={taskType}
+            setTaskType={setTaskType}
+            taskTypeOptions={taskTypeOptions}
+            filedStatus={filedStatus}
+            handleFiledStatusChange={handleFiledStatusChange}
+            isPopupOpen={isPopupOpen}
+            setIsPopupOpen={setIsPopupOpen}
+            reason={reason}
+            setReason={setReason}
+            applicationSubStatus={applicationSubStatus}
+            setApplicationSubStatus={setApplicationSubStatus}
+            applicationSubstatusOptions={applicationSubstatusOptions}
+          />
+        </ChartCard>
+      </Grid>
+    </Grid>
   );
 };
 
 export default Charts;
+
+
+
+
+const ChartCard = ({ children, xs = 5, height = "auto" ,sx}) => (
+  <Grid
+    item
+    xs={xs}
+    sx={{
+      boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
+      borderRadius: "8px",
+      bgcolor: "white",
+      marginTop: "0",
+      height: height,
+      cursor:"pointer",
+      ...sx
+    }}
+  >
+    {children}
+  </Grid>
+);

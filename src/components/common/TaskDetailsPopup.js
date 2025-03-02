@@ -3,9 +3,11 @@ import { Box, IconButton } from "@mui/material";
 import { CloseOutlined } from "@mui/icons-material";
 import NoDataFound from "../charts/NoDataFound";
 import { isTaskCompleted } from "../../utils/const";
-import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import DoNotDisturbOnOutlinedIcon from "@mui/icons-material/DoNotDisturbOnOutlined";
 import { getTaskDetails, getTaskDisplayName, GetTaskLabel, getTaskNumber } from "../../utils/TaskTypeMap";
+   import HighlightOffSharpIcon from '@mui/icons-material/HighlightOffSharp';
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+                            import CancelIcon from "@mui/icons-material/Cancel";
 
 const TaskDetailsPopup = ({
   visible,
@@ -22,9 +24,9 @@ const TaskDetailsPopup = ({
       style={{
         position: "absolute",
         top: "50%",
-        left: "50%",
+        left: "80%",
         transform: "translate(-50%, -50%)",
-        backgroundColor: "#fff",
+        backgroundColor: "#F4F7FE",
         boxShadow: "0 4px 24px rgba(0, 0, 0, 0.15)",
         borderRadius: "16px",
         padding: "24px",
@@ -43,11 +45,11 @@ const TaskDetailsPopup = ({
 
             top: "12px",
             left: "0",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "#fff",
             boxShadow: "10px 4px 24px rgba(0, 0, 0, 0.15)",
           }}
         >
-          <CloseOutlined />
+          <HighlightOffSharpIcon />
         </IconButton>
       </div>
       <div>
@@ -65,8 +67,8 @@ const TaskDetailsPopup = ({
                 marginBottom: "12px",
                 padding: "16px",
                 cursor: "pointer",
-                borderRadius: "12px",
-                backgroundColor: "#f8f9fa",
+                borderRadius: "1rem",
+                backgroundColor: "#fff",
                 transition: "all 0.2s ease",
                 border: "1px solid #eee",
               }}
@@ -123,14 +125,14 @@ const TaskDetailsPopup = ({
                       style={{
                         padding: "4px 8px",
                         borderRadius: "4px",
-                        backgroundColor: "#e9ecef",
+                        backgroundColor: "#fff",
                         fontSize: "13px",
                       }}
                     >
-
-                      <strong>{getTaskNumber(task.taskType, task.company, companies)}</strong>{" "}
+                      <strong>
+                        {getTaskNumber(task.taskType, task.company, companies)}
+                      </strong>{" "}
                     </span>
-
                   </div>
                 </div>
                 {/* Right column */}
@@ -147,8 +149,8 @@ const TaskDetailsPopup = ({
                         padding: "4px 12px",
                         borderRadius: "20px",
                         backgroundColor: isTaskCompleted(task)
-                          ? "#e8f5e9"
-                          : "#ffebee",
+                          ? "#C1FFE5"
+                          : "#FFC1C2",
                         color: isTaskCompleted(task) ? "#2e7d32" : "#c62828",
                         fontSize: "13px",
                         fontWeight: "500",
@@ -164,9 +166,8 @@ const TaskDetailsPopup = ({
                             width="100%"
                           >
                             <span>Completed</span>
-                            <CheckCircleOutlineOutlinedIcon
-                              sx={{ fontSize: 16, ml: 1 }}
-                            />
+
+                            <CheckCircleIcon sx={{ fontSize: 16, ml: 1 }} />
                           </Box>
                         </>
                       ) : (
@@ -177,10 +178,7 @@ const TaskDetailsPopup = ({
                             alignItems="center"
                           >
                             <span>Not Completed</span>
-                            <DoNotDisturbOnOutlinedIcon
-                              fontSize="small"
-                              sx={{ ml: 1 }}
-                            />
+                            <CancelIcon fontSize="small" sx={{ ml: 1 }} />
                           </Box>
                         </>
                       )}
@@ -189,23 +187,27 @@ const TaskDetailsPopup = ({
                       style={{
                         padding: "4px 8px",
                         borderRadius: "4px",
-                        backgroundColor: "#e9ecef",
+                        backgroundColor: "#D9D9D9",
                         fontSize: "13px",
                       }}
                     >
                       <strong>Month:</strong>{" "}
                       {task.startDate
-                        ? new Date(new Date(task.startDate).setMonth(new Date(task.startDate).getMonth() - 1)).toLocaleString("default", {
-                          month: "long",
-                          year: "numeric",
-                        })
+                        ? new Date(
+                            new Date(task.startDate).setMonth(
+                              new Date(task.startDate).getMonth() - 1
+                            )
+                          ).toLocaleString("default", {
+                            month: "long",
+                            year: "numeric",
+                          })
                         : task.month || task.taskMonth || "N/A"}
                     </span>
                     <span
                       style={{
                         padding: "5px 8px",
                         borderRadius: "4px",
-                        backgroundColor: "#e9ecef",
+                        backgroundColor: "#D9D9D9",
                         fontSize: "13px",
                       }}
                     >
