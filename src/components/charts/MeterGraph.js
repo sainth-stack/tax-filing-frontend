@@ -167,7 +167,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
     totalCategories > 0 ? (completedCategories / totalCategories) * 100 : 0;
   const handleCategoryClick = (category) => {
     setPopupContent({
-      title: category,
+      title:'Completed Tasks - GST'|| category,
       tasks: taskDetails[category] || [],
     });
     setPopupVisible(true);
