@@ -109,7 +109,7 @@ const PendingCompletedTasksGraph = ({
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [popupContent, setPopupContent] = useState({ title: "", tasks: [] });
-  const [complated,setCompleted] = useState(true)
+  const [complated,setCompleted] = useState(false)
   const [tasksData, setTasksData] = useState({
     pendingTasksByPerson: {},
     completedTasksByPerson: {},
@@ -294,6 +294,7 @@ const PendingCompletedTasksGraph = ({
                             display: false,
                           },
                           ticks: {
+                            display:false,
                             stepSize: 1, // Ensure the ticks are integers
                             font: {
                               size: 10,

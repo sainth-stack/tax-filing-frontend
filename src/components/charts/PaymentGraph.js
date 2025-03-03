@@ -193,6 +193,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
         stacked: true,
         grid: { display: false },
         ticks: {
+          display:false,
           font: { size: 16, weight: "bold" },
           stepSize: 1,
           callback: (value) => (Number.isInteger(value) ? value : ""),
