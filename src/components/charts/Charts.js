@@ -253,8 +253,8 @@ const [year, setYear] = useState([
             />
           </ChartCard>
         </Grid>
-         <ChartCard xs={isSidebarOpen ? 2:0.5} sx={{padding:'0px 10px'}}>
-           <RightSidebar
+        <ChartCard xs={isSidebarOpen ? 2 : 0.5} sx={{ padding: '0px 10px' }}>
+          <RightSidebar
             isSidebarOpen={isSidebarOpen}
             setIsSidebarOpen={setIsSidebarOpen}
             isHovered={isHovered}
