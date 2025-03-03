@@ -224,7 +224,7 @@ const [year, setYear] = useState([
            gap:'6px'
         }}
       >
-        <Grid container gap={1} sx={{width:isSidebarOpen ? "85%":'98%'}} >
+        <Grid container sx={{width:isSidebarOpen ? "85%":'98%'}} >
           <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 12}>
             <MeterGraph
               MeterGraphDetails={companies}
@@ -232,20 +232,20 @@ const [year, setYear] = useState([
               loading={loading}
             />
           </ChartCard>
-          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 5.95}>
+          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 6} >
             <PieChart companyDetails={companies} loading={loading} />
           </ChartCard>
-          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 5.95}>
+          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 6}>
             <BarChart barDetails={companies} loading={loading} />
           </ChartCard>
-          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 5.95}>
+          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 6}>
             <PaymentGraph
               paymentGraphDetails={companies}
               filterTime2={filteredTasks}
               loading={loading}
             />
           </ChartCard>
-          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 5.95}>
+          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 6}>
             <PendingCompeltedTaksGraph
               PendingCompeltedTaksGraphDetails={companies}
               filteredTasks={filteredTasks}
@@ -253,7 +253,7 @@ const [year, setYear] = useState([
             />
           </ChartCard>
         </Grid>
-         <ChartCard xs={isSidebarOpen ? 2:0.5} sx={{padding:'0px 10px'}}>
+         <ChartCard xs={isSidebarOpen ? 2:0.5} sx={{padding:'0px 10px',height:'100%'}}>
            <RightSidebar
             isSidebarOpen={isSidebarOpen}
             setIsSidebarOpen={setIsSidebarOpen}
@@ -300,15 +300,20 @@ const ChartCard = ({ children, xs = 5, height = "auto" ,sx}) => (
     item
     xs={xs}
     sx={{
-      boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
-      borderRadius: "8px",
-      bgcolor: "white",
-      marginTop: "0",
       height: height,
       cursor:"pointer",
-      ...sx
+      padding:'8px',
+      paddingRight:'4px',
     }}
   >
-    {children}
+ <Grid sx={{
+    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
+    borderRadius: "8px",
+    bgcolor: "white",
+    marginTop: "0",
+    ...sx
+ }}>
+ {children}
+ </Grid>
   </Grid>
 );

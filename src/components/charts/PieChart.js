@@ -230,12 +230,12 @@ const PieChart = ({ companyDetails, loading }) => {
  
 
   return (
-    <div className="container ">
+    <div className="container">
       <div
         style={{
           width: "100%",
-          height: "380px", // Match pie chart height
-          border: "1px solid #e0e0e0", // Light gray border for a card-like appearance
+          height: "400px", // Match pie chart height
+          // border: "1px solid #e0e0e0", // Light gray border for a card-like appearance
           borderRadius: "8px", // Rounded corners for a smoother look
           backgroundColor: "#fff", // Card-like white background
           padding: "8px",
@@ -309,7 +309,7 @@ const PieChart = ({ companyDetails, loading }) => {
                         </div> */}
 
                         {/* Doughnut Chart (Below the Labels) */}
-                        <div style={{ width: "auto", height: "300px" }}>
+                        <div style={{ width: "auto", height: "330px" }}>
                           <Doughnut data={chartData} options={options} />
                         </div>
                       </Grid>

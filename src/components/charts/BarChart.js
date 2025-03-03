@@ -287,8 +287,8 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
         style={{
           width: "100%",
           position: "relative",
-          height: chartHeight || "380px",
-          border: "1px solid #e0e0e0",
+          height: chartHeight || "400px",
+          // border: "1px solid #e0e0e0",
           borderRadius: "8px",
           backgroundColor: "#fff",
           padding: "8px",

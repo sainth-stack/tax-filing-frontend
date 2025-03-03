@@ -191,12 +191,12 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   console.log("meter graph inProgress length", data.inProgress);
 
   return (
-    <div className="container">
+    <div className="container" style={{maxWidth:'100%'}}>
       <div
         style={{
           width: "100%",
           height: "auto", // Adjusted to auto to accommodate larger graphs
-          border: "1px solid #e0e0e0",
+          // border: "1px solid #e0e0e0",
           borderRadius: "8px",
           backgroundColor: "#fff",
           padding: "16px",
@@ -213,28 +213,13 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
             <Header
               data={filteredTasks}
               columns={FourthGraphColumns}
-              {...{ title: "Tasks Due Date" }}
+              {...{ title: "Tasks Status" }}
             />
             {categories.length === 0 ? (
               <NoDataFound />
             ) : (
               <div className=" m-2 flex justify-between items-center">
                 {/* In Progress Gauge */}
-                <div
-                  style={{ width: "33%", height: "auto", textAlign: "center" }}
-                >
-                  <CustomGaugeChart
-                    value={
-                      data?.inProgress < 7
-                        ? data.inProgress + 5
-                        : data.inProgress
-                    }
-                    total={totalCategories}
-                    label="Incompleted Tasks"
-                    color="#FF6060"
-                    onClick={() => handleCategoryClick("inProgress")}
-                  />
-                </div>
 
                 {/* Overdue Gauge */}
                 <div
@@ -249,6 +234,22 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                   />
                 </div>
 
+                <div
+                  style={{ width: "33%", height: "auto", textAlign: "center" }}
+                >
+                  <CustomGaugeChart
+                    value={
+                      data?.inProgress < 7
+                        ? data.inProgress + 5
+                        : data.inProgress
+                    }
+                    total={totalCategories}
+                    label="In Progress"
+                    color="#FF6060"
+                    onClick={() => handleCategoryClick("inProgress")}
+                  />
+                </div>
+
                 {/* Completed Gauge */}
                 <div
                   style={{ width: "33%", height: "auto", textAlign: "center" }}
@@ -256,7 +257,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                   <CustomGaugeChart
                     value={data.completed}
                     total={totalCategories}
-                    label="Completed Tasks"
+                    label="Completed"
                     color="#1BCB80"
                     onClick={() => handleCategoryClick('completed')}
                   />

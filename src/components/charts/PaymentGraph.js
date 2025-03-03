@@ -232,8 +232,8 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
           className="bar_chart p-2"
           style={{
             width: "100%",
-            height: "450px",
-            border: "1px solid #e0e0e0",
+            height: "480px",
+            // border: "1px solid #e0e0e0",
             borderRadius: "8px",
             backgroundColor: "#fff",
             padding: "16px",
@@ -250,7 +250,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
                 data={filterTime2}
                 columns={ThirdGraphColumns}
                 {...{
-                  title: "Monthly Filing/Payment status by task by company",
+                  title: "Monthly Tasks",
 
                   payment: true,
                   type,
@@ -259,7 +259,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
               />
 
               <div className="w-full">
-                <div style={{ width: "auto", height: "340px" }}>
+                <div style={{ width: "auto", height: "380px" }}>
                   {chartData.labels.length === 0 ? (
                     <NoDataFound />
                   ) : (

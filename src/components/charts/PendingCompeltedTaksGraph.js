@@ -252,8 +252,8 @@ const PendingCompletedTasksGraph = ({
         <div
           style={{
             width: "100%",
-            height: "450px",
-            border: "1px solid #e0e0e0",
+            height: "480px",
+            // border: "1px solid #e0e0e0",
             borderRadius: "8px",
             backgroundColor: "#fff",
             padding: "16px",
@@ -281,6 +281,8 @@ const PendingCompletedTasksGraph = ({
               ) : (
                 <>
                 <CustomLegendWithSwitch datasets={chartData.datasets} setCompleted={setCompleted} complated={complated}/>
+                <div style={{ width: "auto", height: "380px" }}>
+
                   <Bar
                     data={chartData}
                     options={{
@@ -345,6 +347,7 @@ const PendingCompletedTasksGraph = ({
                       maintainAspectRatio: true,
                     }}
                   />
+                  </div>
                 </>
               )}
               <TaskDetailsPopup
