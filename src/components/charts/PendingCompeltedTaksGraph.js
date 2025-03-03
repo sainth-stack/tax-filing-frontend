@@ -38,7 +38,8 @@ ChartJS.register(
   ChartDataLabels
 );
 
-const CustomSwitch = ({ checked, onChange }) => {
+export const CustomSwitch = ({ checked, onChange }) => {
+  console.log("cheked at ",checked)
   return (
     <div
       onClick={() => onChange(!checked)}
@@ -71,18 +72,44 @@ const CustomSwitch = ({ checked, onChange }) => {
 
 
 
-const CustomLegendWithSwitch = ({ datasets ,setCompleted,complated}) => {
+export const CustomLegendWithSwitch = ({ datasets ,setCompleted,complated}) => {
 
   const handleSwitchChange = () => {
     setCompleted(!complated);
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: "16px",
+      }}
+    >
       {datasets.map((dataset, index) => (
         <React.Fragment key={index}>
-          <div style={{ margin: "0 10px", textAlign: "center" ,display:'flex',alignItems:'center'}}>
-            <div style={{ backgroundColor: dataset.label === "Completed Tasks" ? "#008000" : "#ff0000", width: "40px", height: "15px", display: "inline-block", marginRight: "5px" }}></div>
+          <div
+            style={{
+              margin: "0 10px",
+              textAlign: "center",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor:
+                  dataset.label === "Completed Tasks" ||
+                  dataset.label === "Completed Payments"
+                    ? "#008000"
+                    : "#ff0000",
+                width: "40px",
+                height: "15px",
+                display: "inline-block",
+                marginRight: "5px",
+              }}
+            ></div>
             <span>{dataset.label}</span>
           </div>
           {index === 0 && (
@@ -99,6 +126,8 @@ const PendingCompletedTasksGraph = ({
   PendingCompeltedTaksGraphDetails,
   filteredTasks,
   loading,
+  complated,
+setCompleted
 }) => {
 
 
@@ -109,7 +138,6 @@ const PendingCompletedTasksGraph = ({
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [popupContent, setPopupContent] = useState({ title: "", tasks: [] });
-  const [complated,setCompleted] = useState(false)
   const [tasksData, setTasksData] = useState({
     pendingTasksByPerson: {},
     completedTasksByPerson: {},
@@ -164,7 +192,7 @@ const PendingCompletedTasksGraph = ({
 
         // Create a gradient background
         const createGradient = (ctx, color) => {
-          const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+          const gradient = ctx.createLinearGradient(400, 0, 0, 0);
           gradient.addColorStop(0, color); // White at the top
           gradient.addColorStop(1, "#ffffff"); // Specified color at the bottom
           return gradient;
@@ -245,6 +273,7 @@ const PendingCompletedTasksGraph = ({
 
   // Export as PDF
   
+
 
   return (
     <>

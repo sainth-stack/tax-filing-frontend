@@ -205,7 +205,7 @@ const PieChart = ({ companyDetails, loading }) => {
       const fontFamily = 'Arial'; // Font family can be adjusted
 
       // Calculate the total value of the data
-      const total = chart.data.datasets[0].data.reduce((acc, curr) => acc + curr, 0);
+      // const total = chart.data.datasets[0].data.reduce((acc, curr) => acc + curr, 0);
 
       // Set up the text styles
       ctx.save();
@@ -215,7 +215,7 @@ const PieChart = ({ companyDetails, loading }) => {
       ctx.textBaseline = 'middle';
 
       // Display the total value in the center
-      ctx.fillText(`${total||100}`, width / 2, height / 1.8);
+      // ctx.fillText(`${total||100}`, width / 2, height / 1.8);
 
       ctx.restore();
     },
@@ -254,7 +254,8 @@ const PieChart = ({ companyDetails, loading }) => {
               data={companyDetails}
               columns={FirstGraphColumns}
               title={"Company Status by Constitution and Subconstitution"}
-            />
+              />
+              
             <div className="flex justify-center  items-start ">
               {/* Graph Section */}
 

@@ -309,7 +309,6 @@ const BarChart = ({ chartHeight, barDetails, loading }) => {
                 title: "Active Services by company",
               }}
             />
-
             {chartData.labels.length === 0 ? (
               <NoDataFound />
             ) : (

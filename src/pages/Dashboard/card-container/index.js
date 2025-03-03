@@ -284,13 +284,16 @@ const handleExportAsPDF = () => {
       <h2
         style={{
           textAlign: "start",
-          fontSize: "20px",
+          fontSize: "21px",
           fontWeight: 500,
           color: "#333",
+          margin:".5rem 0  0 1rem"
         }}
       >
         {title}
       </h2>
+
+      <br />
       <Grid style={{ display: "flex", gap: "5px", alignItems: "center" }}>
         {payment && (
           <SelectInput

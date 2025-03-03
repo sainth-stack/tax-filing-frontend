@@ -21,6 +21,10 @@ import TaskProgressGaugePage from "./SemiCircle/TaskProgressGaugePage";
 import RightSidebar from "../right-sidebar";
 
 const Charts = () => {
+const [completedPaymentToggle, setCompletedPaymentToggle] = useState(false);
+const [completedPendingTaskToggle, setCompletedPendingTaskToggle] = useState(false);
+
+
   const currentYear = new Date().getFullYear();
 const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 const [isHovered, setIsHovered] = React.useState(false);
@@ -214,17 +218,18 @@ const [year, setYear] = useState([
     <Grid container width={"100%"}>
       {/* Center Content - Graphs */}
       <Grid
+        
         item
         xs={12}
         // md={isSidebarOpen && !isMobile ? 10 : 12}
         sx={{
           transition: "all 0.3s ease-in-out",
-          display:'flex',
-           flexDirection:'row',
-           gap:'6px'
+          display: "flex",
+          flexDirection: "row",
+          gap: "6px",
         }}
       >
-        <Grid container sx={{width:isSidebarOpen ? "85%":'98%'}} >
+        <Grid container sx={{ width: isSidebarOpen ? "85%" : "98%" }}>
           <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 12}>
             <MeterGraph
               MeterGraphDetails={companies}
@@ -232,7 +237,7 @@ const [year, setYear] = useState([
               loading={loading}
             />
           </ChartCard>
-          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 6} >
+          <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 6}>
             <PieChart companyDetails={companies} loading={loading} />
           </ChartCard>
           <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 6}>
@@ -240,21 +245,32 @@ const [year, setYear] = useState([
           </ChartCard>
           <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 6}>
             <PaymentGraph
-              paymentGraphDetails={companies}
-              filterTime2={filteredTasks}
-              loading={loading}
+              {...{
+                filterTime2: filteredTasks,
+                loading: loading,
+                paymentGraphDetails: companies,
+                complated: completedPaymentToggle,
+                setCompleted: setCompletedPaymentToggle,
+              }}
             />
           </ChartCard>
           <ChartCard xs={isMobile ? 12 : isTablet ? 6 : 6}>
             <PendingCompeltedTaksGraph
-              PendingCompeltedTaksGraphDetails={companies}
-              filteredTasks={filteredTasks}
-              loading={loading}
+              {...{
+                setCompleted: setCompletedPendingTaskToggle,
+                complated: completedPendingTaskToggle,
+                filteredTasks,
+                loading,
+                PendingCompeltedTaksGraphDetails: companies,
+              }}
             />
           </ChartCard>
         </Grid>
-         <ChartCard xs={isSidebarOpen ? 2:0.5} sx={{padding:'0px 10px',height:'100%'}}>
-           <RightSidebar
+        <ChartCard
+          xs={isSidebarOpen ? 2 : 0.5}
+          sx={{ padding: "0px 10px", height: "100%" }}
+        >
+          <RightSidebar
             isSidebarOpen={isSidebarOpen}
             setIsSidebarOpen={setIsSidebarOpen}
             isHovered={isHovered}
@@ -307,7 +323,7 @@ const ChartCard = ({ children, xs = 5, height = "auto" ,sx}) => (
     }}
   >
  <Grid sx={{
-    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
+    boxShadow: "0px 10px 12px rgba(0, 0, 0, 0.2)",
     borderRadius: "8px",
     bgcolor: "white",
     marginTop: "0",

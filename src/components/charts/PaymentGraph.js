@@ -22,6 +22,7 @@ import NoDataFound from "./NoDataFound";
 import { isTaskCompleted } from "../../utils/const";
 import TaskDetailsPopup from "../common/TaskDetailsPopup";
 import { ThirdGraphColumns } from "../Export/data";
+import { CustomLegendWithSwitch } from "./PendingCompeltedTaksGraph";
 
 ChartJS.register(
 
@@ -34,16 +35,24 @@ ChartJS.register(
   ChartDataLabels
 );
 
-const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
-
-
+const TaskStatusGraph = ({
+  paymentGraphDetails,
+  filterTime2,
+  loading,
+  setCompleted,
+  complated,
+}) => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [taskDetails, setTaskDetails] = useState([]);
   const [popupVisible, setPopupVisible] = useState(false);
   const [type, setType] = useState("");
   const navigate = useNavigate();
   const [filterTime, setFilterData] = useState([]);
-  const [popupContent, setPopupContent] = useState({ title: '', tasks: [],companies:[] });
+  const [popupContent, setPopupContent] = useState({
+    title: "",
+    tasks: [],
+    companies: [],
+  });
 
   useEffect(() => {
     let filtered = [...filterTime2]; // Ensure it starts with filterTime2
@@ -51,93 +60,95 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
     if (type === "payment") {
       // Filter for tasks with GST monthly payments
       filtered = filterTime2.filter(
-        (task) => task?.taskName === 'gstMonthlyPayment'
+        (task) => task?.taskName === "gstMonthlyPayment"
       );
     } else if (type === "filing") {
       // Filter for tasks with specific monthly payment tasks
       const paymentTaskNames = [
-        'tdsTcsMonthly',
-        'esiRegularMonthlyActivity',
-        'gstMonthly',
-        'pfMonthly'
+        "tdsTcsMonthly",
+        "esiRegularMonthlyActivity",
+        "gstMonthly",
+        "pfMonthly",
       ];
 
-      filtered = filterTime2.filter(
-        (task) =>
-          paymentTaskNames.includes(task?.taskName)
+      filtered = filterTime2.filter((task) =>
+        paymentTaskNames.includes(task?.taskName)
       );
     }
 
     setFilterData(filtered);
   }, [type, filterTime2]);
 
-
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const taskTypes = [];
-      const completedCounts = {};
-      const notCompletedCounts = {};
+    const fetchData = async () => {
+      try {
+        const taskTypes = [];
+        const completedCounts = {};
+        const notCompletedCounts = {};
 
-      // Collect counts of completed and not completed tasks
-      filterTime?.forEach((task) => {
-        const taskType = task.taskType || "others";
-        const isCompleted = isTaskCompleted(task);
+        // Collect counts of completed and not completed tasks
+        filterTime?.forEach((task) => {
+          const taskType = task.taskType || "others";
+          const isCompleted = isTaskCompleted(task);
 
-        if (!taskTypes.includes(taskType)) {
-          taskTypes.push(taskType);
-          completedCounts[taskType] = 0;
-          notCompletedCounts[taskType] = 0;
-        }
+          if (!taskTypes.includes(taskType)) {
+            taskTypes.push(taskType);
+            completedCounts[taskType] = 0;
+            notCompletedCounts[taskType] = 0;
+          }
 
-        if (isCompleted) {
-          completedCounts[taskType]++;
-        } else {
-          notCompletedCounts[taskType]++;
-        }
-      });
+          if (isCompleted) {
+            completedCounts[taskType]++;
+          } else {
+            notCompletedCounts[taskType]++;
+          }
+        });
 
-      const completedData = taskTypes.map((type) => completedCounts[type] || 0);
-      const notCompletedData = taskTypes.map((type) => notCompletedCounts[type] || 0);
+        const completedData = taskTypes.map(
+          (type) => completedCounts[type] || 0
+        );
+        const notCompletedData = taskTypes.map(
+          (type) => notCompletedCounts[type] || 0
+        );
 
-      // Create a gradient background
-      const createGradient = (ctx, color) => {
-        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(0, color); // White at the top
-        gradient.addColorStop(1, "#ffffff"); // Specified color at the bottom
-        return gradient;
-      };
+        // Create a gradient background
+        const createGradient = (ctx, color) => {
+          const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+          gradient.addColorStop(0, color); // White at the top
+          gradient.addColorStop(1, "#ffffff"); // Specified color at the bottom
+          return gradient;
+        };
 
-      setChartData((prevChartData) => {
         const ctx = document.createElement("canvas").getContext("2d");
-        return {
+        const data = {
           labels: taskTypes,
           datasets: [
-            {
-              label: "Completed",
-              data: completedData,
-              backgroundColor: createGradient(ctx, "#008000"), // White to Green
-              borderRadius: 2,
-              barPercentage: 0.6,
-            },
-            {
-              label: "Not Completed",
-              data: notCompletedData,
-              backgroundColor: createGradient(ctx, "#ff0000"), // White to Red
-              borderRadius: 2,
-              barPercentage: 0.6,
-            },
+            
+               {
+                  label: "Completed Payments",
+                  data:complated ? completedData:[],
+                  backgroundColor: createGradient(ctx, "#008000"), 
+                  borderRadius: 2,
+                  barPercentage: 0.6,
+                },
+              {
+                  label: "Not Completed",
+                  data: complated?[]:notCompletedData,
+                  backgroundColor: createGradient(ctx, "#ff0000"), 
+                  borderRadius: 2,
+                  barPercentage: 0.6,
+                },
           ],
         };
-      });
-    } catch (error) {
-      console.error("Error fetching or processing data:", error);
-    }
-  };
 
-  fetchData();
-}, [filterTime]);
+        setChartData(data);
+      } catch (error) {
+        console.error("Error fetching or processing data:", error);
+      }
+    };
 
+    fetchData();
+  }, [filterTime, complated]);
 
   // console.log("3rd graph grpah  checking", filterTime2);
   const handleClick = (event, elements) => {
@@ -176,8 +187,6 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
     setPopupVisible(false);
   };
 
-
-
   const options = {
     indexAxis: "x",
     onClick: handleClick,
@@ -193,7 +202,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
         stacked: true,
         grid: { display: false },
         ticks: {
-          display:false,
+          display: false,
           font: { size: 16, weight: "bold" },
           stepSize: 1,
           callback: (value) => (Number.isInteger(value) ? value : ""),
@@ -202,6 +211,7 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
     },
     plugins: {
       legend: {
+        display: false,
         position: "top",
         labels: { font: { size: 14, weight: "bold" } },
       },
@@ -218,12 +228,8 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
     maintainAspectRatio: true,
   };
 
- 
-
-  
-
   // Export as PDF
- 
+  console.log("chartdata datasets", chartData.datasets);
 
   return (
     <>
@@ -263,7 +269,14 @@ const TaskStatusGraph = ({ paymentGraphDetails, filterTime2, loading }) => {
                   {chartData.labels.length === 0 ? (
                     <NoDataFound />
                   ) : (
-                    <Bar data={chartData} options={options} />
+                    <>
+                      <CustomLegendWithSwitch
+                        datasets={chartData?.datasets}
+                        setCompleted={setCompleted}
+                        complated={complated}
+                      />
+                      <Bar data={chartData} options={options} />
+                    </>
                   )}
                 </div>
               </div>
