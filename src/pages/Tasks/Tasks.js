@@ -47,7 +47,7 @@ const Tasks = () => {
     company: "",
     assignedTo: "",
     applicationSubstatus: "",
-    status: "",
+    status: "notFiled",
     effectiveFrom: "",
     effectiveTo: "",
     defaultValue: "",
