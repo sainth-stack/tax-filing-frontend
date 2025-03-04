@@ -73,7 +73,7 @@ const RightSidebar = ({
     {   isSidebarOpen &&   <div className="flex flex-col space-y-4 mt-6">
         <SelectInput
           id="status"
-          className="shadow-md"
+          className="shadow-md rounded-[4.79px] "
           label="Status"
           value={status}
           onChange={(e) => setStatus(e.target.value)}
@@ -87,7 +87,7 @@ const RightSidebar = ({
 
         <MultiSelectInput
           id="year"
-          OtherClasses="shadow-md"
+          OtherClasses="shadow-md rounded-[4.79px]"
           label="Select Year(s)"
           value={year}
           setValue={handleYearChange}
@@ -97,7 +97,7 @@ const RightSidebar = ({
 
         <SelectInput
           id="month"
-          className="shadow-md"
+          className="shadow-md rounded-[4.79px]"
           label="Month"
           value={month}
           onChange={(e) => setMonth(e.target.value)}
@@ -107,7 +107,7 @@ const RightSidebar = ({
 
         <SelectInput
           id="company"
-          className="shadow-md"
+          className="shadow-md rounded-[4.79px]"
           label="Company"
           value={company}
           onChange={(e) => setCompany(e.target.value)}
@@ -116,7 +116,7 @@ const RightSidebar = ({
         />
 
         <SelectInput
-          id="taskType"
+          id="taskType rounded-[4.79px]"
           className="shadow-md"
           label="Task Type"
           value={taskType}
@@ -128,7 +128,7 @@ const RightSidebar = ({
         {taskType === "gst" && (
           <>
             <SelectInput
-              id="filedStatus"
+              id="filedStatus rounded-[4.79px]"
               className="shadow-md"
               label="Filed Status"
               value={filedStatus}

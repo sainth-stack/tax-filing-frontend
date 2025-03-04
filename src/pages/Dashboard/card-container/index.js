@@ -284,10 +284,14 @@ const handleExportAsPDF = () => {
       <h2
         style={{
           textAlign: "start",
-          fontSize: "21px",
-          fontWeight: 500,
-          color: "#333",
-          margin:".5rem 0  0 1rem"
+          fontSize: "15.5px",
+          fontWeight: 600,
+          color:"#2B3674",
+          margin:".5rem 0  0 1rem",
+          fontFamily: "'Inter', sans-serif",
+          lineHeight: "20.7px",
+          letterSpacing: "0px",
+
         }}
       >
         {title}
@@ -310,25 +314,41 @@ const handleExportAsPDF = () => {
             labelStyles={{ fontWeight: 500 }}
           />
         )}
-        <IconButton
-          onClick={handleMenuOpen}
-          // sx={{
-          //     position: "relative",
-          //     left: "35rem",
-          //     top: "2.5rem",
-          // }}
-        >
-          <MoreVertIcon />
-        </IconButton>
+<IconButton
+  onClick={handleMenuOpen}
+  sx={{
+    width: "23.9px",
+    height: "23.9px",
+    backgroundColor: "#F4F7FE", 
+    borderRadius: "6px",
+    opacity: 1,
+    transform: "rotate(-90deg)", 
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    "&:hover": {
+      backgroundColor: "#E0E5F2", 
+    },
+  }}
+>
+  <MoreVertIcon sx={{ fontSize: "16px", color: "#4318FF" }} /> 
+</IconButton>
 
-        <Menu
-          anchorEl={menuAnchorEl}
-          open={isMenuOpen}
-          onClose={handleMenuClose}
-        >
-          <MenuItem onClick={handleExportCSV}>Export as CSV</MenuItem>
-          <MenuItem onClick={handleExportAsPDF}>Export as PDF</MenuItem>
-        </Menu>
+<Menu
+  anchorEl={menuAnchorEl}
+  open={isMenuOpen}
+  onClose={handleMenuClose}
+  sx={{
+    "& .MuiPaper-root": {
+      backgroundColor: "#F4F7FE", 
+      borderRadius: "6px",
+    },
+  }}
+>
+  <MenuItem onClick={handleExportCSV}>Export as CSV</MenuItem>
+  <MenuItem onClick={handleExportAsPDF}>Export as PDF</MenuItem>
+</Menu>
+
       </Grid>
     </div>
   );
