@@ -13,6 +13,7 @@ import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsAc
 import AssuredWorkloadIcon from "@mui/icons-material/AssuredWorkload";
 import PaymentIcon from "@mui/icons-material/Payment";
 import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurnedInOutlined";
+import icons from '../sidebarIcons/index'
 const Sidemenu = ({ user }) => {
 
   const [userRole, setUserRole] = useState(null);
@@ -37,15 +38,15 @@ const Sidemenu = ({ user }) => {
   const sidebarConfig = {
     //default routes
     default: [
-      { name: "Dashboard", icon: <Dashboard />, path: "/dashboard" },
-      { name: "Company", icon: <BusinessIcon />, path: "/company" },
+      { name: "Dashboard",  icon: icons.Dashboard, path: "/dashboard" },
+      { name: "Company", icon:icons.building, path: "/company" },
       { name: "Manual Tasks", icon: <TaskOutlinedIcon />, path: "/tasks" },
-      { name: "Auto Tasks", icon: <TaskOutlinedIcon />, path: "/tasks/auto" },
+      { name: "Auto Tasks", icon: icons.vector, path: "/tasks/auto" },
 
-      { name: "Users", icon: <PeopleAltOutlined />, path: "/users" },
+      { name: "Users", icon: icons.frame, path: "/users" },
       {
         name: "Notification Settings",
-        icon: <NotificationsActiveOutlinedIcon />,
+        icon: icons.bell,
         path: "/notification-settings",
       },
     ],
@@ -61,10 +62,10 @@ const Sidemenu = ({ user }) => {
     ],
     //admin routesa
     A: [
-      { name: "Dashboard", icon: <Dashboard />, path: "/dashboard" },
-      { name: "Company", icon: <BusinessIcon />, path: "/company" },
+      { name: "Dashboard", icon: icons.Dashboard, path: "/dashboard" },
+      { name: "Company",icon:icons.building, path: "/company" },
       { name: "Manual Tasks", icon: <TaskOutlinedIcon />, path: "/tasks" },
-      { name: "Auto Tasks", icon: <TaskOutlinedIcon />, path: "/tasks/auto" },
+      { name: "Auto Tasks",  icon: icons.vector, path: "/tasks/auto" },
 
       {
         name: "Completed Tasks",
@@ -76,10 +77,10 @@ const Sidemenu = ({ user }) => {
         icon: <PaymentIcon />,
         path: "/payments",
       },
-      { name: "Users", icon: <PeopleAltOutlined />, path: "/users" },
+      { name: "Users", icon: icons.frame, path: "/users" },
       {
         name: "Notification Settings",
-        icon: <NotificationsActiveOutlinedIcon />,
+        icon: icons.bell,
         path: "/notification-settings",
       },
     ],
@@ -121,7 +122,16 @@ const Sidemenu = ({ user }) => {
             ${activeItem === item.path ? "text-[#00008B] font-semibold" : "text-[#A3AED0]"}
             `}
           >
-           {item.icon}
+               {typeof item.icon === "string" ? (
+                <div className={activeItem === item.path ? "fill-[#00008B]" : "fill-[#A3AED0]"} >
+              <img src={item.icon} alt={item.name} width={24} height={24}  
+              />
+              </div>
+             ) : (
+             // Render Material UI Icons (React Components)
+              <span>{item.icon}</span>
+             )}
+
            {isOpen && (
            <span
                 className={`text-[15.5px] leading-[20.7px] ${
