@@ -288,7 +288,7 @@ const handleExportAsPDF = () => {
           fontWeight: 600,
           color:"#2B3674",
           margin:".5rem 0  0 1rem",
-          fontFamily: "'Inter', sans-serif",
+          fontFamily: "Inter",
           lineHeight: "20.7px",
           letterSpacing: "0px",
           marginBottom:"50px"

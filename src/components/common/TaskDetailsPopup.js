@@ -18,7 +18,7 @@ const TaskDetailsPopup = ({
   onTaskClick
 }) => {
   if (!visible) return null;
-
+console.log(tasks)
   return (
     <div
       style={{

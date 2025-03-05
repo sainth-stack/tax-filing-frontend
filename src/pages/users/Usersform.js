@@ -193,7 +193,6 @@ const user = JSON.parse(localStorage.getItem("user"));
     }
   };
 
-  console.log(formData);
 
   return (
     <div className="container mx-auto bg-white rounded-lg shadow-md">

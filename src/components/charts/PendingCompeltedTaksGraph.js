@@ -168,7 +168,7 @@ setCompleted
             }
             completedTasksByPerson[assignedTo].count += 1;
             completedTasksByPerson[assignedTo].tasks.push(task);
-          } else if(!complated) {
+          } else if(!complated && !actualCompletionDate) {
             if (!pendingTasksByPerson[assignedTo]) {
               pendingTasksByPerson[assignedTo] = {
                 count: 0,
