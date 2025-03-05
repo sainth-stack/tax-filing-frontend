@@ -191,7 +191,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
   console.log("meter graph inProgress length", data.inProgress);
 
   return (
-    <div className="container" style={{maxWidth:'100%'}}>
+    <div className="container" style={{ maxWidth: "100%" }}>
       <div
         style={{
           width: "100%",
@@ -229,7 +229,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                     value={data.overdue}
                     total={totalCategories}
                     label="Overdue Tasks"
-                    color="#FBB214"
+                    color="#FF6060"
                     onClick={() => handleCategoryClick("overdue")}
                   />
                 </div>
@@ -245,7 +245,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                     }
                     total={totalCategories}
                     label="In Progress"
-                    color="#FF6060"
+                    color="#FBB214"
                     onClick={() => handleCategoryClick("inProgress")}
                   />
                 </div>
@@ -259,7 +259,7 @@ const MeterGraph = ({ MeterGraphDetails, filteredTasks, loading }) => {
                     total={totalCategories}
                     label="Completed"
                     color="#1BCB80"
-                    onClick={() => handleCategoryClick('completed')}
+                    onClick={() => handleCategoryClick("completed")}
                   />
                 </div>
 
