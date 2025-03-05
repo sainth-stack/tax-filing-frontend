@@ -107,26 +107,37 @@ const Sidemenu = ({ user }) => {
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 transition-all duration-300 shadow-xl bg-white border-r border-gray-200 `}
-      style={{ width: "200px",zIndex:"900" }}
+      className={`fixed inset-y-0 left-0 mt-[80px] transition-all duration-300 shadow-xl bg-white border-r border-t border-gray-200 `}
+      style={{ width: "200px",zIndex:"900", }}
     >
-      <div className="mt-16">
+      <div className="mt-12">
         <ul>
           {sidebarItems.map((item) => (
-            <li key={item.name}>
-              <Link
-                to={item.path}
-                onClick={() => handleMenuClick(item.path)}
-                className={`flex items-center gap-2 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 ${activeItem === item.path
-                  ? "border-blue-500 bg-blue-50 text-blue-700"
-                  : "border-transparent"
-                  } border-l-4 transition-colors duration-200`}
-              >
-                {item.icon}
-                {isOpen && (
-                  <span className="text-sm font-medium">{item.name}</span>
-                )}
-              </Link>
+            <li key={item.name} className='mb-4'>
+       <Link
+            to={item.path}
+            onClick={() => handleMenuClick(item.path)}
+            className={`relative flex items-center gap-2 px-3 py-2 hover:bg-gray-50 transition-colors duration-200
+            ${activeItem === item.path ? "text-[#00008B] font-semibold" : "text-[#A3AED0]"}
+            `}
+          >
+           {item.icon}
+           {isOpen && (
+           <span
+                className={`text-[15.5px] leading-[20.7px] ${
+                activeItem === item.path ? "text-[#00008B]" : "text-[#A3AED0]"
+                }`}
+                >
+                {item.name}
+            </span>
+              )}
+
+              {/* Blue Right-Side Line When Active */}
+              {activeItem === item.path && (
+               <span className="absolute right-0 top-0 h-full w-[4px] bg-[#4318FF] rounded-md"></span>
+             )}
+        </Link>
+
             </li>
           ))}
         </ul>
