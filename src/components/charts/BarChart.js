@@ -18,7 +18,7 @@ import "jspdf-autotable";
 import Header from "../../pages/Dashboard/card-container";
 import NoDataFound from "./NoDataFound";
 import { SecondGraphColumns } from "../Export/data";
-
+ 
 ChartJS.register(
   CategoryScale,
   LinearScale,

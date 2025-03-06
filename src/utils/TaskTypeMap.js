@@ -51,12 +51,12 @@ export const GetTaskLabel = (taskType, gstin, registrationNumber) => {
 
 
 export const getTaskNumber = (taskType, companyName, companyData) => {
-  console.log(taskType)
+  // console.log(taskType)
   const company = companyData?.filter(
     (company) => company.companyName === companyName
   )[0];
 
-  console.log(company)
+  // console.log(company)
 
   if (!company) {
     return "Company not found for provided name"; 
