@@ -123,8 +123,15 @@ const Sidemenu = ({ user }) => {
             `}
           >
                {typeof item.icon === "string" ? (
-                <div className={activeItem === item.path ? "fill-[#00008B]" : "fill-[#A3AED0]"} >
-              <img src={item.icon} alt={item.name} width={24} height={24}  
+                <div >
+              <img src={item.icon} alt={item.name} width={24} height={24}
+              style={{
+              filter:
+                activeItem === item.path
+                 ? "brightness(0) saturate(100%) invert(10%) sepia(94%) saturate(2000%) hue-rotate(220deg) brightness(100%) contrast(100%)"
+                 : "brightness(0) saturate(100%) invert(80%) sepia(15%) saturate(300%) hue-rotate(190deg) brightness(90%) contrast(90%)",
+                 }}
+
               />
               </div>
              ) : (
