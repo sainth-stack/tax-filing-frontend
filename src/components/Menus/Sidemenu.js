@@ -1,18 +1,20 @@
-import {
-  BuildOutlined,
-  Dashboard,
-  Home,
-  PeopleAltOutlined,
-} from "@mui/icons-material";
+// import {
+//   BuildOutlined,
+//   Dashboard,
+//   Home,
+//   PeopleAltOutlined,
+// } from "@mui/icons-material";
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import BusinessIcon from "@mui/icons-material/Business";
+// import BusinessIcon from "@mui/icons-material/Business";
+// import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurnedInOutlined";
+// import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
+// import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
-import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import AssuredWorkloadIcon from "@mui/icons-material/AssuredWorkload";
 import PaymentIcon from "@mui/icons-material/Payment";
-import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurnedInOutlined";
+
+import icons from '../sidebarIcons/index'
 const Sidemenu = ({ user }) => {
 
   const [userRole, setUserRole] = useState(null);
@@ -37,15 +39,15 @@ const Sidemenu = ({ user }) => {
   const sidebarConfig = {
     //default routes
     default: [
-      { name: "Dashboard", icon: <Dashboard />, path: "/dashboard" },
-      { name: "Company", icon: <BusinessIcon />, path: "/company" },
-      { name: "Manual Tasks", icon: <TaskOutlinedIcon />, path: "/tasks" },
-      { name: "Auto Tasks", icon: <TaskOutlinedIcon />, path: "/tasks/auto" },
+      { name: "Dashboard",  icon: icons.Dashboard, path: "/dashboard" },
+      { name: "Company", icon:icons.building, path: "/company" },
+      { name: "Manual Tasks", icon: icons.manualTask, path: "/tasks" },
+      { name: "Auto Tasks", icon: icons.vector, path: "/tasks/auto" },
 
-      { name: "Users", icon: <PeopleAltOutlined />, path: "/users" },
+      { name: "Users", icon: icons.frame, path: "/users" },
       {
         name: "Notification Settings",
-        icon: <NotificationsActiveOutlinedIcon />,
+        icon: icons.bell,
         path: "/notification-settings",
       },
     ],
@@ -61,14 +63,14 @@ const Sidemenu = ({ user }) => {
     ],
     //admin routesa
     A: [
-      { name: "Dashboard", icon: <Dashboard />, path: "/dashboard" },
-      { name: "Company", icon: <BusinessIcon />, path: "/company" },
-      { name: "Manual Tasks", icon: <TaskOutlinedIcon />, path: "/tasks" },
-      { name: "Auto Tasks", icon: <TaskOutlinedIcon />, path: "/tasks/auto" },
+      { name: "Dashboard", icon: icons.Dashboard, path: "/dashboard" },
+      { name: "Company",icon:icons.building, path: "/company" },
+      { name: "Manual Tasks", icon: icons.manualTask, path: "/tasks" },
+      { name: "Auto Tasks",  icon: icons.vector, path: "/tasks/auto" },
 
       {
         name: "Completed Tasks",
-        icon: <AssignmentTurnedInOutlinedIcon />,
+        icon: icons.completeTask,
         path: "/tasks/done",
       },
       {
@@ -76,10 +78,10 @@ const Sidemenu = ({ user }) => {
         icon: <PaymentIcon />,
         path: "/payments",
       },
-      { name: "Users", icon: <PeopleAltOutlined />, path: "/users" },
+      { name: "Users", icon: icons.frame, path: "/users" },
       {
         name: "Notification Settings",
-        icon: <NotificationsActiveOutlinedIcon />,
+        icon: icons.bell,
         path: "/notification-settings",
       },
     ],
@@ -121,7 +123,23 @@ const Sidemenu = ({ user }) => {
             ${activeItem === item.path ? "text-[#00008B] font-semibold" : "text-[#A3AED0]"}
             `}
           >
-           {item.icon}
+               {typeof item.icon === "string" ? (
+                <div >
+              <img src={item.icon} alt={item.name} width={24} height={24}
+              style={{
+              filter:
+                activeItem === item.path
+                 ? "brightness(0) saturate(100%) invert(10%) sepia(94%) saturate(2000%) hue-rotate(220deg) brightness(100%) contrast(100%)"
+                 : "brightness(0) saturate(100%) invert(80%) sepia(15%) saturate(300%) hue-rotate(190deg) brightness(90%) contrast(90%)",
+                 }}
+
+              />
+              </div>
+             ) : (
+             // Render Material UI Icons (React Components)
+              <span>{item.icon}</span>
+             )}
+
            {isOpen && (
            <span
                 className={`text-[15.5px] leading-[20.7px] ${
