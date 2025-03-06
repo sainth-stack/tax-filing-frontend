@@ -1,18 +1,19 @@
-import {
-  BuildOutlined,
-  Dashboard,
-  Home,
-  PeopleAltOutlined,
-} from "@mui/icons-material";
+// import {
+//   BuildOutlined,
+//   Dashboard,
+//   Home,
+//   PeopleAltOutlined,
+// } from "@mui/icons-material";
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import BusinessIcon from "@mui/icons-material/Business";
+// import BusinessIcon from "@mui/icons-material/Business";
+// import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurnedInOutlined";
+// import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
+// import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
-import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import AssuredWorkloadIcon from "@mui/icons-material/AssuredWorkload";
 import PaymentIcon from "@mui/icons-material/Payment";
-import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurnedInOutlined";
+
 import icons from '../sidebarIcons/index'
 const Sidemenu = ({ user }) => {
 
@@ -40,7 +41,7 @@ const Sidemenu = ({ user }) => {
     default: [
       { name: "Dashboard",  icon: icons.Dashboard, path: "/dashboard" },
       { name: "Company", icon:icons.building, path: "/company" },
-      { name: "Manual Tasks", icon: <TaskOutlinedIcon />, path: "/tasks" },
+      { name: "Manual Tasks", icon: icons.manualTask, path: "/tasks" },
       { name: "Auto Tasks", icon: icons.vector, path: "/tasks/auto" },
 
       { name: "Users", icon: icons.frame, path: "/users" },
@@ -64,12 +65,12 @@ const Sidemenu = ({ user }) => {
     A: [
       { name: "Dashboard", icon: icons.Dashboard, path: "/dashboard" },
       { name: "Company",icon:icons.building, path: "/company" },
-      { name: "Manual Tasks", icon: <TaskOutlinedIcon />, path: "/tasks" },
+      { name: "Manual Tasks", icon: icons.manualTask, path: "/tasks" },
       { name: "Auto Tasks",  icon: icons.vector, path: "/tasks/auto" },
 
       {
         name: "Completed Tasks",
-        icon: <AssignmentTurnedInOutlinedIcon />,
+        icon: icons.completeTask,
         path: "/tasks/done",
       },
       {
