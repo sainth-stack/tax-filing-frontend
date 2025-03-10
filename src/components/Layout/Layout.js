@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import "./css/Layout.css"; // Import the CSS file
 import Sidemenu from "../Menus/Sidemenu";
 import Topmenu from "../Menus/Topmenu";
+import { useNavigate } from "react-router";
 
 const Layout = ({ children }) => {
   const user = JSON.parse(localStorage.getItem('user'))
-  //console.log(user)
+  const navigate=useNavigate()
+  useEffect(()=>{
+if(!user){
+  localStorage.clear()
+  navigate('/')
+}
+  },[user])
   return (
     <>
       <div className="flex flex-col h-screen">

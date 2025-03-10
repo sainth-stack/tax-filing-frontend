@@ -59,7 +59,7 @@ const PaymentCardPage = () => {
 
   useEffect(()=>{
     const user = JSON.parse(localStorage.getItem("user"));
-    fetchPayments(user.agency)
+    fetchPayments(user?.agency)
   },[])
   return (
     <Grid container spacing={3} justifyContent="start">

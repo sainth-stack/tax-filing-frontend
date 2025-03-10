@@ -17,7 +17,6 @@ const Header = ({
   setType,
   payment = false, 
 }) => {
-   console.log("columns", columns);
   // console.log("data from 4th graphs", data)
   
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
@@ -279,6 +278,7 @@ const handleExportAsPDF = () => {
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
+        margin:'0px 0px 20px 0px'
       }}
     >
       <h2
@@ -287,11 +287,13 @@ const handleExportAsPDF = () => {
           fontSize: "15.5px",
           fontWeight: 600,
           color:"#2B3674",
-          margin:".5rem 0  0 1rem",
+          // margin:".5rem 0  0 0.5rem",
           fontFamily: "Inter",
           lineHeight: "20.7px",
           letterSpacing: "0px",
-          marginBottom:"50px"
+          display:'flex',
+          alignItems:'center'
+          // marginBottom:"40px"
 
         }}
       >
@@ -301,7 +303,7 @@ const handleExportAsPDF = () => {
       <br />
       <Grid style={{ display: "flex", gap: "5px", alignItems: "center" }}>
         {payment && (
-          <SelectInput style={{marginTop:"-40px"}}
+          <SelectInput style={{}}
             id="month"
             className="ml-2 shadow-sm"
             value={type}
@@ -327,7 +329,7 @@ const handleExportAsPDF = () => {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginTop:"-40px",
+    // marginTop:"-40px",
     "&:hover": {
       backgroundColor: "#E0E5F2", 
     },

@@ -238,7 +238,7 @@ const TaskStatusGraph = ({
           className="bar_chart p-2"
           style={{
             width: "100%",
-            height: "480px",
+            height: "500px",
             // border: "1px solid #e0e0e0",
             borderRadius: "8px",
             backgroundColor: "#fff",
